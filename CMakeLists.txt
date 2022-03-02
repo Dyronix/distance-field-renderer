@@ -3,6 +3,33 @@
 # -------------------------------
 cmake_minimum_required(VERSION 3.16)
 
+# ------------------------------- 
+# Build Targets     
+# ------------------------------- 
+set(WINDOWS WINDOWS)
+set(MAC MACOS)
+set(LINUX LINUX)
+
+set(PLATFORM_TARGET "")
+
+# -------------------------------
+# Find Build Target
+# -------------------------------
+IF(${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
+    set(PLATFORM_TARGET ${WINDOWS})
+ELSEIF(${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Linux")
+    set(PLATFORM_TARGET ${LINUX})
+ELSEIF(${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Darwin")
+    set(PLATFORM_TARGET ${MAC})
+ELSE()
+    message(FATAL_ERROR "Unsupported platform, configuration will end.")
+ENDIF()
+
+message(STATUS "Build Target: ${PLATFORM_TARGET}")
+
+string(TOLOWER ${PLATFORM_TARGET} LOWER_PLATFORM_TARGET)
+string(TOUPPER ${PLATFORM_TARGET} UPPER_PLATFORM_TARGET)
+
 # -------------------------------
 # Version
 # -------------------------------
@@ -21,13 +48,13 @@ SET(CONFIGURATION_RELEASE Release)
 # -------------------------------
 # Setup the solution
 # -------------------------------
-project(cassis VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}"
-				  LANGUAGES C;CXX)
+project(rex_${LOWER_PLATFORM_TARGET} VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}"
+			   						 LANGUAGES C;CXX)
 
 message(STATUS "#--------------------- Starting project generation ---------------------")
-message("CMake Version: ${CMAKE_VERSION}")
-message("Architecture: ${CMAKE_GENERATOR_PLATFORM}")
-message("Generating project: ${PROJECT_NAME} v${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
+message(STATUS "CMake Version: ${CMAKE_VERSION}")
+message(STATUS "CMake Generator: ${CMAKE_GENERATOR}")
+message(STATUS "Generating project: ${PROJECT_NAME} v${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
 
 # -------------------------------
 # CMake dependencies
@@ -36,21 +63,29 @@ include(cmake\\utilities.cmake)
 include(cmake\\directories.cmake)
 include(cmake\\precompile_header.cmake)
 
+# -------------------------------
+# Project directories
+# -------------------------------
+message(STATUS "Bin directory: ${BIN_DIR}")
+message(STATUS "Source directory: ${SRC_DIR}")
+
 # --------------------------
 # Setup global properties
 # --------------------------
 # Enable folder structure in the IDE
 SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 
-# Remove the always defined _WINDOWS flag
-# CPP
-string (REPLACE "/D_WINDOWS" "" CMAKE_CUSTOM_CPP_FLAGS ${CMAKE_CXX_FLAGS})
-string (REPLACE "/DWIN32" "" CMAKE_CUSTOM_CPP_FLAGS ${CMAKE_CUSTOM_CPP_FLAGS}) 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CUSTOM_CPP_FLAGS}" CACHE STRING "" FORCE)
-# C
-string (REPLACE "/D_WINDOWS" "" CMAKE_CUSTOM_C_FLAGS ${CMAKE_C_FLAGS})
-string (REPLACE "/DWIN32" "" CMAKE_CUSTOM_C_FLAGS ${CMAKE_CUSTOM_C_FLAGS}) 
-SET(CMAKE_C_FLAGS "${CMAKE_CUSTOM_C_FLAGS}" CACHE STRING "" FORCE)
+if(MSVC)
+	# Remove the always defined _WINDOWS flag
+	# CPP
+	string (REPLACE "/D_WINDOWS" "" CMAKE_CUSTOM_CPP_FLAGS ${CMAKE_CXX_FLAGS})
+	string (REPLACE "/DWIN32" "" CMAKE_CUSTOM_CPP_FLAGS ${CMAKE_CUSTOM_CPP_FLAGS}) 
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CUSTOM_CPP_FLAGS}" CACHE STRING "" FORCE)
+	# C
+	string (REPLACE "/D_WINDOWS" "" CMAKE_CUSTOM_C_FLAGS ${CMAKE_C_FLAGS})
+	string (REPLACE "/DWIN32" "" CMAKE_CUSTOM_C_FLAGS ${CMAKE_CUSTOM_C_FLAGS})
+	SET(CMAKE_C_FLAGS "${CMAKE_CUSTOM_C_FLAGS}" CACHE STRING "" FORCE)
+endif()
 
 # Debug postfix
 SET (CMAKE_DEBUG_POSTFIX _d)
@@ -62,13 +97,12 @@ SET (CMAKE_CXX_STANDARD 17)
 SET (CMAKE_CXX_STANDARD_REQUIRED ON)
 SET (CMAKE_CXX_EXTENSIONS OFF)
 
-message("Output directory: ${OUTPUT_BINDIR}")
-message("Project Source directory: ${PROJECT_SOURCE_DIR}")
+message(STATUS "C Compiler: ${CMAKE_C_COMPILER_ID}")
+message(STATUS "CXX Compiler: ${CMAKE_CXX_COMPILER_ID}")
 
 # --------------------------------
 # Add subdirectories
 # --------------------------------
-message(STATUS "\tadd subdirectory: ${SRC_DIR}")
 add_subdirectory(${SRC_DIR})
 
 message(STATUS "#---------------------- Ending project generation ----------------------")
