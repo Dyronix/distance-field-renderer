@@ -31,4 +31,6 @@
 *.out
 *.app
 
+# Distance field renderer
 build/
+external/sdl-windows/
