@@ -2,7 +2,7 @@
 
 #include "application.h"
 
-namespace engine
+namespace rex
 {
     // Nothing to implement
 }
