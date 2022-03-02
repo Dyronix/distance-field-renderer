@@ -34,3 +34,4 @@
 # Distance field renderer
 build/
 external/sdl-windows/
+scripts/__pycache__/
