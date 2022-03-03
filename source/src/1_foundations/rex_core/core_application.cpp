@@ -19,6 +19,11 @@ namespace rex
     //-------------------------------------------------------------------------
     int32 CoreApplication::run(int32 /*argc*/, char** /*argv*/)
     {
+        while (true)
+        {
+            // Application loop
+        }
+
         return 0;
     }
 
