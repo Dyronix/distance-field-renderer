@@ -12,7 +12,7 @@
 # Project Name Project
 # -------------------------
 file(GLOB_RECURSE rex_glad_LIBS_INC    ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_glad/*.h)
-file(GLOB_RECURSE rex_glad_LIBS_SRC    ${CMAKE_SOURCE_DIR}/source/src/1_foundations/rex_glad/*.cpp, ${CMAKE_SOURCE_DIR}/source/src/1_foundations/rex_glad/*.c)
+file(GLOB_RECURSE rex_glad_LIBS_SRC    ${CMAKE_SOURCE_DIR}/source/src/1_foundations/rex_glad/*.cpp; ${CMAKE_SOURCE_DIR}/source/src/1_foundations/rex_glad/*.c)
 
 
 # Create the project filters
@@ -32,10 +32,10 @@ target_include_directories(rex_glad PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_
 set_target_properties(rex_glad PROPERTIES FOLDER                                         1_foundations) 
 set_target_properties(rex_glad PROPERTIES DEFINE_SYMBOL                                  "" )                   
 IF(MSVC)
-	set_target_properties(rex_glad PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY                ${OUTPUT_BINDIR})        
-	set_target_properties(rex_glad PROPERTIES ARCHIVE_OUTPUT_DIRECTORY                     ${OUTPUT_BINDIR})        
-	set_target_properties(rex_glad PROPERTIES LIBRARY_OUTPUT_DIRECTORY                     ${OUTPUT_BINDIR})        
-	set_target_properties(rex_glad PROPERTIES RUNTIME_OUTPUT_DIRECTORY                     ${OUTPUT_BINDIR})        
+	set_target_properties(rex_glad PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY                ${BIN_DIR})        
+	set_target_properties(rex_glad PROPERTIES ARCHIVE_OUTPUT_DIRECTORY                     ${BIN_DIR})        
+	set_target_properties(rex_glad PROPERTIES LIBRARY_OUTPUT_DIRECTORY                     ${BIN_DIR})        
+	set_target_properties(rex_glad PROPERTIES RUNTIME_OUTPUT_DIRECTORY                     ${BIN_DIR})        
 
 
 	set_target_properties(rex_glad PROPERTIES VS_GLOBAL_EnableUnitySupport                 True)                    
@@ -55,5 +55,5 @@ IF(MSVC)
 ENDIF()
 
 
-# Set precompiled header
-add_precompiled_header(rex_glad "rex_glad_pch.h" "rex_glad_pch.cpp")
+# # Set precompiled header
+# add_precompiled_header(rex_glad "rex_glad_pch.h" "rex_glad_pch.cpp")

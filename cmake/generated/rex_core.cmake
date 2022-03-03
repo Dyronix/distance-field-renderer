@@ -12,7 +12,7 @@
 # Project Name Project
 # -------------------------
 file(GLOB_RECURSE rex_core_LIBS_INC    ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_core/*.h)
-file(GLOB_RECURSE rex_core_LIBS_SRC    ${CMAKE_SOURCE_DIR}/source/src/1_foundations/rex_core/*.cpp, ${CMAKE_SOURCE_DIR}/source/src/1_foundations/rex_core/*.c)
+file(GLOB_RECURSE rex_core_LIBS_SRC    ${CMAKE_SOURCE_DIR}/source/src/1_foundations/rex_core/*.cpp; ${CMAKE_SOURCE_DIR}/source/src/1_foundations/rex_core/*.c)
 
 
 # Create the project filters
@@ -37,10 +37,10 @@ target_include_directories(rex_core PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_
 set_target_properties(rex_core PROPERTIES FOLDER                                         1_foundations) 
 set_target_properties(rex_core PROPERTIES DEFINE_SYMBOL                                  "" )                   
 IF(MSVC)
-	set_target_properties(rex_core PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY                ${OUTPUT_BINDIR})        
-	set_target_properties(rex_core PROPERTIES ARCHIVE_OUTPUT_DIRECTORY                     ${OUTPUT_BINDIR})        
-	set_target_properties(rex_core PROPERTIES LIBRARY_OUTPUT_DIRECTORY                     ${OUTPUT_BINDIR})        
-	set_target_properties(rex_core PROPERTIES RUNTIME_OUTPUT_DIRECTORY                     ${OUTPUT_BINDIR})        
+	set_target_properties(rex_core PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY                ${BIN_DIR})        
+	set_target_properties(rex_core PROPERTIES ARCHIVE_OUTPUT_DIRECTORY                     ${BIN_DIR})        
+	set_target_properties(rex_core PROPERTIES LIBRARY_OUTPUT_DIRECTORY                     ${BIN_DIR})        
+	set_target_properties(rex_core PROPERTIES RUNTIME_OUTPUT_DIRECTORY                     ${BIN_DIR})        
 
 
 	set_target_properties(rex_core PROPERTIES VS_GLOBAL_EnableUnitySupport                 True)                    
