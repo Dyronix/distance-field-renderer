@@ -3,8 +3,24 @@ param (
 
      [string]$build_dir = "build",          # where the bin directory is located
      [string]$build_target = "windows",     # what platform the bin directory is located
-     [string]$app_name                      # which app to run
+     [string]$app_name,                     # which app to run
+
+     [switch]$help = $false                 # help message
 )
+
+if($help)
+{
+    Write-Host "Arguments start with a hyphen ' - ' and consist out of the following options:"
+    Write-Host ""
+    Write-Host "output_dir------------default value: windows     # where to output the shadow build"
+
+    Write-Host "build_dir-------------default value: build       # where the bin directory is located"
+    Write-Host "build_target----------default value: windows     # what platform the bin directory is located"
+    Write-Host "app_name (mandatory)--default value: none        # which app to run"
+
+    Write-Host "help------------------default value: false       # print this message"
+    exit
+}
 
 # Don't allow our script to continue if any errors are observed
 $ErrorActionPreference = "Stop"
