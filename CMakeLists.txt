@@ -69,6 +69,26 @@ include(cmake\\precompile_header.cmake)
 message(STATUS "Bin directory: ${BIN_DIR}")
 message(STATUS "Source directory: ${SRC_DIR}")
 
+# -------------------------------
+# Setup project output directories
+# -------------------------------
+# Debug
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG 			"${BIN_DIR}")
+set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG 			"${BIN_DIR}")
+set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG 			"${BIN_DIR}")
+# Release configuration with minimum size
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL 		"${BIN_DIR}")
+set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL 		"${BIN_DIR}")
+set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_MINSIZEREL 		"${BIN_DIR}")
+# Release configuration with debug information
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO 	"${BIN_DIR}")
+set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO 	"${BIN_DIR}")
+set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELWITHDEBINFO 	"${BIN_DIR}")
+# Release configuration
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE 		"${BIN_DIR}")
+set (CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE 		"${BIN_DIR}")
+set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE 		"${BIN_DIR}")
+
 # --------------------------
 # Setup global properties
 # --------------------------
@@ -99,6 +119,11 @@ SET (CMAKE_CXX_EXTENSIONS OFF)
 
 message(STATUS "C Compiler: ${CMAKE_C_COMPILER_ID}")
 message(STATUS "CXX Compiler: ${CMAKE_CXX_COMPILER_ID}")
+
+# --------------------------------
+# Setup compiler definitions
+# --------------------------------
+add_definitions(-DREX_PLATFORM_${UPPER_PLATFORM_TARGET})
 
 # --------------------------------
 # Add subdirectories
