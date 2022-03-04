@@ -153,8 +153,8 @@ if __name__ == "__main__":
     template +=     "# Command: generate_project(type project_name solution_folder project_folder pch_header_name = project_folder pch_src_name = project_folder)\n"
     template +=     "# Example: generate_project(static CoreLibs 1_common core_libs)\n"
     template +=     "\n\n"
-    template +=     "# include path: "  + __make_cmake_relative(include_project_folder)    + "\n"
-    template +=     "# src path: "      + __make_cmake_relative(src_project_folder)        + "\n"
+    template +=     "# include path: "  + __make_cmake_relative(include_project_folder) + "\n"
+    template +=     "# src path: "      + __make_cmake_relative(src_project_folder)     + "\n"
     template +=     "\n\n"
     template +=     "# Project Name Project\n"
     template +=     "# -------------------------\n"
@@ -170,6 +170,9 @@ if __name__ == "__main__":
     # library or executable
     if is_library:
         template +=     "add_library(" + project_name + " " + library_type + " ${" + project_name + "_LIBS_INC} ${" + project_name + "_LIBS_SRC})\n"
+        template +=     "\n"
+        template +=     "STRING(TOUPPER " + project_name + " UPPER_LIB_NAME)\n"
+        template +=     "add_definitions(-D${UPPER_LIB_NAME}_LIB)\n"
     else:
         template +=     "add_executable(" + project_name + " " + " ${" + project_name + "_LIBS_INC} ${" + project_name + "_LIBS_SRC})\n"
     
