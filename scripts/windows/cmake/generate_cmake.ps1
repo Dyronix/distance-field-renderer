@@ -1,8 +1,6 @@
 # Don't allow our script to continue if any errors are observed
 $ErrorActionPreference = "Stop"
 
-$arguments = $args
-
 $cwd = Get-Location
 
 Write-Host "Loading windows/cmake/generate_cmake.ps1" -ForegroundColor Green
@@ -13,7 +11,9 @@ Function generate_cmake
     Param
     (
         [String]
-        $outputDir
+        $outputDir,
+        [switch]
+        $unity
     )
 
     # Check for a build folder

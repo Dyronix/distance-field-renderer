@@ -1,8 +1,6 @@
 # Don't allow our script to continue if any errors are observed
 $ErrorActionPreference = "Stop"
 
-$arguments = $args
-
 $cwd = Get-Location
 
 Write-Host "Loading windows/msvc/find_vs.ps1" -ForegroundColor Green

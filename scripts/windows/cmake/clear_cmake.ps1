@@ -1,8 +1,6 @@
 # Don't allow our script to continue if any errors are observed
 $ErrorActionPreference = "Stop"
 
-$arguments = $args
-
 $cwd = Get-Location
 
 Write-Host "Loading windows/cmake/clear_cmake.ps1" -ForegroundColor Green
