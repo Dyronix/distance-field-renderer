@@ -1,3 +1,5 @@
+include(${CMAKE_SOURCE_DIR}/cmake/generated/rex_diagnostics.cmake)
 include(${CMAKE_SOURCE_DIR}/cmake/generated/rex_glad.cmake)
 include(${CMAKE_SOURCE_DIR}/cmake/generated/rex_core.cmake)
 include(${CMAKE_SOURCE_DIR}/cmake/generated/regina.cmake)
+include(${CMAKE_SOURCE_DIR}/cmake/generated/rex_utilities.cmake)
