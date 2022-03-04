@@ -52,6 +52,40 @@ if (!(Test-Path "$external_dir\sdl-windows"))
     }
 }
 
+# Check that we have the spdlog library
+if (!(Test-Path "$external_dir\spdlog-windows"))
+{
+    try
+    {
+        Write-Host "Downloading spdlog library into external folder spdlog-windows"
+        $WebClient = New-Object System.Net.WebClient
+        $WebClient.DownloadFile("https://github.com/gabime/spdlog/archive/refs/heads/v1.x.zip", "$external_dir\spdlog-1.x.zip")
+    }
+	catch
+	{
+		Write-Host "Something went wrong when downloading spdlog library" -ForegroundColor Red
+		Write-Host $_
+		
+		exit
+	}
+
+    try
+    {
+        Write-Host "Unzipping spdlog library into external\spdlog-windows ..."
+        
+        Expand-Archive "$external_dir\spdlog-1.x.zip" "$external_dir\."
+        Rename-Item -Path "$external_dir\spdlog-1.x" -NewName "spdlog-windows"
+        Remove-Item -Path "$external_dir\spdlog-1.x.zip"
+    }
+    catch
+    {
+        Write-Host "Something went wrong when unzipping spdlog library" -ForegroundColor Red
+        Write-Host $_
+		
+		exit
+    }
+}
+
 try
 {
     Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser
