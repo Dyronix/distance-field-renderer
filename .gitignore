@@ -32,7 +32,12 @@
 *.app
 
 # Distance field renderer
+.vscode/
+
 build/
+
 external/sdl-windows/
 external/spdlog-windows/
+external/gsl-windows/
+
 scripts/__pycache__/
