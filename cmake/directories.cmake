@@ -13,3 +13,5 @@ IF(${PLATFORM_TARGET} STREQUAL ${WINDOWS})
     
     set(INCLUDE_SDL2 ${EXTERNALS_DIR}/sdl-windows/include)
 ENDIF()
+
+set(INCLUDE_SPDLOG ${EXTERNALS_DIR}/spdlog-windows/include)
