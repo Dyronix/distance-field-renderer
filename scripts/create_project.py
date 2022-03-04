@@ -183,7 +183,7 @@ if __name__ == "__main__":
     template +=     "# Set project properties                                                                                                       \n"
     template +=     "set_target_properties(" + project_name + " PROPERTIES FOLDER                                         " + solution_folder + ")  \n"
     template +=     "set_target_properties(" + project_name + " PROPERTIES DEFINE_SYMBOL                                  \"\" )                    \n"
-    template +=     "IF(MSVC)                                                                                                                       \n"
+    template +=     "IF(MSVC AND REX_UNITY_BUILD)                                                                                                  \n"
     template +=     "\tset_target_properties(" + project_name + " PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY                ${BIN_DIR})               \n"
     template +=     "\tset_target_properties(" + project_name + " PROPERTIES ARCHIVE_OUTPUT_DIRECTORY                     ${BIN_DIR})               \n"
     template +=     "\tset_target_properties(" + project_name + " PROPERTIES LIBRARY_OUTPUT_DIRECTORY                     ${BIN_DIR})               \n"

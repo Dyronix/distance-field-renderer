@@ -39,6 +39,14 @@ Function generate_cmake
         Pop-Location
     }
 
-    Write-Host "Running command: cmake --no-warn-unused-cli -B$cwd\build\$outputDir -G Visual Studio 16 2019 -T host=x64 -A x64"
-    cmake --no-warn-unused-cli -B"$cwd\build\$outputDir" -G "Visual Studio 16 2019" -T host=x64 -A x64    
+    if($unity)
+    {
+        Write-Host "Running command: cmake --no-warn-unused-cli -B$cwd\build\$outputDir -G Visual Studio 16 2019 -T host=x64 -A x64 -DREX_UNITY_BUILD=1 -DREX_EMSCRIPTEN_BUILD=0"
+        cmake --no-warn-unused-cli -B"$cwd\build\$outputDir" -G "Visual Studio 16 2019" -T host=x64 -A x64 -DREX_UNITY_BUILD=1 -DREX_EMSCRIPTEN_BUILD=0  
+    }
+    else
+    {
+        Write-Host "Running command: cmake --no-warn-unused-cli -B$cwd\build\$outputDir -G Visual Studio 16 2019 -T host=x64 -A x64 -DREX_UNITY_BUILD=0 -DREX_EMSCRIPTEN_BUILD=0"
+        cmake --no-warn-unused-cli -B"$cwd\build\$outputDir" -G "Visual Studio 16 2019" -T host=x64 -A x64 -DREX_UNITY_BUILD=0 -DREX_EMSCRIPTEN_BUILD=0
+    }
 }

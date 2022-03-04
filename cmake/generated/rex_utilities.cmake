@@ -28,13 +28,13 @@ add_definitions(-D${UPPER_LIB_NAME}_LIB)
 
 
 # Set the include directories                                                                                                  
-target_include_directories(rex_utilities PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_utilities)                
-
+target_include_directories(rex_utilities PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_utilities)  
+target_include_directories(rex_utilities PUBLIC ${INCLUDE_GSL})              
                                                                                                                              
 # Set project properties                                                                                                       
 set_target_properties(rex_utilities PROPERTIES FOLDER                                         1_foundations)  
 set_target_properties(rex_utilities PROPERTIES DEFINE_SYMBOL                                  "" )                    
-IF(MSVC)                                                                                                                       
+IF(MSVC AND REX_UNITY_BUILD)                                                                                                                   
 	set_target_properties(rex_utilities PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY                ${BIN_DIR})               
 	set_target_properties(rex_utilities PROPERTIES ARCHIVE_OUTPUT_DIRECTORY                     ${BIN_DIR})               
 	set_target_properties(rex_utilities PROPERTIES LIBRARY_OUTPUT_DIRECTORY                     ${BIN_DIR})               

@@ -39,7 +39,7 @@ target_link_libraries(regina PUBLIC rex_diagnostics)
 # Set project properties
 set_target_properties(regina PROPERTIES FOLDER                                         3_tools) 
 set_target_properties(regina PROPERTIES DEFINE_SYMBOL                                  "" )                   
-IF(MSVC)
+IF(MSVC AND REX_UNITY_BUILD)
 	set_target_properties(regina PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY                ${BIN_DIR})        
 	set_target_properties(regina PROPERTIES ARCHIVE_OUTPUT_DIRECTORY                     ${BIN_DIR})        
 	set_target_properties(regina PROPERTIES LIBRARY_OUTPUT_DIRECTORY                     ${BIN_DIR})        
