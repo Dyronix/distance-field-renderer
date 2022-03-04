@@ -5,7 +5,7 @@
 namespace rex
 {
     //-------------------------------------------------------------------------
-    CoreApplication::CoreApplication()
+    CoreApplication::CoreApplication(const ApplicationDescription& description)
     {
 
     }
@@ -17,7 +17,7 @@ namespace rex
     }
 
     //-------------------------------------------------------------------------
-    int32 CoreApplication::run(int32 /*argc*/, char** /*argv*/)
+    int32 CoreApplication::run()
     {
         while (true)
         {
