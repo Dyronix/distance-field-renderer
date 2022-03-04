@@ -2,6 +2,9 @@
 
 #include "types.h"
 #include "core_application.h"
+#include "application_arguments.h"
+
+#include "rex_debug.h"
 
 #include <iostream>
 
@@ -13,6 +16,18 @@ int32 runProgram(int32 argc, char** argv)
 {
     std::cout << "Starting REX" << std::endl;
 
+#ifdef REX_DEBUG
+    rex::logging::create();
+
+    #if REX_PROFILE
+        R_PROFILE_ENABLE();
+    #else
+        R_PROFILE_DISABLE();
+    #endif
+#else
+    R_PROFILE_DISABLE();
+#endif
+
     rex::ApplicationArguments application_arguments(argc, argv);
 
     rex::CoreApplication* application = rex::create_application(application_arguments);
@@ -21,7 +36,15 @@ int32 runProgram(int32 argc, char** argv)
 
     delete application;
 
-    std::cout << "Ending SCRIBIT" << std::endl;
+#ifdef REX_DEBUG
+    #if REX_PROFILE
+        R_PROFILE_DISABLE();
+    #endif
+
+    rex::logging::destroy();
+#endif
+
+    std::cout << "Ending REX" << std::endl;
 
     return result;
 }
