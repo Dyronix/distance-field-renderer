@@ -14,7 +14,9 @@ namespace rex
     {
         m_arguments.reserve(inArgc);
 
-        for (int i = 0; i < inArgc; ++i)
+        // First argument is our working directory
+        R_TODO("Capture the working directory when parsing application arguments");
+        for (int i = 1; i < inArgc; ++i)
         {
             ApplicationArgument argument = application_argument_parser::parse(inArgv[i]);
             
