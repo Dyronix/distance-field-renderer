@@ -42,12 +42,12 @@
 
 //-------------------------------------------------------------------------
 // Logging features
-#define R_FATAL(...)   rex::logging::getLogger(REX_LOGGER_NAME).critical(__VA_ARGR__); DEBUG_BREAK()
-#define R_ERROR(...)   rex::logging::getLogger(REX_LOGGER_NAME).error(__VA_ARGR__)
-#define R_WARN(...)    rex::logging::getLogger(REX_LOGGER_NAME).warn(__VA_ARGR__)
-#define R_INFO(...)    rex::logging::getLogger(REX_LOGGER_NAME).info(__VA_ARGR__)
-#define R_TODO(...)    rex::logging::getLogger(REX_LOGGER_NAME).debug(__VA_ARGR__)
-#define R_TRACE(...)   rex::logging::getLogger(REX_LOGGER_NAME).trace(__VA_ARGR__)
+#define R_FATAL(...)   rex::logging::getLogger(REX_LOGGER_NAME).critical(__VA_ARGS__); DEBUG_BREAK()
+#define R_ERROR(...)   rex::logging::getLogger(REX_LOGGER_NAME).error(__VA_ARGS__)
+#define R_WARN(...)    rex::logging::getLogger(REX_LOGGER_NAME).warn(__VA_ARGS__)
+#define R_INFO(...)    rex::logging::getLogger(REX_LOGGER_NAME).info(__VA_ARGS__)
+#define R_TODO(...)    rex::logging::getLogger(REX_LOGGER_NAME).debug(__VA_ARGS__)
+#define R_TRACE(...)   rex::logging::getLogger(REX_LOGGER_NAME).trace(__VA_ARGS__)
 
 //-------------------------------------------------------------------------
 // Assertions
@@ -57,7 +57,7 @@
         {}                                                   \
         else                                                 \
         {                                                    \
-            R_FATAL("Assertion Failed: {0}", __VA_ARGR__);   \
+            R_FATAL("Assertion Failed: {0}", __VA_ARGS__);   \
         }
     #define R_ASSERT(expr)                                   \
         if(expr)                                             \
@@ -73,7 +73,7 @@
 
 //-------------------------------------------------------------------------
 // Verification
-#define R_VERIFY_X(expr, ...) R_ASSERT_X(expr, __VA_ARGR__)
+#define R_VERIFY_X(expr, ...) R_ASSERT_X(expr, __VA_ARGS__)
 #define R_VERIFY(expr) {auto check = expr; UNUSED_PARAM(check);}
 
 //-------------------------------------------------------------------------
@@ -144,19 +144,19 @@
 // Assembly instruction to break execution.
 #define DEBUG_BREAK() 
 
-#define R_FATAL(...) UNUSED_PARAM(__VA_ARGR__)
-#define R_ERROR(...) UNUSED_PARAM(__VA_ARGR__)
-#define R_WARN(...)  UNUSED_PARAM(__VA_ARGR__)
-#define R_INFO(...)  UNUSED_PARAM(__VA_ARGR__)
-#define R_TODO(...)  UNUSED_PARAM(__VA_ARGR__)
-#define R_TRACE(...) UNUSED_PARAM(__VA_ARGR__)
+#define R_FATAL(...) UNUSED_PARAM(__VA_ARGS__)
+#define R_ERROR(...) UNUSED_PARAM(__VA_ARGS__)
+#define R_WARN(...)  UNUSED_PARAM(__VA_ARGS__)
+#define R_INFO(...)  UNUSED_PARAM(__VA_ARGS__)
+#define R_TODO(...)  UNUSED_PARAM(__VA_ARGS__)
+#define R_TRACE(...) UNUSED_PARAM(__VA_ARGS__)
 
 #define R_ASSERT_X(expr, ...) {auto check = expr; UNUSED_PARAM(check);}
 #define R_ASSERT(expr) 
 
 //-------------------------------------------------------------------------
 // Verification
-#define R_VERIFY_X(expr, ...) R_ASSERT_X(expr, __VA_ARGR__)
+#define R_VERIFY_X(expr, ...) R_ASSERT_X(expr, __VA_ARGS__)
 #define R_VERIFY(expr) {auto check = expr; UNUSED_PARAM(check);}
 
 #define R_INITIALIZE_LOGGER()
