@@ -7,7 +7,7 @@ namespace regina
     class Application : public rex::CoreApplication
     {
     public:
-        Application();
+        Application(const rex::ApplicationDescription& description);
         ~Application() override;
     };
 }
