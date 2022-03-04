@@ -9,6 +9,8 @@ Write-Host "Current working directory: $cwd"
 
 Write-Host "Running script for Windows desktop"
 
+Import-Module "$cwd\scripts\windows\utilities\download_repo.ps1"
+
 if (!(Test-Path "$external_dir"))
 {	
     # Check that we have a 'external' folder
@@ -18,73 +20,9 @@ if (!(Test-Path "$external_dir"))
 
 Write-Host "External directory: $external_dir"
 
-# Check that we have the SDL2 external Windows dev library
-if (!(Test-Path "$external_dir\sdl-windows"))
-{
-	try
-    {
-        Write-Host "Downloading SDL Windows Dev library into external folder sdl-windows ..."
-        $WebClient = New-Object System.Net.WebClient
-        $WebClient.DownloadFile("https://www.libsdl.org/release/SDL2-devel-2.0.20-VC.zip", "$external_dir\SDL2-devel-2.0.20-VC.zip")
-	}
-	catch
-	{
-		Write-Host "Something went wrong when downloading SDL Windows Dev library" -ForegroundColor Red
-		Write-Host $_
-		
-		exit
-	}
-
-    try
-    {
-        Write-Host "Unzipping SDL Windows Dev library into external\sdl-windows ..."
-        
-        Expand-Archive "$external_dir\SDL2-devel-2.0.20-VC.zip" "$external_dir\."
-        Rename-Item -Path "$external_dir\SDL2-2.0.20" -NewName "sdl-windows"
-        Remove-Item -Path "$external_dir\SDL2-devel-2.0.20-VC.zip"
-    }
-    catch
-    {
-        Write-Host "Something went wrong when unzipping SDL Windows Dev library" -ForegroundColor Red
-        Write-Host $_
-		
-		exit
-    }
-}
-
-# Check that we have the spdlog library
-if (!(Test-Path "$external_dir\spdlog-windows"))
-{
-    try
-    {
-        Write-Host "Downloading spdlog library into external folder spdlog-windows"
-        $WebClient = New-Object System.Net.WebClient
-        $WebClient.DownloadFile("https://github.com/gabime/spdlog/archive/refs/heads/v1.x.zip", "$external_dir\spdlog-1.x.zip")
-    }
-	catch
-	{
-		Write-Host "Something went wrong when downloading spdlog library" -ForegroundColor Red
-		Write-Host $_
-		
-		exit
-	}
-
-    try
-    {
-        Write-Host "Unzipping spdlog library into external\spdlog-windows ..."
-        
-        Expand-Archive "$external_dir\spdlog-1.x.zip" "$external_dir\."
-        Rename-Item -Path "$external_dir\spdlog-1.x" -NewName "spdlog-windows"
-        Remove-Item -Path "$external_dir\spdlog-1.x.zip"
-    }
-    catch
-    {
-        Write-Host "Something went wrong when unzipping spdlog library" -ForegroundColor Red
-        Write-Host $_
-		
-		exit
-    }
-}
+download_repo $external_dir "sdl-windows" "SDL2-2.0.20" "https://www.libsdl.org/release/SDL2-devel-2.0.20-VC.zip"
+download_repo $external_dir "spdlog-windows" "spdlog-1.x" "https://github.com/gabime/spdlog/archive/refs/heads/v1.x.zip"
+download_repo $external_dir "gsl-windows" "GSL-main" "https://github.com/microsoft/GSL/archive/refs/heads/main.zip"
 
 try
 {
