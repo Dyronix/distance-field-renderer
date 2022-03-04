@@ -4,6 +4,12 @@
 cmake_minimum_required(VERSION 3.16)
 
 # ------------------------------- 
+# Options
+# ------------------------------- 
+option(REX_UNITY_BUILD "Use unity build" OFF)
+option(REX_EMSCRIPTEN_BUILD "Use emscripten build" OFF)
+
+# ------------------------------- 
 # Build Targets     
 # ------------------------------- 
 set(WINDOWS WINDOWS)
@@ -30,6 +36,36 @@ message(STATUS "Build Target: ${PLATFORM_TARGET}")
 string(TOLOWER ${PLATFORM_TARGET} LOWER_PLATFORM_TARGET)
 string(TOUPPER ${PLATFORM_TARGET} UPPER_PLATFORM_TARGET)
 
+# ------------------------------- 
+# API Targets     
+# ------------------------------- 
+set(OPENGL OPENGL)
+set(OPENGLES OPENGLES)
+
+set(GRAPHICS_API_TARGET "")
+
+# -------------------------------
+# Find API Target
+# -------------------------------
+IF(NOT REX_EMSCRIPTEN_BUILD)
+    IF(${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
+		set(GRAPHICS_API_TARGET ${OPENGL})
+    ELSEIF(${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Linux")
+        set(GRAPHICS_API_TARGET ${OPENGL})
+    ELSEIF(${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Darwin")
+        set(GRAPHICS_API_TARGET ${OPENGL})
+    ELSE()
+        message(FATAL_ERROR "Unsupported platform, configuration will end.")
+    ENDIF()
+ELSE()
+    set(GRAPHICS_API_TARGET ${OPENGLES})
+ENDIF()
+
+message(STATUS "Graphics API: ${GRAPHICS_API_TARGET}")
+
+string(TOLOWER ${GRAPHICS_API_TARGET} LOWER_GRAPHICS_API_TARGET)
+string(TOUPPER ${GRAPHICS_API_TARGET} UPPER_GRAPHICS_API_TARGET)
+
 # -------------------------------
 # Version
 # -------------------------------
@@ -48,8 +84,7 @@ SET(CONFIGURATION_RELEASE Release)
 # -------------------------------
 # Setup the solution
 # -------------------------------
-project(rex_${LOWER_PLATFORM_TARGET} VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}"
-			   						 LANGUAGES C;CXX)
+project(rex_${LOWER_PLATFORM_TARGET}_${LOWER_GRAPHICS_API_TARGET} VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}" LANGUAGES C;CXX)
 
 message(STATUS "#--------------------- Starting project generation ---------------------")
 message(STATUS "CMake Version: ${CMAKE_VERSION}")
@@ -92,15 +127,15 @@ set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE 		"${BIN_DIR}")
 # -------------------------------
 # Setup debugging flags
 # -------------------------------
-SET(CMAKE_C_FLAGS_DEBUG                     "${CMAKE_C_FLAGS_DEBUG}                     -D_HAS_EXCEPTIONS=0 -DREX_DEBUG -DREX_ASSERTIONS")
-SET(CMAKE_C_FLAGS_RELWITHDEBINFO            "${CMAKE_C_FLAGS_RELWITHDEBINFO}            -D_HAS_EXCEPTIONS=0 -DREX_DEBUG -DREX_ASSERTIONS")
-SET(CMAKE_C_FLAGS_MINSIZEREL                "${CMAKE_C_FLAGS_MINSIZEREL}                -D_HAS_EXCEPTIONS=0")
-SET(CMAKE_C_FLAGS_RELEASE                   "${CMAKE_C_FLAGS_RELEASE}                   -D_HAS_EXCEPTIONS=0")
+SET(CMAKE_C_FLAGS_DEBUG                     "${CMAKE_C_FLAGS_DEBUG}                     -DREX_DEBUG -DREX_ASSERTIONS")
+SET(CMAKE_C_FLAGS_RELWITHDEBINFO            "${CMAKE_C_FLAGS_RELWITHDEBINFO}            -DREX_DEBUG -DREX_ASSERTIONS")
+SET(CMAKE_C_FLAGS_MINSIZEREL                "${CMAKE_C_FLAGS_MINSIZEREL}                ")
+SET(CMAKE_C_FLAGS_RELEASE                   "${CMAKE_C_FLAGS_RELEASE}                   ")
     
-SET(CMAKE_CXX_FLAGS_DEBUG                   "${CMAKE_CXX_FLAGS_DEBUG}                   -D_HAS_EXCEPTIONS=0 -DREX_DEBUG -DREX_ASSERTIONS")
-SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO          "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}          -D_HAS_EXCEPTIONS=0 -DREX_DEBUG -DREX_ASSERTIONS")
-SET(CMAKE_CXX_FLAGS_MINSIZEREL              "${CMAKE_CXX_FLAGS_MINSIZEREL}              -D_HAS_EXCEPTIONS=0")
-SET(CMAKE_CXX_FLAGS_RELEASE                 "${CMAKE_CXX_FLAGS_RELEASE}                 -D_HAS_EXCEPTIONS=0")
+SET(CMAKE_CXX_FLAGS_DEBUG                   "${CMAKE_CXX_FLAGS_DEBUG}                   -DREX_DEBUG -DREX_ASSERTIONS")
+SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO          "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}          -DREX_DEBUG -DREX_ASSERTIONS")
+SET(CMAKE_CXX_FLAGS_MINSIZEREL              "${CMAKE_CXX_FLAGS_MINSIZEREL}              ")
+SET(CMAKE_CXX_FLAGS_RELEASE                 "${CMAKE_CXX_FLAGS_RELEASE}                 ")
 
 # --------------------------
 # Setup global properties
@@ -137,6 +172,8 @@ message(STATUS "CXX Compiler: ${CMAKE_CXX_COMPILER_ID}")
 # Setup compiler definitions
 # --------------------------------
 add_definitions(-DREX_PLATFORM_${UPPER_PLATFORM_TARGET})
+add_definitions(-DREX_API_${UPPER_GRAPHICS_API_TARGET})
+
 
 # --------------------------------
 # Add subdirectories
