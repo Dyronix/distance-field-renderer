@@ -3,6 +3,8 @@
 #include "entry_point.h"
 #include "regina.h"
 
+#include "application_arguments.h"
+
 //-----------------------------------------------------------------------
 rex::CoreApplication* rex::create_application(const ApplicationArguments& arguments)
 {
@@ -12,6 +14,7 @@ rex::CoreApplication* rex::create_application(const ApplicationArguments& argume
 
     rex::ApplicationDescription description;
 
+    description.name = "REX";
     description.window_width = window_width ? std::stoi(*window_width) : 1280;
     description.window_height = window_height ? std::stoi(*window_height) : 720;
     description.fullscreen = fullscreen ? std::stoi(*fullscreen) : false;
