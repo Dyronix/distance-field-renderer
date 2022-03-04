@@ -6,16 +6,18 @@
 #include <iostream>
 
 //--------------------------------------------------------------------------------------------
-extern rex::CoreApplication* rex::create_application();
+extern rex::CoreApplication* rex::create_application(const ApplicationArguments& arguments);
 
 //--------------------------------------------------------------------------------------------
 int32 runProgram(int32 argc, char** argv)
 {
     std::cout << "Starting REX" << std::endl;
 
-    rex::CoreApplication* application = rex::create_application();
+    rex::ApplicationArguments application_arguments(argc, argv);
 
-    int32 result = application->run(argc, argv);
+    rex::CoreApplication* application = rex::create_application(application_arguments);
+
+    int32 result = application->run();
 
     delete application;
 
