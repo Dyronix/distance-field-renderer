@@ -23,6 +23,8 @@ GROUPSOURCES(${CMAKE_SOURCE_DIR}/source/src/1_foundations/rex_glad src)
 # Create the project
 add_library(rex_glad STATIC ${rex_glad_LIBS_INC} ${rex_glad_LIBS_SRC})
 
+STRING(TOUPPER rex_glad UPPER_LIB_NAME)
+add_definitions(-D${UPPER_LIB_NAME}_LIB)
 
 # Set the include directories
 target_include_directories(rex_glad PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_glad)

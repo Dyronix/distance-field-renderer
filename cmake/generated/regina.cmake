@@ -26,12 +26,15 @@ add_executable(regina ${regina_LIBS_INC} ${regina_LIBS_SRC})
 
 # Set the include directories
 target_include_directories(regina PUBLIC ${CMAKE_SOURCE_DIR}/source/include/3_tools/regina)
+target_include_directories(regina PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_core)
+target_include_directories(regina PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_utilities)
+target_include_directories(regina PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_diagnostics)
 
 # Set the link libraries
 target_link_libraries(regina PUBLIC rex_core)
-# target_link_libraries(regina PUBLIC opengl32)
-# target_link_libraries(regina PUBLIC ${LIB_SDL2})
-# target_link_libraries(regina PUBLIC ${LIB_SDL2_MAIN})
+target_link_libraries(regina PUBLIC rex_utilities)
+target_link_libraries(regina PUBLIC rex_diagnostics)
+
 
 # Set project properties
 set_target_properties(regina PROPERTIES FOLDER                                         3_tools) 

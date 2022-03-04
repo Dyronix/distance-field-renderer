@@ -23,14 +23,17 @@ GROUPSOURCES(${CMAKE_SOURCE_DIR}/source/src/1_foundations/rex_core src)
 # Create the project
 add_library(rex_core STATIC ${rex_core_LIBS_INC} ${rex_core_LIBS_SRC})
 
+STRING(TOUPPER rex_core UPPER_LIB_NAME)
+add_definitions(-D${UPPER_LIB_NAME}_LIB)
 
 # Set the include directories
 target_include_directories(rex_core PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_core)
+target_include_directories(rex_core PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_utilities)
+target_include_directories(rex_core PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_diagnostics)
 
-# # Set the link directories
-# target_link_libraries(rex_core opengl32)
-# target_link_libraries(rex_core ${LIB_SDL2})
-# target_link_libraries(rex_core ${LIB_SDL2_MAIN})
+# Set target link libraries
+target_link_libraries(rex_core PUBLIC rex_utilities)
+target_link_libraries(rex_core PUBLIC rex_diagnostics)
 
 
 # Set project properties
