@@ -15,3 +15,4 @@ IF(${PLATFORM_TARGET} STREQUAL ${WINDOWS})
 ENDIF()
 
 set(INCLUDE_SPDLOG ${EXTERNALS_DIR}/spdlog-windows/include)
+set(INCLUDE_GSL ${EXTERNALS_DIR}/gsl-windows/include)
