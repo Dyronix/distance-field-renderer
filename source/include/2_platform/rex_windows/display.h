@@ -41,7 +41,6 @@ namespace rex
         gsl::not_null<const DisplayMode*> set_active_mode(int32 index);
         gsl::not_null<const DisplayMode*> get_active_mode() const;
 
-
         int32 get_display_index() const;
         int32 get_display_mode_count() const;
 
