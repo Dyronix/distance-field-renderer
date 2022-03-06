@@ -14,7 +14,6 @@
 
 //-------------------------------------------------------------------------
 // Assembly instruction to break execution.
-#define HAR_DEBUG_BREAK 0
 #if HAR_DEBUG_BREAK
     #if defined _MSC_VER
         #define DEBUG_BREAK() __debugbreak()
