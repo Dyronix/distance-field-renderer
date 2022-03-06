@@ -1,8 +1,6 @@
 #ifndef REX_DEFINES
 #define REX_DEFINES
 
-#define REX_THREADING 1
-
 #if defined _MSC_VER
     #define UNUSED_PARAM(...) {__VA_ARGS__;}
 #elif defined __clang__
