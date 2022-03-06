@@ -1,10 +1,10 @@
 #pragma once
 
-#include "core_application.h"
+#include "win32_application.h"
 
 namespace regina
 {
-    class Application : public rex::CoreApplication
+    class Application : public rex::win32::Application
     {
     public:
         Application(const rex::ApplicationDescription& description);

@@ -26,7 +26,7 @@ namespace regina
 {
     //-------------------------------------------------------------------------
     Application::Application(const rex::ApplicationDescription& description)
-        :CoreApplication(description)
+        :rex::win32::Application(description)
     {
 
     }
