@@ -3,10 +3,6 @@
 namespace rex
 {
     class ApplicationArguments;
-    class Window;
-    class DisplayManager;
-
-    struct FrameInfo;
 
     struct ApplicationDescription
     {
@@ -18,51 +14,29 @@ namespace rex
         bool fullscreen;
     };
 
-    struct ApplicationLoop
-    {
-        virtual ~ApplicationLoop() = default;
-
-        virtual void loop() = 0;
-    };
-
-    class CoreApplication : public ApplicationLoop
+    class CoreApplication
     {
     public:
         CoreApplication(const ApplicationDescription& description);
         virtual ~CoreApplication();
 
-        bool is_running() const;
-        bool is_marked_for_destruction() const;
-
         int32 run();
-        void quit();
+
+        virtual void quit() = 0;
 
     protected:
-        void mark_for_destroy();
+        const ApplicationDescription& get_application_description() const;
 
-        void initialize();
-        void update();
-        void shutdown();
+        bool initialize();
+        bool shutdown();
 
-        virtual void on_initialize() { /**/ }
-        virtual void on_update(const FrameInfo& /*info*/) { /**/ }
-        virtual void on_shutdown() { /**/ }
+        virtual bool platform_initialize() = 0;
+        virtual bool platform_shutdown() = 0;
 
     private:
-        void loop() final;
-
-        void create_display_manager();
-        void create_window();
-
         static CoreApplication* s_instance;
-        
-        bool m_is_marked_for_destruction;
-        bool m_is_running;
 
         ApplicationDescription m_description;
-
-        std::unique_ptr<DisplayManager> m_display_manager;
-        std::unique_ptr<Window> m_window;
     };
 
     // This will be implemented by the CLIENT
