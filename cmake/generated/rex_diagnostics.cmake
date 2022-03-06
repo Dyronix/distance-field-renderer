@@ -26,9 +26,9 @@ add_library(rex_diagnostics STATIC ${rex_diagnostics_LIBS_INC} ${rex_diagnostics
 STRING(TOUPPER rex_diagnostics UPPER_LIB_NAME)
 add_definitions(-D${UPPER_LIB_NAME}_LIB)
 
-# Set the include directories                                                                                                  
+# Set the include directories                                                                                    
+target_include_directories(rex_diagnostics PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_diagnostics)                                              
 target_include_directories(rex_diagnostics PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_utilities)
-target_include_directories(rex_diagnostics PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_diagnostics)                                
 target_include_directories(rex_diagnostics PUBLIC ${INCLUDE_SPDLOG})     
 
 # Set target link libraries

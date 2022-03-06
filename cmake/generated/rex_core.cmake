@@ -30,17 +30,11 @@ add_definitions(-D${UPPER_LIB_NAME}_LIB)
 target_include_directories(rex_core PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_core)
 target_include_directories(rex_core PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_utilities)
 target_include_directories(rex_core PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_diagnostics)
-target_include_directories(rex_core PUBLIC ${INCLUDE_SDL2})
 target_include_directories(rex_core PUBLIC ${INCLUDE_GSL})
 
 # Set target link libraries
 target_link_libraries(rex_core PUBLIC rex_utilities)
 target_link_libraries(rex_core PUBLIC rex_diagnostics)
-
-target_link_libraries(rex_core PUBLIC opengl32)
-target_link_libraries(rex_core PUBLIC ${LIB_SDL2})
-target_link_libraries(rex_core PUBLIC ${LIB_SDL2_MAIN})
-
 
 # Set project properties
 set_target_properties(rex_core PROPERTIES FOLDER                                         1_foundations) 
