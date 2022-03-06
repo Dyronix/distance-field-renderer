@@ -2,7 +2,7 @@ param (
      [string]$output_dir = "windows",       # where to output the shadow build
 
      [switch]$clear = $false,               # Should we clear instead of building the soluction
-     [switch]$unity = $false                # Should enable unity builds
+     [switch]$skip_unity = $false           # Should disable unity builds
 )
 
 # Don't allow our script to continue if any errors are observed
@@ -32,13 +32,13 @@ if($clear)
 else
 {
     Write-Host "Execute Windows project generation ..."
-    if($unity)
+    if($skip_unity)
     {
-        generate_cmake $output_dir -unity
+        generate_cmake $output_dir
     }
     else
     {
-        generate_cmake $output_dir
+        generate_cmake $output_dir -unity
     }
 }
 
