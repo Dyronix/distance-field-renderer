@@ -17,7 +17,7 @@ namespace rex
         void update();
 
     private:
-        static DeltaTime   s_delta_time;
-        static FPS         s_frames_per_second;
+        static DeltaTime s_delta_time;
+        static FPS s_frames_per_second;
     };
 }
