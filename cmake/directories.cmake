@@ -16,3 +16,4 @@ ENDIF()
 
 set(INCLUDE_SPDLOG ${EXTERNALS_DIR}/spdlog-windows/include)
 set(INCLUDE_GSL ${EXTERNALS_DIR}/gsl-windows/include)
+set(INCLUDE_CRC ${EXTERNALS_DIR}/crc-windows/inc)
