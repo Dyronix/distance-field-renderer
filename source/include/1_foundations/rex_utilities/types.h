@@ -10,6 +10,8 @@
 
 #pragma once
 
+#include "yesnoenum.h"
+
 namespace rex
 {
     // integers
@@ -73,6 +75,14 @@ namespace rex
 
     static_assert(false == 0, "C++ false keyword does not equal 0");
     static_assert(true == 1, "C++ true keyword does not equal 1");
+
+    // specific types
+    using IsRenderThread = YesNoEnum;
+
+    namespace memory
+    {
+        enum class byte : unsigned char {};
+    }
 }
 
 using rex::int8;
