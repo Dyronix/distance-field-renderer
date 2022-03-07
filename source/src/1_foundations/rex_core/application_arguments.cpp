@@ -20,7 +20,7 @@ namespace rex
         {
             ApplicationArgument argument = application_argument_parser::parse(inArgv[i]);
             
-            m_arguments.insert(std::make_pair(argument.key, argument.value));
+            m_arguments.insert(std::make_pair(create_sid(argument.key), create_sid(argument.value)));
         }
     }
     //-------------------------------------------------------------------------
@@ -32,18 +32,18 @@ namespace rex
         return !m_arguments.empty();
     }
     //-------------------------------------------------------------------------
-    bool ApplicationArguments::has_argument(const std::string& arg) const
+    bool ApplicationArguments::has_argument(const StringID& arg) const
     {
         return m_arguments.find(arg) != std::cend(m_arguments);
     }
 
     //-------------------------------------------------------------------------
-    std::optional<std::string> ApplicationArguments::get_argument_value(const std::string& arg) const
+    StringID ApplicationArguments::get_argument_value(const StringID& arg) const
     {
         auto it = m_arguments.find(arg);
         if (it == std::cend(m_arguments))
         {
-            return {};
+            return ESID::SID_None;
         }
 
         return it->second;

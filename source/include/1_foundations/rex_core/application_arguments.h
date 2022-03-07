@@ -9,15 +9,15 @@ namespace rex
         ~ApplicationArguments();
 
         bool has_arguments() const;
-        bool has_argument(const std::string& arg) const;
+        bool has_argument(const StringID& arg) const;
 
-        std::optional<std::string> get_argument_value(const std::string& arg) const;
+        StringID get_argument_value(const StringID& arg) const;
 
         int32 get_argument_count() const;
         char** get_argument_values() const;
 
     private:
-        using Arguments = std::unordered_map<std::string, std::string>;
+        using Arguments = std::unordered_map<StringID, StringID>;
 
         Arguments m_arguments;
 
