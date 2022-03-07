@@ -7,6 +7,7 @@
 
 #include "types.h"
 #include "defines.h"
+#include "yesnoenum.h"
 
 #include "named_type.h"
 

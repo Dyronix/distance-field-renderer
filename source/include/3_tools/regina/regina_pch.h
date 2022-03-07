@@ -8,3 +8,6 @@
 
 #include "types.h"
 #include "defines.h"
+
+#include "string/string_id.h"
+#include "string/string_ids.h"
