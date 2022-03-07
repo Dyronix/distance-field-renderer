@@ -29,6 +29,22 @@ namespace rex
         if (!initialize()) return EXIT_FAILURE;
         if (!shutdown()) return EXIT_FAILURE;
 
+        auto live_references = memory::get_all_references();
+        if (!live_references.empty())
+        {
+            R_ERROR("----------------------------------------------------");
+            R_ERROR("Live references found!");
+            for (const auto& live_reference : live_references)
+            {
+                R_ERROR("Reference [ptr, refcount]: [{0}, {1}]", fmt::ptr(live_reference), live_reference->get_reference_count());
+            }
+            R_ERROR("----------------------------------------------------");
+
+            DEBUG_BREAK();
+
+            return EXIT_FAILURE;
+        }
+
         return EXIT_SUCCESS;
     }
 
