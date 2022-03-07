@@ -39,5 +39,6 @@ build/
 external/sdl-windows/
 external/spdlog-windows/
 external/gsl-windows/
+external/crc-windows/
 
 scripts/__pycache__/
