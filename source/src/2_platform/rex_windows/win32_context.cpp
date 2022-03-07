@@ -2,8 +2,8 @@
 
 #include "win32_context.h"
 
-#include "graphics/glapi.h"
-#include "graphics/glfunctionlibrary.h"
+#include "graphics/gl_api.h"
+#include "graphics/gl_function_library.h"
 
 #include <SDL.h>
 
