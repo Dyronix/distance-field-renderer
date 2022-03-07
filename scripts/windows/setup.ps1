@@ -23,6 +23,7 @@ Write-Host "External directory: $external_dir"
 download_repo $external_dir "sdl-windows" "SDL2-2.0.20" "https://www.libsdl.org/release/SDL2-devel-2.0.20-VC.zip"
 download_repo $external_dir "spdlog-windows" "spdlog-1.x" "https://github.com/gabime/spdlog/archive/refs/heads/v1.x.zip"
 download_repo $external_dir "gsl-windows" "GSL-main" "https://github.com/microsoft/GSL/archive/refs/heads/main.zip"
+download_repo $external_dir "crc-windows" "CRCpp-master" "https://github.com/d-bahr/CRCpp/archive/refs/heads/master.zip"
 
 try
 {
