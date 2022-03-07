@@ -8,16 +8,16 @@
 //-----------------------------------------------------------------------
 rex::CoreApplication* rex::create_application(const ApplicationArguments& arguments)
 {
-    std::optional<std::string> window_width = arguments.get_argument_value("xres");
-    std::optional<std::string> window_height = arguments.get_argument_value("yres");
-    std::optional<std::string> fullscreen = arguments.get_argument_value("fullscreen");
+    rex::StringID window_width = arguments.get_argument_value("xres");
+    rex::StringID window_height = arguments.get_argument_value("yres");
+    rex::StringID fullscreen = arguments.get_argument_value("fullscreen");
 
     rex::ApplicationDescription description;
 
     description.name = "REX";
-    description.window_width = window_width ? std::stoi(*window_width) : 1280;
-    description.window_height = window_height ? std::stoi(*window_height) : 720;
-    description.fullscreen = fullscreen ? std::stoi(*fullscreen) : false;
+    description.window_width = !window_width.is_none() ? std::stoi(window_width.to_string()) : 1280;
+    description.window_height = !window_height.is_none() ? std::stoi(window_height.to_string()) : 720;
+    description.fullscreen = !fullscreen.is_none() ? std::stoi(fullscreen.to_string()) : false;
 
     return new regina::Application(description);
 }
