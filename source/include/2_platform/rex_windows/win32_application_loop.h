@@ -7,7 +7,7 @@ namespace rex
     using RefreshRate = NamedType<int32, struct Rate>;
 
     //-------------------------------------------------------------------------
-    RefreshRate operator"" _hz(long double value)
+    inline RefreshRate operator"" _hz(long double value)
     {
         return RefreshRate{ gsl::narrow<int32>(value) };
     }
