@@ -1,8 +1,8 @@
 #include "rex_windows_pch.h"
 
-#include "graphics/glfunctionlibrary.h"
-#include "graphics/glerror.h"
-#include "graphics/glapi.h"
+#include "graphics/gl_function_library.h"
+#include "graphics/gl_error.h"
+#include "graphics/gl_api.h"
 
 #define ENABLE_GL_FUNCTION_LOGGING 0
 #define ENABLE_GL_GET_ERROR_LOGGING 0

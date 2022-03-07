@@ -1,8 +1,8 @@
 #include "rex_windows_pch.h"
 
-#include "graphics/glerror.h"
-#include "graphics/glfunctionlibrary.h"
-#include "graphics/glapi.h"
+#include "graphics/gl_error.h"
+#include "graphics/gl_function_library.h"
+#include "graphics/gl_api.h"
 
 namespace rex
 {

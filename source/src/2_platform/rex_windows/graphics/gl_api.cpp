@@ -1,6 +1,6 @@
 #include "rex_windows_pch.h"
 
-#include "graphics/glapi.h"
+#include "graphics/gl_api.h"
 
 namespace rex
 {

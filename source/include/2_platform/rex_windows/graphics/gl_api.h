@@ -5,3 +5,8 @@
 #else
     #error Unsupported platform
 #endif
+
+namespace rex
+{
+    using IsRenderThread = YesNoEnum;
+}
