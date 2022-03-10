@@ -1,6 +1,6 @@
 #include "rex_graphics_pch.h"
 
-#include "resources/framebuffer.h"
+#include "resources/frame_buffer.h"
 
 namespace rex
 {

@@ -1,6 +1,6 @@
 #include "rex_graphics_pch.h"
 
-#include "resources/texture_3d_description.h"
+#include "renderer/pipeline.h"
 
 namespace rex
 {

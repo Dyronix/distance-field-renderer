@@ -39,14 +39,14 @@ namespace rex
 
         virtual ~FrameBuffer() = default;
 
-        virtual StringID getName() const = 0;
+        virtual StringID get_name() const = 0;
 
-        virtual int32 getWidth() const = 0;
-        virtual int32 getHeight() const = 0;
+        virtual int32 get_width() const = 0;
+        virtual int32 get_height() const = 0;
 
-        virtual const ColorAttachments getColorAttachments() const = 0;
-        virtual const ColorAttachment getColorAttachment(int32 attachmentIndex = 0) const = 0;
-        virtual const DepthAttachment getDepthAttachment() const = 0;
+        virtual const ColorAttachments get_color_attachments() const = 0;
+        virtual const ColorAttachment get_color_attachment(int32 attachmentIndex = 0) const = 0;
+        virtual const DepthAttachment get_depth_attachment() const = 0;
 
         virtual void resize(int32 width, int32 height, bool isRenderThread = IsRenderThread::NO) = 0;
 

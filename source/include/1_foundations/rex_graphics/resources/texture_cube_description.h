@@ -1,15 +1,19 @@
 #pragma once
 
-#include "string/string_id.h"
-#include "string/string_ids.h"
+#include "string/stringid.h"
+#include "string/stringids.h"
 
-namespace rex
+#include "resources/texture.h"
+
+#include <memory>
+
+namespace sbt
 {
-    struct Texture2DDescription
+    struct TextureCubeDescription
     {
         //-------------------------------------------------------------------------
-        Texture2DDescription()
-            : name(ESID::SID_None)
+        TextureCubeDescription()
+            : name(EName::SID_None)
             , width(0)
             , height(0)
             , texel_format(Texel::Format::UNKNOWN)
@@ -20,24 +24,20 @@ namespace rex
             , data()
         {}
         //-------------------------------------------------------------------------
-        Texture2DDescription(const Texture2DDescription& other) = delete;
-        //-------------------------------------------------------------------------
-        Texture2DDescription(Texture2DDescription&& other) noexcept
+        TextureCubeDescription(TextureCubeDescription&& other) noexcept
             :name(std::move(other.name))
-            ,width(std::move(other.width))
-            ,height(std::move(other.height))
-            ,texel_format(std::move(other.texel_format))
-            ,usage(std::move(other.usage))
-            ,format(std::move(other.format))
-            ,wraps(std::move(other.wraps))
-            ,filters(std::move(other.filters))
-            ,data(std::move(other.data))
+            , width(std::move(other.width))
+            , height(std::move(other.height))
+            , texel_format(std::move(other.texel_format))
+            , usage(std::move(other.usage))
+            , format(std::move(other.format))
+            , wraps(std::move(other.wraps))
+            , filters(std::move(other.filters))
+            , data(std::move(other.data))
         {}
 
         //-------------------------------------------------------------------------
-        Texture2DDescription& operator=(Texture2DDescription& other) = delete;
-        //-------------------------------------------------------------------------
-        Texture2DDescription& operator=(Texture2DDescription&& other) noexcept
+        TextureCubeDescription& operator=(TextureCubeDescription&& other) noexcept
         {
             // Guard self assignment
             if (this == &other)
@@ -46,7 +46,6 @@ namespace rex
             }
 
             this->name = std::move(other.name);
-
             this->width = std::move(other.width);
             this->height = std::move(other.height);
 
@@ -65,8 +64,8 @@ namespace rex
 
         StringID name;
 
-        int32 width;
-        int32 height;
+        uint32 width;
+        uint32 height;
 
         Texel texel_format;
 
@@ -78,7 +77,4 @@ namespace rex
 
         Texture::Data data;
     };
-
-    Texture2DDescription create_depth_attachment_description(uint32 width, uint32 height, Texture::Format textureFormat);
-    Texture2DDescription create_color_attachment_Description(uint32 width, uint32 height, Texture::Format textureFormat);
 }
