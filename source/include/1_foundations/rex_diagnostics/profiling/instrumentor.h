@@ -46,20 +46,20 @@ namespace rex
 
         void enable();
         void disable();
-        bool isEnabled() const;
+        bool is_enabled() const;
 
-        void beginSession(const std::string& name, const std::string& filepath = "results.json");
-        void endSession();
+        void begin_session(const std::string& name, const std::string& filepath = "results.json");
+        void end_session();
 
-        void writeProfile(const ProfileResult& result);
+        void write_profile(const ProfileResult& result);
 
         static Instrumentor& get();
 
     private:
-        void writeHeader();
-        void writeFooter();
+        void write_header();
+        void write_footer();
 
-        void internalEndSession();
+        void internal_end_session();
     
         InstrumentationSession* m_current_session;
 

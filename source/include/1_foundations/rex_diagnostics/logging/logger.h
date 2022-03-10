@@ -39,14 +39,14 @@ namespace rex
         void create();
         void destroy();
 
-        bool addLogger(const char* name);
-        bool addLogger(const char* name, const char* pattern);
-        bool addLogger(const char* name, const char* pattern, rex::LogLevel level);
+        bool add_logger(const char* name);
+        bool add_logger(const char* name, const char* pattern);
+        bool add_logger(const char* name, const char* pattern, rex::LogLevel level);
 
-        bool hasLogger(const char* name);
-        bool hasStream(const char* name);
+        bool has_logger(const char* name);
+        bool has_stream(const char* name);
 
-        LoggerObject& getLogger(const char* name);
-        LoggerStream& getStream(const char* name);
+        LoggerObject& get_logger(const char* name);
+        LoggerStream& get_stream(const char* name);
     }
 }

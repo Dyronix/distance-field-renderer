@@ -41,12 +41,12 @@
 
 //-------------------------------------------------------------------------
 // Logging features
-#define R_FATAL(...)   rex::logging::getLogger(REX_LOGGER_NAME).critical(__VA_ARGS__); DEBUG_BREAK()
-#define R_ERROR(...)   rex::logging::getLogger(REX_LOGGER_NAME).error(__VA_ARGS__)
-#define R_WARN(...)    rex::logging::getLogger(REX_LOGGER_NAME).warn(__VA_ARGS__)
-#define R_INFO(...)    rex::logging::getLogger(REX_LOGGER_NAME).info(__VA_ARGS__)
-#define R_TODO(...)    rex::logging::getLogger(REX_LOGGER_NAME).debug(__VA_ARGS__)
-#define R_TRACE(...)   rex::logging::getLogger(REX_LOGGER_NAME).trace(__VA_ARGS__)
+#define R_FATAL(...)   rex::logging::get_logger(REX_LOGGER_NAME).critical(__VA_ARGS__); DEBUG_BREAK()
+#define R_ERROR(...)   rex::logging::get_logger(REX_LOGGER_NAME).error(__VA_ARGS__)
+#define R_WARN(...)    rex::logging::get_logger(REX_LOGGER_NAME).warn(__VA_ARGS__)
+#define R_INFO(...)    rex::logging::get_logger(REX_LOGGER_NAME).info(__VA_ARGS__)
+#define R_TODO(...)    rex::logging::get_logger(REX_LOGGER_NAME).debug(__VA_ARGS__)
+#define R_TRACE(...)   rex::logging::get_logger(REX_LOGGER_NAME).trace(__VA_ARGS__)
 
 //-------------------------------------------------------------------------
 // Assertions
@@ -101,11 +101,11 @@
 		#define R_FUNC_SIG "HZ_FUNC_SIG unknown!"
 	#endif
 
-    #define _INTERNAL_R_PROFILE_SCOPE_LINE2(name, line) if(rex::Instrumentor::get().isEnabled()) { rex::InstrumentationTimer timer##line(name); }
+    #define _INTERNAL_R_PROFILE_SCOPE_LINE2(name, line) if(rex::Instrumentor::get().is_enabled()) { rex::InstrumentationTimer timer##line(name); }
     #define _INTERNAL_R_PROFILE_SCOPE_LINE(name, line) _INTERNAL_R_PROFILE_SCOPE_LINE2(name, line)
 
-    #define R_PROFILE_BEGIN_SESSION(name, filepath) rex::Instrumentor::get().beginSession(name, filepath)
-    #define R_PROFILE_END_SESSION() rex::Instrumentor::get().endSession()
+    #define R_PROFILE_BEGIN_SESSION(name, filepath) rex::Instrumentor::get().begin_session(name, filepath)
+    #define R_PROFILE_END_SESSION() rex::Instrumentor::get().end_session()
     #define R_PROFILE_SCOPE(name) _INTERNAL_R_PROFILE_SCOPE_LINE(name, __LINE__)
     #define R_PROFILE_FUNCTION() R_PROFILE_SCOPE(R_FUNC_SIG)
     #define R_PROFILE_ENABLE() rex::Instrumentor::get().enable()

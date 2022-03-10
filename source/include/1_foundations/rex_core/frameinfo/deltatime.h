@@ -26,7 +26,7 @@ namespace rex
         }
                               
         //--------------------------------------------------------------------------------------------
-        float toSeconds() const          
+        float to_seconds() const          
         {
 #ifdef __EMSCRIPTEN__
             return 1.0f / 60.0f;       
@@ -36,7 +36,7 @@ namespace rex
 
         }
         //--------------------------------------------------------------------------------------------
-        float toMilliseconds() const     
+        float to_milliseconds() const     
         { 
 #ifdef __EMSCRIPTEN__
             return (1.0f / 60.0f) * 1000;       
