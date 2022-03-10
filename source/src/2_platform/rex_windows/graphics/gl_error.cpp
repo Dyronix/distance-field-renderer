@@ -6,48 +6,50 @@
 
 namespace rex
 {
-    namespace win32
+    namespace opengl
     {
-        namespace opengl
+        //-------------------------------------------------------------------------
+        std::string gl_get_error_message(uint32 error)
         {
-            //-------------------------------------------------------------------------
-            std::string gl_get_error_message(uint32 error)
+            switch (error)
             {
-                switch (error)
-                {
-                case GL_INVALID_OPERATION: return "Invalid Operation";
-                case GL_INVALID_ENUM: return "Invalid Enum";
-                case GL_INVALID_VALUE: return "Invalid Value";
-                case GL_INVALID_INDEX: return "Invalid Index";
-                case GL_INVALID_FRAMEBUFFER_OPERATION: return "Invalid Framebuffer Operation";
-                }
-
-                return "Unknown error";
+            case GL_INVALID_OPERATION:
+                return "Invalid Operation";
+            case GL_INVALID_ENUM:
+                return "Invalid Enum";
+            case GL_INVALID_VALUE:
+                return "Invalid Value";
+            case GL_INVALID_INDEX:
+                return "Invalid Index";
+            case GL_INVALID_FRAMEBUFFER_OPERATION:
+                return "Invalid Framebuffer Operation";
             }
 
-            //-------------------------------------------------------------------------
-            uint32 gl_check_error()
+            return "Unknown error";
+        }
+
+        //-------------------------------------------------------------------------
+        uint32 gl_check_error()
+        {
+            return opengl::get_error();
+        }
+        //-------------------------------------------------------------------------
+        bool gl_log_call(const char *function, const char *file, int32 line)
+        {
+            uint32 error = gl_check_error();
+            if (error == GL_NO_ERROR)
             {
-                return opengl::get_error();
+                return true;
             }
-            //-------------------------------------------------------------------------
-            bool gl_log_call(const char* function, const char* file, int32 line)
+
+            while (error != GL_NO_ERROR)
             {
-                uint32 error = gl_check_error();
-                if (error == GL_NO_ERROR)
-                {
-                    return true;
-                }
+                R_ERROR("[OpenGL Error] ({0}, {1}): {2} {3}: {4}", error, gl_get_error_message(error), function, file, line);
 
-                while (error != GL_NO_ERROR)
-                {
-                    R_ERROR("[OpenGL Error] ({0}, {1}): {2} {3}: {4}", error, gl_get_error_message(error), function, file, line);
-
-                    error = gl_check_error();
-                }
-
-                return false;
+                error = gl_check_error();
             }
+
+            return false;
         }
     }
 }
