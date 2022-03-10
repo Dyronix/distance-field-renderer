@@ -32,11 +32,13 @@ target_include_directories(rex_graphics PUBLIC ${CMAKE_SOURCE_DIR}/source/includ
 target_include_directories(rex_graphics PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_diagnostics)                
 target_include_directories(rex_graphics PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_utilities)                
 target_include_directories(rex_graphics PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_std)                
+target_include_directories(rex_graphics PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_memory)                
 
 # Set target link libraries
 target_link_libraries(rex_graphics PUBLIC rex_diagnostics)
 target_link_libraries(rex_graphics PUBLIC rex_utilities)
 target_link_libraries(rex_graphics PUBLIC rex_std)
+target_link_libraries(rex_graphics PUBLIC rex_memory)
 
                                                                                                                              
 # Set project properties                                                                                                       

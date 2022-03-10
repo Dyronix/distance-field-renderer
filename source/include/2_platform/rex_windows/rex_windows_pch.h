@@ -1,6 +1,9 @@
 #pragma once
 
 #include <optional>
+#include <algorithm>
+#include <vector>
+#include <memory>
 
 #include <gsl/narrow>
 #include <gsl/pointers>
