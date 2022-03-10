@@ -14,7 +14,7 @@ namespace rex
 
             BlobWriter& operator=(const BlobWriter& other);
 
-            template<typename T>
+            template <typename T>
             void write(const T& data);
             void write(const void* inData, const memory::size& inSize);
 
@@ -25,7 +25,7 @@ namespace rex
         };
 
         //-------------------------------------------------------------------------
-        template<typename T>
+        template <typename T>
         void rex::memory::BlobWriter::write(const T& data)
         {
             blob.write(&data, sizeof(T), write_offset);
@@ -35,7 +35,7 @@ namespace rex
         namespace writer
         {
             //-------------------------------------------------------------------------
-            template<typename T>
+            template <typename T>
             inline void write(memory::Blob& b, const T& data)
             {
                 BlobWriter writer(b);

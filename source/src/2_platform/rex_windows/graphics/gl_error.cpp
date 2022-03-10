@@ -13,16 +13,11 @@ namespace rex
         {
             switch (error)
             {
-            case GL_INVALID_OPERATION:
-                return "Invalid Operation";
-            case GL_INVALID_ENUM:
-                return "Invalid Enum";
-            case GL_INVALID_VALUE:
-                return "Invalid Value";
-            case GL_INVALID_INDEX:
-                return "Invalid Index";
-            case GL_INVALID_FRAMEBUFFER_OPERATION:
-                return "Invalid Framebuffer Operation";
+                case GL_INVALID_OPERATION: return "Invalid Operation";
+                case GL_INVALID_ENUM: return "Invalid Enum";
+                case GL_INVALID_VALUE: return "Invalid Value";
+                case GL_INVALID_INDEX: return "Invalid Index";
+                case GL_INVALID_FRAMEBUFFER_OPERATION: return "Invalid Framebuffer Operation";
             }
 
             return "Unknown error";
@@ -34,7 +29,7 @@ namespace rex
             return opengl::get_error();
         }
         //-------------------------------------------------------------------------
-        bool gl_log_call(const char *function, const char *file, int32 line)
+        bool gl_log_call(const char* function, const char* file, int32 line)
         {
             uint32 error = gl_check_error();
             if (error == GL_NO_ERROR)

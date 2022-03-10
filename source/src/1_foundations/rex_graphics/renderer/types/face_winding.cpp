@@ -8,8 +8,8 @@ namespace rex
     {
         switch (e)
         {
-        case FaceWinding::CLOCKWISE:            os << "FaceWinding: CLOCKWISE"; break;
-        case FaceWinding::COUNTER_CLOCKWISE:    os << "FaceWinding: COUNTER_CLOCKWISE"; break;
+            case FaceWinding::CLOCKWISE: os << "FaceWinding: CLOCKWISE"; break;
+            case FaceWinding::COUNTER_CLOCKWISE: os << "FaceWinding: COUNTER_CLOCKWISE"; break;
         }
 
         return os;

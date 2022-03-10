@@ -5,13 +5,14 @@ namespace rex
     struct DisplayModeDescription
     {
         DisplayModeDescription()
-            :mode_index(-1)
-            ,width(-1)
-            ,height(-1)
-            ,refresh_rate(-1)
-            ,pixel_format(0)
-            ,bits_per_pixel(0)
-        {}
+            : mode_index(-1)
+            , width(-1)
+            , height(-1)
+            , refresh_rate(-1)
+            , pixel_format(0)
+            , bits_per_pixel(0)
+        {
+        }
 
         int32 mode_index;
 

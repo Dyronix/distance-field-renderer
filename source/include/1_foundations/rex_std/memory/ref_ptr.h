@@ -13,7 +13,7 @@ namespace rex
 
     public:
         //-------------------------------------------------------------------------
-        static bool deep_compare(const ref_ptr<T> &a, const ref_ptr<T> &b)
+        static bool deep_compare(const ref_ptr<T>& a, const ref_ptr<T>& b)
         {
             if (!a.m_instance || !b.m_instance)
             {
@@ -37,7 +37,7 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        ref_ptr(T *instance)
+        ref_ptr(T* instance)
             : m_instance(instance)
         {
             static_assert(std::is_base_of<IRefCountedObject, T>::value, "Class does not inherit from \"IRefCountedObject\"!");
@@ -46,7 +46,7 @@ namespace rex
         }
         //-------------------------------------------------------------------------
         template <typename TOther>
-        explicit ref_ptr(TOther *instance)
+        explicit ref_ptr(TOther* instance)
             : m_instance(instance)
         {
             static_assert(std::is_base_of<IRefCountedObject, T>::value, "Class does not inherit from \"IRefCountedObject\"!");
@@ -55,7 +55,7 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        ref_ptr(const ref_ptr &other)
+        ref_ptr(const ref_ptr& other)
         {
             static_assert(std::is_base_of<IRefCountedObject, T>::value, "Class does not inherit from \"IRefCountedObject\"!");
 
@@ -64,16 +64,16 @@ namespace rex
         }
         //-------------------------------------------------------------------------
         template <typename TOther>
-        explicit ref_ptr(const ref_ptr<TOther> &other)
+        explicit ref_ptr(const ref_ptr<TOther>& other)
         {
             static_assert(std::is_base_of<IRefCountedObject, T>::value, "Class does not inherit from \"IRefCountedObject\"!");
 
-            m_instance = static_cast<T *>(other.m_instance);
+            m_instance = static_cast<T*>(other.m_instance);
             increment_reference();
         }
 
         //-------------------------------------------------------------------------
-        ref_ptr(ref_ptr &&other)
+        ref_ptr(ref_ptr&& other)
         {
             static_assert(std::is_base_of<IRefCountedObject, T>::value, "Class does not inherit from \"IRefCountedObject\"!");
 
@@ -82,11 +82,11 @@ namespace rex
         }
         //-------------------------------------------------------------------------
         template <typename TOther>
-        explicit ref_ptr(ref_ptr<TOther> &&other)
+        explicit ref_ptr(ref_ptr<TOther>&& other)
         {
             static_assert(std::is_base_of<IRefCountedObject, T>::value, "Class does not inherit from \"IRefCountedObject\"!");
 
-            m_instance = static_cast<T *>(other.m_instance);
+            m_instance = static_cast<T*>(other.m_instance);
             other.m_instance = nullptr;
         }
 
@@ -97,7 +97,7 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        ref_ptr &operator=(std::nullptr_t)
+        ref_ptr& operator=(std::nullptr_t)
         {
             decrement_reference();
             m_instance = nullptr;
@@ -105,28 +105,28 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        ref_ptr &operator=(const ref_ptr &other)
+        ref_ptr& operator=(const ref_ptr& other)
         {
             ref_ptr(other).swap(*this);
             return *this;
         }
         //-------------------------------------------------------------------------
         template <typename TOther>
-        ref_ptr &operator=(const ref_ptr<TOther> &other)
+        ref_ptr& operator=(const ref_ptr<TOther>& other)
         {
             ref_ptr(other).swap(*this);
             return *this;
         }
 
         //-------------------------------------------------------------------------
-        ref_ptr &operator=(ref_ptr &&other)
+        ref_ptr& operator=(ref_ptr&& other)
         {
             ref_ptr(std::move(other)).swap(*this);
             return *this;
         }
         //-------------------------------------------------------------------------
         template <typename TOther>
-        ref_ptr &operator=(ref_ptr<TOther> &&other)
+        ref_ptr& operator=(ref_ptr<TOther>&& other)
         {
             ref_ptr(std::move(other)).swap(*this);
             return *this;
@@ -144,45 +144,45 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        T *operator->()
+        T* operator->()
         {
             return m_instance;
         }
         //-------------------------------------------------------------------------
-        const T *operator->() const
+        const T* operator->() const
         {
             return m_instance;
         }
 
         //-------------------------------------------------------------------------
-        T &operator*()
+        T& operator*()
         {
             return *m_instance;
         }
         //-------------------------------------------------------------------------
-        const T &operator*() const
+        const T& operator*() const
         {
             return *m_instance;
         }
 
         //-------------------------------------------------------------------------
-        bool operator==(const ref_ptr<T> &other) const
+        bool operator==(const ref_ptr<T>& other) const
         {
             return m_instance == other.m_instance;
         }
         //-------------------------------------------------------------------------
-        bool operator!=(const ref_ptr<T> &other) const
+        bool operator!=(const ref_ptr<T>& other) const
         {
             return !(*this == other);
         }
 
         //-------------------------------------------------------------------------
-        T *get()
+        T* get()
         {
             return m_instance;
         }
         //-------------------------------------------------------------------------
-        const T *get() const
+        const T* get() const
         {
             return m_instance;
         }
@@ -193,13 +193,13 @@ namespace rex
             ref_ptr().swap(*this);
         }
         //-------------------------------------------------------------------------
-        void reset(T *instance)
+        void reset(T* instance)
         {
             ref_ptr(instance).swap(*this);
         }
 
         //-------------------------------------------------------------------------
-        void swap(ref_ptr<T> &other)
+        void swap(ref_ptr<T>& other)
         {
             std::swap(m_instance, other.m_instance);
         }
@@ -231,20 +231,20 @@ namespace rex
             }
         }
 
-        mutable T *m_instance;
+        mutable T* m_instance;
     };
 
 #ifndef __EMSCRIPTEN__
     //-------------------------------------------------------------------------
     template <class T, class... Args, std::enable_if_t<!std::is_array_v<T>, int> = 0>
-    ref_ptr<T> make_ref(Args &&..._Args)
+    ref_ptr<T> make_ref(Args&&... _Args)
     {
         return ref_ptr<T>(new T(std::forward<Args>(_Args)...));
     }
 #else
     //-------------------------------------------------------------------------
     template <class T, class... Args>
-    ref_ptr<T> make_ref(Args &&..._Args)
+    ref_ptr<T> make_ref(Args&&... _Args)
     {
         return ref_ptr<T>(new T(std::forward<Args>(_Args)...));
     }

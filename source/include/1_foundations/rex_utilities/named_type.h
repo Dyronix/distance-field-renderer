@@ -30,34 +30,26 @@ namespace rex
 
     //-------------------------------------------------------------------------
     template <typename T, typename TParameter>
-    rex::NamedType<T, TParameter>::NamedType() noexcept
-        :m_value(T())
+    rex::NamedType<T, TParameter>::NamedType() noexcept : m_value(T())
     {
-
     }
 
     //-------------------------------------------------------------------------
     template <typename T, typename TParameter>
-    rex::NamedType<T, TParameter>::NamedType(const NamedType<T, TParameter>& other) noexcept
-        :m_value(other.m_value)
+    rex::NamedType<T, TParameter>::NamedType(const NamedType<T, TParameter>& other) noexcept : m_value(other.m_value)
     {
-
     }
 
     //-------------------------------------------------------------------------
     template <typename T, typename TParameter>
-    rex::NamedType<T, TParameter>::NamedType(NamedType<T, TParameter>&& other) noexcept
-        :m_value(std::exchange(other.m_value, T()))
+    rex::NamedType<T, TParameter>::NamedType(NamedType<T, TParameter>&& other) noexcept : m_value(std::exchange(other.m_value, T()))
     {
-
     }
 
     //-------------------------------------------------------------------------
     template <typename T, typename TParameter>
-    rex::NamedType<T, TParameter>::NamedType(const T& edge) noexcept
-        :m_value(edge)
+    rex::NamedType<T, TParameter>::NamedType(const T& edge) noexcept : m_value(edge)
     {
-
     }
 
     //-------------------------------------------------------------------------

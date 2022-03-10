@@ -2,14 +2,13 @@
 
 namespace rex
 {
-    template< typename Lambda >
+    template <typename Lambda>
     class ScopeGuard
     {
     public:
-
         explicit ScopeGuard(Lambda&& rollback);
 
-        template< typename AdquireLambda >
+        template <typename AdquireLambda>
         ScopeGuard(AdquireLambda&& aquireRollback, Lambda&& rollback);
         ~ScopeGuard();
 
@@ -21,14 +20,15 @@ namespace rex
     };
 
     //-------------------------------------------------------------------------
-    template< typename Lambda >
+    template <typename Lambda>
     ScopeGuard<Lambda>::ScopeGuard(Lambda&& rollback)
         : m_engaged(false)
         , m_rollback(std::forward<Lambda>(rollback))
-    {}
+    {
+    }
     //-------------------------------------------------------------------------
-    template< typename Lambda >
-    template< typename AdquireLambda >
+    template <typename Lambda>
+    template <typename AdquireLambda>
     ScopeGuard<Lambda>::ScopeGuard(AdquireLambda&& aquireRollback, Lambda&& rollback)
         : m_engaged(false)
         , m_rollback(std::forward<Lambda>(rollback))
@@ -36,30 +36,30 @@ namespace rex
         std::forward<AdquireLambda>(aquireRollback());
     }
     //-------------------------------------------------------------------------
-    template< typename Lambda >
+    template <typename Lambda>
     ScopeGuard<Lambda>::~ScopeGuard()
     {
         if (!m_engaged)
             m_rollback();
     }
     //-------------------------------------------------------------------------
-    template< typename Lambda >
+    template <typename Lambda>
     inline void ScopeGuard<Lambda>::release()
     {
         m_engaged = true;
     }
 
     //-------------------------------------------------------------------------
-    template< typename aLambda, typename rLambda>
-    const ScopeGuard< rLambda > make_scope_guard(aLambda&& aquireRollback, rLambda&& rollback)
+    template <typename aLambda, typename rLambda>
+    const ScopeGuard<rLambda> make_scope_guard(aLambda&& aquireRollback, rLambda&& rollback)
     {
-        return ScopeGuard< rLambda >(std::forward<aLambda>(aquireRollback), std::forward<rLambda>(rollback));
+        return ScopeGuard<rLambda>(std::forward<aLambda>(aquireRollback), std::forward<rLambda>(rollback));
     }
 
     //-------------------------------------------------------------------------
-    template<typename rLambda>
-    const ScopeGuard< rLambda > make_scope_guard(rLambda&& rollback)
+    template <typename rLambda>
+    const ScopeGuard<rLambda> make_scope_guard(rLambda&& rollback)
     {
-        return ScopeGuard< rLambda >(std::forward<rLambda>(rollback));
+        return ScopeGuard<rLambda>(std::forward<rLambda>(rollback));
     }
 }

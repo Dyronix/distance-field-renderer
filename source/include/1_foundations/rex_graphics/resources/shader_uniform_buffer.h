@@ -15,7 +15,7 @@ namespace sbt
         uint32 binding_point;
         uint32 size;
         uint32 buffer_id;
-        
+
         std::vector<ShaderUniform> uniforms;
     };
 }

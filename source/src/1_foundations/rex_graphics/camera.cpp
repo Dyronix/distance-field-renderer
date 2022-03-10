@@ -6,21 +6,20 @@ namespace rex
 {
     //-------------------------------------------------------------------------
     Camera::Camera()
-        :m_projection(rex::matrix4(1.0f))
-        ,m_aspect_ratio(1.0f, 1.0f)
-    {}
+        : m_projection(rex::matrix4(1.0f))
+        , m_aspect_ratio(1.0f, 1.0f)
+    {
+    }
     //-------------------------------------------------------------------------
     Camera::Camera(const AspectRatio& aspectRatio, const rex::matrix4& projection)
-        :m_projection(projection)
-        ,m_aspect_ratio(aspectRatio)
+        : m_projection(projection)
+        , m_aspect_ratio(aspectRatio)
     {
-
     }
 
     //-------------------------------------------------------------------------
     Camera::~Camera()
     {
-
     }
 
     //-------------------------------------------------------------------------
@@ -29,7 +28,7 @@ namespace rex
         R_ASSERT(width > 0 && height > 0);
 
         m_aspect_ratio = AspectRatio((float)width, (float)height);
-        
+
         onSetViewportSize(width, height);
     }
 

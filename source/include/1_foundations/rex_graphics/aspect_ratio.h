@@ -15,7 +15,10 @@ namespace rex
                 ratio = x / y;
             }
 
-            float get() const { return ratio; }
+            float get() const
+            {
+                return ratio;
+            }
 
         private:
             float ratio;

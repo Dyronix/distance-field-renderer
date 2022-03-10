@@ -8,19 +8,22 @@ namespace rex
     {
         //-------------------------------------------------------------------------
         BlobWriter::BlobWriter(const BlobWriter& other)
-            :blob(other.blob)
+            : blob(other.blob)
             , write_offset(other.write_offset)
-        {}
+        {
+        }
         //-------------------------------------------------------------------------
         BlobWriter::BlobWriter(memory::Blob& b)
             : blob(b)
             , write_offset(0)
-        {}
+        {
+        }
         //-------------------------------------------------------------------------
         BlobWriter::BlobWriter(memory::Blob& b, size_t offset)
             : blob(b)
             , write_offset(offset)
-        {}
+        {
+        }
 
         //-------------------------------------------------------------------------
         BlobWriter& BlobWriter::operator=(const BlobWriter& other)

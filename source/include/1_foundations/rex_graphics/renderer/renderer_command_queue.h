@@ -6,7 +6,7 @@
 
 namespace rex
 {
-    typedef void(*RenderCommand)(void*);
+    typedef void (*RenderCommand)(void*);
 
     enum class RenderCommandQueueState
     {
@@ -21,9 +21,9 @@ namespace rex
         RendererCommandQueue(const memory::size& size = 1_mb);
         ~RendererCommandQueue();
 
-        RenderCommandQueueState getState() const;
+        RenderCommandQueueState get_state() const;
 
-        template<typename TFunction>
+        template <typename TFunction>
         void push(TFunction&& cmd);
 
         void execute();
@@ -36,7 +36,7 @@ namespace rex
     };
 
     //-------------------------------------------------------------------------
-    template<typename TFunction>
+    template <typename TFunction>
     void rex::RendererCommandQueue::push(TFunction&& cmd)
     {
         RenderCommand render_command = [](void* ptr)
@@ -57,7 +57,7 @@ namespace rex
         *(size_t*)storage_02 = sizeof_func_ptr;
 
         void* storage_03 = m_linear_allocator.allocate(sizeof_func_ptr);
-        new (storage_03) TFunction(std::forward<TFunction>((TFunction&&)cmd));
+        new (storage_03) TFunction(std::forward<TFunction>((TFunction && )cmd));
 
         ++m_command_allocations;
     }

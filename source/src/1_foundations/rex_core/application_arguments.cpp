@@ -9,8 +9,8 @@ namespace rex
 {
     //-------------------------------------------------------------------------
     ApplicationArguments::ApplicationArguments(int32 inArgc, char** inArgv)
-        :m_argc(inArgc)
-        ,m_argv(inArgv)
+        : m_argc(inArgc)
+        , m_argv(inArgv)
     {
         m_arguments.reserve(inArgc);
 
@@ -19,7 +19,7 @@ namespace rex
         for (int i = 1; i < inArgc; ++i)
         {
             ApplicationArgument argument = application_argument_parser::parse(inArgv[i]);
-            
+
             m_arguments.insert(std::make_pair(create_sid(argument.key), create_sid(argument.value)));
         }
     }

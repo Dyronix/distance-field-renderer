@@ -15,17 +15,15 @@ namespace rex
 
         //-------------------------------------------------------------------------
         ApplicationLoop::ApplicationLoop(const UpdateDelegate& updateDelegate, const RefreshRate& refreshRate)
-            :m_is_running(false)
-            ,m_update_delegate(updateDelegate)
-            ,m_refresh_rate(refreshRate)
+            : m_is_running(false)
+            , m_update_delegate(updateDelegate)
+            , m_refresh_rate(refreshRate)
         {
-
         }
 
         //-------------------------------------------------------------------------
         ApplicationLoop::~ApplicationLoop()
         {
-            
         }
 
         //-------------------------------------------------------------------------
@@ -48,7 +46,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void ApplicationLoop::tick()
         {
-            FrameInfo info = { World::getDeltaTime(), World::getFramesPerSecond() };
+            FrameInfo info = {World::getDeltaTime(), World::getFramesPerSecond()};
 
             m_update_delegate(info);
 

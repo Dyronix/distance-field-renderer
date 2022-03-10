@@ -19,7 +19,7 @@ namespace rex
         bool ends_with(const std::string& str, const char* suffix);
 
 #else
-        
+
         bool starts_with(const std::string& str, const std::string& prefix);
         bool starts_with(const std::string& str, const char* prefix, unsigned prefixLen);
         bool starts_with(const std::string& str, const char* prefix);

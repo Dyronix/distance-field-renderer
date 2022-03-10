@@ -24,14 +24,14 @@ namespace sbt
         ShaderResource();
         ShaderResource(const StringID& name, ShaderUniformType type, uint32 count, uint32 offset, uint32 reg);
 
-        const StringID&             getName() const;
+        const StringID& getName() const;
 
-        const ShaderUniformType&    getType() const;
-        const uint32                getCount() const;
-        const uint32                getOffset() const;
-        const uint32                getRegister() const;
+        const ShaderUniformType& getType() const;
+        const uint32 getCount() const;
+        const uint32 getOffset() const;
+        const uint32 getRegister() const;
 
-        bool                        isValid() const;
+        bool isValid() const;
 
         static ShaderResource EMPTY;
 

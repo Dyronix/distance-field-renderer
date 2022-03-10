@@ -23,30 +23,20 @@ namespace rex
         {
             switch (pixelType)
             {
-            case GL_UNSIGNED_BYTE:
-                return "GL_UNSIGNED_BYTE";
-            case GL_BYTE:
-                return "GL_BYTE";
+                case GL_UNSIGNED_BYTE: return "GL_UNSIGNED_BYTE";
+                case GL_BYTE: return "GL_BYTE";
 
-            case GL_UNSIGNED_SHORT:
-                return "GL_UNSIGNED_SHORT";
-            case GL_SHORT:
-                return "GL_SHORT";
+                case GL_UNSIGNED_SHORT: return "GL_UNSIGNED_SHORT";
+                case GL_SHORT: return "GL_SHORT";
 
-            case GL_INT:
-                return "GL_INT";
-            case GL_UNSIGNED_INT:
-                return "GL_UNSIGNED_INT";
+                case GL_INT: return "GL_INT";
+                case GL_UNSIGNED_INT: return "GL_UNSIGNED_INT";
 
-            case GL_HALF_FLOAT:
-                return "GL_HALF_FLOAT";
-            case GL_FLOAT:
-                return "GL_FLOAT";
+                case GL_HALF_FLOAT: return "GL_HALF_FLOAT";
+                case GL_FLOAT: return "GL_FLOAT";
 
-            case GL_UNSIGNED_INT_24_8:
-                return "GL_UNSIGNED_INT_24_8";
-            case GL_FLOAT_32_UNSIGNED_INT_24_8_REV:
-                return "GL_FLOAT_32_UNSIGNED_INT_24_8_REV";
+                case GL_UNSIGNED_INT_24_8: return "GL_UNSIGNED_INT_24_8";
+                case GL_FLOAT_32_UNSIGNED_INT_24_8_REV: return "GL_FLOAT_32_UNSIGNED_INT_24_8_REV";
             }
 
             R_WARN("Unknown pxiel type: {0}", pixelType);
@@ -58,19 +48,13 @@ namespace rex
         {
             switch (format)
             {
-            case GL_RED:
-                return "GL_RED";
-            case GL_RG:
-                return "GL_RG";
-            case GL_RGB:
-                return "GL_RGB";
-            case GL_RGBA:
-                return "GL_RGBA";
+                case GL_RED: return "GL_RED";
+                case GL_RG: return "GL_RG";
+                case GL_RGB: return "GL_RGB";
+                case GL_RGBA: return "GL_RGBA";
 
-            case GL_DEPTH_COMPONENT:
-                return "GL_DEPTH_COMPONENT";
-            case GL_DEPTH_STENCIL:
-                return "GL_DEPTH_STENCIL";
+                case GL_DEPTH_COMPONENT: return "GL_DEPTH_COMPONENT";
+                case GL_DEPTH_STENCIL: return "GL_DEPTH_STENCIL";
             }
 
             R_WARN("Unknown format: {0}", format);
@@ -82,109 +66,63 @@ namespace rex
         {
             switch (format)
             {
-            case GL_R8:
-                return "GL_R8";
-            case GL_R8I:
-                return "GL_R8I";
-            case GL_R8UI:
-                return "GL_R8UI";
-            case GL_R16:
-                return "GL_R16";
+                case GL_R8: return "GL_R8";
+                case GL_R8I: return "GL_R8I";
+                case GL_R8UI: return "GL_R8UI";
+                case GL_R16: return "GL_R16";
 
-            case GL_R16I:
-                return "GL_R16I";
-            case GL_R16UI:
-                return "GL_R16UI";
-            case GL_R16F:
-                return "GL_R16F";
-            case GL_R32I:
-                return "GL_R32I";
+                case GL_R16I: return "GL_R16I";
+                case GL_R16UI: return "GL_R16UI";
+                case GL_R16F: return "GL_R16F";
+                case GL_R32I: return "GL_R32I";
 
-            case GL_R32UI:
-                return "GL_R32UI";
-            case GL_R32F:
-                return "GL_R32F";
-            case GL_RG8:
-                return "GL_RG8";
+                case GL_R32UI: return "GL_R32UI";
+                case GL_R32F: return "GL_R32F";
+                case GL_RG8: return "GL_RG8";
 
-            case GL_RG8I:
-                return "GL_RG8I";
-            case GL_RG8UI:
-                return "GL_RG8UI";
+                case GL_RG8I: return "GL_RG8I";
+                case GL_RG8UI: return "GL_RG8UI";
 
-            case GL_RG16:
-                return "GL_RG16";
-            case GL_RG16I:
-                return "GL_RG16I";
-            case GL_RG16UI:
-                return "GL_RG16UI";
-            case GL_RG16F:
-                return "GL_RG16F";
-            case GL_RG32I:
-                return "GL_RG32I";
-            case GL_RG32UI:
-                return "GL_RG32UI";
-            case GL_RG32F:
-                return "GL_RG32F";
-            case GL_RGB8:
-                return "GL_RGB8";
+                case GL_RG16: return "GL_RG16";
+                case GL_RG16I: return "GL_RG16I";
+                case GL_RG16UI: return "GL_RG16UI";
+                case GL_RG16F: return "GL_RG16F";
+                case GL_RG32I: return "GL_RG32I";
+                case GL_RG32UI: return "GL_RG32UI";
+                case GL_RG32F: return "GL_RG32F";
+                case GL_RGB8: return "GL_RGB8";
 
-            case GL_RGB8I:
-                return "GL_RGB8I";
-            case GL_RGB8UI:
-                return "GL_RGB8UI";
+                case GL_RGB8I: return "GL_RGB8I";
+                case GL_RGB8UI: return "GL_RGB8UI";
 
-            case GL_RGB16:
-                return "GL_RGB16";
-            case GL_RGB16I:
-                return "GL_RGB16I";
-            case GL_RGB16UI:
-                return "GL_RGB16UI";
-            case GL_RGB16F:
-                return "GL_RGB16F";
+                case GL_RGB16: return "GL_RGB16";
+                case GL_RGB16I: return "GL_RGB16I";
+                case GL_RGB16UI: return "GL_RGB16UI";
+                case GL_RGB16F: return "GL_RGB16F";
 
-            case GL_RGB32I:
-                return "GL_RGB32I";
-            case GL_RGB32UI:
-                return "GL_RGB32UI";
-            case GL_RGB32F:
-                return "GL_RGB32F";
+                case GL_RGB32I: return "GL_RGB32I";
+                case GL_RGB32UI: return "GL_RGB32UI";
+                case GL_RGB32F: return "GL_RGB32F";
 
-            case GL_RGBA8:
-                return "GL_RGBA8";
-            case GL_RGBA8I:
-                return "GL_RGBA8I";
-            case GL_RGBA8UI:
-                return "GL_RGBA8UI";
+                case GL_RGBA8: return "GL_RGBA8";
+                case GL_RGBA8I: return "GL_RGBA8I";
+                case GL_RGBA8UI: return "GL_RGBA8UI";
 
-            case GL_RGBA16:
-                return "GL_RGBA16";
-            case GL_RGBA16I:
-                return "GL_RGBA16I";
-            case GL_RGBA16UI:
-                return "GL_RGBA16UI";
-            case GL_RGBA16F:
-                return "GL_RGBA16F";
+                case GL_RGBA16: return "GL_RGBA16";
+                case GL_RGBA16I: return "GL_RGBA16I";
+                case GL_RGBA16UI: return "GL_RGBA16UI";
+                case GL_RGBA16F: return "GL_RGBA16F";
 
-            case GL_RGBA32I:
-                return "GL_RGBA32I";
-            case GL_RGBA32UI:
-                return "GL_RGBA32UI";
-            case GL_RGBA32F:
-                return "GL_RGBA32F";
-            case GL_DEPTH_COMPONENT16:
-                return "GL_DEPTH_COMPONENT16";
-            case GL_DEPTH_COMPONENT24:
-                return "GL_DEPTH_COMPONENT24";
+                case GL_RGBA32I: return "GL_RGBA32I";
+                case GL_RGBA32UI: return "GL_RGBA32UI";
+                case GL_RGBA32F: return "GL_RGBA32F";
+                case GL_DEPTH_COMPONENT16: return "GL_DEPTH_COMPONENT16";
+                case GL_DEPTH_COMPONENT24: return "GL_DEPTH_COMPONENT24";
 
-            case GL_DEPTH_COMPONENT32:
-                return "GL_DEPTH_COMPONENT32";
-            case GL_DEPTH_COMPONENT32F:
-                return "GL_DEPTH_COMPONENT32F";
-            case GL_DEPTH24_STENCIL8:
-                return "GL_DEPTH24_STENCIL8";
-            case GL_DEPTH32F_STENCIL8:
-                return "GL_DEPTH32F_STENCIL8";
+                case GL_DEPTH_COMPONENT32: return "GL_DEPTH_COMPONENT32";
+                case GL_DEPTH_COMPONENT32F: return "GL_DEPTH_COMPONENT32F";
+                case GL_DEPTH24_STENCIL8: return "GL_DEPTH24_STENCIL8";
+                case GL_DEPTH32F_STENCIL8: return "GL_DEPTH32F_STENCIL8";
             }
 
             R_WARN("Unknown internal format: {0}", format);
@@ -196,34 +134,20 @@ namespace rex
         {
             switch (target)
             {
-            case GL_ARRAY_BUFFER:
-                return "Vertex attributes";
-            case GL_ATOMIC_COUNTER_BUFFER:
-                return "Atomic counter storage";
-            case GL_COPY_READ_BUFFER:
-                return "Buffer copy source";
-            case GL_COPY_WRITE_BUFFER:
-                return "Buffer copy destination";
-            case GL_DISPATCH_INDIRECT_BUFFER:
-                return "Indirect compute dispatch commands";
-            case GL_DRAW_INDIRECT_BUFFER:
-                return "Indirect command arguments";
-            case GL_ELEMENT_ARRAY_BUFFER:
-                return "Vertex array indices";
-            case GL_PIXEL_PACK_BUFFER:
-                return "Pixel read target";
-            case GL_PIXEL_UNPACK_BUFFER:
-                return "Texture data source";
-            case GL_QUERY_BUFFER:
-                return "Query result buffer";
-            case GL_SHADER_STORAGE_BUFFER:
-                return "Read-write storage for shaders";
-            case GL_TEXTURE_BUFFER:
-                return "Texture data buffer";
-            case GL_TRANSFORM_FEEDBACK_BUFFER:
-                return "Transform feedback buffer";
-            case GL_UNIFORM_BUFFER:
-                return "Uniform block storage";
+                case GL_ARRAY_BUFFER: return "Vertex attributes";
+                case GL_ATOMIC_COUNTER_BUFFER: return "Atomic counter storage";
+                case GL_COPY_READ_BUFFER: return "Buffer copy source";
+                case GL_COPY_WRITE_BUFFER: return "Buffer copy destination";
+                case GL_DISPATCH_INDIRECT_BUFFER: return "Indirect compute dispatch commands";
+                case GL_DRAW_INDIRECT_BUFFER: return "Indirect command arguments";
+                case GL_ELEMENT_ARRAY_BUFFER: return "Vertex array indices";
+                case GL_PIXEL_PACK_BUFFER: return "Pixel read target";
+                case GL_PIXEL_UNPACK_BUFFER: return "Texture data source";
+                case GL_QUERY_BUFFER: return "Query result buffer";
+                case GL_SHADER_STORAGE_BUFFER: return "Read-write storage for shaders";
+                case GL_TEXTURE_BUFFER: return "Texture data buffer";
+                case GL_TRANSFORM_FEEDBACK_BUFFER: return "Transform feedback buffer";
+                case GL_UNIFORM_BUFFER: return "Uniform block storage";
             }
 
             R_WARN("Unknown buffer target: {0}", target);
@@ -234,40 +158,23 @@ namespace rex
         {
             switch (target)
             {
-            case GL_TEXTURE_1D:
-                return "Texture 1D";
-            case GL_TEXTURE_2D:
-                return "Texture 2D";
-            case GL_TEXTURE_3D:
-                return "Texture 3D";
-            case GL_TEXTURE_1D_ARRAY:
-                return "Texture 1D Array";
-            case GL_TEXTURE_2D_ARRAY:
-                return "Texture 2D Array";
-            case GL_TEXTURE_RECTANGLE:
-                return "Texture Rectangle";
-            case GL_TEXTURE_CUBE_MAP:
-                return "Texture Cube Map";
-            case GL_TEXTURE_CUBE_MAP_ARRAY:
-                return "Texture Cube Map Array";
-            case GL_TEXTURE_CUBE_MAP_POSITIVE_X:
-                return "Texture Cube Map Positive X";
-            case GL_TEXTURE_CUBE_MAP_NEGATIVE_X:
-                return "Texture Cube Map Negative X";
-            case GL_TEXTURE_CUBE_MAP_POSITIVE_Y:
-                return "Texture Cube Map Positive Y";
-            case GL_TEXTURE_CUBE_MAP_NEGATIVE_Y:
-                return "Texture Cube Map Negative Y";
-            case GL_TEXTURE_CUBE_MAP_POSITIVE_Z:
-                return "Texture Cube Map Positive Z";
-            case GL_TEXTURE_CUBE_MAP_NEGATIVE_Z:
-                return "Texture Cube Map Negative Z";
-            case GL_TEXTURE_BUFFER:
-                return "Texture Buffer";
-            case GL_TEXTURE_2D_MULTISAMPLE:
-                return "Texture 2D Multisample";
-            case GL_TEXTURE_2D_MULTISAMPLE_ARRAY:
-                return "Texture 2D Multisample Array";
+                case GL_TEXTURE_1D: return "Texture 1D";
+                case GL_TEXTURE_2D: return "Texture 2D";
+                case GL_TEXTURE_3D: return "Texture 3D";
+                case GL_TEXTURE_1D_ARRAY: return "Texture 1D Array";
+                case GL_TEXTURE_2D_ARRAY: return "Texture 2D Array";
+                case GL_TEXTURE_RECTANGLE: return "Texture Rectangle";
+                case GL_TEXTURE_CUBE_MAP: return "Texture Cube Map";
+                case GL_TEXTURE_CUBE_MAP_ARRAY: return "Texture Cube Map Array";
+                case GL_TEXTURE_CUBE_MAP_POSITIVE_X: return "Texture Cube Map Positive X";
+                case GL_TEXTURE_CUBE_MAP_NEGATIVE_X: return "Texture Cube Map Negative X";
+                case GL_TEXTURE_CUBE_MAP_POSITIVE_Y: return "Texture Cube Map Positive Y";
+                case GL_TEXTURE_CUBE_MAP_NEGATIVE_Y: return "Texture Cube Map Negative Y";
+                case GL_TEXTURE_CUBE_MAP_POSITIVE_Z: return "Texture Cube Map Positive Z";
+                case GL_TEXTURE_CUBE_MAP_NEGATIVE_Z: return "Texture Cube Map Negative Z";
+                case GL_TEXTURE_BUFFER: return "Texture Buffer";
+                case GL_TEXTURE_2D_MULTISAMPLE: return "Texture 2D Multisample";
+                case GL_TEXTURE_2D_MULTISAMPLE_ARRAY: return "Texture 2D Multisample Array";
             }
 
             R_WARN("Unknown texture target: {0}", target);
@@ -278,18 +185,12 @@ namespace rex
         {
             switch (shaderType)
             {
-            case GL_COMPUTE_SHADER:
-                return "Compute Shader";
-            case GL_VERTEX_SHADER:
-                return "Vertex Shader";
-            case GL_TESS_CONTROL_SHADER:
-                return "Tessalation Control Shader";
-            case GL_TESS_EVALUATION_SHADER:
-                return "Tessalation Evaluation Shader";
-            case GL_GEOMETRY_SHADER:
-                return "Geometry Shader";
-            case GL_FRAGMENT_SHADER:
-                return "Fragment Shader";
+                case GL_COMPUTE_SHADER: return "Compute Shader";
+                case GL_VERTEX_SHADER: return "Vertex Shader";
+                case GL_TESS_CONTROL_SHADER: return "Tessalation Control Shader";
+                case GL_TESS_EVALUATION_SHADER: return "Tessalation Evaluation Shader";
+                case GL_GEOMETRY_SHADER: return "Geometry Shader";
+                case GL_FRAGMENT_SHADER: return "Fragment Shader";
             }
 
             R_WARN("Unknown shader type: {0}", shaderType);
@@ -300,12 +201,9 @@ namespace rex
         {
             switch (target)
             {
-            case GL_DRAW_FRAMEBUFFER:
-                return "Draw Framebuffer";
-            case GL_READ_FRAMEBUFFER:
-                return "Read Framebuffer";
-            case GL_FRAMEBUFFER:
-                return "Framebuffer";
+                case GL_DRAW_FRAMEBUFFER: return "Draw Framebuffer";
+                case GL_READ_FRAMEBUFFER: return "Read Framebuffer";
+                case GL_FRAMEBUFFER: return "Framebuffer";
             }
 
             R_WARN("Unknown framebuffer target: {0}", target);
@@ -316,26 +214,17 @@ namespace rex
         {
             switch (target)
             {
-            case GL_NONE:
-                return "GL_NONE, No color buffers are written.";
-            case GL_FRONT_LEFT:
-                return "GL_FRONT_LEFT, Only the front left color buffer is written.";
-            case GL_FRONT_RIGHT:
-                return "GL_FRONT_RIGHT, Only the front right color buffer is written.";
-            case GL_BACK_LEFT:
-                return "GL_BACK_LEFT, Only the back left color buffer is written.";
-            case GL_BACK_RIGHT:
-                return "GL_BACK_RIGHT, Only the back right color buffer is written.";
-            case GL_FRONT:
-                return "GL_FRONT, Only the front left and front right color buffers are written.";
-            case GL_BACK:
-                return "GL_BACK, Only the back left and back right color buffers are written.";
-            case GL_LEFT:
-                return "GL_LEFT, Only the front left and back left color buffers are written.";
-            case GL_RIGHT:
-                return "GL_RIGHT, Only the front right and back right color buffers are written.";
-            case GL_FRONT_AND_BACK:
-                return "GL_FRONT_AND_BACK, All the front and back color buffers (front left, front right, back left, back right) are written.";
+                case GL_NONE: return "GL_NONE, No color buffers are written.";
+                case GL_FRONT_LEFT: return "GL_FRONT_LEFT, Only the front left color buffer is written.";
+                case GL_FRONT_RIGHT: return "GL_FRONT_RIGHT, Only the front right color buffer is written.";
+                case GL_BACK_LEFT: return "GL_BACK_LEFT, Only the back left color buffer is written.";
+                case GL_BACK_RIGHT: return "GL_BACK_RIGHT, Only the back right color buffer is written.";
+                case GL_FRONT: return "GL_FRONT, Only the front left and front right color buffers are written.";
+                case GL_BACK: return "GL_BACK, Only the back left and back right color buffers are written.";
+                case GL_LEFT: return "GL_LEFT, Only the front left and back left color buffers are written.";
+                case GL_RIGHT: return "GL_RIGHT, Only the front right and back right color buffers are written.";
+                case GL_FRONT_AND_BACK:
+                    return "GL_FRONT_AND_BACK, All the front and back color buffers (front left, front right, back left, back right) are written.";
             }
 
             R_WARN("Unknown drawbuffer target: {0}", target);
@@ -346,24 +235,15 @@ namespace rex
         {
             switch (usage)
             {
-            case GL_STREAM_DRAW:
-                return "Stream Draw";
-            case GL_STREAM_READ:
-                return "Stream Read";
-            case GL_STREAM_COPY:
-                return "Stream Copy";
-            case GL_STATIC_DRAW:
-                return "Static Draw";
-            case GL_STATIC_READ:
-                return "Static Read";
-            case GL_STATIC_COPY:
-                return "Static Copy";
-            case GL_DYNAMIC_DRAW:
-                return "Dynamic Draw";
-            case GL_DYNAMIC_READ:
-                return "Dynamic Read";
-            case GL_DYNAMIC_COPY:
-                return "Dynamic Copy";
+                case GL_STREAM_DRAW: return "Stream Draw";
+                case GL_STREAM_READ: return "Stream Read";
+                case GL_STREAM_COPY: return "Stream Copy";
+                case GL_STATIC_DRAW: return "Static Draw";
+                case GL_STATIC_READ: return "Static Read";
+                case GL_STATIC_COPY: return "Static Copy";
+                case GL_DYNAMIC_DRAW: return "Dynamic Draw";
+                case GL_DYNAMIC_READ: return "Dynamic Read";
+                case GL_DYNAMIC_COPY: return "Dynamic Copy";
             }
 
             R_WARN("Unknown buffer usage: {0}", usage);
@@ -374,12 +254,9 @@ namespace rex
         {
             switch (cullType)
             {
-            case GL_BACK:
-                return "Back";
-            case GL_FRONT:
-                return "Front";
-            case GL_FRONT_AND_BACK:
-                return "Front And Back";
+                case GL_BACK: return "Back";
+                case GL_FRONT: return "Front";
+                case GL_FRONT_AND_BACK: return "Front And Back";
             }
 
             R_WARN("Unknown cull type: {0}", cullType);
@@ -390,10 +267,8 @@ namespace rex
         {
             switch (frontFace)
             {
-            case GL_CW:
-                return "Clockwise";
-            case GL_CCW:
-                return "Counter Clockwise";
+                case GL_CW: return "Clockwise";
+                case GL_CCW: return "Counter Clockwise";
             }
 
             R_WARN("Unknown front face type: {0}", frontFace);
@@ -404,22 +279,14 @@ namespace rex
         {
             switch (depthFn)
             {
-            case GL_ALWAYS:
-                return "Always";
-            case GL_NEVER:
-                return "Never";
-            case GL_LESS:
-                return "Less Then";
-            case GL_LEQUAL:
-                return "Less Then Or Equal";
-            case GL_GREATER:
-                return "Greater Then";
-            case GL_GEQUAL:
-                return "Greater Then Or Equal";
-            case GL_EQUAL:
-                return "Equal";
-            case GL_NOTEQUAL:
-                return "Not Equal";
+                case GL_ALWAYS: return "Always";
+                case GL_NEVER: return "Never";
+                case GL_LESS: return "Less Then";
+                case GL_LEQUAL: return "Less Then Or Equal";
+                case GL_GREATER: return "Greater Then";
+                case GL_GEQUAL: return "Greater Then Or Equal";
+                case GL_EQUAL: return "Equal";
+                case GL_NOTEQUAL: return "Not Equal";
             }
 
             R_WARN("Unknown depth function: {0}", depthFn);
@@ -430,12 +297,9 @@ namespace rex
         {
             switch (fillMode)
             {
-            case GL_POINT:
-                return "Point";
-            case GL_LINE:
-                return "Line";
-            case GL_FILL:
-                return "Fill";
+                case GL_POINT: return "Point";
+                case GL_LINE: return "Line";
+                case GL_FILL: return "Fill";
             }
 
             R_WARN("Unknown fill mode: {0}", fillMode);
@@ -446,14 +310,10 @@ namespace rex
         {
             switch (enable)
             {
-            case GL_BLEND:
-                return "Blending";
-            case GL_CULL_FACE:
-                return "Cull Face";
-            case GL_DEPTH_TEST:
-                return "Depth Test";
-            case GL_STENCIL_TEST:
-                return "Stencil Test";
+                case GL_BLEND: return "Blending";
+                case GL_CULL_FACE: return "Cull Face";
+                case GL_DEPTH_TEST: return "Depth Test";
+                case GL_STENCIL_TEST: return "Stencil Test";
             }
 
             R_WARN("Unknown state, this list is incomplete maybe you need to add another element: {0}", enable);
@@ -464,14 +324,10 @@ namespace rex
         {
             switch (disable)
             {
-            case GL_BLEND:
-                return "Blending";
-            case GL_CULL_FACE:
-                return "Cull Face";
-            case GL_DEPTH_TEST:
-                return "Depth Test";
-            case GL_STENCIL_TEST:
-                return "Stencil Test";
+                case GL_BLEND: return "Blending";
+                case GL_CULL_FACE: return "Cull Face";
+                case GL_DEPTH_TEST: return "Depth Test";
+                case GL_STENCIL_TEST: return "Stencil Test";
             }
 
             R_WARN("Unknown state, this list is incomplete maybe you need to add another element: {0}", disable);
@@ -491,7 +347,7 @@ namespace rex
             GL_CALL(glEnableVertexAttribArray(index));
         }
         //-------------------------------------------------------------------------
-        void vertex_attrib_i_pointer(uint32 index, int32 size, uint32 type, size_t stride, const void *ptr)
+        void vertex_attrib_i_pointer(uint32 index, int32 size, uint32 type, size_t stride, const void* ptr)
         {
             R_PROFILE_FUNCTION();
 
@@ -507,7 +363,7 @@ namespace rex
             GL_CALL(glVertexAttribIPointer(index, size, type, gsl::narrow<GLsizei>(stride), ptr));
         }
         //-------------------------------------------------------------------------
-        void vertex_attrib_pointer(uint32 index, int32 size, uint32 type, bool normalized, size_t stride, const void *ptr)
+        void vertex_attrib_pointer(uint32 index, int32 size, uint32 type, bool normalized, size_t stride, const void* ptr)
         {
             R_PROFILE_FUNCTION();
 
@@ -524,7 +380,7 @@ namespace rex
             GL_CALL(glVertexAttribPointer(index, size, type, normalized, gsl::narrow<GLsizei>(stride), ptr));
         }
         //-------------------------------------------------------------------------
-        void delete_vertex_arrays(size_t count, const uint32 *arrays)
+        void delete_vertex_arrays(size_t count, const uint32* arrays)
         {
             R_PROFILE_FUNCTION();
 
@@ -537,7 +393,7 @@ namespace rex
             GL_CALL(glDeleteVertexArrays(gsl::narrow<GLsizei>(count), arrays));
         }
         //-------------------------------------------------------------------------
-        void generate_vertex_arrays(size_t count, uint32 *arrays)
+        void generate_vertex_arrays(size_t count, uint32* arrays)
         {
             R_PROFILE_FUNCTION();
 
@@ -719,7 +575,7 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        void draw_elements(uint32 mode, size_t count, uint32 type, const void *indices)
+        void draw_elements(uint32 mode, size_t count, uint32 type, const void* indices)
         {
             R_PROFILE_FUNCTION();
 
@@ -734,7 +590,7 @@ namespace rex
             GL_CALL(glDrawElements(mode, gsl::narrow<GLsizei>(count), type, indices));
         }
         //-------------------------------------------------------------------------
-        void draw_elements_base_vertex(uint32 mode, size_t count, uint32 type, const void *indices, int32 baseVertex)
+        void draw_elements_base_vertex(uint32 mode, size_t count, uint32 type, const void* indices, int32 baseVertex)
         {
             R_PROFILE_FUNCTION();
 
@@ -751,7 +607,7 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        void get_integer_value(uint32 pname, int32 *data)
+        void get_integer_value(uint32 pname, int32* data)
         {
             R_PROFILE_FUNCTION();
 
@@ -766,7 +622,7 @@ namespace rex
 #endif
         }
         //-------------------------------------------------------------------------
-        void get_float_value(uint32 pname, float *data)
+        void get_float_value(uint32 pname, float* data)
         {
             R_PROFILE_FUNCTION();
 
@@ -782,7 +638,7 @@ namespace rex
 #endif
         }
         //-------------------------------------------------------------------------
-        void get_double_value(uint32 pname, double *data)
+        void get_double_value(uint32 pname, double* data)
         {
             R_PROFILE_FUNCTION();
 
@@ -798,7 +654,7 @@ namespace rex
 #endif
         }
         //-------------------------------------------------------------------------
-        void get_bool_value(uint32 pname, uint8 *data)
+        void get_bool_value(uint32 pname, uint8* data)
         {
             R_PROFILE_FUNCTION();
 
@@ -814,20 +670,20 @@ namespace rex
 #endif
         }
         //-------------------------------------------------------------------------
-        const char *get_string_value(uint32 name)
+        const char* get_string_value(uint32 name)
         {
             R_PROFILE_FUNCTION();
 
             GL_LOG("glGetString");
 
-            const GLubyte *s;
+            const GLubyte* s;
             GL_CALL(s = glGetString(name));
 
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
             GL_LOG("\tdata result: {0}", *s);
 #endif
 
-            return (const char *)s;
+            return (const char*)s;
         }
 
         //-------------------------------------------------------------------------
@@ -841,7 +697,7 @@ namespace rex
 
             uint32 error = GL_NO_ERROR;
 
-            error = glGetError(); // no GL_CALL here to avoid recursive function call.
+            error = glGetError();  // no GL_CALL here to avoid recursive function call.
 
 #if ENABLE_GL_FUNCTION_LOGGING && ENABLE_GL_GET_ERROR_LOGGING && ENABLE_GL_PARAMETER_LOGGING
             GL_LOG("\tdata result: {0}", error);
@@ -871,7 +727,7 @@ namespace rex
             return result;
         }
         //-------------------------------------------------------------------------
-        void delete_framebuffers(size_t count, const uint32 *framebuffers)
+        void delete_framebuffers(size_t count, const uint32* framebuffers)
         {
             R_PROFILE_FUNCTION();
 
@@ -884,7 +740,7 @@ namespace rex
             GL_CALL(glDeleteFramebuffers(gsl::narrow<GLsizei>(count), framebuffers));
         }
         //-------------------------------------------------------------------------
-        void generate_framebuffers(size_t count, uint32 *framebuffers)
+        void generate_framebuffers(size_t count, uint32* framebuffers)
         {
             R_PROFILE_FUNCTION();
 
@@ -939,7 +795,7 @@ namespace rex
             GL_CALL(glDrawBuffer(target));
         }
         //-------------------------------------------------------------------------
-        void draw_buffers(size_t count, const uint32 *buffers)
+        void draw_buffers(size_t count, const uint32* buffers)
         {
             R_PROFILE_FUNCTION();
 
@@ -953,7 +809,7 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        void delete_buffers(size_t count, const uint32 *buffers)
+        void delete_buffers(size_t count, const uint32* buffers)
         {
             R_PROFILE_FUNCTION();
 
@@ -966,7 +822,7 @@ namespace rex
             GL_CALL(glDeleteBuffers(gsl::narrow<GLsizei>(count), buffers));
         }
         //-------------------------------------------------------------------------
-        void generate_buffers(size_t count, uint32 *buffers)
+        void generate_buffers(size_t count, uint32* buffers)
         {
             R_PROFILE_FUNCTION();
 
@@ -992,7 +848,7 @@ namespace rex
             GL_CALL(glBindBuffer(target, index));
         }
         //-------------------------------------------------------------------------
-        void buffer_data(uint32 target, uint32 size, const void *data, uint32 usage)
+        void buffer_data(uint32 target, uint32 size, const void* data, uint32 usage)
         {
             R_PROFILE_FUNCTION();
 
@@ -1023,7 +879,7 @@ namespace rex
             GL_CALL(glBindBufferRange(target, index, buffer, offset, size));
         }
         //-------------------------------------------------------------------------
-        void buffer_sub_data(uint32 target, int64 offset, int64 size, const void *data)
+        void buffer_sub_data(uint32 target, int64 offset, int64 size, const void* data)
         {
             R_PROFILE_FUNCTION();
 
@@ -1038,7 +894,7 @@ namespace rex
             GL_CALL(glBufferSubData(target, offset, size, data));
         }
         //-------------------------------------------------------------------------
-        void get_buffer_integer_parameter(uint32 target, uint32 value, int32 *data)
+        void get_buffer_integer_parameter(uint32 target, uint32 value, int32* data)
         {
             R_PROFILE_FUNCTION();
 
@@ -1056,7 +912,7 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        void delete_textures(size_t count, const uint32 *textures)
+        void delete_textures(size_t count, const uint32* textures)
         {
             R_PROFILE_FUNCTION();
 
@@ -1069,7 +925,7 @@ namespace rex
             GL_CALL(glDeleteTextures(gsl::narrow<GLsizei>(count), textures));
         }
         //-------------------------------------------------------------------------
-        void generate_textures(size_t count, uint32 *textures)
+        void generate_textures(size_t count, uint32* textures)
         {
             R_PROFILE_FUNCTION();
 
@@ -1107,7 +963,8 @@ namespace rex
             GL_CALL(glBindTexture(target, texture));
         }
         //-------------------------------------------------------------------------
-        void texture_image_2D(uint32 target, int32 level, int32 internalformat, size_t width, size_t height, int32 border, uint32 format, uint32 type, const void *data)
+        void texture_image_2D(uint32 target, int32 level, int32 internalformat, size_t width, size_t height, int32 border, uint32 format, uint32 type,
+                              const void* data)
         {
             R_PROFILE_FUNCTION();
 
@@ -1124,10 +981,12 @@ namespace rex
             GL_LOG("\tdata: {0}", fmt::ptr(data));
 #endif
 
-            GL_CALL(glTexImage2D(target, level, internalformat, gsl::narrow<GLsizei>(width), gsl::narrow<GLsizei>(height), border, format, type, data));
+            GL_CALL(
+                glTexImage2D(target, level, internalformat, gsl::narrow<GLsizei>(width), gsl::narrow<GLsizei>(height), border, format, type, data));
         }
         //-------------------------------------------------------------------------
-        void texture_image_3D(uint32 target, int32 level, int32 internalformat, size_t width, size_t height, size_t depth, int32 border, uint32 format, uint32 type, const void *data)
+        void texture_image_3D(uint32 target, int32 level, int32 internalformat, size_t width, size_t height, size_t depth, int32 border,
+                              uint32 format, uint32 type, const void* data)
         {
             R_PROFILE_FUNCTION();
 
@@ -1145,10 +1004,12 @@ namespace rex
             GL_LOG("\tdata: {0}", fmt::ptr(data));
 #endif
 
-            GL_CALL(glTexImage3D(target, level, internalformat, gsl::narrow<GLsizei>(width), gsl::narrow<GLsizei>(height), gsl::narrow<GLsizei>(depth), border, format, type, data));
+            GL_CALL(glTexImage3D(target, level, internalformat, gsl::narrow<GLsizei>(width), gsl::narrow<GLsizei>(height),
+                                 gsl::narrow<GLsizei>(depth), border, format, type, data));
         }
         //-------------------------------------------------------------------------
-        void texture_sub_image_2D(uint32 target, int32 level, int32 xoffset, int32 yoffset, size_t width, size_t height, uint32 format, uint32 type, const void *data)
+        void texture_sub_image_2D(uint32 target, int32 level, int32 xoffset, int32 yoffset, size_t width, size_t height, uint32 format, uint32 type,
+                                  const void* data)
         {
             R_PROFILE_FUNCTION();
 
@@ -1168,7 +1029,8 @@ namespace rex
             GL_CALL(glTexSubImage2D(target, level, xoffset, yoffset, gsl::narrow<GLsizei>(width), gsl::narrow<GLsizei>(height), format, type, data));
         }
         //-------------------------------------------------------------------------
-        void texture_sub_image_3D(uint32 target, int32 level, int32 xoffset, int32 yoffset, int32 zoffset, size_t width, size_t height, size_t depth, uint32 format, uint32 type, const void *data)
+        void texture_sub_image_3D(uint32 target, int32 level, int32 xoffset, int32 yoffset, int32 zoffset, size_t width, size_t height, size_t depth,
+                                  uint32 format, uint32 type, const void* data)
         {
             R_PROFILE_FUNCTION();
 
@@ -1187,7 +1049,8 @@ namespace rex
             GL_LOG("\tdata: {0}", fmt::ptr(data));
 #endif
 
-            GL_CALL(glTexSubImage3D(target, level, xoffset, yoffset, zoffset, gsl::narrow<GLsizei>(width), gsl::narrow<GLsizei>(height), gsl::narrow<GLsizei>(depth), format, type, data));
+            GL_CALL(glTexSubImage3D(target, level, xoffset, yoffset, zoffset, gsl::narrow<GLsizei>(width), gsl::narrow<GLsizei>(height),
+                                    gsl::narrow<GLsizei>(depth), format, type, data));
         }
         //-------------------------------------------------------------------------
         void set_texture_integer_parameter(uint32 target, uint32 pname, int32 param)
@@ -1251,7 +1114,7 @@ namespace rex
             return shader_id;
         }
         //-------------------------------------------------------------------------
-        void shader_source(uint32 shader, size_t count, const int8 **code, const int32 *length)
+        void shader_source(uint32 shader, size_t count, const int8** code, const int32* length)
         {
             R_PROFILE_FUNCTION();
 
@@ -1263,7 +1126,7 @@ namespace rex
             GL_LOG("\tlength: {0}", fmt::ptr(length));
 #endif
 
-            GL_CALL(glShaderSource(shader, gsl::narrow<GLsizei>(count), (const GLchar *const *)code, length));
+            GL_CALL(glShaderSource(shader, gsl::narrow<GLsizei>(count), (const GLchar* const*)code, length));
         }
         //-------------------------------------------------------------------------
         void compile_shader(uint32 shader)
@@ -1279,7 +1142,7 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        void get_shader_integer_value(uint32 shader, uint32 pname, int32 *params)
+        void get_shader_integer_value(uint32 shader, uint32 pname, int32* params)
         {
             R_PROFILE_FUNCTION();
 
@@ -1296,7 +1159,7 @@ namespace rex
 #endif
         }
         //-------------------------------------------------------------------------
-        void get_shader_info_log(uint32 shader, size_t maxLength, int32 *length, int8 *infoLog)
+        void get_shader_info_log(uint32 shader, size_t maxLength, int32* length, int8* infoLog)
         {
             R_PROFILE_FUNCTION();
 
@@ -1308,7 +1171,7 @@ namespace rex
             GL_LOG("\tinfoLog: {0}", fmt::ptr(infoLog));
 #endif
 
-            GL_CALL(glGetShaderInfoLog(shader, gsl::narrow<GLsizei>(maxLength), length, (GLchar *)infoLog));
+            GL_CALL(glGetShaderInfoLog(shader, gsl::narrow<GLsizei>(maxLength), length, (GLchar*)infoLog));
         }
 
         //-------------------------------------------------------------------------
@@ -1392,7 +1255,7 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        int32 get_uniform_location(uint32 program, const int8 *name)
+        int32 get_uniform_location(uint32 program, const int8* name)
         {
             R_PROFILE_FUNCTION();
 
@@ -1403,7 +1266,7 @@ namespace rex
 #endif
 
             int32 location;
-            GL_CALL(location = glGetUniformLocation(program, (const GLchar *)name));
+            GL_CALL(location = glGetUniformLocation(program, (const GLchar*)name));
 
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
             GL_LOG("\tlocation: {0}", location);
@@ -1412,7 +1275,7 @@ namespace rex
             return location;
         }
         //-------------------------------------------------------------------------
-        uint32 get_uniform_block_index(uint32 program, const int8 *name)
+        uint32 get_uniform_block_index(uint32 program, const int8* name)
         {
             R_PROFILE_FUNCTION();
 
@@ -1423,7 +1286,7 @@ namespace rex
 #endif
 
             uint32 index;
-            GL_CALL(index = glGetUniformBlockIndex(program, (const GLchar *)name));
+            GL_CALL(index = glGetUniformBlockIndex(program, (const GLchar*)name));
 
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
             GL_LOG("\tindex: {0}", index);
@@ -1432,7 +1295,7 @@ namespace rex
             return index;
         }
         //-------------------------------------------------------------------------
-        void get_program_integer_value(uint32 program, uint32 pname, int32 *params)
+        void get_program_integer_value(uint32 program, uint32 pname, int32* params)
         {
             R_PROFILE_FUNCTION();
 
@@ -1449,7 +1312,7 @@ namespace rex
 #endif
         }
         //-------------------------------------------------------------------------
-        void get_program_info_log(uint32 program, size_t maxLength, int32 *length, int8 *infoLog)
+        void get_program_info_log(uint32 program, size_t maxLength, int32* length, int8* infoLog)
         {
             R_PROFILE_FUNCTION();
 
@@ -1461,10 +1324,10 @@ namespace rex
             GL_LOG("\tinfoLog: {0}", fmt::ptr(infoLog));
 #endif
 
-            GL_CALL(glGetProgramInfoLog(program, gsl::narrow<GLsizei>(maxLength), length, (GLchar *)infoLog));
+            GL_CALL(glGetProgramInfoLog(program, gsl::narrow<GLsizei>(maxLength), length, (GLchar*)infoLog));
         }
         //-------------------------------------------------------------------------
-        void get_active_uniform(uint32 program, uint32 index, size_t bufferSize, int32 *length, int32 *size, uint32 *type, int8 *name)
+        void get_active_uniform(uint32 program, uint32 index, size_t bufferSize, int32* length, int32* size, uint32* type, int8* name)
         {
             R_PROFILE_FUNCTION();
 
@@ -1475,7 +1338,7 @@ namespace rex
             GL_LOG("\tbuffer size: {0}", bufferSize);
 #endif
 
-            GL_CALL(glGetActiveUniform(program, index, gsl::narrow<GLsizei>(bufferSize), length, size, type, (GLchar *)name));
+            GL_CALL(glGetActiveUniform(program, index, gsl::narrow<GLsizei>(bufferSize), length, size, type, (GLchar*)name));
 
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
             GL_LOG("\tlength: {0}", *length);
@@ -1485,7 +1348,7 @@ namespace rex
 #endif
         }
         //-------------------------------------------------------------------------
-        void get_active_uniform_block_name(uint32 program, uint32 uniformBlockIndex, size_t bufferSize, int32 *length, int8 *uniformBlockName)
+        void get_active_uniform_block_name(uint32 program, uint32 uniformBlockIndex, size_t bufferSize, int32* length, int8* uniformBlockName)
         {
             R_PROFILE_FUNCTION();
 
@@ -1496,7 +1359,7 @@ namespace rex
             GL_LOG("\tbuffer size: {0}", bufferSize);
 #endif
 
-            GL_CALL(glGetActiveUniformBlockName(program, uniformBlockIndex, gsl::narrow<GLsizei>(bufferSize), length, (GLchar *)uniformBlockName));
+            GL_CALL(glGetActiveUniformBlockName(program, uniformBlockIndex, gsl::narrow<GLsizei>(bufferSize), length, (GLchar*)uniformBlockName));
 
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
             GL_LOG("\tlength: {0}", *length);
@@ -1504,7 +1367,7 @@ namespace rex
 #endif
         }
         //-------------------------------------------------------------------------
-        void get_active_uniform_block_integer_value(uint32 program, uint32 uniformBlockIndex, uint32 pname, int32 *params)
+        void get_active_uniform_block_integer_value(uint32 program, uint32 uniformBlockIndex, uint32 pname, int32* params)
         {
             R_PROFILE_FUNCTION();
 
@@ -1522,7 +1385,7 @@ namespace rex
 #endif
         }
         //-------------------------------------------------------------------------
-        void get_active_attribute(uint32 program, uint32 index, size_t bufferSize, int32 *length, int32 *size, uint32 *type, int8 *name)
+        void get_active_attribute(uint32 program, uint32 index, size_t bufferSize, int32* length, int32* size, uint32* type, int8* name)
         {
             R_PROFILE_FUNCTION();
 
@@ -1533,7 +1396,7 @@ namespace rex
             GL_LOG("\tbuffer size: {0}", bufferSize);
 #endif
 
-            GL_CALL(glGetActiveAttrib(program, index, gsl::narrow<GLsizei>(bufferSize), length, size, type, (GLchar *)name));
+            GL_CALL(glGetActiveAttrib(program, index, gsl::narrow<GLsizei>(bufferSize), length, size, type, (GLchar*)name));
 
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
             GL_LOG("\tlength: {0}", *length);
@@ -1558,7 +1421,7 @@ namespace rex
             GL_CALL(glUniformBlockBinding(program, uniformBlockIndex, uniformBlockBinding));
         }
         //-------------------------------------------------------------------------
-        void uniform_matrix_3fv(int32 location, size_t count, bool transpose, const float *value)
+        void uniform_matrix_3fv(int32 location, size_t count, bool transpose, const float* value)
         {
             R_PROFILE_FUNCTION();
 
@@ -1573,7 +1436,7 @@ namespace rex
             GL_CALL(glUniformMatrix3fv(location, gsl::narrow<GLsizei>(count), transpose, value));
         }
         //-------------------------------------------------------------------------
-        void uniform_matrix_4fv(int32 location, size_t count, bool transpose, const float *value)
+        void uniform_matrix_4fv(int32 location, size_t count, bool transpose, const float* value)
         {
             R_PROFILE_FUNCTION();
 
@@ -1646,7 +1509,7 @@ namespace rex
             GL_CALL(glUniform4f(location, x, y, z, w));
         }
         //-------------------------------------------------------------------------
-        void uniform_1fv(int32 location, size_t count, const float *value)
+        void uniform_1fv(int32 location, size_t count, const float* value)
         {
             R_PROFILE_FUNCTION();
 
@@ -1730,6 +1593,5 @@ namespace rex
 
             GL_CALL(glUniform1ui(location, value));
         }
-
     }
 }

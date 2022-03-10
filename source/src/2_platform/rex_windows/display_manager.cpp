@@ -8,10 +8,9 @@
 
 namespace rex
 {
-
     //-------------------------------------------------------------------------
     DisplayManager::DisplayManager()
-        :m_active_display(nullptr)
+        : m_active_display(nullptr)
     {
         int32 available_video_displays = SDL_GetNumVideoDisplays();
         if (available_video_displays < 1)
@@ -30,7 +29,7 @@ namespace rex
                 R_ERROR("Failed to retrieve available display modes for display with index: {0}", i);
                 continue;
             }
-            
+
             const char* display_name = SDL_GetDisplayName(i);
 
             R_INFO("\t{0}", display_name);
@@ -49,7 +48,8 @@ namespace rex
                     continue;
                 }
 
-                R_TRACE("[DisplayMode,DisplayMode][{0},{1}]: [BPP, FMT, W, H, RR][{2}, {3}, {4}, {5}, {6}]", display_name, j, SDL_BITSPERPIXEL(mode.format), SDL_GetPixelFormatName(mode.format), mode.w, mode.h, mode.refresh_rate);
+                R_TRACE("[DisplayMode,DisplayMode][{0},{1}]: [BPP, FMT, W, H, RR][{2}, {3}, {4}, {5}, {6}]", display_name, j,
+                        SDL_BITSPERPIXEL(mode.format), SDL_GetPixelFormatName(mode.format), mode.w, mode.h, mode.refresh_rate);
 
                 DisplayModeDescription display_mode_description;
                 display_mode_description.mode_index = j;
@@ -60,9 +60,8 @@ namespace rex
                 display_mode_description.refresh_rate = mode.refresh_rate;
 
                 display_description.display_modes.insert(std::make_pair(j, DisplayMode(display_mode_description)));
-
             }
-            
+
             m_displays.insert(std::make_pair(i, Display(display_description)));
         }
     }
@@ -70,25 +69,23 @@ namespace rex
     //-------------------------------------------------------------------------
     DisplayManager::~DisplayManager()
     {
-
     }
 
     //-------------------------------------------------------------------------
     gsl::not_null<const Display*> DisplayManager::set_active(int32 displayIndex, int32 modeIndex)
     {
-        auto it = std::find_if(std::begin(m_displays), std::end(m_displays),
-            [displayIndex](const auto& pair)
-            {
-                return pair.second.get_display_index() == displayIndex;
-            });
+        auto it = std::find_if(std::begin(m_displays), std::end(m_displays), [displayIndex](const auto& pair)
+                               {
+                                   return pair.second.get_display_index() == displayIndex;
+                               });
 
         if (it != std::cend(m_displays))
         {
-            it->second.set_active_mode(modeIndex);   // Activate display mode
+            it->second.set_active_mode(modeIndex);  // Activate display mode
 
             m_active_display = &(*it).second;
         }
-            
+
         return m_active_display;
     }
 
@@ -109,7 +106,7 @@ namespace rex
     {
         int32 total_display_mode_count = 0;
 
-        for(auto & pair : m_displays)
+        for (auto& pair : m_displays)
         {
             total_display_mode_count += pair.second.get_display_mode_count();
         }

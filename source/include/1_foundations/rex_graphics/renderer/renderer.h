@@ -6,13 +6,13 @@
 
 #define ENABLE_RENDERER_LOGGING 0
 #if ENABLE_RENDERER_LOGGING
-    #define RENDERER_INFO R_INFO
-    #define RENDERER_WARN R_WARN
-    #define RENDERER_ERROR R_ERROR
+#define RENDERER_INFO R_INFO
+#define RENDERER_WARN R_WARN
+#define RENDERER_ERROR R_ERROR
 #else
-    #define RENDERER_INFO(...) UNUSED_PARAM(__VA_ARGS__)
-    #define RENDERER_WARN(...) UNUSED_PARAM(__VA_ARGS__)
-    #define RENDERER_ERROR(...) UNUSED_PARAM(__VA_ARGS__)
+#define RENDERER_INFO(...) UNUSED_PARAM(__VA_ARGS__)
+#define RENDERER_WARN(...) UNUSED_PARAM(__VA_ARGS__)
+#define RENDERER_ERROR(...) UNUSED_PARAM(__VA_ARGS__)
 #endif
 
 namespace rex
@@ -51,9 +51,11 @@ namespace rex
 
         static void wait_and_render();
 
-        static void render_quad(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Material> material, const rex::matrix4& transform);
+        static void render_quad(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Material> material,
+                                const rex::matrix4& transform);
         static void render_model(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Model> model, const rex::matrix4& transform);
-        static void render_model_with_material(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Model> model, const rex::matrix4& transform, ref_ptr<Material> material);
+        static void render_model_with_material(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Model> model,
+                                               const rex::matrix4& transform, ref_ptr<Material> material);
 
         static void submit_fullscreen_quad(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Material> material);
         template <typename TFunction>
@@ -63,15 +65,15 @@ namespace rex
         static ref_ptr<RenderPass> create_render_pass(const RenderPassDescription& description);
 
     private:
-        static RendererCommandQueue* getRenderCommandQueue();
+        static RendererCommandQueue* get_render_command_queue();
     };
 
     template <typename TFunction>
     void rex::Renderer::submit(TFunction&& fn)
     {
-        R_ASSERT_X(get_render_command_queue()->getState() == RenderCommandQueueState::ACCEPT, "Cannot push new commands while executing or clearing render commands");
+        R_ASSERT_X(get_render_command_queue()->getState() == RenderCommandQueueState::ACCEPT,
+                   "Cannot push new commands while executing or clearing render commands");
 
         get_render_command_queue()->push(std::move(fn));
     }
-
 }

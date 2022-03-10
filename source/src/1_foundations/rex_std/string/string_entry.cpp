@@ -5,9 +5,7 @@
 namespace rex
 {
     //-------------------------------------------------------------------------
-    StringEntry::StringEntry(const char* chars, size_t charCount) noexcept
-        :m_characters()
-        ,m_size(charCount)
+    StringEntry::StringEntry(const char* chars, size_t charCount) noexcept : m_characters(), m_size(charCount)
     {
         m_characters.reset((char*)malloc(charCount + 1));
 
@@ -15,18 +13,15 @@ namespace rex
         std::memcpy(m_characters.get(), chars, charCount);
     }
     //-------------------------------------------------------------------------
-    StringEntry::StringEntry(StringEntry&& other) noexcept
-        :m_characters(std::move(other.m_characters))
-        ,m_size(std::move(other.m_size))
+    StringEntry::StringEntry(StringEntry&& other) noexcept : m_characters(std::move(other.m_characters)), m_size(std::move(other.m_size))
     {
-
     }
 
     //-------------------------------------------------------------------------
     StringEntry::~StringEntry() = default;
 
     //-------------------------------------------------------------------------
-    void StringEntry::get_characters(char** characters, size_t & characterCount) const
+    void StringEntry::get_characters(char** characters, size_t& characterCount) const
     {
         *characters = m_characters.get();
         characterCount = m_size;
@@ -57,12 +52,14 @@ namespace rex
 
     //-------------------------------------------------------------------------
     StringEntryID::StringEntryID()
-        :value(0)
-    {}
+        : value(0)
+    {
+    }
     //-------------------------------------------------------------------------
     StringEntryID::StringEntryID(uint32 value)
         : value(value)
-    {}
+    {
+    }
 
     //-------------------------------------------------------------------------
     bool StringEntryID::operator<(const StringEntryID& rhs) const

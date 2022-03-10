@@ -12,32 +12,36 @@ namespace rex
     */
     //-------------------------------------------------------------------------
     StringID::StringID()
-        :StringID(ESID::SID_None)
-    {}
+        : StringID(ESID::SID_None)
+    {
+    }
 
     /**
     * Create an StringID with a hard coded string index.
     */
     //-------------------------------------------------------------------------
     StringID::StringID(const ESID& name)
-        :m_comparison_index(make(name))
-    {}
+        : m_comparison_index(make(name))
+    {
+    }
 
     /**
     * Create an StringID with characters.
     */
     //-------------------------------------------------------------------------
     StringID::StringID(const char* characters)
-        :m_comparison_index(make(characters, std::strlen(characters)))
-    {}
+        : m_comparison_index(make(characters, std::strlen(characters)))
+    {
+    }
 
     /**
     * Create an StringID with characters and a predefined size.
     */
     //-------------------------------------------------------------------------
     StringID::StringID(const char* characters, size_t size)
-        :m_comparison_index(make(characters, size))
-    {}
+        : m_comparison_index(make(characters, size))
+    {
+    }
 
     /**
     * Converts an StringID to a readable format
@@ -133,16 +137,14 @@ namespace rex
     //-------------------------------------------------------------------------
     StringEntryID StringID::make(const ESID& name)
     {
-        return name == ESID::SID_None
-            ? StringEntryID()
-            : *string_pool::store(name);
+        return name == ESID::SID_None ? StringEntryID() : *string_pool::store(name);
     }
     //-------------------------------------------------------------------------
     StringEntryID StringID::make(const char* characters, size_t size)
     {
         if (characters == nullptr || size == 0)
         {
-            return StringEntryID();   // ESID::SID_None
+            return StringEntryID();  // ESID::SID_None
         }
 
         return *string_pool::store(characters, size);

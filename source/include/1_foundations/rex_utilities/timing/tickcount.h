@@ -17,10 +17,10 @@ namespace rex
     // Clock built upon Windows GetTickCount()
     struct TickCountClock
     {
-        typedef uint64                                   rep;
-        typedef std::milli                               period;
-        typedef std::chrono::duration<rep, period>       duration;
-        typedef std::chrono::time_point<TickCountClock>  time_point;
+        typedef uint64 rep;
+        typedef std::milli period;
+        typedef std::chrono::duration<rep, period> duration;
+        typedef std::chrono::time_point<TickCountClock> time_point;
 
         static const bool is_steady = true;
 

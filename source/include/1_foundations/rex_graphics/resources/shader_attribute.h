@@ -14,15 +14,15 @@ namespace sbt
         ShaderAttribute(const StringID& name, ShaderAttributeType type, uint32 size, uint32 offset);
         ~ShaderAttribute();
 
-        const StringID&             getName() const;
-        const ShaderAttributeType&  getType() const;
+        const StringID& getName() const;
+        const ShaderAttributeType& getType() const;
 
-        uint32                      getSize() const;
-        uint32                      getOffset() const;
+        uint32 getSize() const;
+        uint32 getOffset() const;
 
-        bool                        isValid() const;
+        bool isValid() const;
 
-        static ShaderAttribute      EMPTY;
+        static ShaderAttribute EMPTY;
 
     private:
         StringID m_name;

@@ -4,44 +4,45 @@
 
 namespace rex
 {
-	class YesNoEnum
-	{
-	public:
-		enum Type
-		{
-			NO,
-			YES
-		};
+    class YesNoEnum
+    {
+    public:
+        enum Type
+        {
+            NO,
+            YES
+        };
 
-		//-------------------------------------------------------------------------
-		YesNoEnum(Type value) :
-			m_value(value)
-		{}
+        //-------------------------------------------------------------------------
+        YesNoEnum(Type value)
+            : m_value(value)
+        {
+        }
 
-		//-------------------------------------------------------------------------
-		operator Type() const
-		{
-			return m_value;
-		}
+        //-------------------------------------------------------------------------
+        operator Type() const
+        {
+            return m_value;
+        }
 
-		//-------------------------------------------------------------------------
-		operator bool() const
-		{
-			return m_value == Type::YES;
-		}
+        //-------------------------------------------------------------------------
+        operator bool() const
+        {
+            return m_value == Type::YES;
+        }
 
-		//-------------------------------------------------------------------------
-		std::string toString() const
-		{
-			if (m_value == Type::YES)
-			{
-				return "Yes";
-			}
-				
-			return "No";
-		}
+        //-------------------------------------------------------------------------
+        std::string toString() const
+        {
+            if (m_value == Type::YES)
+            {
+                return "Yes";
+            }
 
-	private:
-		Type m_value;
-	};
+            return "No";
+        }
+
+    private:
+        Type m_value;
+    };
 }

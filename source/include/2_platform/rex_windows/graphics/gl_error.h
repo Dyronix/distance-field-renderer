@@ -9,17 +9,17 @@ namespace rex
     {
         std::string gl_get_error_message(uint32 error);
         uint32 gl_check_error();
-        bool gl_log_call(const char *function, const char *file, int32 line);
+        bool gl_log_call(const char* function, const char* file, int32 line);
     }
 }
 
 #ifdef REX_DEBUG
-#define GL_CALL(x)                                                \
-    rex::win32::opengl::gl_check_error();                         \
-    x;                                                            \
-    if (!rex::win32::opengl::gl_log_call(#x, __FILE__, __LINE__)) \
-    {                                                             \
-        DEBUG_BREAK();                                            \
+#define GL_CALL(x)                                                                                                                                   \
+    rex::win32::opengl::gl_check_error();                                                                                                            \
+    x;                                                                                                                                               \
+    if (!rex::win32::opengl::gl_log_call(#x, __FILE__, __LINE__))                                                                                    \
+    {                                                                                                                                                \
+        DEBUG_BREAK();                                                                                                                               \
     }
 #else
 #define GL_CALL(x) x

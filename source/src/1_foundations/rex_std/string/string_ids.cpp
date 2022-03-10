@@ -6,18 +6,18 @@ namespace rex
 {
     namespace conversions
     {
-        #define SID_NAME(name) ESID::SID_##name: return #name
+#define SID_NAME(name) ESID::SID_##name : return #name
         //-------------------------------------------------------------------------
         std::string to_display_string(const ESID& name)
         {
-            switch(name)
+            switch (name)
             {
                 case SID_NAME(None);
 
-                default:
+                    default:
                     return "None";
             }
         }
-        #undef SID_NAME
+#undef SID_NAME
     }
 }

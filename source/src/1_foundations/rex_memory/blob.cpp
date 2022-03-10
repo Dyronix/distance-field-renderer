@@ -67,17 +67,19 @@ namespace rex
 
         //-------------------------------------------------------------------------
         Blob::Blob()
-            :m_data(nullptr)
-            ,m_size(0_bytes)
-        {}
+            : m_data(nullptr)
+            , m_size(0_bytes)
+        {
+        }
         //-------------------------------------------------------------------------
         Blob::Blob(std::nullptr_t n)
-            :m_data(n)
-            ,m_size(0_bytes)
-        {}
+            : m_data(n)
+            , m_size(0_bytes)
+        {
+        }
         //-------------------------------------------------------------------------
         Blob::Blob(std::unique_ptr<memory::byte> fileData, const memory::size& fileSize)
-            :m_data(std::exchange(fileData, nullptr))
+            : m_data(std::exchange(fileData, nullptr))
             , m_size(fileSize)
         {
         }
@@ -96,10 +98,9 @@ namespace rex
             memcpy(m_data.get(), other.m_data.get(), m_size);
         }
         //-------------------------------------------------------------------------
-        Blob::Blob(Blob&& other) noexcept
-            :m_data(std::exchange(other.m_data, nullptr))
-            , m_size(std::exchange(other.m_size, 0))
-        {}
+        Blob::Blob(Blob&& other) noexcept : m_data(std::exchange(other.m_data, nullptr)), m_size(std::exchange(other.m_size, 0))
+        {
+        }
 
         //-------------------------------------------------------------------------
         Blob& Blob::operator=(const Blob& other)

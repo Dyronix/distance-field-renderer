@@ -4,7 +4,7 @@
 //
 // Created By: nickdb
 // Modified By: davedb
-// 
+//
 // Copyright (c) REX
 //--------------------------------------------------
 
@@ -65,11 +65,15 @@ namespace rex
         // unscoped enums have an implementation defined underlying type not larger than int
         // this means it can be smaller, which could cause some hoorrible bugs when reading/writing data
         // on different platforms
-        enum test_enum {};
+        enum test_enum
+        {
+        };
         static_assert(sizeof(test_enum) == sizeof(int32), "unscoped enum must be 4 bytes big");
 
         // scoped enums default to underlying type is int, so let's make sure it actually is
-        enum class test_scoped_enum {};
+        enum class test_scoped_enum
+        {
+        };
         static_assert(sizeof(test_scoped_enum) == sizeof(int32), "scoped enum must be 4 bytes big");
     }
 
@@ -81,7 +85,9 @@ namespace rex
 
     namespace memory
     {
-        enum class byte : unsigned char {};
+        enum class byte : unsigned char
+        {
+        };
     }
 }
 

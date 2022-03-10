@@ -22,16 +22,14 @@ namespace rex
 
         //-------------------------------------------------------------------------
         Application::Application(const ApplicationDescription& description)
-            :CoreApplication(description)
-            ,m_is_marked_for_destruction(false)
+            : CoreApplication(description)
+            , m_is_marked_for_destruction(false)
         {
-
         }
 
         //-------------------------------------------------------------------------
         Application::~Application()
         {
-
         }
 
         //-------------------------------------------------------------------------
@@ -56,7 +54,7 @@ namespace rex
         bool Application::platform_initialize()
         {
             /*
-                Had some trouble with SDL_PumpEvents. 
+                Had some trouble with SDL_PumpEvents.
                 Sometimes (not always) it needs a very long time to return ( > 500000 Performance counts ).
 
                 This is a bug in SDL 2.0.9
@@ -65,10 +63,10 @@ namespace rex
                 https://discourse.libsdl.org/t/sdl-pumpevents-uses-long-time-sometimes-solved/25749
             */
 
-            if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK ) == 0)
+            if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) == 0)
             {
                 R_INFO("Successfully initialized SDL!");
-    
+
 #if REX_API_OPENGL
                 SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
                 SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);

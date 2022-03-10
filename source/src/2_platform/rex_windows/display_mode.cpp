@@ -6,36 +6,30 @@ namespace rex
 {
     //-------------------------------------------------------------------------
     DisplayMode::DisplayMode()
-        :m_description()
+        : m_description()
     {
-
     }
 
     //-------------------------------------------------------------------------
     DisplayMode::DisplayMode(const DisplayMode& other)
-        :m_description(other.m_description)
+        : m_description(other.m_description)
     {
-
     }
 
     //-------------------------------------------------------------------------
-    DisplayMode::DisplayMode(DisplayMode&& other) noexcept
-        :m_description(std::exchange(other.m_description, {}))
+    DisplayMode::DisplayMode(DisplayMode&& other) noexcept : m_description(std::exchange(other.m_description, {}))
     {
-
     }
 
     //-------------------------------------------------------------------------
     DisplayMode::DisplayMode(const DisplayModeDescription& description)
-        :m_description(description)
+        : m_description(description)
     {
-
     }
 
     //-------------------------------------------------------------------------
     DisplayMode::~DisplayMode()
     {
-
     }
 
     //-------------------------------------------------------------------------

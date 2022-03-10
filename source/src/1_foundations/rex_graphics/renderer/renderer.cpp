@@ -14,17 +14,17 @@
 
 namespace rex
 {
-    std::unique_ptr<RendererAPI>            g_renderer_api = nullptr;
-    std::unique_ptr<RendererCommandQueue>   g_renderer_command_queue = nullptr;
+    std::unique_ptr<RendererAPI> g_renderer_api = nullptr;
+    std::unique_ptr<RendererCommandQueue> g_renderer_command_queue = nullptr;
 
-    std::unique_ptr<SolidColorTexture>      g_white_texture = nullptr;
-    std::unique_ptr<SolidColorTexture>      g_black_texture = nullptr;
-    std::unique_ptr<SolidColorTextureCube>  g_white_texture_cube = nullptr;
-    std::unique_ptr<SolidColorTextureCube>  g_black_texture_cube = nullptr;
+    std::unique_ptr<SolidColorTexture> g_white_texture = nullptr;
+    std::unique_ptr<SolidColorTexture> g_black_texture = nullptr;
+    std::unique_ptr<SolidColorTextureCube> g_white_texture_cube = nullptr;
+    std::unique_ptr<SolidColorTextureCube> g_black_texture_cube = nullptr;
 
-    bool                                    g_wait_and_render = false;
+    bool g_wait_and_render = false;
 
-    StringID                                g_active_render_pass_name;
+    StringID g_active_render_pass_name;
 
     //-------------------------------------------------------------------------
     void Renderer::initialize(std::unique_ptr<RendererAPI> api)
@@ -34,13 +34,13 @@ namespace rex
         g_renderer_api = std::move(api);
         g_renderer_api->initialize();
 
-        g_white_texture = std::make_unique<SolidColorTexture>(rgba{ 0xffffffff });
-        g_black_texture = std::make_unique<SolidColorTexture>(rgba{ 0xff000000 });
+        g_white_texture = std::make_unique<SolidColorTexture>(rgba{0xffffffff});
+        g_black_texture = std::make_unique<SolidColorTexture>(rgba{0xff000000});
 
         constexpr uint8 NUM_FACES_CUBE = 6;
 
-        rgba white_texture_cube_data[NUM_FACES_CUBE] = { 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff };
-        rgba black_texture_cube_data[NUM_FACES_CUBE] = { 0xff000000, 0xff000000, 0xff000000, 0xff000000, 0xff000000, 0xff000000 };
+        rgba white_texture_cube_data[NUM_FACES_CUBE] = {0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff};
+        rgba black_texture_cube_data[NUM_FACES_CUBE] = {0xff000000, 0xff000000, 0xff000000, 0xff000000, 0xff000000, 0xff000000};
 
         g_white_texture_cube = std::make_unique<SolidColorTextureCube>(white_texture_cube_data, NUM_FACES_CUBE);
         g_black_texture_cube = std::make_unique<SolidColorTextureCube>(black_texture_cube_data, NUM_FACES_CUBE);
@@ -139,7 +139,8 @@ namespace rex
     }
 
     //-------------------------------------------------------------------------
-    void Renderer::render_quad(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Material> material, const rex::matrix4& transform)
+    void Renderer::render_quad(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Material> material,
+                               const rex::matrix4& transform)
     {
         g_renderer_api->render_quad(pipeline, uniformBufferSet, material, transform);
     }
@@ -149,7 +150,8 @@ namespace rex
         g_renderer_api->render_model(pipeline, uniformBufferSet, model, transform);
     }
     //-------------------------------------------------------------------------
-    void Renderer::render_model_with_material(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Model> model, const rex::matrix4& transform, ref_ptr<Material> material)
+    void Renderer::render_model_with_material(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Model> model,
+                                              const rex::matrix4& transform, ref_ptr<Material> material)
     {
         g_renderer_api->render_model_with_material(pipeline, uniformBufferSet, model, transform, material);
     }

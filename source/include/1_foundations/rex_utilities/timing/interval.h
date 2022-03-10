@@ -8,9 +8,10 @@ namespace rex
     {
     public:
         //-------------------------------------------------------------------------
-        Interval() 
+        Interval()
             : m_initial(getTickCount())
-        {}
+        {
+        }
         //-------------------------------------------------------------------------
         ~Interval() = default;
 
@@ -23,5 +24,4 @@ namespace rex
     private:
         uint64 m_initial;
     };
-
 }

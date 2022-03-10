@@ -6,9 +6,9 @@ namespace rex
 {
     //-------------------------------------------------------------------------
     OrthographicCamera::OrthographicCamera(float left, float right, float bottom, float top)
-        :m_projection_matrix(rex::ortho(left, right, bottom, top))
-        ,m_position(0.0f, 0.0f, 0.0f)
-        ,m_rotation(0.0f)
+        : m_projection_matrix(rex::ortho(left, right, bottom, top))
+        , m_position(0.0f, 0.0f, 0.0f)
+        , m_rotation(0.0f)
     {
         recalculateViewMatrix();
     }

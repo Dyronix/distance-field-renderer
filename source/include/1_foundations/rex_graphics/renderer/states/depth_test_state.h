@@ -11,20 +11,23 @@ namespace rex
     struct DepthTestState
     {
         DepthTestState()
-            :enabled(DepthTestEnabled::YES)
-            ,function(DepthTestFunction::LESS)
-            ,read_only(DepthBufferReadOnly::NO)
-        {}
+            : enabled(DepthTestEnabled::YES)
+            , function(DepthTestFunction::LESS)
+            , read_only(DepthBufferReadOnly::NO)
+        {
+        }
         DepthTestState(DepthTestEnabled enabled)
-            :enabled(enabled)
-            ,function(enabled ? DepthTestFunction::LESS : DepthTestFunction::NONE)
-            ,read_only(DepthBufferReadOnly::NO)
-        {}
+            : enabled(enabled)
+            , function(enabled ? DepthTestFunction::LESS : DepthTestFunction::NONE)
+            , read_only(DepthBufferReadOnly::NO)
+        {
+        }
         DepthTestState(DepthTestEnabled enabled, DepthTestFunction func, DepthBufferReadOnly readonly)
-            :enabled(enabled)
-            ,function(func)
-            ,read_only(readonly)
-        {}
+            : enabled(enabled)
+            , function(func)
+            , read_only(readonly)
+        {
+        }
 
         DepthTestEnabled enabled;
         DepthTestFunction function;

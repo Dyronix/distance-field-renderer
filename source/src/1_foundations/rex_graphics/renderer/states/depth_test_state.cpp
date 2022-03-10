@@ -9,22 +9,26 @@ namespace rex
     {
         if (e.enabled)
         {
-            os << "\t" << "Depth Testing Enabled: TRUE";
+            os << "\t"
+               << "Depth Testing Enabled: TRUE";
         }
         else
         {
-            os << "\t" << "Depth Testing Enabled: FALSE";
+            os << "\t"
+               << "Depth Testing Enabled: FALSE";
         }
 
         os << "\t" << e.function;
 
         if (e.enabled)
         {
-            os << "\t" << "Depth Buffer Read Only: TRUE";
+            os << "\t"
+               << "Depth Buffer Read Only: TRUE";
         }
         else
         {
-            os << "\t" << "Depth Buffer Read Only: FALSE";
+            os << "\t"
+               << "Depth Buffer Read Only: FALSE";
         }
 
         return os;

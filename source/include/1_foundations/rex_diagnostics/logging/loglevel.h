@@ -1,7 +1,7 @@
 #pragma once
 
 #if defined REX_PLATFORM_WINDOWS
-    #undef ERROR    // Defined in wingdi.h
+#undef ERROR  // Defined in wingdi.h
 #endif
 
 namespace rex

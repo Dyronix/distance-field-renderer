@@ -8,7 +8,10 @@ namespace sbt
     class TextureCube : public Texture
     {
     public:
-        Texture::Type getTextureType() const override { return Texture::Type::TEXTURE_CUBE; }
+        Texture::Type getTextureType() const override
+        {
+            return Texture::Type::TEXTURE_CUBE;
+        }
 
         virtual void invalidate(TextureCubeDescription&& desc) = 0;
     };

@@ -6,7 +6,6 @@
 
 namespace rex
 {
-
     //--------------------------------------------------------------------------------------------
     Instrumentor::Instrumentor()
         : m_current_session(nullptr)
@@ -43,7 +42,8 @@ namespace rex
             if (rex::logging::hasLogger(rex::logging::tags::ENGINE_LOGGER_NAME))
             {
                 // Edge case: BeginSession() might be before Log::Init()
-                rex::logging::getLogger(rex::logging::tags::ENGINE_LOGGER_NAME).error("Instrumentor::BeginSession('{0}') when session '{1}' already open.", name, m_current_session->name);
+                rex::logging::getLogger(rex::logging::tags::ENGINE_LOGGER_NAME)
+                    .error("Instrumentor::BeginSession('{0}') when session '{1}' already open.", name, m_current_session->name);
             }
 
             internalEndSession();
@@ -52,7 +52,7 @@ namespace rex
         m_output_stream.open(filepath);
         if (m_output_stream.is_open())
         {
-            m_current_session = new InstrumentationSession({ name });
+            m_current_session = new InstrumentationSession({name});
 
             writeHeader();
         }
@@ -132,7 +132,7 @@ namespace rex
 
     //--------------------------------------------------------------------------------------------
     InstrumentationTimer::InstrumentationTimer(const char* name)
-        :m_name(name)
+        : m_name(name)
         , m_stopped(false)
     {
         m_start_timepoint = std::chrono::steady_clock::now();
@@ -150,10 +150,11 @@ namespace rex
     void InstrumentationTimer::stop()
     {
         auto end_timepoint = std::chrono::steady_clock::now();
-        auto highres_start = FloatingPointMicroseconds{ m_start_timepoint.time_since_epoch() };
-        auto elapsed_time = std::chrono::time_point_cast<std::chrono::microseconds>(end_timepoint).time_since_epoch() - std::chrono::time_point_cast<std::chrono::microseconds>(m_start_timepoint).time_since_epoch();
+        auto highres_start = FloatingPointMicroseconds{m_start_timepoint.time_since_epoch()};
+        auto elapsed_time = std::chrono::time_point_cast<std::chrono::microseconds>(end_timepoint).time_since_epoch() -
+                            std::chrono::time_point_cast<std::chrono::microseconds>(m_start_timepoint).time_since_epoch();
 
-        Instrumentor::get().writeProfile({ m_name, highres_start, elapsed_time, std::this_thread::get_id() });
+        Instrumentor::get().writeProfile({m_name, highres_start, elapsed_time, std::this_thread::get_id()});
 
         m_stopped = true;
     }

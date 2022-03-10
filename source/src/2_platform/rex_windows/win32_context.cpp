@@ -15,8 +15,8 @@ namespace rex
         {
             //-------------------------------------------------------------------------
             Context::Context(SDL_Window* window, const SwapInterval& interval)
-                :m_sdl_window(window)
-                ,m_sdl_context(nullptr)
+                : m_sdl_window(window)
+                , m_sdl_context(nullptr)
             {
                 m_sdl_context = SDL_GL_CreateContext(m_sdl_window);
                 if (m_sdl_context == NULL)
@@ -53,11 +53,11 @@ namespace rex
             {
                 R_TODO("Include OpenGL version number");
 
-                //int version_major;
-                //int version_minor;
+                // int version_major;
+                // int version_minor;
 
-                //opengl::get_integer_value(GL_MAJOR_VERSION, &version_major);
-                //opengl::get_integer_value(GL_MINOR_VERSION, &version_minor);
+                // opengl::get_integer_value(GL_MAJOR_VERSION, &version_major);
+                // opengl::get_integer_value(GL_MINOR_VERSION, &version_minor);
 
                 return opengl::get_string_value(GL_VERSION);
             }
@@ -71,7 +71,7 @@ namespace rex
             //-------------------------------------------------------------------------
             const char* Context::get_vendor() const
             {
-                return  opengl::get_string_value(GL_VENDOR);
+                return opengl::get_string_value(GL_VENDOR);
             }
 
             //-------------------------------------------------------------------------

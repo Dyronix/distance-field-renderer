@@ -13,15 +13,15 @@ namespace sbt
         ShaderUniform();
         ShaderUniform(const StringID& name, const ShaderUniformType& type, uint32 size, uint32 offset);
 
-        const StringID&             getName() const;
-        const ShaderUniformType&    getType() const;
+        const StringID& getName() const;
+        const ShaderUniformType& getType() const;
 
-        uint32                      getSize() const;
-        uint32                      getOffset() const;
+        uint32 getSize() const;
+        uint32 getOffset() const;
 
-        bool                        isValid() const;
+        bool isValid() const;
 
-        static ShaderUniform        EMPTY;
+        static ShaderUniform EMPTY;
 
     private:
         StringID m_name;

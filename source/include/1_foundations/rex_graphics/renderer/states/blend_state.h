@@ -10,13 +10,14 @@ namespace rex
     struct BlendState
     {
         BlendState()
-            :enabled(BlendEnabled::YES)
-            ,src(BlendFunction::SRC_ALPHA)
-            ,dst(BlendFunction::ONE_MINUS_SRC_ALPHA)
-        {}
+            : enabled(BlendEnabled::YES)
+            , src(BlendFunction::SRC_ALPHA)
+            , dst(BlendFunction::ONE_MINUS_SRC_ALPHA)
+        {
+        }
 
         BlendEnabled enabled;
-        
+
         BlendFunction src;
         BlendFunction dst;
     };

@@ -15,7 +15,7 @@ namespace rex
         using FrameBufferPoolManaged = YesNoEnum;
 
         //-------------------------------------------------------------------------
-        void check_framebuffer_status(const StringID &name)
+        void check_framebuffer_status(const StringID& name)
         {
             auto result = opengl::check_framebuffer_status(GL_FRAMEBUFFER);
             if (result == GL_FRAMEBUFFER_COMPLETE)
@@ -23,31 +23,31 @@ namespace rex
 
             switch (result)
             {
-            case GL_FRAMEBUFFER_UNDEFINED:
-                R_ERROR("[OpenGL Error]: FrameBuffer {0} undefined.", name.toString());
-                R_ASSERT_X(false, "FrameBuffer is incomplete!");
-                break;
-            case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-                R_ERROR("[OpenGL Error]: FrameBuffer {0} incomplete attachment.", name.toString());
-                R_ASSERT_X(false, "FrameBuffer is incomplete!");
-                break;
-            case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-                R_ERROR("[OpenGL Error]: FrameBuffer {0} incomplete missing attachment.", name.toString());
-                R_ASSERT_X(false, "FrameBuffer is incomplete!");
-                break;
-            case GL_FRAMEBUFFER_UNSUPPORTED:
-                R_ERROR("[OpenGL Error]: FrameBuffer unsupported.", name.toString());
-                R_ASSERT_X(false, "FrameBuffer is incomplete!");
-                break;
-            case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
-                R_ERROR("[OpenGL Error]: FrameBuffer {0} incomplete multisample.", name.toString());
-                R_ASSERT_X(false, "FrameBuffer is incomplete!");
-                break;
+                case GL_FRAMEBUFFER_UNDEFINED:
+                    R_ERROR("[OpenGL Error]: FrameBuffer {0} undefined.", name.toString());
+                    R_ASSERT_X(false, "FrameBuffer is incomplete!");
+                    break;
+                case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+                    R_ERROR("[OpenGL Error]: FrameBuffer {0} incomplete attachment.", name.toString());
+                    R_ASSERT_X(false, "FrameBuffer is incomplete!");
+                    break;
+                case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+                    R_ERROR("[OpenGL Error]: FrameBuffer {0} incomplete missing attachment.", name.toString());
+                    R_ASSERT_X(false, "FrameBuffer is incomplete!");
+                    break;
+                case GL_FRAMEBUFFER_UNSUPPORTED:
+                    R_ERROR("[OpenGL Error]: FrameBuffer unsupported.", name.toString());
+                    R_ASSERT_X(false, "FrameBuffer is incomplete!");
+                    break;
+                case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
+                    R_ERROR("[OpenGL Error]: FrameBuffer {0} incomplete multisample.", name.toString());
+                    R_ASSERT_X(false, "FrameBuffer is incomplete!");
+                    break;
             }
         }
 
         //-------------------------------------------------------------------------
-        ColorAttachments create_color_attachments(ColorAttachmentDescriptions &&descriptions)
+        ColorAttachments create_color_attachments(ColorAttachmentDescriptions&& descriptions)
         {
             ColorAttachments color_attachments;
 
@@ -56,7 +56,8 @@ namespace rex
             {
                 auto color_attachment = RenderTarget::create(std::move(descriptions[i]));
 
-                opengl::framebuffer_texture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + (offset * i), GL_TEXTURE_2D, color_attachment->getTextureID(), 0);
+                opengl::framebuffer_texture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + (offset * i), GL_TEXTURE_2D, color_attachment->getTextureID(),
+                                              0);
 
                 color_attachments.push_back(std::move(color_attachment));
             }
@@ -64,7 +65,7 @@ namespace rex
             return color_attachments;
         }
         //-------------------------------------------------------------------------
-        DepthAttachment create_depth_attachment(DepthAttachmentDescription &&description, DepthAttachmentOption option)
+        DepthAttachment create_depth_attachment(DepthAttachmentDescription&& description, DepthAttachmentOption option)
         {
             DepthAttachment depth_attachment = nullptr;
 
@@ -73,19 +74,13 @@ namespace rex
                 GLenum attachment_type;
                 switch (option)
                 {
-                case DepthAttachmentOption::DEPTH_ONLY:
-                    attachment_type = GL_DEPTH_ATTACHMENT;
-                    break;
-                case DepthAttachmentOption::STENCIL_ONLY:
-                    attachment_type = GL_STENCIL_ATTACHMENT;
-                    break;
-                case DepthAttachmentOption::DEPTH_STENCIL:
-                    attachment_type = GL_DEPTH_STENCIL_ATTACHMENT;
-                    break;
-                default:
-                    R_ASSERT_X(false, "Unsupported Depth Attachment Option");
-                    attachment_type = GL_INVALID_ENUM;
-                    break;
+                    case DepthAttachmentOption::DEPTH_ONLY: attachment_type = GL_DEPTH_ATTACHMENT; break;
+                    case DepthAttachmentOption::STENCIL_ONLY: attachment_type = GL_STENCIL_ATTACHMENT; break;
+                    case DepthAttachmentOption::DEPTH_STENCIL: attachment_type = GL_DEPTH_STENCIL_ATTACHMENT; break;
+                    default:
+                        R_ASSERT_X(false, "Unsupported Depth Attachment Option");
+                        attachment_type = GL_INVALID_ENUM;
+                        break;
                 }
 
                 if (attachment_type != GL_INVALID_ENUM)
@@ -102,7 +97,7 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        void draw_color_buffers(const ColorAttachments &attachments)
+        void draw_color_buffers(const ColorAttachments& attachments)
         {
             if (!attachments.empty())
             {
@@ -113,7 +108,7 @@ namespace rex
 
                 R_ASSERT(max_attachments > attachments.size());
 
-                GLenum *buffers = new GLenum[max_attachments];
+                GLenum* buffers = new GLenum[max_attachments];
                 for (int32 i = 0; i < max_attachments; ++i)
                 {
                     buffers[i] = GL_COLOR_ATTACHMENT0 + (offset * i);
@@ -132,23 +127,23 @@ namespace rex
 
         namespace framebuffer_pool
         {
-            FrameBufferPoolManaged  g_managed(FrameBufferPoolManaged::NO);
+            FrameBufferPoolManaged g_managed(FrameBufferPoolManaged::NO);
         }
 
         FrameBufferPool g_frame_buffer_pool;
 
         //-------------------------------------------------------------------------
-        ref_ptr<rex::FrameBuffer> FrameBuffer::create(FrameBufferDescription &&description, DepthAttachmentOption depthAttachmentOption)
+        ref_ptr<rex::FrameBuffer> FrameBuffer::create(FrameBufferDescription&& description, DepthAttachmentOption depthAttachmentOption)
         {
             framebuffer_pool::g_managed = FrameBufferPoolManaged::YES;
             auto frame_buffer = g_frame_buffer_pool.get(std::move(description), depthAttachmentOption);
             framebuffer_pool::g_managed = FrameBufferPoolManaged::NO;
-            
+
             return frame_buffer;
         }
 
         //-------------------------------------------------------------------------
-        FrameBuffer::FrameBuffer(FrameBufferDescription &&description, DepthAttachmentOption depthAttachmentOption)
+        FrameBuffer::FrameBuffer(FrameBufferDescription&& description, DepthAttachmentOption depthAttachmentOption)
             : m_buffer_id(0)
             , m_depth_attachment_option(depthAttachmentOption)
         {
@@ -186,14 +181,13 @@ namespace rex
             if (m_buffer_id)
             {
                 ref_ptr<FrameBuffer> instance(this);
-                Renderer::submit(
-                    [instance]() mutable
-                    {
-                        RENDERER_INFO("Executing - Destroying Framebuffer: {0}", instance->m_name.toString());
+                Renderer::submit([instance]() mutable
+                                 {
+                                     RENDERER_INFO("Executing - Destroying Framebuffer: {0}", instance->m_name.toString());
 
-                        opengl::delete_framebuffers(1, &instance->m_buffer_id);
-                        instance->m_buffer_id = 0; 
-                    });
+                                     opengl::delete_framebuffers(1, &instance->m_buffer_id);
+                                     instance->m_buffer_id = 0;
+                                 });
             }
         }
 
@@ -218,7 +212,7 @@ namespace rex
         {
             std::vector<ref_ptr<Texture>> color_attachments;
             std::transform(std::begin(m_color_attachments), std::end(m_color_attachments), std::back_inserter(color_attachments),
-                           [](const auto &attachment)
+                           [](const auto& attachment)
                            {
                                return ref_ptr<Texture>(attachment);
                            });
@@ -245,7 +239,8 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        void FrameBuffer::invalidate(ColorAttachmentDescriptions &&colorDescriptions, DepthAttachmentDescription &&depthDescription, rex::FrameBuffer::DepthAttachmentOption depthAttachmentOption, IsRenderThread rt)
+        void FrameBuffer::invalidate(ColorAttachmentDescriptions&& colorDescriptions, DepthAttachmentDescription&& depthDescription,
+                                     rex::FrameBuffer::DepthAttachmentOption depthAttachmentOption, IsRenderThread rt)
         {
             if (rt)
             {
@@ -272,29 +267,33 @@ namespace rex
             else
             {
                 ref_ptr<FrameBuffer> instance(this);
-                Renderer::submit(
-                    [instance, color_descriptions = std::move(colorDescriptions), depth_description = std::move(depthDescription), depthAttachmentOption]() mutable
-                    {
-                        RENDERER_INFO("Executing - Creating Framebuffer: {0}", instance->m_name.toString());
+                Renderer::submit([
+                    instance,
+                    color_descriptions = std::move(colorDescriptions),
+                    depth_description = std::move(depthDescription),
+                    depthAttachmentOption
+                ]() mutable
+                                 {
+                                     RENDERER_INFO("Executing - Creating Framebuffer: {0}", instance->m_name.toString());
 
-                        if (instance->m_buffer_id)
-                        {
-                            instance->release();
-                        }
+                                     if (instance->m_buffer_id)
+                                     {
+                                         instance->release();
+                                     }
 
-                        opengl::generate_framebuffers(1, &instance->m_buffer_id);
-                        opengl::bind_framebuffer(GL_FRAMEBUFFER, instance->m_buffer_id);
+                                     opengl::generate_framebuffers(1, &instance->m_buffer_id);
+                                     opengl::bind_framebuffer(GL_FRAMEBUFFER, instance->m_buffer_id);
 
-                        instance->m_color_attachments = create_color_attachments(std::move(color_descriptions));
+                                     instance->m_color_attachments = create_color_attachments(std::move(color_descriptions));
 
-                        instance->m_depth_attachment_option = depthAttachmentOption;
-                        instance->m_depth_attachment = create_depth_attachment(std::move(depth_description), depthAttachmentOption);
+                                     instance->m_depth_attachment_option = depthAttachmentOption;
+                                     instance->m_depth_attachment = create_depth_attachment(std::move(depth_description), depthAttachmentOption);
 
-                        draw_color_buffers(instance->m_color_attachments);
-                        check_framebuffer_status(instance->m_name);
+                                     draw_color_buffers(instance->m_color_attachments);
+                                     check_framebuffer_status(instance->m_name);
 
-                        opengl::bind_framebuffer(GL_FRAMEBUFFER, 0);
-                    });
+                                     opengl::bind_framebuffer(GL_FRAMEBUFFER, 0);
+                                 });
             }
         }
         //-------------------------------------------------------------------------
@@ -328,7 +327,7 @@ namespace rex
             ColorAttachmentDescriptions color_descriptions;
             for (int32 i = 0; i < m_color_attachments.size(); ++i)
             {
-                auto &description = m_color_attachments[i]->get_description();
+                auto& description = m_color_attachments[i]->get_description();
 
                 Texture2DDescription new_description;
 
@@ -348,7 +347,7 @@ namespace rex
             DepthAttachmentDescription depth_description;
             if (m_depth_attachment)
             {
-                auto &description = m_depth_attachment->get_description();
+                auto& description = m_depth_attachment->get_description();
 
                 depth_description.filters = description.filters;
                 depth_description.format = description.format;
@@ -371,7 +370,7 @@ namespace rex
             {
                 opengl::delete_framebuffers(1, &m_buffer_id);
 
-                for (auto &color_attachment : m_color_attachments)
+                for (auto& color_attachment : m_color_attachments)
                 {
                     color_attachment->release();
                 }
@@ -403,14 +402,13 @@ namespace rex
                 RENDERER_INFO("Submitting - Bind Framebuffer: {0}", m_name.to_string());
 
                 ref_ptr<const FrameBuffer> instance(this);
-                Renderer::submit(
-                    [instance]()
-                    {
-                        RENDERER_INFO("Executing - Bind Framebuffer: {0}", instance->m_name.to_string());
+                Renderer::submit([instance]()
+                                 {
+                                     RENDERER_INFO("Executing - Bind Framebuffer: {0}", instance->m_name.to_string());
 
-                        opengl::bind_framebuffer(GL_FRAMEBUFFER, instance->m_buffer_id);
-                        opengl::viewport(0, 0, instance->get_width(), instance->get_height()); 
-                    });
+                                     opengl::bind_framebuffer(GL_FRAMEBUFFER, instance->m_buffer_id);
+                                     opengl::viewport(0, 0, instance->get_width(), instance->get_height());
+                                 });
             }
         }
         //-------------------------------------------------------------------------
@@ -427,13 +425,12 @@ namespace rex
                 RENDERER_INFO("Submitting - Unbind Framebuffer: {0}", m_name.to_string());
 
                 ref_ptr<const FrameBuffer> instance(this);
-                Renderer::submit(
-                    [instance]()
-                    {
-                        RENDERER_INFO("Executing - Unbind Framebuffer: {0}", instance->m_name.to_string());
+                Renderer::submit([instance]()
+                                 {
+                                     RENDERER_INFO("Executing - Unbind Framebuffer: {0}", instance->m_name.to_string());
 
-                        opengl::bind_framebuffer(GL_FRAMEBUFFER, 0); 
-                    });
+                                     opengl::bind_framebuffer(GL_FRAMEBUFFER, 0);
+                                 });
             }
         }
     }

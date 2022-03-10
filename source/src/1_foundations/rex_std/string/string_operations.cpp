@@ -9,21 +9,19 @@ namespace rex
         //-------------------------------------------------------------------------
         std::string& str_tolower(std::string& s)
         {
-            std::transform(s.begin(), s.end(), s.begin(),
-                [](unsigned char c)
-                {
-                    return gsl::narrow<uint8>(std::tolower(c));
-                });
+            std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c)
+                           {
+                               return gsl::narrow<uint8>(std::tolower(c));
+                           });
             return s;
         }
         //-------------------------------------------------------------------------
         std::string& str_toupper(std::string& s)
         {
-            std::transform(s.begin(), s.end(), s.begin(),
-                [](unsigned char c)
-                {
-                    return gsl::narrow<uint8>(std::toupper(c));
-                });
+            std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c)
+                           {
+                               return gsl::narrow<uint8>(std::toupper(c));
+                           });
             return s;
         }
 
@@ -146,7 +144,7 @@ namespace rex
             while ((start_pos = str.find(from, start_pos)) != std::string::npos)
             {
                 str.replace(start_pos, from.length(), to);
-                start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
+                start_pos += to.length();  // Handles case where 'to' is a substring of 'from'
             }
             return str;
         }
@@ -154,20 +152,21 @@ namespace rex
         //-------------------------------------------------------------------------
         void ltrim(std::string& s)
         {
-            s.erase(s.begin(), std::find_if(s.begin(), s.end(),
-                [](unsigned char ch)
-                {
-                    return !std::isspace(ch);
-                }));
+            s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch)
+                                            {
+                                                return !std::isspace(ch);
+                                            }));
         }
         //-------------------------------------------------------------------------
         void rtrim(std::string& s)
         {
             s.erase(std::find_if(s.rbegin(), s.rend(),
-                [](unsigned char ch)
-                {
-                    return !std::isspace(ch);
-                }).base(), s.end());
+                                 [](unsigned char ch)
+                                 {
+                                     return !std::isspace(ch);
+                                 })
+                        .base(),
+                    s.end());
         }
         //-------------------------------------------------------------------------
         void trim(std::string& s)

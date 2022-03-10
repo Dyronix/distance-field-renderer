@@ -4,8 +4,8 @@
 
 namespace rex
 {
-    using fseconds      = std::chrono::duration<float>;
-    using fmiliseconds  = std::chrono::duration<float, std::milli>;
+    using fseconds = std::chrono::duration<float>;
+    using fmiliseconds = std::chrono::duration<float, std::milli>;
 
     class DeltaTime
     {
@@ -14,7 +14,8 @@ namespace rex
         DeltaTime()
             : m_last_time_point(std::chrono::steady_clock::now())
             , m_current_time_point(std::chrono::steady_clock::now() - m_last_time_point)
-        {}
+        {
+        }
 
         //-------------------------------------------------------------------------
         void update()
@@ -22,26 +23,25 @@ namespace rex
             std::chrono::steady_clock::time_point current = std::chrono::steady_clock::now();
 
             m_current_time_point = fmiliseconds(current - m_last_time_point);
-            m_last_time_point    = current;
+            m_last_time_point = current;
         }
-                              
+
         //--------------------------------------------------------------------------------------------
-        float to_seconds() const          
+        float to_seconds() const
         {
 #ifdef __EMSCRIPTEN__
-            return 1.0f / 60.0f;       
+            return 1.0f / 60.0f;
 #else
-            return fseconds { m_current_time_point }.count(); 
+            return fseconds{m_current_time_point}.count();
 #endif
-
         }
         //--------------------------------------------------------------------------------------------
-        float to_milliseconds() const     
-        { 
+        float to_milliseconds() const
+        {
 #ifdef __EMSCRIPTEN__
-            return (1.0f / 60.0f) * 1000;       
+            return (1.0f / 60.0f) * 1000;
 #else
-            return m_current_time_point.count(); 
+            return m_current_time_point.count();
 #endif
         }
 

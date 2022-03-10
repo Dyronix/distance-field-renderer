@@ -5,7 +5,7 @@
 
 // Usage: include this header file somewhere in your code (eg. precompiled header), and then use like:
 //
-// Instrumentor::get().beginSession("Session Name");        // Begin session 
+// Instrumentor::get().beginSession("Session Name");        // Begin session
 // {
 //     InstrumentationTimer timer("Profiled Scope Name");   // Place code like this in scopes you'd like to include in profiling
 //     // Code
@@ -26,12 +26,12 @@ namespace rex
 
     struct ProfileResult
     {
-        std::string                 name;
+        std::string name;
 
-        FloatingPointMicroseconds   start;
-        std::chrono::microseconds   elapsed_time;
+        FloatingPointMicroseconds start;
+        std::chrono::microseconds elapsed_time;
 
-        std::thread::id             thread_id;
+        std::thread::id thread_id;
     };
 
     struct InstrumentationSession
@@ -60,13 +60,13 @@ namespace rex
         void write_footer();
 
         void internal_end_session();
-    
+
         InstrumentationSession* m_current_session;
 
-        std::mutex              m_mutex;
-        std::ofstream           m_output_stream;
+        std::mutex m_mutex;
+        std::ofstream m_output_stream;
 
-        bool                    m_enabled;
+        bool m_enabled;
     };
 
     class InstrumentationTimer
@@ -79,7 +79,7 @@ namespace rex
 
     private:
         const char* m_name;
-        bool        m_stopped;
+        bool m_stopped;
 
         std::chrono::time_point<std::chrono::steady_clock> m_start_timepoint;
     };

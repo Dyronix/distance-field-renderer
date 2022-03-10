@@ -30,23 +30,23 @@ namespace rex
 
     struct ModelCreationInfo
     {
-        StringID                            name;
+        StringID name;
 
-        std::vector<Vertex>                 vertices;
-        std::vector<TriangleIndices>        indices;
+        std::vector<Vertex> vertices;
+        std::vector<TriangleIndices> indices;
 
-        rex::matrix4                           transform;
-        rex::matrix4                           inverse_transform;
+        rex::matrix4 transform;
+        rex::matrix4 inverse_transform;
 
-        AABB                                bounding_box;
+        AABB bounding_box;
 
-        std::vector<Submesh>                submeshes;
+        std::vector<Submesh> submeshes;
 
-        std::vector<ref_ptr<Texture>>       diffuse_textures;
-        std::vector<ref_ptr<Texture>>       normal_textures;
-        std::vector<ref_ptr<Texture>>       roughness_textures;
+        std::vector<ref_ptr<Texture>> diffuse_textures;
+        std::vector<ref_ptr<Texture>> normal_textures;
+        std::vector<ref_ptr<Texture>> roughness_textures;
 
-        MaterialContainer                   materials;
+        MaterialContainer materials;
     };
 
     class Model : public RefCountedObject

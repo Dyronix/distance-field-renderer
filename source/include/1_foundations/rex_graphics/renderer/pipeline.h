@@ -18,7 +18,14 @@ namespace rex
     struct PipelineDescription
     {
         PipelineDescription()
-            : shader(nullptr), renderpass(nullptr), layout(), primitive_type(PrimitiveType::TRIANGLES), facecull_state(FaceCullingEnabled::NO), depth_test_state(DepthTestEnabled::NO), rasterizer_state(), name(EName::SID_None)
+            : shader(nullptr)
+            , renderpass(nullptr)
+            , layout()
+            , primitive_type(PrimitiveType::TRIANGLES)
+            , facecull_state(FaceCullingEnabled::NO)
+            , depth_test_state(DepthTestEnabled::NO)
+            , rasterizer_state()
+            , name(EName::SID_None)
         {
         }
 
@@ -53,7 +60,7 @@ namespace rex
         virtual const DepthTestState& get_depth_test_state() const = 0;
         virtual const RasterizerState& get_rasterizer_state() const = 0;
 
-        virtual const StringID &get_debug_name() const = 0;
+        virtual const StringID& get_debug_name() const = 0;
 
         virtual void invalidate() = 0;
         virtual void release() = 0;

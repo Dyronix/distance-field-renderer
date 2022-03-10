@@ -26,7 +26,6 @@ namespace rex
             void on_clear() final;
             void on_free() final;
 
-
         private:
             void* m_curr_stack_ptr;
 

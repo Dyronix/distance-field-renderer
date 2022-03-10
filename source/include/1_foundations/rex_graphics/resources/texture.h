@@ -25,10 +25,10 @@ namespace rex
             DEPTH_STENCIL_COMPONENT,
         };
 
-        static uint32 get_channel_count(const Texel::Format &format);
+        static uint32 get_channel_count(const Texel::Format& format);
 
         Texel();
-        Texel(const Texel::Format &format);
+        Texel(const Texel::Format& format);
         ~Texel();
 
         uint32 get_count() const;
@@ -171,20 +171,20 @@ namespace rex
             DEPTH_COMPONENT_32_FLOAT_STENCIL_8_FLOAT,
         };
 
-        static const std::vector<Texture::Wrap> &default_texture_2D_wrapping();
-        static const std::vector<Texture::Wrap> &default_texture_3D_wrapping();
+        static const std::vector<Texture::Wrap>& default_texture_2D_wrapping();
+        static const std::vector<Texture::Wrap>& default_texture_3D_wrapping();
 
-        static const std::vector<Texture::Filter> &default_texture_filter();
+        static const std::vector<Texture::Filter>& default_texture_filter();
 
-        static const uint32 get_texture_format_byte_size(const Texture::Format &format);
+        static const uint32 get_texture_format_byte_size(const Texture::Format& format);
 
         virtual ~Texture() = default;
 
         virtual void invalidate() = 0;
         virtual void release() = 0;
 
-        virtual const StringID &get_name() const = 0;
-        virtual const Texture::Data &get_data() const = 0;
+        virtual const StringID& get_name() const = 0;
+        virtual const Texture::Data& get_data() const = 0;
 
         virtual uint32 get_width() const = 0;
         virtual uint32 get_height() const = 0;
@@ -196,10 +196,10 @@ namespace rex
         virtual Texture::Usage get_usage() const = 0;
         virtual Texel::Format get_channels() const = 0;
 
-        virtual void set_data(Texture::Data &&textureData) = 0;
-        virtual void set_wrap(const Wrap &textureWrap) = 0;
-        virtual void set_filter(const Filter &textureFilter) = 0;
-        virtual void set_format(const Texel &texelFormat, const Format &textureFormat) = 0;
+        virtual void set_data(Texture::Data&& textureData) = 0;
+        virtual void set_wrap(const Wrap& textureWrap) = 0;
+        virtual void set_filter(const Filter& textureFilter) = 0;
+        virtual void set_format(const Texel& texelFormat, const Format& textureFormat) = 0;
 
         virtual void bind(IsRenderThread isRenderThread = IsRenderThread::NO) const = 0;
         virtual void unbind(IsRenderThread isRenderThread = IsRenderThread::NO) const = 0;
@@ -217,8 +217,8 @@ namespace rex
 
         void release();
 
-        ref_ptr<Texture> &get_texture();
-        const ref_ptr<Texture> &get_texture() const;
+        ref_ptr<Texture>& get_texture();
+        const ref_ptr<Texture>& get_texture() const;
 
     private:
         ref_ptr<Texture> texture;
@@ -266,9 +266,9 @@ namespace rex
         };
 
         Pixel();
-        Pixel(const Pixel &other);
-        Pixel(const Texel::Format &texelFormat, const Texture::Format &textureFormat);
-        Pixel(const Format &pixelFormat, const Type &pixelType);
+        Pixel(const Pixel& other);
+        Pixel(const Texel::Format& texelFormat, const Texture::Format& textureFormat);
+        Pixel(const Format& pixelFormat, const Type& pixelType);
         ~Pixel();
 
         const Format get_format() const;
@@ -281,8 +281,8 @@ namespace rex
 
     namespace conversions
     {
-        std::string to_display_string(const Texture::Type &type);
-        std::string to_display_string(const Texture::Usage &usage);
-        std::string to_display_string(const Texture::Format &format);
+        std::string to_display_string(const Texture::Type& type);
+        std::string to_display_string(const Texture::Usage& usage);
+        std::string to_display_string(const Texture::Format& format);
     }
 }

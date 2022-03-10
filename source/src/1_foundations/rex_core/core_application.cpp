@@ -9,7 +9,7 @@ namespace rex
 
     //-------------------------------------------------------------------------
     CoreApplication::CoreApplication(const ApplicationDescription& description)
-        :m_description(description)
+        : m_description(description)
     {
         R_INFO("Creating application: {0}", description.name);
 
@@ -26,8 +26,10 @@ namespace rex
     //-------------------------------------------------------------------------
     int32 CoreApplication::run()
     {
-        if (!initialize()) return EXIT_FAILURE;
-        if (!shutdown()) return EXIT_FAILURE;
+        if (!initialize())
+            return EXIT_FAILURE;
+        if (!shutdown())
+            return EXIT_FAILURE;
 
         auto live_references = memory::get_all_references();
         if (!live_references.empty())

@@ -20,10 +20,10 @@ namespace sbt
         uint32 getSize() const;
         uint32 getBinding() const;
         uint32 getUniformCount() const;
-        
+
         bool isValid() const;
 
-        static ShaderUniformBlock   EMPTY;
+        static ShaderUniformBlock EMPTY;
 
     private:
         StringID m_name;

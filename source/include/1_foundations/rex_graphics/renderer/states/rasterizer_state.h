@@ -8,13 +8,15 @@ namespace rex
     struct RasterizerState
     {
         RasterizerState()
-            :cull_mode(CullMode::FRONT_AND_BACK)
-            ,fill_mode(FillMode::FILL)
-        {}
+            : cull_mode(CullMode::FRONT_AND_BACK)
+            , fill_mode(FillMode::FILL)
+        {
+        }
         RasterizerState(FillMode fillMode)
-            :cull_mode(CullMode::FRONT_AND_BACK)
-            ,fill_mode(fillMode)
-        {}
+            : cull_mode(CullMode::FRONT_AND_BACK)
+            , fill_mode(fillMode)
+        {
+        }
 
         CullMode cull_mode;
         FillMode fill_mode;

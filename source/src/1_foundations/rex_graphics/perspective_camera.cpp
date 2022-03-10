@@ -7,15 +7,17 @@ namespace rex
 {
     //-------------------------------------------------------------------------
     PerspectiveCamera::PerspectiveCamera(const FieldOfView& fieldOfView, const AspectRatio& aspectRatio, const ClippingPlanes& clippingPlanes)
-        :m_transform(rex::vec3(0.0f, 2.0f, 4.0f))
-        ,m_aspect_ratio(aspectRatio)
-        ,m_field_of_view(fieldOfView)
-        ,m_clipping_planes(clippingPlanes)
-        ,m_inv_view_projection_matrix(rex::identity<rex::matrix4>())
-        ,m_view_projection_matrix(rex::identity<rex::matrix4>())
-        ,m_projection_matrix(rex::perspective(m_field_of_view.getVertical().to_rad(), m_aspect_ratio.getRatio().get(), clippingPlanes.near_plane, clippingPlanes.far_plane))
-        ,m_view_matrix(rex::identity<rex::matrix4>())
-    {}
+        : m_transform(rex::vec3(0.0f, 2.0f, 4.0f))
+        , m_aspect_ratio(aspectRatio)
+        , m_field_of_view(fieldOfView)
+        , m_clipping_planes(clippingPlanes)
+        , m_inv_view_projection_matrix(rex::identity<rex::matrix4>())
+        , m_view_projection_matrix(rex::identity<rex::matrix4>())
+        , m_projection_matrix(rex::perspective(m_field_of_view.getVertical().to_rad(), m_aspect_ratio.getRatio().get(), clippingPlanes.near_plane,
+                                               clippingPlanes.far_plane))
+        , m_view_matrix(rex::identity<rex::matrix4>())
+    {
+    }
     //-------------------------------------------------------------------------
     PerspectiveCamera::~PerspectiveCamera() = default;
 
@@ -61,7 +63,8 @@ namespace rex
             m_field_of_view.reevaluate(ratio.getRatio());
         }
 
-        m_projection_matrix = rex::perspective(m_field_of_view.getVertical().to_rad(), m_aspect_ratio.getRatio().get(), m_clipping_planes.near_plane, m_clipping_planes.far_plane);
+        m_projection_matrix = rex::perspective(m_field_of_view.getVertical().to_rad(), m_aspect_ratio.getRatio().get(), m_clipping_planes.near_plane,
+                                               m_clipping_planes.far_plane);
 
         m_transform.reevaluate();
         updateMatrices();
@@ -75,7 +78,8 @@ namespace rex
         }
 
         m_field_of_view.setVertical(angle);
-        m_projection_matrix = rex::perspective(m_field_of_view.getVertical().to_rad(), m_aspect_ratio.getRatio().get(), m_clipping_planes.near_plane, m_clipping_planes.far_plane);
+        m_projection_matrix = rex::perspective(m_field_of_view.getVertical().to_rad(), m_aspect_ratio.getRatio().get(), m_clipping_planes.near_plane,
+                                               m_clipping_planes.far_plane);
 
         m_transform.reevaluate();
         updateMatrices();
@@ -89,7 +93,8 @@ namespace rex
         }
 
         m_field_of_view.setHorizontal(angle);
-        m_projection_matrix = rex::perspective(m_field_of_view.getVertical().to_rad(), m_aspect_ratio.getRatio().get(), m_clipping_planes.near_plane, m_clipping_planes.far_plane);
+        m_projection_matrix = rex::perspective(m_field_of_view.getVertical().to_rad(), m_aspect_ratio.getRatio().get(), m_clipping_planes.near_plane,
+                                               m_clipping_planes.far_plane);
 
         m_transform.reevaluate();
         updateMatrices();
@@ -103,7 +108,8 @@ namespace rex
         }
 
         m_clipping_planes = planes;
-        m_projection_matrix = rex::perspective(m_field_of_view.getVertical().to_rad(), m_aspect_ratio.getRatio().get(), m_clipping_planes.near_plane, m_clipping_planes.far_plane);
+        m_projection_matrix = rex::perspective(m_field_of_view.getVertical().to_rad(), m_aspect_ratio.getRatio().get(), m_clipping_planes.near_plane,
+                                               m_clipping_planes.far_plane);
 
         m_transform.reevaluate();
         updateMatrices();

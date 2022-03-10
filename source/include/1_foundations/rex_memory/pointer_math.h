@@ -8,17 +8,21 @@ namespace rex
 {
     namespace pointer_math
     {
-        template<typename T>
+        template <typename T>
         struct Header
         {
         public:
             //-------------------------------------------------------------------------
             Header()
-                :m_size(sizeof(T))
-            {}
+                : m_size(sizeof(T))
+            {
+            }
 
             //-------------------------------------------------------------------------
-            uint64 get_size() const { return m_size; }
+            uint64 get_size() const
+            {
+                return m_size;
+            }
 
         private:
             uint64 m_size;
@@ -77,7 +81,7 @@ namespace rex
             // We are already aligned
             //
             if (adjustment == alignment)
-                return 0; 
+                return 0;
 
             return adjustment;
         }
@@ -90,7 +94,7 @@ namespace rex
         /// <param name="alignment">The required alignment of the address</param>
         /// <param name="header">The required header of the address</param>
         /// <returns>The offset required to align the address</returns>
-        template<typename T>
+        template <typename T>
         inline uint64 alignment_offset(const void* address, uint64 alignment, const Header<T>& header)
         {
             uint64 adjustment = alignment_offset(address, alignment);
@@ -116,7 +120,7 @@ namespace rex
         /// </summary>
         /// <param name="address">The adress that needs to be aligned</param>
         /// <returns>True if the adress is alligned, false otherwise</returns>
-        template<class T>
+        template <class T>
         inline bool is_aligned(const T* address)
         {
             return alignment_offset(address, __alignof(T)) == 0;

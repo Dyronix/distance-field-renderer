@@ -9,7 +9,7 @@ namespace rex
     //-------------------------------------------------------------------------
     inline RefreshRate operator"" _hz(long double value)
     {
-        return RefreshRate{ gsl::narrow<int32>(value) };
+        return RefreshRate{gsl::narrow<int32>(value)};
     }
 
     struct FrameInfo;

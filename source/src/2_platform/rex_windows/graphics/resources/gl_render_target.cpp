@@ -15,14 +15,27 @@ namespace rex
     namespace opengl
     {
         //-------------------------------------------------------------------------
-        ref_ptr<RenderTarget> RenderTarget::create(Texture2DDescription &&desc)
+        ref_ptr<RenderTarget> RenderTarget::create(Texture2DDescription&& desc)
         {
             return make_ref<RenderTarget>(std::move(desc));
         }
 
         //-------------------------------------------------------------------------
-        RenderTarget::RenderTarget(Texture2DDescription &&desc)
-            : m_name(EName::SID_None), m_width(0), m_height(0), m_id(0), m_sampler_id(0), m_usage(Texture::Usage::UNSPECIFIED), m_wrap_s(Texture::Wrap::Type::CLAMP), m_wrap_t(Texture::Wrap::Type::CLAMP), m_min_filter(Texture::Filter::Type::LINEAR), m_mag_filter(Texture::Filter::Type::LINEAR), m_format(Texture::Format::UNKNOWN), m_texel_format(Texel::Format::UNKNOWN), m_pixel_format(m_texel_format, m_format), m_local_storage()
+        RenderTarget::RenderTarget(Texture2DDescription&& desc)
+            : m_name(EName::SID_None)
+            , m_width(0)
+            , m_height(0)
+            , m_id(0)
+            , m_sampler_id(0)
+            , m_usage(Texture::Usage::UNSPECIFIED)
+            , m_wrap_s(Texture::Wrap::Type::CLAMP)
+            , m_wrap_t(Texture::Wrap::Type::CLAMP)
+            , m_min_filter(Texture::Filter::Type::LINEAR)
+            , m_mag_filter(Texture::Filter::Type::LINEAR)
+            , m_format(Texture::Format::UNKNOWN)
+            , m_texel_format(Texel::Format::UNKNOWN)
+            , m_pixel_format(m_texel_format, m_format)
+            , m_local_storage()
         {
             if (desc.width > GL_MAX_TEXTURE_SIZE || desc.height > GL_MAX_TEXTURE_SIZE)
             {
@@ -54,7 +67,7 @@ namespace rex
             invalidate(getDescription(CopyImageData::YES));
         }
         //-------------------------------------------------------------------------
-        void RenderTarget::invalidate(Texture2DDescription &&desc)
+        void RenderTarget::invalidate(Texture2DDescription&& desc)
         {
             if (m_id)
             {
@@ -87,7 +100,7 @@ namespace rex
             if (desc.filters.size() == 0)
             {
                 auto filters = default_texture_filter();
-                for (auto &f : filters)
+                for (auto& f : filters)
                 {
                     set_filter(f);
                 }
@@ -110,7 +123,7 @@ namespace rex
             else
             {
                 auto wraps = default_texture2d_wrapping();
-                for (auto &w : wraps)
+                for (auto& w : wraps)
                 {
                     set_wrap(w);
                 }
@@ -128,13 +141,13 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        const StringID &RenderTarget::get_name() const
+        const StringID& RenderTarget::get_name() const
         {
             return m_name;
         }
 
         //-------------------------------------------------------------------------
-        const rex::Texture::Data &RenderTarget::get_data() const
+        const rex::Texture::Data& RenderTarget::get_data() const
         {
             return m_local_storage;
         }
@@ -172,7 +185,7 @@ namespace rex
         {
             return m_texel_format;
         }
-        
+
         //-------------------------------------------------------------------------
         Texture2DDescription RenderTarget::get_description(CopyImageData copyImageData) const
         {
@@ -207,7 +220,7 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        void RenderTarget::set_data(Texture::Data &&textureData)
+        void RenderTarget::set_data(Texture::Data&& textureData)
         {
             opengl::bind_texture(GL_TEXTURE_2D, m_id);
 
@@ -218,7 +231,7 @@ namespace rex
             opengl::bind_texture(GL_TEXTURE_2D, 0);
         }
         //-------------------------------------------------------------------------
-        void RenderTarget::set_wrap(const Texture::Wrap &textureWrap)
+        void RenderTarget::set_wrap(const Texture::Wrap& textureWrap)
         {
             opengl::bind_texture(GL_TEXTURE_2D, m_id);
 
@@ -227,7 +240,7 @@ namespace rex
             opengl::bind_texture(GL_TEXTURE_2D, 0);
         }
         //-------------------------------------------------------------------------
-        void RenderTarget::set_filter(const Texture::Filter &textureFilter)
+        void RenderTarget::set_filter(const Texture::Filter& textureFilter)
         {
             opengl::bind_texture(GL_TEXTURE_2D, m_id);
 
@@ -236,7 +249,7 @@ namespace rex
             opengl::bind_texture(GL_TEXTURE_2D, 0);
         }
         //-------------------------------------------------------------------------
-        void RenderTarget::set_format(const Texel &texelFormat, const Texture::Format &textureFormat)
+        void RenderTarget::set_format(const Texel& texelFormat, const Texture::Format& textureFormat)
         {
             if (m_id != 0)
             {
@@ -260,7 +273,9 @@ namespace rex
             {
                 ref_ptr<const RenderTarget> instance(this);
                 Renderer::submit([instance]()
-                                 { opengl::bind_texture(GL_TEXTURE_2D, instance->m_id); });
+                                 {
+                                     opengl::bind_texture(GL_TEXTURE_2D, instance->m_id);
+                                 });
             }
         }
         //-------------------------------------------------------------------------
@@ -274,46 +289,46 @@ namespace rex
             {
                 ref_ptr<const RenderTarget> instance(this);
                 Renderer::submit([instance]()
-                                 { opengl::bind_texture(GL_TEXTURE_2D, 0); });
+                                 {
+                                     opengl::bind_texture(GL_TEXTURE_2D, 0);
+                                 });
             }
         }
 
         //-------------------------------------------------------------------------
-        void RenderTarget::assign_filter(const Filter &filter)
+        void RenderTarget::assign_filter(const Filter& filter)
         {
             int32 type = filter.type == Texture::Filter::Type::NEAREST ? GL_NEAREST : GL_LINEAR;
 
             switch (filter.action)
             {
-            case Texture::Filter::Action::MINIFICATION:
-                opengl::set_texture_integer_parameter(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, type);
-                m_min_filter = filter.type;
-                break;
-            case Texture::Filter::Action::MAGNIFICATION:
-                opengl::set_texture_integer_parameter(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, type);
-                m_mag_filter = filter.type;
-                break;
+                case Texture::Filter::Action::MINIFICATION:
+                    opengl::set_texture_integer_parameter(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, type);
+                    m_min_filter = filter.type;
+                    break;
+                case Texture::Filter::Action::MAGNIFICATION:
+                    opengl::set_texture_integer_parameter(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, type);
+                    m_mag_filter = filter.type;
+                    break;
             }
         }
         //-------------------------------------------------------------------------
-        void RenderTarget::assign_wrap(const Wrap &wrap)
+        void RenderTarget::assign_wrap(const Wrap& wrap)
         {
             int32 type = wrap.type == Texture::Wrap::Type::CLAMP ? GL_CLAMP_TO_EDGE : GL_REPEAT;
 
             switch (wrap.coordinate)
             {
-            case Texture::Wrap::Coordinate::WRAP_R:
-                R_WARN("This has no effect on a Texture2D");
-                break;
+                case Texture::Wrap::Coordinate::WRAP_R: R_WARN("This has no effect on a Texture2D"); break;
 
-            case Texture::Wrap::Coordinate::WRAP_S:
-                opengl::set_texture_integer_parameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, type);
-                m_wrap_s = wrap.type;
-                break;
-            case Texture::Wrap::Coordinate::WRAP_T:
-                opengl::set_texture_integer_parameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, type);
-                m_wrap_t = wrap.type;
-                break;
+                case Texture::Wrap::Coordinate::WRAP_S:
+                    opengl::set_texture_integer_parameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, type);
+                    m_wrap_s = wrap.type;
+                    break;
+                case Texture::Wrap::Coordinate::WRAP_T:
+                    opengl::set_texture_integer_parameter(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, type);
+                    m_wrap_t = wrap.type;
+                    break;
             }
         }
     }

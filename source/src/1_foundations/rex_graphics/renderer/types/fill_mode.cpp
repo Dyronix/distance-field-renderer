@@ -8,9 +8,9 @@ namespace rex
     {
         switch (e)
         {
-        case FillMode::FILL:    os << "FillMode: FILL"; break;
-        case FillMode::LINE:    os << "FillMode: LINE"; break;
-        case FillMode::POINT:   os << "FillMode: POINT"; break;
+            case FillMode::FILL: os << "FillMode: FILL"; break;
+            case FillMode::LINE: os << "FillMode: LINE"; break;
+            case FillMode::POINT: os << "FillMode: POINT"; break;
         }
 
         return os;

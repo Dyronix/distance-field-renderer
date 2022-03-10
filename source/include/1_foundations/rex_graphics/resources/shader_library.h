@@ -11,12 +11,12 @@ namespace sbt
 
     namespace shader_library
     {
-        bool                                    add(const ref_ptr<sbt::ShaderProgram>& program);
-        bool                                    add(const std::vector<ref_ptr<sbt::ShaderProgram>>& programs);
-         
-        ref_ptr<sbt::ShaderProgram>             get(const StringID& programName);
-        std::vector<ref_ptr<ShaderProgram>>     getAll();
+        bool add(const ref_ptr<sbt::ShaderProgram>& program);
+        bool add(const std::vector<ref_ptr<sbt::ShaderProgram>>& programs);
 
-        void                                    clear();
+        ref_ptr<sbt::ShaderProgram> get(const StringID& programName);
+        std::vector<ref_ptr<ShaderProgram>> getAll();
+
+        void clear();
     };
 }

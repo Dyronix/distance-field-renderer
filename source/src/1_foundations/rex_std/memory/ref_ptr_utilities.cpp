@@ -10,7 +10,7 @@ namespace rex
         RefCountedObjectsContainer g_live_reference_pool;
 
         //-------------------------------------------------------------------------
-        void add_to_reference_pool(const rex::IRefCountedObject *instance)
+        void add_to_reference_pool(const rex::IRefCountedObject* instance)
         {
             std::unique_lock<std::mutex> lock(g_live_references_mutex);
 
@@ -19,7 +19,7 @@ namespace rex
             g_live_reference_pool.insert(instance);
         }
         //-------------------------------------------------------------------------
-        void remove_from_reference_pool(const rex::IRefCountedObject *instance)
+        void remove_from_reference_pool(const rex::IRefCountedObject* instance)
         {
             std::unique_lock<std::mutex> lock(g_live_references_mutex);
 
@@ -29,12 +29,12 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        const RefCountedObjectsContainer &get_all_references()
+        const RefCountedObjectsContainer& get_all_references()
         {
             return g_live_reference_pool;
         }
         //-------------------------------------------------------------------------
-        bool is_alive(const rex::IRefCountedObject *instance)
+        bool is_alive(const rex::IRefCountedObject* instance)
         {
             R_ASSERT_X(instance, "Looking for a nullptr ... ");
 

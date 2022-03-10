@@ -20,7 +20,6 @@ namespace rex
         const rex::matrix4& getProjectionMatrix() const;
         const rex::matrix4& getViewMatrix() const;
 
-
     private:
         void recalculateViewMatrix();
 

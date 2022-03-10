@@ -10,9 +10,9 @@ namespace rex
         class size
         {
         public:
-            static constexpr uint16 BYTES_IN_KIBIBYTES = 1 << 10; // 1024
-            static constexpr uint32 BYTES_IN_MEBIBYTES = 1 << 20; // 1'048'576
-            static constexpr uint64 BYTES_IN_GIBIBYTES = 1 << 30; // 1'073'741'824
+            static constexpr uint16 BYTES_IN_KIBIBYTES = 1 << 10;  // 1024
+            static constexpr uint32 BYTES_IN_MEBIBYTES = 1 << 20;  // 1'048'576
+            static constexpr uint64 BYTES_IN_GIBIBYTES = 1 << 30;  // 1'073'741'824
 
             size() noexcept;
             size(const size& other) noexcept;
@@ -33,8 +33,8 @@ namespace rex
 
             operator uint64() const noexcept;
 
-            size operator+ (uint64 other) const;
-            size operator- (uint64 other) const;
+            size operator+(uint64 other) const;
+            size operator-(uint64 other) const;
             size operator+(const size& other) const;
             size operator-(const size& other) const;
 
@@ -49,35 +49,35 @@ namespace rex
 //-------------------------------------------------------------------------
 inline rex::memory::size operator"" _bytes(uint64 bytes)
 {
-    return rex::memory::size{ bytes };
+    return rex::memory::size{bytes};
 }
 //-------------------------------------------------------------------------
 inline rex::memory::size operator"" _kb(uint64 kilobytes)
 {
-    return rex::memory::size{ kilobytes * std::kilo::num };
+    return rex::memory::size{kilobytes * std::kilo::num};
 }
 //-------------------------------------------------------------------------
 inline rex::memory::size operator"" _kib(uint64 kibibytes)
 {
-    return rex::memory::size{ kibibytes * rex::memory::size::BYTES_IN_KIBIBYTES };
+    return rex::memory::size{kibibytes * rex::memory::size::BYTES_IN_KIBIBYTES};
 }
 //-------------------------------------------------------------------------
 inline rex::memory::size operator"" _mb(uint64 megabytes)
 {
-    return rex::memory::size{ megabytes * std::mega::num };
+    return rex::memory::size{megabytes * std::mega::num};
 }
 //-------------------------------------------------------------------------
 inline rex::memory::size operator"" _mib(uint64 mebibytes)
 {
-    return rex::memory::size{ mebibytes * rex::memory::size::BYTES_IN_MEBIBYTES };
+    return rex::memory::size{mebibytes * rex::memory::size::BYTES_IN_MEBIBYTES};
 }
 //-------------------------------------------------------------------------
 inline rex::memory::size operator"" _gb(uint64 gigabytes)
 {
-    return rex::memory::size{ gigabytes * std::giga::num };
+    return rex::memory::size{gigabytes * std::giga::num};
 }
 //-------------------------------------------------------------------------
 inline rex::memory::size operator"" _gib(uint64 gibibytes)
 {
-    return rex::memory::size{ gibibytes * rex::memory::size::BYTES_IN_GIBIBYTES };
+    return rex::memory::size{gibibytes * rex::memory::size::BYTES_IN_GIBIBYTES};
 }

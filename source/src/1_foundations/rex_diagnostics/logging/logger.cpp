@@ -5,37 +5,31 @@
 #include <assert.h>
 
 #if defined REX_PLATFORM_WINDOWS
-    #undef ERROR    // Defined in wingdi.h
-#endif   
+#undef ERROR  // Defined in wingdi.h
+#endif
 
 namespace rex
 {
     namespace logging
     {
-        using LogPattern    = const char*;
-        using LogLevelMap   = std::unordered_map<rex::LogLevel, spdlog::level::level_enum>;
+        using LogPattern = const char*;
+        using LogLevelMap = std::unordered_map<rex::LogLevel, spdlog::level::level_enum>;
 
-        const LogLevel level::LOGGING           = rex::LogLevel::INFO;
+        const LogLevel level::LOGGING = rex::LogLevel::INFO;
 
-        const char* tags::ENGINE_LOGGER_NAME    = "REX";
-        const char* tags::CLIENT_LOGGER_NAME    = "APP";
+        const char* tags::ENGINE_LOGGER_NAME = "REX";
+        const char* tags::CLIENT_LOGGER_NAME = "APP";
 
-        LoggerObjectPtrMap  g_loggers;
-        LoggerStreamsMap    g_log_streams;
+        LoggerObjectPtrMap g_loggers;
+        LoggerStreamsMap g_log_streams;
 
         //-------------------------------------------------------------------------
         LogLevelMap get_log_levels()
         {
-            return
-            {
-                { rex::LogLevel::OFF,    spdlog::level::off },
-                { rex::LogLevel::FATAL,  spdlog::level::critical },
-                { rex::LogLevel::ERROR,  spdlog::level::err },
-                { rex::LogLevel::WARN,   spdlog::level::warn },
-                { rex::LogLevel::INFO,   spdlog::level::info },
-                { rex::LogLevel::DEBUG,  spdlog::level::debug },
-                { rex::LogLevel::TRACE,  spdlog::level::trace }
-            };
+            return {{rex::LogLevel::OFF, spdlog::level::off},    {rex::LogLevel::FATAL, spdlog::level::critical},
+                    {rex::LogLevel::ERROR, spdlog::level::err},  {rex::LogLevel::WARN, spdlog::level::warn},
+                    {rex::LogLevel::INFO, spdlog::level::info},  {rex::LogLevel::DEBUG, spdlog::level::debug},
+                    {rex::LogLevel::TRACE, spdlog::level::trace}};
         }
 
         //-------------------------------------------------------------------------
@@ -43,9 +37,7 @@ namespace rex
         {
             auto it = g_loggers.find(name);
 
-            return it != std::cend(g_loggers)
-                ? (*it).second.get()
-                : nullptr;
+            return it != std::cend(g_loggers) ? (*it).second.get() : nullptr;
         }
 
         //-------------------------------------------------------------------------
@@ -83,7 +75,7 @@ namespace rex
             if (logger != nullptr)
                 return false;
 
-            g_log_streams.insert(std::make_pair(name, std::ostringstream())); // create logger stream
+            g_log_streams.insert(std::make_pair(name, std::ostringstream()));  // create logger stream
 
             std::vector<spdlog::sink_ptr> sinks;
             sinks.push_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());

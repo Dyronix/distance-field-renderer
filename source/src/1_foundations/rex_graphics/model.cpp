@@ -13,17 +13,18 @@ namespace rex
 {
     //-------------------------------------------------------------------------
     Model::Model(ModelCreationInfo& info)
-        :m_name(info.name)
-        ,m_mesh(info.vertices, info.indices)
-        ,m_transform(info.transform)
-        ,m_inverse_transform(info.inverse_transform)
-        ,m_bounding_box(info.bounding_box)
-        ,m_submeshes(info.submeshes)
-        ,m_diffuse_textures(info.diffuse_textures)
-        ,m_normal_textures(info.normal_textures)
-        ,m_roughness_textures(info.roughness_textures)
-        ,m_materials(std::move(info.materials))
-    {}
+        : m_name(info.name)
+        , m_mesh(info.vertices, info.indices)
+        , m_transform(info.transform)
+        , m_inverse_transform(info.inverse_transform)
+        , m_bounding_box(info.bounding_box)
+        , m_submeshes(info.submeshes)
+        , m_diffuse_textures(info.diffuse_textures)
+        , m_normal_textures(info.normal_textures)
+        , m_roughness_textures(info.roughness_textures)
+        , m_materials(std::move(info.materials))
+    {
+    }
     //-------------------------------------------------------------------------
     Model::~Model()
     {

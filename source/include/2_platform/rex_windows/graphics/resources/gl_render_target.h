@@ -11,13 +11,13 @@ namespace rex
         public:
             using CopyImageData = YesNoEnum;
 
-            static ref_ptr<RenderTarget> create(Texture2DDescription &&desc);
+            static ref_ptr<RenderTarget> create(Texture2DDescription&& desc);
 
-            RenderTarget(Texture2DDescription &&desc);
+            RenderTarget(Texture2DDescription&& desc);
             ~RenderTarget() override;
 
             void invalidate() override;
-            void invalidate(Texture2DDescription &&desc) override;
+            void invalidate(Texture2DDescription&& desc) override;
             void release() override;
 
             const StringID& get_name() const override;
@@ -34,17 +34,17 @@ namespace rex
 
             Texture2DDescription get_description(CopyImageData copyImageData = CopyImageData::NO) const;
 
-            void set_data(Texture::Data &&textureData) override;
-            void set_wrap(const Texture::Wrap &textureWrap) override;
-            void set_filter(const Texture::Filter &textureFilter) override;
-            void set_format(const Texel &texelFormat, const Texture::Format &textureFormat) override;
+            void set_data(Texture::Data&& textureData) override;
+            void set_wrap(const Texture::Wrap& textureWrap) override;
+            void set_filter(const Texture::Filter& textureFilter) override;
+            void set_format(const Texel& texelFormat, const Texture::Format& textureFormat) override;
 
             void bind(IsRenderThread isRenderThread = IsRenderThread::NO) const override;
             void unbind(IsRenderThread isRenderThread = IsRenderThread::NO) const override;
 
         private:
-            void assign_filter(const Filter &filter);
-            void assign_wrap(const Wrap &wrap);
+            void assign_filter(const Filter& filter);
+            void assign_wrap(const Wrap& wrap);
 
             StringID m_name;
 

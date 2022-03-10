@@ -22,19 +22,20 @@ namespace sbt
             , wraps()
             , filters()
             , data()
-        {}
+        {
+        }
         //-------------------------------------------------------------------------
-        TextureCubeDescription(TextureCubeDescription&& other) noexcept
-            :name(std::move(other.name))
-            , width(std::move(other.width))
-            , height(std::move(other.height))
-            , texel_format(std::move(other.texel_format))
-            , usage(std::move(other.usage))
-            , format(std::move(other.format))
-            , wraps(std::move(other.wraps))
-            , filters(std::move(other.filters))
-            , data(std::move(other.data))
-        {}
+        TextureCubeDescription(TextureCubeDescription&& other) noexcept : name(std::move(other.name)),
+                                                                          width(std::move(other.width)),
+                                                                          height(std::move(other.height)),
+                                                                          texel_format(std::move(other.texel_format)),
+                                                                          usage(std::move(other.usage)),
+                                                                          format(std::move(other.format)),
+                                                                          wraps(std::move(other.wraps)),
+                                                                          filters(std::move(other.filters)),
+                                                                          data(std::move(other.data))
+        {
+        }
 
         //-------------------------------------------------------------------------
         TextureCubeDescription& operator=(TextureCubeDescription&& other) noexcept

@@ -7,28 +7,29 @@ namespace rex
     namespace memory
     {
         //-------------------------------------------------------------------------
-        size::size() noexcept
-            :m_size_in_bytes(0)
-        {}
+        size::size() noexcept : m_size_in_bytes(0)
+        {
+        }
 
         //-------------------------------------------------------------------------
-        size::size(uint64 byteCount) noexcept
-            :m_size_in_bytes(byteCount)
-        {}
+        size::size(uint64 byteCount) noexcept : m_size_in_bytes(byteCount)
+        {
+        }
 
         //-------------------------------------------------------------------------
-        size::size(const size& other) noexcept
-            :m_size_in_bytes(other.m_size_in_bytes)
-        {}
+        size::size(const size& other) noexcept : m_size_in_bytes(other.m_size_in_bytes)
+        {
+        }
 
         //-------------------------------------------------------------------------
-        size::size(size&& other) noexcept
-            :m_size_in_bytes(std::exchange(other.m_size_in_bytes, 0))
-        {}
+        size::size(size&& other) noexcept : m_size_in_bytes(std::exchange(other.m_size_in_bytes, 0))
+        {
+        }
 
         //-------------------------------------------------------------------------
         size::~size()
-        {}
+        {
+        }
 
         //-------------------------------------------------------------------------
         size& size::operator=(const size& other) noexcept
@@ -89,12 +90,12 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        size size::operator+ (uint64 other) const
+        size size::operator+(uint64 other) const
         {
             return size(m_size_in_bytes + other);
         }
         //-------------------------------------------------------------------------
-        size size::operator- (uint64 other) const
+        size size::operator-(uint64 other) const
         {
             return size(m_size_in_bytes - other);
         }

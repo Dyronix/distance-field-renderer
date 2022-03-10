@@ -9,10 +9,10 @@ namespace rex
         //-------------------------------------------------------------------------
         const Type get_architecture_type()
         {
-            switch (sizeof(void*)) 
+            switch (sizeof(void*))
             {
-            case 4: return Type::BIT_32;
-            case 8: return Type::BIT_64;
+                case 4: return Type::BIT_32;
+                case 8: return Type::BIT_64;
             }
 
             assert(false && "Unspecified architecture");

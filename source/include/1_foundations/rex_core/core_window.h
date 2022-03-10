@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 
 namespace rex
 {
@@ -7,13 +7,14 @@ namespace rex
     struct WindowDescription
     {
         WindowDescription()
-            :title("None")
-            ,width(-1)
-            ,height(-1)
-            ,fullscreen(false)
-            ,display(nullptr)
-            ,display_mode_index(0)
-        {}
+            : title("None")
+            , width(-1)
+            , height(-1)
+            , fullscreen(false)
+            , display(nullptr)
+            , display_mode_index(0)
+        {
+        }
 
         const char* title;
         int32 width;

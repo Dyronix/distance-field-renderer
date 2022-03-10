@@ -6,19 +6,22 @@ namespace rex
 {
     //-------------------------------------------------------------------------
     AspectRatio::AspectRatio(float width, float height)
-        :m_width(width)
+        : m_width(width)
         , m_height(height)
         , m_ratio(width, height)
-    {}
+    {
+    }
     //-------------------------------------------------------------------------
     void AspectRatio::setWidth(float width)
     {
-        m_width = width; m_ratio = Ratio(m_width, m_height);
+        m_width = width;
+        m_ratio = Ratio(m_width, m_height);
     }
     //-------------------------------------------------------------------------
     void AspectRatio::setHeight(float height)
     {
-        m_height = height; m_ratio = Ratio(m_width, m_height);
+        m_height = height;
+        m_ratio = Ratio(m_width, m_height);
     }
 
     //-------------------------------------------------------------------------

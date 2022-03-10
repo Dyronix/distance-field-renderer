@@ -6,38 +6,32 @@ namespace rex
 {
     //-------------------------------------------------------------------------
     Display::Display()
-        :m_description()
-        ,m_active_display_mode(nullptr)
+        : m_description()
+        , m_active_display_mode(nullptr)
     {
-
     }
 
     //-------------------------------------------------------------------------
     Display::Display(const Display& other)
-        :m_description(other.m_description)
-        ,m_active_display_mode(other.m_active_display_mode)
+        : m_description(other.m_description)
+        , m_active_display_mode(other.m_active_display_mode)
     {
-
     }
 
     //-------------------------------------------------------------------------
-    Display::Display(Display&& other) noexcept
-        :m_description(std::exchange(other.m_description, {}))
-        ,m_active_display_mode(std::exchange(other.m_active_display_mode, nullptr))
+    Display::Display(Display&& other) noexcept : m_description(std::exchange(other.m_description, {})),
+                                                 m_active_display_mode(std::exchange(other.m_active_display_mode, nullptr))
     {
-
     }
     //-------------------------------------------------------------------------
     Display::Display(const DisplayDescription& description)
-        :m_description(description)
+        : m_description(description)
     {
-
     }
 
     //-------------------------------------------------------------------------
     Display::~Display()
     {
-
     }
 
     //-------------------------------------------------------------------------
@@ -67,11 +61,10 @@ namespace rex
     //-------------------------------------------------------------------------
     gsl::not_null<const DisplayMode*> Display::set_active_mode(int32 index)
     {
-        auto it = std::find_if(std::cbegin(m_description.display_modes), std::cend(m_description.display_modes),
-            [index](const auto& pair)
-            {
-                return pair.second.get_mode_index() == index;
-            });
+        auto it = std::find_if(std::cbegin(m_description.display_modes), std::cend(m_description.display_modes), [index](const auto& pair)
+                               {
+                                   return pair.second.get_mode_index() == index;
+                               });
 
         if (it != std::cend(m_description.display_modes))
         {

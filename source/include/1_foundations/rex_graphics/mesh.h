@@ -17,7 +17,7 @@ namespace rex
 
     class IMesh
     {
-    public:        
+    public:
         virtual ~IMesh() = default;
 
         virtual Usage getUsage() const = 0;

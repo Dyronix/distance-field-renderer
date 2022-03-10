@@ -40,17 +40,17 @@ namespace rex
         {
             switch (type)
             {
-            case PrimitiveType::POINTS: return GL_POINTS;
+                case PrimitiveType::POINTS: return GL_POINTS;
 
-            case PrimitiveType::LINES: return GL_LINES;
-            case PrimitiveType::LINE_STRIP: return GL_LINE_STRIP;
-            case PrimitiveType::LINE_LOOP: return GL_LINE_LOOP;
+                case PrimitiveType::LINES: return GL_LINES;
+                case PrimitiveType::LINE_STRIP: return GL_LINE_STRIP;
+                case PrimitiveType::LINE_LOOP: return GL_LINE_LOOP;
 
-            case PrimitiveType::TRIANGLES: return GL_TRIANGLES;
-            case PrimitiveType::TRIANGLE_STRIP: return GL_TRIANGLE_STRIP;
-            case PrimitiveType::TRIANGLE_FAN: return GL_TRIANGLE_FAN;
+                case PrimitiveType::TRIANGLES: return GL_TRIANGLES;
+                case PrimitiveType::TRIANGLE_STRIP: return GL_TRIANGLE_STRIP;
+                case PrimitiveType::TRIANGLE_FAN: return GL_TRIANGLE_FAN;
 
-            case PrimitiveType::QUADS: return GL_QUADS;
+                case PrimitiveType::QUADS: return GL_QUADS;
             }
 
             S_ASSERT_X(false, "Invalid primitive type");
@@ -61,13 +61,11 @@ namespace rex
         {
             switch (cullMode)
             {
-            case CullMode::BACK: return GL_BACK;
-            case CullMode::FRONT: return GL_FRONT;
-            case CullMode::FRONT_AND_BACK: return GL_FRONT_AND_BACK;
+                case CullMode::BACK: return GL_BACK;
+                case CullMode::FRONT: return GL_FRONT;
+                case CullMode::FRONT_AND_BACK: return GL_FRONT_AND_BACK;
 
-            default: 
-                S_ASSERT_X(false, "Unsupported Cull Type");
-                return GL_BACK;
+                default: S_ASSERT_X(false, "Unsupported Cull Type"); return GL_BACK;
             }
 
             S_ASSERT_X(false, "Invalid cull type");
@@ -78,12 +76,10 @@ namespace rex
         {
             switch (winding)
             {
-            case FaceWinding::CLOCKWISE: return GL_CW;
-            case FaceWinding::COUNTER_CLOCKWISE: return GL_CCW;
-            
-            default: 
-                S_ASSERT_X(false, "Unsupported winding Type");
-                return GL_CCW;
+                case FaceWinding::CLOCKWISE: return GL_CW;
+                case FaceWinding::COUNTER_CLOCKWISE: return GL_CCW;
+
+                default: S_ASSERT_X(false, "Unsupported winding Type"); return GL_CCW;
             }
 
             S_ASSERT_X(false, "Invalid winding type");
@@ -94,17 +90,15 @@ namespace rex
         {
             switch (function)
             {
-            case DepthTestFunction::ALWAYS:            return GL_ALWAYS;
-            case DepthTestFunction::NEVER:             return GL_NEVER;
-            case DepthTestFunction::LESS:              return GL_LESS;
-            case DepthTestFunction::LESS_OR_EQUAL:     return GL_LEQUAL;
-            case DepthTestFunction::GREATER:           return GL_GREATER;
-            case DepthTestFunction::GREATER_OR_EQUAL:  return GL_GEQUAL;
-            case DepthTestFunction::EQUAL:             return GL_EQUAL;
-            case DepthTestFunction::NOT_EQUAL:         return GL_NOTEQUAL;
-            default: 
-                S_ASSERT_X(false, "Unsupported depth function");
-                return GL_LESS;
+                case DepthTestFunction::ALWAYS: return GL_ALWAYS;
+                case DepthTestFunction::NEVER: return GL_NEVER;
+                case DepthTestFunction::LESS: return GL_LESS;
+                case DepthTestFunction::LESS_OR_EQUAL: return GL_LEQUAL;
+                case DepthTestFunction::GREATER: return GL_GREATER;
+                case DepthTestFunction::GREATER_OR_EQUAL: return GL_GEQUAL;
+                case DepthTestFunction::EQUAL: return GL_EQUAL;
+                case DepthTestFunction::NOT_EQUAL: return GL_NOTEQUAL;
+                default: S_ASSERT_X(false, "Unsupported depth function"); return GL_LESS;
             }
 
             S_ASSERT_X(false, "Invalid depth function");
@@ -115,12 +109,10 @@ namespace rex
         {
             switch (mode)
             {
-            case FillMode::POINT:          return GL_POINT;
-            case FillMode::LINE:           return GL_LINE;
-            case FillMode::FILL:           return GL_FILL;
-            default:
-                S_ASSERT_X(false, "Unsupported fill mode");
-                return GL_FILL;
+                case FillMode::POINT: return GL_POINT;
+                case FillMode::LINE: return GL_LINE;
+                case FillMode::FILL: return GL_FILL;
+                default: S_ASSERT_X(false, "Unsupported fill mode"); return GL_FILL;
             }
 
             S_ASSERT_X(false, "Invalid fill mode");
@@ -131,52 +123,52 @@ namespace rex
         void setup_face_cull_state(const rex::FaceCullState& faceCullState)
         {
             Renderer::submit([faceCullState]()
-                {
-                    if (faceCullState.enabled)
-                    {
-                        opengl::enable(GL_CULL_FACE);
-                        opengl::cull_face(to_gl_cull_type(faceCullState.cull_mode));
-                        opengl::front_face(to_gl_winding_type(faceCullState.face_winding));
-                    }
-                    else
-                    {
-                        opengl::disable(GL_CULL_FACE);
-                    }
-                });
+                             {
+                                 if (faceCullState.enabled)
+                                 {
+                                     opengl::enable(GL_CULL_FACE);
+                                     opengl::cull_face(to_gl_cull_type(faceCullState.cull_mode));
+                                     opengl::front_face(to_gl_winding_type(faceCullState.face_winding));
+                                 }
+                                 else
+                                 {
+                                     opengl::disable(GL_CULL_FACE);
+                                 }
+                             });
         }
         //-------------------------------------------------------------------------
         void setup_depth_test_state(const rex::DepthTestState& depthTestState)
         {
             Renderer::submit([depthTestState]()
-                {
-                    if (depthTestState.enabled)
-                    {
-                        opengl::enable(GL_DEPTH_TEST);
-                        opengl::depth_func(to_gl_depth_func(depthTestState.function));
-                        if (depthTestState.read_only)
-                        {
-                            opengl::depth_mask(GL_FALSE);
-                        }
-                        else
-                        {
-                            opengl::depth_mask(GL_TRUE);
-                        }
-                    }
-                    else
-                    {
-                        opengl::disable(GL_DEPTH_TEST);
-                    }
-                });
+                             {
+                                 if (depthTestState.enabled)
+                                 {
+                                     opengl::enable(GL_DEPTH_TEST);
+                                     opengl::depth_func(to_gl_depth_func(depthTestState.function));
+                                     if (depthTestState.read_only)
+                                     {
+                                         opengl::depth_mask(GL_FALSE);
+                                     }
+                                     else
+                                     {
+                                         opengl::depth_mask(GL_TRUE);
+                                     }
+                                 }
+                                 else
+                                 {
+                                     opengl::disable(GL_DEPTH_TEST);
+                                 }
+                             });
         }
         //-------------------------------------------------------------------------
         void setup_rasterizer_state(const rex::RasterizerState& rasterizerState)
         {
             Renderer::submit([rasterizerState]()
-                {
-                    R_ASSERT(rasterizerState.cull_mode == CullMode::FRONT_AND_BACK);
+                             {
+                                 R_ASSERT(rasterizerState.cull_mode == CullMode::FRONT_AND_BACK);
 
-                    opengl::polygon_mode(GL_FRONT_AND_BACK, to_gl_fill_mode(rasterizerState.fill_mode));
-                });
+                                 opengl::polygon_mode(GL_FRONT_AND_BACK, to_gl_fill_mode(rasterizerState.fill_mode));
+                             });
         }
 
         //-------------------------------------------------------------------------
@@ -191,36 +183,33 @@ namespace rex
             {
                 rex::vec3 position;
                 rex::vec2 texCoord;
-            }; 
+            };
 
             constexpr uint32 quad_vertex_count = 4u;
 
             // z coordinate is used as the index of the vertex
             QuadVertex* vertices = new QuadVertex[quad_vertex_count];
 
-            vertices[0].position = rex::vec3(x, y, 3.0f);                       // BL
+            vertices[0].position = rex::vec3(x, y, 3.0f);  // BL
             vertices[0].texCoord = rex::vec2(0, 0);
 
-            vertices[1].position = rex::vec3(x + width, y, 2.0f);               // BR
+            vertices[1].position = rex::vec3(x + width, y, 2.0f);  // BR
             vertices[1].texCoord = rex::vec2(1, 0);
 
-            vertices[2].position = rex::vec3(x + width, y + height, 1.0f);      // TR
+            vertices[2].position = rex::vec3(x + width, y + height, 1.0f);  // TR
             vertices[2].texCoord = rex::vec2(1, 1);
 
-            vertices[3].position = rex::vec3(x, y + height, 0.0f);              // TL
+            vertices[3].position = rex::vec3(x, y + height, 0.0f);  // TL
             vertices[3].texCoord = rex::vec2(0, 1);
 
-            g_fullscreen_quad_vertex_buffer = ResourceFactory::createVertexBuffer(vertices, sizeof(QuadVertex) * quad_vertex_count, quad_vertex_count);
+            g_fullscreen_quad_vertex_buffer =
+                ResourceFactory::createVertexBuffer(vertices, sizeof(QuadVertex) * quad_vertex_count, quad_vertex_count);
 
-            delete[] vertices;    // copied into the vertex buffer
+            delete[] vertices;  // copied into the vertex buffer
 
             constexpr uint32 quad_triangle_count = 2u;
 
-            TriangleIndices indices[quad_triangle_count] =
-            {
-                { 0, 1, 2 },
-                { 2, 3, 0 }
-            };
+            TriangleIndices indices[quad_triangle_count] = {{0, 1, 2}, {2, 3, 0}};
 
             g_fullscreen_quad_index_buffer = ResourceFactory::createIndexBuffer(indices, quad_triangle_count);
         }
@@ -247,16 +236,13 @@ namespace rex
             TextureResourceManager::releaseAll();
         }
 
-
         //-------------------------------------------------------------------------
         RendererAPI::RendererAPI()
         {
-
         }
         //-------------------------------------------------------------------------
         RendererAPI::~RendererAPI()
         {
-
         }
 
         //-------------------------------------------------------------------------
@@ -285,9 +271,9 @@ namespace rex
         void RendererAPI::setViewport(const rex::vec2& origin, const rex::vec2& size)
         {
             Renderer::submit([origin, size]()
-                {
-                    opengl::viewport((int32)origin.x, (int32)origin.y, (int32)size.x, (int32)size.y);
-                });
+                             {
+                                 opengl::viewport((int32)origin.x, (int32)origin.y, (int32)size.x, (int32)size.y);
+                             });
         }
 
         //-------------------------------------------------------------------------
@@ -311,27 +297,27 @@ namespace rex
             if (explicitClear)
             {
                 Renderer::submit([instance = g_active_renderpass]()
-                    {
-                        auto clear_color = instance->getClearColor();
-                        auto clear_depth = instance->getClearDepth();
+                                 {
+                                     auto clear_color = instance->getClearColor();
+                                     auto clear_depth = instance->getClearDepth();
 
-                        opengl::clear_color(clear_color.red, clear_color.green, clear_color.blue, clear_color.alpha);
-                        opengl::clear_depth(clear_depth);
+                                     opengl::clear_color(clear_color.red, clear_color.green, clear_color.blue, clear_color.alpha);
+                                     opengl::clear_depth(clear_depth);
 
-                        auto clear_flags = instance->getClearFlags();
+                                     auto clear_flags = instance->getClearFlags();
 
-                        uint32 in_clear_flags = (uint32)clear_flags;
-                        uint32 out_clear_flags = 0;
+                                     uint32 in_clear_flags = (uint32)clear_flags;
+                                     uint32 out_clear_flags = 0;
 
-                        if (in_clear_flags & (uint32)ClearFlags::COLOR)
-                            out_clear_flags |= GL_COLOR_BUFFER_BIT;
-                        if (in_clear_flags & (uint32)ClearFlags::DEPTH)
-                            out_clear_flags |= GL_DEPTH_BUFFER_BIT;
-                        if (in_clear_flags & (uint32)ClearFlags::STENCIL)
-                            out_clear_flags |= GL_STENCIL_BUFFER_BIT;
+                                     if (in_clear_flags & (uint32)ClearFlags::COLOR)
+                                         out_clear_flags |= GL_COLOR_BUFFER_BIT;
+                                     if (in_clear_flags & (uint32)ClearFlags::DEPTH)
+                                         out_clear_flags |= GL_DEPTH_BUFFER_BIT;
+                                     if (in_clear_flags & (uint32)ClearFlags::STENCIL)
+                                         out_clear_flags |= GL_STENCIL_BUFFER_BIT;
 
-                        opengl::clear(out_clear_flags);
-                    });
+                                     opengl::clear(out_clear_flags);
+                                 });
             }
         }
 
@@ -353,13 +339,15 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        void RendererAPI::renderQuad(ref_ptr<rex::Pipeline> pipeline, rex::UniformBufferSet* uniformBufferSet, ref_ptr<rex::Material> material, const rex::matrix4& transform)
+        void RendererAPI::renderQuad(ref_ptr<rex::Pipeline> pipeline, rex::UniformBufferSet* uniformBufferSet, ref_ptr<rex::Material> material,
+                                     const rex::matrix4& transform)
         {
             renderModelWithMaterial(pipeline, uniformBufferSet, mesh_factory::getUnitQuad(), transform, material);
         }
 
         //-------------------------------------------------------------------------
-        void RendererAPI::renderModel(ref_ptr<rex::Pipeline> pipeline, rex::UniformBufferSet* uniformBufferSet, ref_ptr<rex::Model> model, const rex::matrix4& transform)
+        void RendererAPI::renderModel(ref_ptr<rex::Pipeline> pipeline, rex::UniformBufferSet* uniformBufferSet, ref_ptr<rex::Model> model,
+                                      const rex::matrix4& transform)
         {
             setup_rasterizer_state(pipeline->getRasterizerState());
             setup_face_cull_state(pipeline->getFaceCullState());
@@ -370,28 +358,29 @@ namespace rex
             model->getIndexBuffer()->bind();
 
             Renderer::submit([pipeline, uniformBufferSet, model, transform]
-                {
-                    auto& materials = model->getMaterials();
-                    for (const Submesh& submesh : model->getSubmeshes())
-                    {
-                        auto material = materials[submesh.material_index];
-                        material->flush(IsRenderThread::YES);
+                             {
+                                 auto& materials = model->getMaterials();
+                                 for (const Submesh& submesh : model->getSubmeshes())
+                                 {
+                                     auto material = materials[submesh.material_index];
+                                     material->flush(IsRenderThread::YES);
 
-                        auto u_transform = transform * submesh.transform;
-                        material->getShaderProgram()->setUniform("u_Transform", u_transform, IsRenderThread::YES);
+                                     auto u_transform = transform * submesh.transform;
+                                     material->getShaderProgram()->setUniform("u_Transform", u_transform, IsRenderThread::YES);
 
-                        if (material->hasFlag(MaterialFlag::DepthTest))
-                        {
-                            opengl::enable(GL_DEPTH_TEST);
-                        }
-                        else
-                        {
-                            opengl::disable(GL_DEPTH_TEST);
-                        }
+                                     if (material->hasFlag(MaterialFlag::DepthTest))
+                                     {
+                                         opengl::enable(GL_DEPTH_TEST);
+                                     }
+                                     else
+                                     {
+                                         opengl::disable(GL_DEPTH_TEST);
+                                     }
 
-                        opengl::draw_elements(to_gl_primitive_type(pipeline->getPrimitiveType()), submesh.index_count, GL_UNSIGNED_INT, (void*)(sizeof(uint32_t) * submesh.base_index));
-                    }
-                });
+                                     opengl::draw_elements(to_gl_primitive_type(pipeline->getPrimitiveType()), submesh.index_count, GL_UNSIGNED_INT,
+                                                           (void*)(sizeof(uint32_t) * submesh.base_index));
+                                 }
+                             });
 
             model->getIndexBuffer()->unbind();
             pipeline->unbind();
@@ -399,7 +388,8 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        void RendererAPI::renderModelWithMaterial(ref_ptr<rex::Pipeline> pipeline, rex::UniformBufferSet* uniformBufferSet, ref_ptr<Model> model, const rex::matrix4& transform, ref_ptr<rex::Material> material)
+        void RendererAPI::renderModelWithMaterial(ref_ptr<rex::Pipeline> pipeline, rex::UniformBufferSet* uniformBufferSet, ref_ptr<Model> model,
+                                                  const rex::matrix4& transform, ref_ptr<rex::Material> material)
         {
             setup_rasterizer_state(pipeline->getRasterizerState());
             setup_face_cull_state(pipeline->getFaceCullState());
@@ -410,26 +400,27 @@ namespace rex
             model->getIndexBuffer()->bind();
 
             Renderer::submit([pipeline, uniformBufferSet, model, transform, material]() mutable
-                {
-                    for (const Submesh& submesh : model->getSubmeshes())
-                    {
-                        material->flush(IsRenderThread::YES);
+                             {
+                                 for (const Submesh& submesh : model->getSubmeshes())
+                                 {
+                                     material->flush(IsRenderThread::YES);
 
-                        auto u_transform = transform * submesh.transform;
-                        material->getShaderProgram()->setUniform("u_Transform", u_transform, IsRenderThread::YES);
+                                     auto u_transform = transform * submesh.transform;
+                                     material->getShaderProgram()->setUniform("u_Transform", u_transform, IsRenderThread::YES);
 
-                        if (material->hasFlag(MaterialFlag::DepthTest))
-                        {
-                            opengl::enable(GL_DEPTH_TEST);
-                        }
-                        else
-                        {
-                            opengl::disable(GL_DEPTH_TEST);
-                        }
+                                     if (material->hasFlag(MaterialFlag::DepthTest))
+                                     {
+                                         opengl::enable(GL_DEPTH_TEST);
+                                     }
+                                     else
+                                     {
+                                         opengl::disable(GL_DEPTH_TEST);
+                                     }
 
-                        opengl::draw_elements(to_gl_primitive_type(pipeline->getPrimitiveType()), submesh.index_count, GL_UNSIGNED_INT, (void*)(sizeof(uint32_t) * submesh.base_index));
-                    }
-                });
+                                     opengl::draw_elements(to_gl_primitive_type(pipeline->getPrimitiveType()), submesh.index_count, GL_UNSIGNED_INT,
+                                                           (void*)(sizeof(uint32_t) * submesh.base_index));
+                                 }
+                             });
 
             model->getIndexBuffer()->unbind();
             pipeline->unbind();
@@ -437,7 +428,8 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        void RendererAPI::submitFullscreenQuad(ref_ptr<rex::Pipeline> pipeline, rex::UniformBufferSet* uniformBufferSet, ref_ptr<rex::Material> material)
+        void RendererAPI::submitFullscreenQuad(ref_ptr<rex::Pipeline> pipeline, rex::UniformBufferSet* uniformBufferSet,
+                                               ref_ptr<rex::Material> material)
         {
             setup_rasterizer_state(pipeline->getRasterizerState());
             setup_face_cull_state(pipeline->getFaceCullState());
@@ -450,9 +442,10 @@ namespace rex
             material->flush();
 
             Renderer::submit([pipeline]()
-                {
-                    opengl::draw_elements(to_gl_primitive_type(pipeline->getPrimitiveType()), g_fullscreen_quad_index_buffer->getCount(), GL_UNSIGNED_INT, nullptr);
-                });
+                             {
+                                 opengl::draw_elements(to_gl_primitive_type(pipeline->getPrimitiveType()), g_fullscreen_quad_index_buffer->getCount(),
+                                                       GL_UNSIGNED_INT, nullptr);
+                             });
 
             g_fullscreen_quad_index_buffer->unbind();
             pipeline->unbind();

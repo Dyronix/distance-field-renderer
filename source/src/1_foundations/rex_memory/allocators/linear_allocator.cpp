@@ -12,7 +12,8 @@ namespace rex
             , m_curr_stack_ptr(get_base_pointer())
             , m_used_memory(0_bytes)
             , m_allocations(0u)
-        {}
+        {
+        }
         //-------------------------------------------------------------------------
         LinearAllocator::~LinearAllocator()
         {

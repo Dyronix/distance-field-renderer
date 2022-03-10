@@ -9,10 +9,10 @@ namespace rex
     {
         switch (e)
         {
-        case CullMode::NONE:            os << "CullMode: NONE"; break;
-        case CullMode::BACK:            os << "CullMode: BACK"; break;
-        case CullMode::FRONT:           os << "CullMode: FRONT"; break;
-        case CullMode::FRONT_AND_BACK:  os << "CullMode: FRONT_AND_BACK"; break;
+            case CullMode::NONE: os << "CullMode: NONE"; break;
+            case CullMode::BACK: os << "CullMode: BACK"; break;
+            case CullMode::FRONT: os << "CullMode: FRONT"; break;
+            case CullMode::FRONT_AND_BACK: os << "CullMode: FRONT_AND_BACK"; break;
         }
 
         return os;

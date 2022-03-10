@@ -9,9 +9,10 @@ namespace rex
     {
         //--------------------------------------------------------------------------------------------
         FrameInfo(const DeltaTime& dTime, const FPS& framesPerSecond)
-            :delta_time(dTime)
-            ,fps(framesPerSecond)
-        {}
+            : delta_time(dTime)
+            , fps(framesPerSecond)
+        {
+        }
 
         const DeltaTime& delta_time;
         const FPS& fps;

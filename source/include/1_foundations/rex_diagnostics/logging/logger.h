@@ -2,8 +2,8 @@
 
 #include "logging/loglevel.h"
 
-#pragma warning( push )
-#pragma warning( disable : 4702 )
+#pragma warning(push)
+#pragma warning(disable : 4702)
 
 #include <spdlog/spdlog.h>
 
@@ -12,7 +12,7 @@
 
 #include <spdlog/fmt/ostr.h>
 
-#pragma warning( pop )
+#pragma warning(pop)
 
 namespace rex
 {

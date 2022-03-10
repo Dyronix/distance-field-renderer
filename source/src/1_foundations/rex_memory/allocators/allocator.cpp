@@ -8,7 +8,7 @@ namespace rex
     {
         //-------------------------------------------------------------------------
         Allocator::Allocator(const MemoryHeader& block)
-            :m_memory_block(block)
+            : m_memory_block(block)
         {
             R_ASSERT_X(get_memory().alignment != 0u, "No alignment specified");
         }

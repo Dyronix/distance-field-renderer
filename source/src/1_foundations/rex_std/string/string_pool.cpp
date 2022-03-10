@@ -3,8 +3,8 @@
 #include "string/string_pool.h"
 #include "string/string_entry.h"
 
-#pragma warning( push )
-#pragma warning( disable : 4127 )
+#pragma warning(push)
+#pragma warning(disable : 4127)
 
 #include <CRC.h>
 
@@ -49,13 +49,13 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        template<typename TLookupTable>
+        template <typename TLookupTable>
         uint32 crc32_hash_string(const char* characters, size_t size, const TLookupTable& lookupTable)
         {
             return CRC::Calculate(characters, size, lookupTable);
         }
         //-------------------------------------------------------------------------
-        template<typename TLookupTable>
+        template <typename TLookupTable>
         uint32 crc32_hash_string(const std::string& s, const TLookupTable& lookupTable)
         {
             return crc32_hash_string(s.data(), s.size(), lookupTable);

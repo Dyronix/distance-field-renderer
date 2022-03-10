@@ -9,11 +9,10 @@ namespace rex
     struct DisplayDescription
     {
         DisplayDescription()
-            :name("None")
-            ,display_index(-1)
-            ,display_modes()
+            : name("None")
+            , display_index(-1)
+            , display_modes()
         {
-
         }
 
         const char* name;
@@ -22,7 +21,6 @@ namespace rex
 
         DisplayModes display_modes;
     };
-
 
     class Display
     {

@@ -16,9 +16,11 @@ namespace rex
 
             using ColorAttachments = std::vector<ColorAttachment>;
 
-            static ref_ptr<rex::FrameBuffer> create(FrameBufferDescription &&description, DepthAttachmentOption depthAttachmentOption = DepthAttachmentOption::NONE);
+            static ref_ptr<rex::FrameBuffer> create(FrameBufferDescription&& description,
+                                                    DepthAttachmentOption depthAttachmentOption = DepthAttachmentOption::NONE);
 
-            FrameBuffer(FrameBufferDescription &&description, DepthAttachmentOption depthAttachmentOption = rex::FrameBuffer::DepthAttachmentOption::NONE);
+            FrameBuffer(FrameBufferDescription&& description,
+                        DepthAttachmentOption depthAttachmentOption = rex::FrameBuffer::DepthAttachmentOption::NONE);
             ~FrameBuffer() override;
 
             StringID get_name() const override;
@@ -37,7 +39,9 @@ namespace rex
             void unbind(IsRenderThread isRenderThread = IsRenderThread::NO) const override;
 
         private:
-            void invalidate(ColorAttachmentDescriptions&& colorDescriptions, DepthAttachmentDescription&& depthDescription, rex::FrameBuffer::DepthAttachmentOption depthAttachmentOption = DepthAttachmentOption::NONE, IsRenderThread isRenderThread = IsRenderThread::NO);
+            void invalidate(ColorAttachmentDescriptions&& colorDescriptions, DepthAttachmentDescription&& depthDescription,
+                            rex::FrameBuffer::DepthAttachmentOption depthAttachmentOption = DepthAttachmentOption::NONE,
+                            IsRenderThread isRenderThread = IsRenderThread::NO);
 
             StringID m_name;
 

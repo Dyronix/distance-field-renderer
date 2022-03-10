@@ -28,11 +28,15 @@ namespace rex
             void endFrame() override;
             void endRenderPass() override;
 
-            void renderQuad(ref_ptr<rex::Pipeline> pipeline, rex::UniformBufferSet* uniformBufferSet, ref_ptr<rex::Material> material, const rex::matrix4& transform) override;
-            void renderModel(ref_ptr<rex::Pipeline> pipeline, rex::UniformBufferSet* uniformBufferSet, ref_ptr<rex::Model> model, const rex::matrix4& transform) override;
-            void renderModelWithMaterial(ref_ptr<rex::Pipeline> pipeline, rex::UniformBufferSet* uniformBufferSet, ref_ptr<rex::Model> model, const rex::matrix4& transform, ref_ptr<rex::Material> material) override;
+            void renderQuad(ref_ptr<rex::Pipeline> pipeline, rex::UniformBufferSet* uniformBufferSet, ref_ptr<rex::Material> material,
+                            const rex::matrix4& transform) override;
+            void renderModel(ref_ptr<rex::Pipeline> pipeline, rex::UniformBufferSet* uniformBufferSet, ref_ptr<rex::Model> model,
+                             const rex::matrix4& transform) override;
+            void renderModelWithMaterial(ref_ptr<rex::Pipeline> pipeline, rex::UniformBufferSet* uniformBufferSet, ref_ptr<rex::Model> model,
+                                         const rex::matrix4& transform, ref_ptr<rex::Material> material) override;
 
-            void submitFullscreenQuad(ref_ptr<rex::Pipeline> pipeline, rex::UniformBufferSet* uniformBufferSet, ref_ptr<rex::Material> material) override;
+            void submitFullscreenQuad(ref_ptr<rex::Pipeline> pipeline, rex::UniformBufferSet* uniformBufferSet,
+                                      ref_ptr<rex::Material> material) override;
 
             ref_ptr<rex::Pipeline> createPipeline(const PipelineDescription& description) const override;
             ref_ptr<rex::RenderPass> createRenderPass(const RenderPassDescription& description) const override;

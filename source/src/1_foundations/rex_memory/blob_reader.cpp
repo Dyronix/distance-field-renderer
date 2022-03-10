@@ -8,14 +8,16 @@ namespace rex
     {
         //-------------------------------------------------------------------------
         BlobReader::BlobReader(const memory::Blob& b)
-            :blob(b)
+            : blob(b)
             , read_offset(0)
-        {}
+        {
+        }
         //-------------------------------------------------------------------------
         BlobReader::BlobReader(const memory::Blob& b, size_t offset)
-            :blob(b)
+            : blob(b)
             , read_offset(offset)
-        {}
+        {
+        }
 
         //-------------------------------------------------------------------------
         memory::byte* BlobReader::read(const memory::size& bytesToRead)
@@ -27,14 +29,12 @@ namespace rex
 
         namespace reader
         {
-
             //-------------------------------------------------------------------------
             rex::memory::byte* read(const memory::Blob& b, const memory::size& bytesToRead, const memory::size& offset)
             {
                 BlobReader reader(b, offset);
                 return reader.read(bytesToRead);
             }
-
         }
     }
 }

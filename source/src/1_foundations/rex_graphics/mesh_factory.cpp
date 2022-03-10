@@ -34,40 +34,40 @@ namespace rex
         {
             std::vector<Vertex> vertices;
             vertices.resize(8);
-            vertices[0].position = { -size.x / 2.0F, -size.y / 2.0F,  size.z / 2.0F };
-            vertices[1].position = { size.x / 2.0F, -size.y / 2.0F,  size.z / 2.0F };
-            vertices[2].position = { size.x / 2.0F,  size.y / 2.0F,  size.z / 2.0F };
-            vertices[3].position = { -size.x / 2.0F,  size.y / 2.0F,  size.z / 2.0F };
-            vertices[4].position = { -size.x / 2.0F, -size.y / 2.0F, -size.z / 2.0F };
-            vertices[5].position = { size.x / 2.0F, -size.y / 2.0F, -size.z / 2.0F };
-            vertices[6].position = { size.x / 2.0F,  size.y / 2.0F, -size.z / 2.0F };
-            vertices[7].position = { -size.x / 2.0F,  size.y / 2.0F, -size.z / 2.0F };
+            vertices[0].position = {-size.x / 2.0F, -size.y / 2.0F, size.z / 2.0F};
+            vertices[1].position = {size.x / 2.0F, -size.y / 2.0F, size.z / 2.0F};
+            vertices[2].position = {size.x / 2.0F, size.y / 2.0F, size.z / 2.0F};
+            vertices[3].position = {-size.x / 2.0F, size.y / 2.0F, size.z / 2.0F};
+            vertices[4].position = {-size.x / 2.0F, -size.y / 2.0F, -size.z / 2.0F};
+            vertices[5].position = {size.x / 2.0F, -size.y / 2.0F, -size.z / 2.0F};
+            vertices[6].position = {size.x / 2.0F, size.y / 2.0F, -size.z / 2.0F};
+            vertices[7].position = {-size.x / 2.0F, size.y / 2.0F, -size.z / 2.0F};
 
-            vertices[0].normal = { -1.0F, -1.0F,  1.0F };
-            vertices[1].normal = { 1.0F, -1.0F,  1.0F };
-            vertices[2].normal = { 1.0F,  1.0F,  1.0F };
-            vertices[3].normal = { -1.0F,  1.0F,  1.0F };
-            vertices[4].normal = { -1.0F, -1.0F, -1.0F };
-            vertices[5].normal = { 1.0F, -1.0F, -1.0F };
-            vertices[6].normal = { 1.0F,  1.0F, -1.0F };
-            vertices[7].normal = { -1.0F,  1.0F, -1.0F };
+            vertices[0].normal = {-1.0F, -1.0F, 1.0F};
+            vertices[1].normal = {1.0F, -1.0F, 1.0F};
+            vertices[2].normal = {1.0F, 1.0F, 1.0F};
+            vertices[3].normal = {-1.0F, 1.0F, 1.0F};
+            vertices[4].normal = {-1.0F, -1.0F, -1.0F};
+            vertices[5].normal = {1.0F, -1.0F, -1.0F};
+            vertices[6].normal = {1.0F, 1.0F, -1.0F};
+            vertices[7].normal = {-1.0F, 1.0F, -1.0F};
 
             std::vector<TriangleIndices> indices;
             indices.resize(12);
-            indices[0] =  { 0, 1, 2 };
-            indices[1] =  { 2, 3, 0 };
-            indices[2] =  { 1, 5, 6 };
-            indices[3] =  { 6, 2, 1 };
-            indices[4] =  { 7, 6, 5 };
-            indices[5] =  { 5, 4, 7 };
-            indices[6] =  { 4, 0, 3 };
-            indices[7] =  { 3, 7, 4 };
-            indices[8] =  { 4, 5, 1 };
-            indices[9] =  { 1, 0, 4 };
-            indices[10] = { 3, 2, 6 };
-            indices[11] = { 6, 7, 3 };
+            indices[0] = {0, 1, 2};
+            indices[1] = {2, 3, 0};
+            indices[2] = {1, 5, 6};
+            indices[3] = {6, 2, 1};
+            indices[4] = {7, 6, 5};
+            indices[5] = {5, 4, 7};
+            indices[6] = {4, 0, 3};
+            indices[7] = {3, 7, 4};
+            indices[8] = {4, 5, 1};
+            indices[9] = {1, 0, 4};
+            indices[10] = {3, 2, 6};
+            indices[11] = {6, 7, 3};
 
-            return { vertices, indices };
+            return {vertices, indices};
         }
         //-------------------------------------------------------------------------
         GeometryPackage get_sphere_geometry_package(float radius)
@@ -91,8 +91,8 @@ namespace rex
                     const float cosPhi = std::cos(phi);
 
                     Vertex vertex;
-                    vertex.normal = { cosPhi * sinTheta, cosTheta, sinPhi * sinTheta };
-                    vertex.position = { radius * vertex.normal.x, radius * vertex.normal.y, radius * vertex.normal.z };
+                    vertex.normal = {cosPhi * sinTheta, cosTheta, sinPhi * sinTheta};
+                    vertex.position = {radius * vertex.normal.x, radius * vertex.normal.y, radius * vertex.normal.z};
                     vertices.push_back(vertex);
                 }
             }
@@ -104,12 +104,12 @@ namespace rex
                     const uint32_t first = (latitude * ((uint32_t)longitudeBands + 1)) + longitude;
                     const uint32_t second = first + (uint32_t)longitudeBands + 1;
 
-                    indices.push_back({ first, second, first + 1 });
-                    indices.push_back({ second, second + 1, first + 1 });
+                    indices.push_back({first, second, first + 1});
+                    indices.push_back({second, second + 1, first + 1});
                 }
             }
 
-            return { vertices, indices };
+            return {vertices, indices};
         }
         //-------------------------------------------------------------------------
         GeometryPackage get_capsule_geometry_package(float radius, float height)
@@ -188,39 +188,39 @@ namespace rex
                 }
             }
 
-            return { vertices, indices };
+            return {vertices, indices};
         }
         //-------------------------------------------------------------------------
         GeometryPackage get_quad_geometry_package(const rex::vec3& size)
         {
-            float x = -size.x*0.5;
-            float y = -size.y*0.5;
+            float x = -size.x * 0.5;
+            float y = -size.y * 0.5;
             float width = size.x;
             float height = size.y;
 
             std::vector<Vertex> vertices;
             vertices.resize(4);
-            vertices[0].position = rex::vec3(x, y, 0.0f);                       // BL
+            vertices[0].position = rex::vec3(x, y, 0.0f);  // BL
             vertices[0].texcoord = rex::vec2(0, 0);
-            vertices[1].position = rex::vec3(x + width, y, 0.0f);               // BR
+            vertices[1].position = rex::vec3(x + width, y, 0.0f);  // BR
             vertices[1].texcoord = rex::vec2(1, 0);
-            vertices[2].position = rex::vec3(x + width, y + height, 0.0f);      // TR
+            vertices[2].position = rex::vec3(x + width, y + height, 0.0f);  // TR
             vertices[2].texcoord = rex::vec2(1, 1);
-            vertices[3].position = rex::vec3(x, y + height, 0.0f);              // TL
+            vertices[3].position = rex::vec3(x, y + height, 0.0f);  // TL
             vertices[3].texcoord = rex::vec2(0, 1);
 
             std::vector<TriangleIndices> indices;
             indices.resize(2);
-            indices[0] = { 0, 1, 2 };
-            indices[1] = { 2, 3, 0 };
+            indices[0] = {0, 1, 2};
+            indices[1] = {2, 3, 0};
 
-            return { vertices, indices };
+            return {vertices, indices};
         }
 
         //-------------------------------------------------------------------------
         void load_unit_cube()
         {
-            const rex::vec3 size = { 2.0f, 2.0f, 2.0f };
+            const rex::vec3 size = {2.0f, 2.0f, 2.0f};
 
             GeometryPackage package = get_cube_geometry_package(size);
 
@@ -228,7 +228,7 @@ namespace rex
 
             AABB aabb;
             aabb.minimum = (-size) * 0.5f;
-            aabb.maximum = (size) * 0.5f;
+            aabb.maximum = (size)*0.5f;
 
             info.name = "Unit Cube"_sid;
             info.vertices = package.vertices;
@@ -248,10 +248,7 @@ namespace rex
             submesh.transform = rex::matrix4(1.0f);
             submesh.vertex_count = (uint32)package.vertices.size();
 
-            info.submeshes =
-            {
-                submesh
-            };
+            info.submeshes = {submesh};
 
             info.diffuse_textures = {};
             info.normal_textures = {};
@@ -270,8 +267,8 @@ namespace rex
             ModelCreationInfo info;
 
             AABB aabb;
-            aabb.minimum = (rex::vec3{ -radius }) * 0.5f;
-            aabb.maximum = (rex::vec3{ radius }) * 0.5f;
+            aabb.minimum = (rex::vec3{-radius}) * 0.5f;
+            aabb.maximum = (rex::vec3{radius}) * 0.5f;
 
             info.name = "Unit Sphere"_sid;
             info.vertices = package.vertices;
@@ -291,10 +288,7 @@ namespace rex
             submesh.transform = rex::matrix4(1.0f);
             submesh.vertex_count = (uint32)package.vertices.size();
 
-            info.submeshes =
-            {
-                submesh
-            };
+            info.submeshes = {submesh};
 
             info.diffuse_textures = {};
             info.normal_textures = {};
@@ -314,8 +308,8 @@ namespace rex
             ModelCreationInfo info;
 
             AABB aabb;
-            aabb.minimum = (rex::vec3{ -radius, -height, -radius }) * 0.5f;
-            aabb.maximum = (rex::vec3{ radius, height, radius }) * 0.5f;
+            aabb.minimum = (rex::vec3{-radius, -height, -radius}) * 0.5f;
+            aabb.maximum = (rex::vec3{radius, height, radius}) * 0.5f;
 
             info.name = "Unit Capsule"_sid;
             info.vertices = package.vertices;
@@ -335,10 +329,7 @@ namespace rex
             submesh.transform = rex::matrix4(1.0f);
             submesh.vertex_count = (uint32)package.vertices.size();
 
-            info.submeshes =
-            {
-                submesh
-            };
+            info.submeshes = {submesh};
 
             info.diffuse_textures = {};
             info.normal_textures = {};
@@ -358,7 +349,7 @@ namespace rex
 
             AABB aabb;
             aabb.minimum = (-size) * 0.5f;
-            aabb.maximum = (size) * 0.5f;
+            aabb.maximum = (size)*0.5f;
 
             info.name = "Unit Quad"_sid;
             info.vertices = package.vertices;
@@ -378,10 +369,7 @@ namespace rex
             submesh.transform = rex::matrix4(1.0f);
             submesh.vertex_count = (uint32)package.vertices.size();
 
-            info.submeshes =
-            {
-                submesh
-            };
+            info.submeshes = {submesh};
 
             info.diffuse_textures = {};
             info.normal_textures = {};

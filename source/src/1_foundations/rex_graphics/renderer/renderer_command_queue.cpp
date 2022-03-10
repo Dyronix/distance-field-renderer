@@ -10,11 +10,10 @@ namespace rex
 {
     //-------------------------------------------------------------------------
     RendererCommandQueue::RendererCommandQueue(const memory::size& size)
-        :m_linear_allocator(memory::createAllocator<memory::LinearAllocator>(size))
-        ,m_queue_state(RenderCommandQueueState::ACCEPT)
-        ,m_command_allocations(0)
+        : m_linear_allocator(memory::createAllocator<memory::LinearAllocator>(size))
+        , m_queue_state(RenderCommandQueueState::ACCEPT)
+        , m_command_allocations(0)
     {
-        
     }
 
     //-------------------------------------------------------------------------
@@ -36,10 +35,10 @@ namespace rex
 
         // Reset values when exiting this function
         auto guard = make_scope_guard([&]() mutable
-            {
-                m_queue_state = RenderCommandQueueState::ACCEPT;
-                m_command_allocations = 0;
-            });
+                                      {
+                                          m_queue_state = RenderCommandQueueState::ACCEPT;
+                                          m_command_allocations = 0;
+                                      });
 
         m_queue_state = RenderCommandQueueState::EXECUTE;
 
@@ -47,7 +46,6 @@ namespace rex
 
         for (int32 i = 0; i < m_command_allocations; ++i)
         {
-
             uint64 alignment_offset = 0;
 
             alignment_offset = pointer_math::alignment_offset(aligned_buffer, m_linear_allocator.get_alignment());
@@ -78,9 +76,9 @@ namespace rex
         R_ASSERT(m_queue_state == RenderCommandQueueState::ACCEPT);
 
         auto guard = make_scope_guard([&]() mutable
-            {
-                m_queue_state = RenderCommandQueueState::ACCEPT;
-            });
+                                      {
+                                          m_queue_state = RenderCommandQueueState::ACCEPT;
+                                      });
 
         m_queue_state = RenderCommandQueueState::CLEAR;
 

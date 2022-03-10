@@ -19,11 +19,11 @@ int32 runProgram(int32 argc, char** argv)
 #ifdef REX_DEBUG
     rex::logging::create();
 
-    #if REX_PROFILE
-        R_PROFILE_ENABLE();
-    #else
-        R_PROFILE_DISABLE();
-    #endif
+#if REX_PROFILE
+    R_PROFILE_ENABLE();
+#else
+    R_PROFILE_DISABLE();
+#endif
 #else
     R_PROFILE_DISABLE();
 #endif
@@ -37,9 +37,9 @@ int32 runProgram(int32 argc, char** argv)
     delete application;
 
 #ifdef REX_DEBUG
-    #if REX_PROFILE
-        R_PROFILE_DISABLE();
-    #endif
+#if REX_PROFILE
+    R_PROFILE_DISABLE();
+#endif
 
     rex::logging::destroy();
 #endif

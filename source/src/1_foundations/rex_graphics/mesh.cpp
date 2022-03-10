@@ -16,14 +16,11 @@ namespace rex
     //-------------------------------------------------------------------------
     rex::BufferLayout rex::IMesh::makeBufferLayout()
     {
-        return
-        {
-            { DataType::VEC3, "a_Position" },
-            { DataType::VEC3, "a_Normal" },
-            { DataType::VEC3, "a_Tangent" },
-            { DataType::VEC3, "a_Binormal" },
-            { DataType::VEC2, "a_TexCoord" }
-        };
+        return {{DataType::VEC3, "a_Position"},
+                {DataType::VEC3, "a_Normal"},
+                {DataType::VEC3, "a_Tangent"},
+                {DataType::VEC3, "a_Binormal"},
+                {DataType::VEC2, "a_TexCoord"}};
     }
 
     //-------------------------------------------------------------------------
@@ -48,7 +45,6 @@ namespace rex
         , m_index_buffer(nullptr)
         , m_buffer_layout()
     {
-
     }
     //-------------------------------------------------------------------------
     rex::Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<TriangleIndices>& indices, Usage usage)
@@ -104,20 +100,17 @@ namespace rex
     // Static Mesh
     //-------------------------------------------------------------------------
     rex::StaticMesh::StaticMesh()
-        :Mesh()
+        : Mesh()
     {
-
     }
     //-------------------------------------------------------------------------
     rex::StaticMesh::StaticMesh(std::vector<Vertex>& vertices, std::vector<TriangleIndices>& indices)
         : Mesh(vertices, indices, Usage::STATIC_DRAW)
     {
-
     }
     //-------------------------------------------------------------------------
     rex::StaticMesh::~StaticMesh()
     {
-
     }
 
     //-------------------------------------------------------------------------
@@ -129,20 +122,17 @@ namespace rex
     // Dynamic Mesh
     //-------------------------------------------------------------------------
     rex::DynamicMesh::DynamicMesh()
-        :Mesh()
+        : Mesh()
     {
-
     }
     //-------------------------------------------------------------------------
     rex::DynamicMesh::DynamicMesh(std::vector<Vertex>& vertices, std::vector<TriangleIndices>& indices)
         : Mesh(vertices, indices, Usage::DYNAMIC_DRAW)
     {
-
     }
     //-------------------------------------------------------------------------
     rex::DynamicMesh::~DynamicMesh()
     {
-
     }
 
     //-------------------------------------------------------------------------

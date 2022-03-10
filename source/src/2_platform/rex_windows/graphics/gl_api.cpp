@@ -4,5 +4,5 @@
 
 namespace rex
 {
-    // Nothing to implement    
+    // Nothing to implement
 }

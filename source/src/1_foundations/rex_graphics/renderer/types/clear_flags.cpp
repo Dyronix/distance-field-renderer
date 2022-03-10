@@ -17,7 +17,7 @@ namespace rex
         {
             os << "Clearing Depth";
         }
-        else if(clear_color && clear_depth)
+        else if (clear_color && clear_depth)
         {
             os << "Clearing Color and Clearing Depth";
         }
