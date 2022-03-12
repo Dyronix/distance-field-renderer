@@ -1,11 +1,11 @@
 #pragma once
 
-#include "memory/ref_counted_object.h"
-
 #include <unordered_set>
 
 namespace rex
 {
+    class IRefCountedObject;
+
     using RefCountedObjectsContainer = std::unordered_set<const rex::IRefCountedObject*>;
 
     namespace memory

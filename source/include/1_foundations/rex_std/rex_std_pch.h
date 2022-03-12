@@ -6,11 +6,14 @@
 #include <mutex>
 #include <type_traits>
 #include <algorithm>
+#include <ostream>
 #include <iostream>
 #include <string>
 #include <cstring>
 #include <memory>
 #include <functional>
+#include <atomic>
+#include <limits>
 
 #include <stdint.h>
 #include <assert.h>

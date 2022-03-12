@@ -1,8 +1,5 @@
 #pragma once
 
-#include <atomic>
-#include <stdint.h>
-
 namespace rex
 {
     class IRefCountedObject

@@ -1,15 +1,10 @@
 #pragma once
 
+#include "string/string_entry.h"
 #include "string/string_ids.h"
-
-#include <string>
-#include <unordered_map>
 
 namespace rex
 {
-    class StringEntry;
-    class StringEntryID;
-
     namespace string_pool
     {
         void resolve(const StringEntryID& entryID, char** out, size_t& outSize);

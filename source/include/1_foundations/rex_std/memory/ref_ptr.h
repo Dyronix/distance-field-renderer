@@ -31,7 +31,7 @@ namespace rex
         }
         //-------------------------------------------------------------------------
         ref_ptr(std::nullptr_t n)
-            : m_instance(nullptr)
+            : m_instance(n)
         {
             static_assert(std::is_base_of<IRefCountedObject, T>::value, "Class does not inherit from \"IRefCountedObject\"!");
         }

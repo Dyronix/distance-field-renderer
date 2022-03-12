@@ -1,6 +1,7 @@
 #include "rex_std_pch.h"
 
 #include "memory/ref_ptr_utilities.h"
+#include "memory/ref_counted_object.h"
 
 namespace rex
 {
