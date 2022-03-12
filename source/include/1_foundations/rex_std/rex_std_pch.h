@@ -14,6 +14,7 @@
 #include <functional>
 #include <atomic>
 #include <limits>
+#include <thread>
 
 #include <stdint.h>
 #include <assert.h>
