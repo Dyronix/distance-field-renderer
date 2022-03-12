@@ -31,12 +31,14 @@ target_include_directories(rex_core PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_
 target_include_directories(rex_core PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_diagnostics)
 target_include_directories(rex_core PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_utilities)
 target_include_directories(rex_core PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_std)
+target_include_directories(rex_core PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_events)
 target_include_directories(rex_core PUBLIC ${INCLUDE_GSL})
 
 # Set target link libraries
 target_link_libraries(rex_core PUBLIC rex_diagnostics)
 target_link_libraries(rex_core PUBLIC rex_utilities)
 target_link_libraries(rex_core PUBLIC rex_std)
+target_link_libraries(rex_core PUBLIC rex_events)
 
 # Set project properties
 set_target_properties(rex_core PROPERTIES FOLDER                                         1_foundations/engine) 
