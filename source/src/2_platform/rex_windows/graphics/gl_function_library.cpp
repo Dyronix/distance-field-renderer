@@ -9,9 +9,9 @@
 #define ENABLE_GL_PARAMETER_LOGGING 1
 
 #if ENABLE_GL_FUNCTION_LOGGING
-#define GL_LOG R_INFO
+    #define GL_LOG R_INFO
 #else
-#define GL_LOG(...) UNUSED_PARAM(__VA_ARGS__)
+    #define GL_LOG(...) UNUSED_PARAM(__VA_ARGS__)
 #endif
 
 namespace rex

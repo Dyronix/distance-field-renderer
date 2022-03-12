@@ -46,7 +46,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void ApplicationLoop::tick()
         {
-            FrameInfo info = {World::getDeltaTime(), World::getFramesPerSecond()};
+            FrameInfo info = {World::get_delta_time(), World::get_frames_per_second()};
 
             m_update_delegate(info);
 
@@ -56,7 +56,7 @@ namespace rex
             // Cap framerate to "max_fps".
             // Safe resources of the machine we are running on.
             //
-            std::chrono::milliseconds actual_time(static_cast<uint32>(std::lrint(1000.0f / g_world.getFramesPerSecond().get())));
+            std::chrono::milliseconds actual_time(static_cast<uint32>(std::lrint(1000.0f / g_world.get_frames_per_second().get())));
             std::chrono::milliseconds desired_time(static_cast<uint32>(std::lrint(1000.0f / m_refresh_rate)));
 
             std::chrono::duration<float> elapsed_time = desired_time - actual_time;

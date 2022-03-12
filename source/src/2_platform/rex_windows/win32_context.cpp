@@ -59,19 +59,19 @@ namespace rex
                 // opengl::get_integer_value(GL_MAJOR_VERSION, &version_major);
                 // opengl::get_integer_value(GL_MINOR_VERSION, &version_minor);
 
-                return opengl::get_string_value(GL_VERSION);
+                return rex::opengl::get_string_value(GL_VERSION);
             }
 
             //-------------------------------------------------------------------------
             const char* Context::get_renderer() const
             {
-                return opengl::get_string_value(GL_RENDERER);
+                return rex::opengl::get_string_value(GL_RENDERER);
             }
 
             //-------------------------------------------------------------------------
             const char* Context::get_vendor() const
             {
-                return opengl::get_string_value(GL_VENDOR);
+                return rex::opengl::get_string_value(GL_VENDOR);
             }
 
             //-------------------------------------------------------------------------

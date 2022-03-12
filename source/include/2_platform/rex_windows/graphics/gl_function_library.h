@@ -66,7 +66,7 @@ namespace rex
         void texture_sub_image_3D(uint32 target, int32 level, int32 xoffset, int32 yoffset, int32 zoffset, size_t width, size_t height, size_t depth,
                                   uint32 format, uint32 type, const void* data);
         void set_texture_integer_parameter(uint32 target, uint32 pname, int32 param);
-        void set_texture_float_parameter(uint32 target, float pname, int32 param);
+        void set_texture_float_parameter(uint32 target, uint32 pname, float param);
 
         void delete_shader(uint32 shader);
         uint32 create_shader(uint32 shaderType);

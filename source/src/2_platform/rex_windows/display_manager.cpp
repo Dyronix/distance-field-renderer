@@ -48,8 +48,7 @@ namespace rex
                     continue;
                 }
 
-                R_TRACE("[DisplayMode,DisplayMode][{0},{1}]: [BPP, FMT, W, H, RR][{2}, {3}, {4}, {5}, {6}]", display_name, j,
-                        SDL_BITSPERPIXEL(mode.format), SDL_GetPixelFormatName(mode.format), mode.w, mode.h, mode.refresh_rate);
+                R_TRACE("[DisplayMode,DisplayMode][{0},{1}]: [BPP, FMT, W, H, RR][{2}, {3}, {4}, {5}, {6}]", display_name, j, SDL_BITSPERPIXEL(mode.format), SDL_GetPixelFormatName(mode.format), mode.w, mode.h, mode.refresh_rate);
 
                 DisplayModeDescription display_mode_description;
                 display_mode_description.mode_index = j;

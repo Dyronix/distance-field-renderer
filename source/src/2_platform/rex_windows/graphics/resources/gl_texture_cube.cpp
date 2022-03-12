@@ -1,29 +1,31 @@
 #include "rex_windows_pch.h"
 
-#include "renderer/renderer.h"
-
-#include "graphics/resources/gl_texture_3d.h"
+#include "graphics/resources/gl_texture_cube.h"
 #include "graphics/resources/gl_texture_util.h"
 
-#include "resources/texture_3d_description.h"
+#include "resources/texture_cube_description.h"
+
+#include "renderer/renderer.h"
+
+#include "pointer_math.h"
 
 namespace rex
 {
     namespace opengl
     {
         //-------------------------------------------------------------------------
-        std::unique_ptr<Texture3D> Texture3D::create(Texture3DDescription&& desc)
+        std::unique_ptr<rex::opengl::TextureCube> TextureCube::create(TextureCubeDescription&& desc)
         {
-            return std::make_unique<Texture3D>(std::move(desc));
+            return std::make_unique<TextureCube>(std::move(desc));
         }
 
         //-------------------------------------------------------------------------
-        Texture3D::Texture3D(const StringID& name, const Texture::Usage &textureUsage)
+        TextureCube::TextureCube(const StringID& name /*= ESID::SID_None*/, const Texture::Usage& textureUsage /*= Texture::Usage::UNSPECIFIED*/)
             :m_name(ESID::SID_None)
             ,m_width(0)
             ,m_height(0)
-            ,m_depth(0)
             ,m_id(0)
+            ,m_sampler_id(0)
             ,m_usage(Texture::Usage::UNSPECIFIED)
             ,m_wrap_r(Texture::Wrap::Type::CLAMP)
             ,m_wrap_s(Texture::Wrap::Type::CLAMP)
@@ -35,38 +37,37 @@ namespace rex
             ,m_pixel_format(m_texel_format, m_format)
             ,m_local_storage()
         {
-            RENDERER_INFO("Submitting - Create Texture 3D: name - {0}", name.to_string());
+            RENDERER_INFO("Submitting - Create Texture Cube: {0}", name.to_string());
 
             m_usage = textureUsage;
             m_texel_format = Texel::Format::RGBA;
             m_format = Texture::Format::RGBA_8;
             m_name = name;
 
-            ref_ptr<Texture3D> instance(this);
+            ref_ptr<TextureCube> instance(this);
             Renderer::submit([instance]() mutable
                 {
-                    RENDERER_INFO("Executing - Create Texture 3D: name - {0}", "Unspecified");
+                    RENDERER_INFO("Executing - Create Texture Cube: {0}", instance->m_name.to_string());
 
                     opengl::generate_textures(1, &instance->m_id);
 
-                    opengl::bind_texture(GL_TEXTURE_3D, instance->m_id);
+                    opengl::bind_texture(GL_TEXTURE_CUBE_MAP, instance->m_id);
 
                     instance->set_filter({ Texture::Filter::Action::MINIFICATION, Texture::Filter::Type::LINEAR });
                     instance->set_filter({ Texture::Filter::Action::MAGNIFICATION, Texture::Filter::Type::LINEAR });
-                    instance->set_wrap({ Texture::Wrap::Coordinate::WRAP_R, Texture::Wrap::Type::CLAMP });
-                    instance->set_wrap({ Texture::Wrap::Coordinate::WRAP_S, Texture::Wrap::Type::CLAMP });
-                    instance->set_wrap({ Texture::Wrap::Coordinate::WRAP_T, Texture::Wrap::Type::CLAMP });
+                    instance->set_wrap({ Texture::Wrap::Coordinate::WRAP_S, Texture::Wrap::Type::REPEAT });
+                    instance->set_wrap({ Texture::Wrap::Coordinate::WRAP_T, Texture::Wrap::Type::REPEAT });
 
-                    opengl::bind_texture(GL_TEXTURE_3D, 0);
+                    opengl::bind_texture(GL_TEXTURE_CUBE_MAP, 0);
                 });
         }
         //-------------------------------------------------------------------------
-        Texture3D::Texture3D(uint32 width, uint32 height, uint32 depth, const StringID& name, const Texture::Usage& textureUsage)
+        TextureCube::TextureCube(uint32 width, uint32 height, const StringID& name /*= ESID::SID_None*/, const Texture::Usage& textureUsage /*= Texture::Usage::UNSPECIFIED*/)
             :m_name(ESID::SID_None)
             ,m_width(0)
             ,m_height(0)
-            ,m_depth(0)
             ,m_id(0)
+            ,m_sampler_id(0)
             ,m_usage(Texture::Usage::UNSPECIFIED)
             ,m_wrap_r(Texture::Wrap::Type::CLAMP)
             ,m_wrap_s(Texture::Wrap::Type::CLAMP)
@@ -78,19 +79,18 @@ namespace rex
             ,m_pixel_format(m_texel_format, m_format)
             ,m_local_storage()
         {
-            if(width > GL_MAX_TEXTURE_SIZE || height > GL_MAX_TEXTURE_SIZE || depth > GL_MAX_TEXTURE_SIZE)
+            if (width > GL_MAX_TEXTURE_SIZE || height > GL_MAX_TEXTURE_SIZE)
             {
-                R_ERROR("Exceeded max texture size: width: {0}, height: {1}, depth: {2} => max: {2} ", width, height, depth, GL_MAX_TEXTURE_SIZE);
+                R_ERROR("Exceeded max texture size: width: {0}, height: {1} => max: {2} ", width, height, GL_MAX_TEXTURE_SIZE);
                 return;
             }
 
-            RENDERER_INFO("Submitting - Create Texture 3D: {0}", name.to_string());
+            RENDERER_INFO("Submitting - Create Texture Cube: {0}", name.to_string());
 
-            Texture3DDescription description;
+            TextureCubeDescription description;
 
             description.width = width;
             description.height = height;
-            description.depth = depth;
             description.name = name;
             description.texel_format = Texel::Format::RGBA;
             description.usage = textureUsage;
@@ -102,12 +102,12 @@ namespace rex
             invalidate(std::move(description));
         }
         //-------------------------------------------------------------------------
-        Texture3D::Texture3D(Texture::Data&& textureData, uint32 width, uint32 height, uint32 depth, const StringID& name, const Texture::Usage& textureUsage)
+        TextureCube::TextureCube(Texture::Data&& textureData, uint32 width, uint32 height, const StringID& name /*= ESID::SID_None*/, const Texture::Usage& textureUsage /*= Texture::Usage::UNSPECIFIED*/)
             :m_name(ESID::SID_None)
             ,m_width(0)
             ,m_height(0)
-            ,m_depth(0)
             ,m_id(0)
+            ,m_sampler_id(0)
             ,m_usage(Texture::Usage::UNSPECIFIED)
             ,m_wrap_r(Texture::Wrap::Type::CLAMP)
             ,m_wrap_s(Texture::Wrap::Type::CLAMP)
@@ -119,17 +119,16 @@ namespace rex
             ,m_pixel_format(m_texel_format, m_format)
             ,m_local_storage()
         {
-            if(width > GL_MAX_TEXTURE_SIZE || height > GL_MAX_TEXTURE_SIZE || depth > GL_MAX_TEXTURE_SIZE)
+            if (width > GL_MAX_TEXTURE_SIZE || height > GL_MAX_TEXTURE_SIZE)
             {
-                R_ERROR("Exceeded max texture size: width: {0}, height: {1}, depth: {2} => max: {2} ", width, height, depth, GL_MAX_TEXTURE_SIZE);
+                R_ERROR("Exceeded max texture size: width: {0}, height: {1} => max: {2} ", width, height, GL_MAX_TEXTURE_SIZE);
                 return;
             }
 
-            Texture3DDescription description;
+            TextureCubeDescription description;
 
             description.width = width;
             description.height = height;
-            description.depth = depth;
             description.name = name;
             description.texel_format = Texel::Format::RGBA;
             description.usage = textureUsage;
@@ -141,12 +140,12 @@ namespace rex
             invalidate(std::move(description));
         }
         //-------------------------------------------------------------------------
-        Texture3D::Texture3D(Texture3DDescription&& desc)
+        TextureCube::TextureCube(TextureCubeDescription&& desc)
             :m_name(ESID::SID_None)
             ,m_width(0)
             ,m_height(0)
-            ,m_depth(0)
             ,m_id(0)
+            ,m_sampler_id(0)
             ,m_usage(Texture::Usage::UNSPECIFIED)
             ,m_wrap_r(Texture::Wrap::Type::CLAMP)
             ,m_wrap_s(Texture::Wrap::Type::CLAMP)
@@ -158,54 +157,53 @@ namespace rex
             ,m_pixel_format(m_texel_format, m_format)
             ,m_local_storage()
         {
-            if(desc.width > GL_MAX_TEXTURE_SIZE || desc.height > GL_MAX_TEXTURE_SIZE || desc.depth > GL_MAX_TEXTURE_SIZE)
+            if (desc.width > GL_MAX_TEXTURE_SIZE || desc.height > GL_MAX_TEXTURE_SIZE)
             {
-                R_ERROR("Exceeded max texture size: width: {0}, height: {1}, depth: {2} => max: {2} ", desc.width, desc.height, desc.depth, GL_MAX_TEXTURE_SIZE);
+                R_ERROR("Exceeded max texture size: width: {0}, height: {1} => max: {2} ", desc.width, desc.height, GL_MAX_TEXTURE_SIZE);
                 return;
             }
 
             invalidate(std::move(desc));
         }
         //-------------------------------------------------------------------------
-        Texture3D::~Texture3D() 
+        TextureCube::~TextureCube()
         {
             release();
         }
 
         //-------------------------------------------------------------------------
-        void Texture3D::invalidate()
+        void TextureCube::invalidate()
         {
             invalidate(get_description(CopyImageData::YES));
         }
         //-------------------------------------------------------------------------
-        void Texture3D::invalidate(Texture3DDescription&& desc)
+        void TextureCube::invalidate(TextureCubeDescription&& desc)
         {
             if (m_id)
             {
                 release();
             }
 
-            RENDERER_INFO("Submitting - Create Texture 3D: {0}", desc.name.to_string());
+            RENDERER_INFO("Submitting - Create Texture Cube: {0}", desc.name.to_string());
 
             m_width = (uint32)desc.width;
             m_height = (uint32)desc.height;
-            m_depth = (uint32)desc.depth;
 
             m_usage = desc.usage;
             m_texel_format = desc.texel_format;
             m_format = desc.format;
             m_pixel_format = Pixel(m_texel_format, m_format);
-            m_local_storage = memory::Blob::copy(desc.data.get_data(), desc.data.get_size());
             m_name = desc.name;
 
-            ref_ptr<Texture3D> instance(this);
+            store_data_chunks(std::move(desc.data));
+
+            ref_ptr<TextureCube> instance(this);
             Renderer::submit([instance, filters = desc.filters, wraps = desc.wraps]() mutable
                 {
-                    RENDERER_INFO("Executing - Create Texture 3D: name - {0}", instance->m_name.to_string());
+                    RENDERER_INFO("Executing - Create Texture Cube: {0}", instance->m_name.to_string());
 
                     opengl::generate_textures(1, &instance->m_id);
-
-                    opengl::bind_texture(GL_TEXTURE_3D, instance->m_id);
+                    opengl::bind_texture(GL_TEXTURE_CUBE_MAP, instance->m_id);
 
                     if (filters.size() == 0)
                     {
@@ -226,9 +224,9 @@ namespace rex
                     if (wraps.size() == 0)
                     {
                         auto default_wraps = default_texture_3D_wrapping();
-                        for (auto& w : default_wraps)
+                        for (int8 i = 0; i < default_wraps.size(); ++i)
                         {
-                            instance->assign_wrap(w);
+                            instance->assign_wrap(default_wraps[i]);
                         }
                     }
                     else
@@ -241,33 +239,38 @@ namespace rex
 
                     auto pixel = Pixel(instance->m_texel_format, instance->m_format);
 
-                    auto target = GL_TEXTURE_3D;
+                    //auto target = GL_TEXTURE_CUBE_MAP;
+                    R_TODO("Target is not used, is this correct?");
                     auto level = 0;
                     auto internal_format = to_opengl_textureformat(instance->m_format);
                     auto width = instance->m_width;
                     auto height = instance->m_height;
-                    auto depth = instance->m_depth;
+                    R_TODO("Depth is not used, is this correct?");
+                    //auto depth = NUM_CUBE_FACES;
                     auto border = 0;
                     auto format = to_opengl_texelformat(instance->m_texel_format);
                     auto type = to_opengl_pixeltype(pixel.get_type());
 
-                    R_ASSERT(width != 0 && height != 0 && depth != 0);
+                    R_ASSERT(width != 0 && height != 0);
 
-                    if (instance->m_local_storage)
+                    uint32 offset = GL_TEXTURE_CUBE_MAP_NEGATIVE_X - GL_TEXTURE_CUBE_MAP_POSITIVE_X;
+                    for (uint8 i = 0; i < NUM_CUBE_FACES; ++i)
                     {
-                        opengl::texture_image_3D(target, level, internal_format, width, height, depth, border, format, type, instance->m_local_storage.get_data_as<void>());
-                    }
-                    else
-                    {
-                        opengl::texture_image_3D(target, level, internal_format, width, height, depth, border, format, type, nullptr);
+                        if (instance->m_local_storage[i] && instance->m_local_storage[i].get_size() > 0_bytes)
+                        {
+                            opengl::texture_image_2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + (i * offset), level, internal_format, width, height, border, format, type, instance->m_local_storage[i].get_data_as<void>());
+                        }
+                        else
+                        {
+                            opengl::texture_image_2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + (i * offset), level, internal_format, width, height, border, format, type, nullptr);
+                        }
                     }
 
-                    opengl::bind_texture(GL_TEXTURE_3D, 0);
+                    opengl::bind_texture(GL_TEXTURE_CUBE_MAP, 0);
                 });
-
         }
         //-------------------------------------------------------------------------
-        void Texture3D::release()
+        void TextureCube::release()
         {
             if (m_id)
             {
@@ -275,23 +278,25 @@ namespace rex
                 m_id = 0;
             }
 
-            m_local_storage.release();
+            for (uint8 i = 0; i < NUM_CUBE_FACES; ++i)
+            {
+                m_local_storage[i].release();
+            }
         }
 
         //-------------------------------------------------------------------------
-        const rex::StringID& Texture3D::get_name() const
+        const rex::StringID& TextureCube::get_name() const
         {
             return m_name;
         }
 
         //-------------------------------------------------------------------------
-        Texture3DDescription Texture3D::get_description(CopyImageData copyImageData) const
+        rex::TextureCubeDescription TextureCube::get_description(CopyImageData copyImageData /*= CopyImageData::NO*/) const
         {
-            Texture3DDescription description;
+            TextureCubeDescription description;
 
             description.width = m_width;
             description.height = m_height;
-            description.depth = m_depth;
 
             description.texel_format = m_texel_format;
 
@@ -314,105 +319,124 @@ namespace rex
 
             if (copyImageData)
             {
-                description.data = memory::Blob::copy(m_local_storage.get_data(), m_local_storage.get_size());
+                size_t total_size = 0;
+                for (int8 i = 0; i < NUM_CUBE_FACES; ++i)
+                {
+                    total_size += m_local_storage[i].get_size();
+                }
+
+                description.data.allocate(total_size);
+                description.data.zero_initialize();
+
+                size_t offset = 0;
+                for (int8 i = 0; i < NUM_CUBE_FACES; ++i)
+                {
+                    auto ptr = pointer_math::jump_forward(description.data.get_data(), offset);
+
+                    memory::Blob::copy(m_local_storage[i], ptr);
+
+                    offset += m_local_storage[i].get_size();
+                }
             }
 
             return description;
         }
 
         //-------------------------------------------------------------------------
-        const rex::Texture::Data& Texture3D::get_data() const
+        const rex::Texture::Data& TextureCube::get_data() const
         {
-            return m_local_storage;
+            R_TODO("Not sure if this actually valid ...");
+            return m_local_storage[0];
         }
 
         //-------------------------------------------------------------------------
-        Texture::Usage Texture3D::get_usage() const 
+        rex::Texture::Usage TextureCube::get_usage() const
         {
             return m_usage;
         }
         //-------------------------------------------------------------------------
-        Texture::Format Texture3D::get_format() const
+        rex::Texture::Format TextureCube::get_format() const
         {
             return m_format;
         }
 
         //-------------------------------------------------------------------------
-        rex::Texel::Format Texture3D::get_channels() const
+        rex::Texel::Format TextureCube::get_channels() const
         {
             return m_texel_format;
         }
 
         //-------------------------------------------------------------------------
-        uint32 Texture3D::get_width() const 
+        uint32 TextureCube::get_width() const
         {
             return m_width;
         }
         //-------------------------------------------------------------------------
-        uint32 Texture3D::get_height() const 
+        uint32 TextureCube::get_height() const
         {
             return m_height;
         }
-        //-------------------------------------------------------------------------
-        uint32 Texture3D::get_depth() const 
-        {
-            return m_depth;
-        }
 
         //-------------------------------------------------------------------------
-        uint32 Texture3D::get_id() const 
+        uint32 TextureCube::get_id() const
         {
             return m_id;
         }
 
         //-------------------------------------------------------------------------
-        void Texture3D::set_data(Texture::Data&& textureData) 
+        void TextureCube::set_data(Texture::Data&& textureData)
         {
-            R_ASSERT(m_width != 0 && m_height != 0 && m_depth != 0);
+            R_ASSERT(m_width != 0 && m_height != 0);
 
-            ref_ptr<Texture3D> instance(this);
-            Renderer::submit([instance, data = std::move(textureData)]()
+            store_data_chunks(std::move(textureData));
+
+            ref_ptr<TextureCube> instance(this);
+            Renderer::submit([instance]()
+            {
+                opengl::bind_texture(GL_TEXTURE_CUBE_MAP, instance->m_id);
+
+                auto texelformat = to_opengl_texelformat(instance->m_texel_format);
+                auto pixeltype = to_opengl_pixeltype(instance->m_pixel_format.get_type());
+
+                uint32 offset = GL_TEXTURE_CUBE_MAP_NEGATIVE_X - GL_TEXTURE_CUBE_MAP_POSITIVE_X;
+                for (uint8 i = 0; i < NUM_CUBE_FACES; ++i)
                 {
-                    opengl::bind_texture(GL_TEXTURE_3D, instance->m_id);
+                    opengl::texture_sub_image_2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + (i * offset), 0, 0, 0, instance->m_width, instance->m_height, texelformat, pixeltype, instance->m_local_storage[i].get_data_as<void>());
+                }
 
-                    auto texelformat = to_opengl_texelformat(instance->m_texel_format);
-                    auto pixeltype = to_opengl_pixeltype(instance->m_pixel_format.get_type());
-
-                    opengl::texture_sub_image_3D(GL_TEXTURE_3D, 0, 0, 0, 0, instance->m_width, instance->m_height, instance->m_depth, texelformat, pixeltype, data.get_data_as<int8_t>());
-
-                    opengl::bind_texture(GL_TEXTURE_3D, 0);
-                });
+                opengl::bind_texture(GL_TEXTURE_CUBE_MAP, 0);
+            });
         }
         //-------------------------------------------------------------------------
-        void Texture3D::set_wrap(const Texture::Wrap &textureWrap) 
+        void TextureCube::set_wrap(const Texture::Wrap& textureWrap)
         {
-            ref_ptr<Texture3D> instance(this);
+            ref_ptr<TextureCube> instance(this);
             Renderer::submit([instance, textureWrap]() mutable
                 {
-                    opengl::bind_texture(GL_TEXTURE_3D, instance->m_id);
+                    opengl::bind_texture(GL_TEXTURE_CUBE_MAP, instance->m_id);
 
                     instance->assign_wrap(textureWrap);
 
-                    opengl::bind_texture(GL_TEXTURE_3D, 0);
+                    opengl::bind_texture(GL_TEXTURE_CUBE_MAP, 0);
                 });
         }
         //-------------------------------------------------------------------------
-        void Texture3D::set_filter(const Texture::Filter &textureFilter) 
+        void TextureCube::set_filter(const Texture::Filter& textureFilter)
         {
-            ref_ptr<Texture3D> instance(this);
+            ref_ptr<TextureCube> instance(this);
             Renderer::submit([instance, textureFilter]() mutable
                 {
-                    opengl::bind_texture(GL_TEXTURE_3D, instance->m_id);
+                    opengl::bind_texture(GL_TEXTURE_CUBE_MAP, instance->m_id);
 
                     instance->assign_filter(textureFilter);
 
-                    opengl::bind_texture(GL_TEXTURE_3D, 0);
+                    opengl::bind_texture(GL_TEXTURE_CUBE_MAP, 0);
                 });
         }
         //-------------------------------------------------------------------------
-        void Texture3D::set_format(const Texel &texelFormat, const Texture::Format &textureFormat) 
+        void TextureCube::set_format(const Texel& texelFormat, const Texture::Format& textureFormat)
         {
-            if(m_id != 0)
+            if (m_id != 0)
             {
                 R_ERROR("Changing the format of an already existing texture is not supported");
                 return;
@@ -424,60 +448,81 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        void Texture3D::bind(IsRenderThread rt /*= IsRenderThread::NO*/) const
+        void TextureCube::bind(IsRenderThread rt /*= IsRenderThread::NO*/) const
         {
             if (rt)
             {
-                opengl::bind_texture(GL_TEXTURE_3D, m_id);
+                opengl::bind_texture(GL_TEXTURE_CUBE_MAP, m_id);
             }
             else
             {
-                ref_ptr<const Texture3D> instance(this);
+                ref_ptr<const TextureCube> instance(this);
                 Renderer::submit([instance]()
                     {
-                        opengl::bind_texture(GL_TEXTURE_3D, instance->m_id);
+                        opengl::bind_texture(GL_TEXTURE_CUBE_MAP, instance->m_id);
                     });
             }
-
         }
         //-------------------------------------------------------------------------
-        void Texture3D::unbind(IsRenderThread rt /*= IsRenderThread::NO*/) const
+        void TextureCube::unbind(IsRenderThread rt /*= IsRenderThread::NO*/) const
         {
-            if(rt)
+            if (rt)
             {
-                opengl::bind_texture(GL_TEXTURE_3D, 0);
+                opengl::bind_texture(GL_TEXTURE_CUBE_MAP, 0);
             }
             else
             {
-                ref_ptr<const Texture3D> instance(this);
+                ref_ptr<const TextureCube> instance(this);
                 Renderer::submit([instance]()
                     {
-                        opengl::bind_texture(GL_TEXTURE_3D, 0);
+                        opengl::bind_texture(GL_TEXTURE_CUBE_MAP, 0);
                     });
+
             }
         }
 
         //-------------------------------------------------------------------------
-        void Texture3D::assign_filter(const Filter& filter)
+        void TextureCube::assign_filter(const Filter& filter)
         {
             int32 type = filter.type == Texture::Filter::Type::NEAREST ? GL_NEAREST : GL_LINEAR;
 
             switch (filter.action)
             {
-            case Texture::Filter::Action::MINIFICATION: opengl::set_texture_integer_parameter(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, type); m_min_filter = filter.type; break;
-            case Texture::Filter::Action::MAGNIFICATION: opengl::set_texture_integer_parameter(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, type); m_mag_filter = filter.type; break;
+            case Texture::Filter::Action::MINIFICATION: opengl::set_texture_integer_parameter(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, type); m_min_filter = filter.type; break;
+            case Texture::Filter::Action::MAGNIFICATION: opengl::set_texture_integer_parameter(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, type); m_mag_filter = filter.type; break;
             }
         }
         //-------------------------------------------------------------------------
-        void Texture3D::assign_wrap(const Wrap& wrap)
+        void TextureCube::assign_wrap(const Wrap& wrap)
         {
             int32 type = wrap.type == Texture::Wrap::Type::CLAMP ? GL_CLAMP_TO_EDGE : GL_REPEAT;
 
             switch (wrap.coordinate)
             {
-            case Texture::Wrap::Coordinate::WRAP_R: opengl::set_texture_integer_parameter(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, type); m_wrap_s = wrap.type; break;
-            case Texture::Wrap::Coordinate::WRAP_S: opengl::set_texture_integer_parameter(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, type); m_wrap_s = wrap.type; break;
-            case Texture::Wrap::Coordinate::WRAP_T: opengl::set_texture_integer_parameter(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, type); m_wrap_t = wrap.type; break;
+            case Texture::Wrap::Coordinate::WRAP_R: opengl::set_texture_integer_parameter(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, type); m_wrap_r = wrap.type; break;
+            case Texture::Wrap::Coordinate::WRAP_S: opengl::set_texture_integer_parameter(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, type); m_wrap_s = wrap.type; break;
+            case Texture::Wrap::Coordinate::WRAP_T: opengl::set_texture_integer_parameter(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, type); m_wrap_t = wrap.type; break;
+            }
+        }
+
+        //-------------------------------------------------------------------------
+        void TextureCube::store_data_chunks(Texture::Data&& data)
+        {
+            size_t size = data.get_size() / NUM_CUBE_FACES;
+            size_t offset = 0u;
+
+            for (uint32 i = 0; i < NUM_CUBE_FACES; ++i)
+            {
+                if (m_local_storage[i])
+                {
+                    m_local_storage[i].release();
+                }
+
+                auto ptr = pointer_math::jump_forward(data.get_data(), offset);
+
+                m_local_storage[i] = memory::Blob::copy(ptr, size);
+
+                offset += size;
             }
         }
     }

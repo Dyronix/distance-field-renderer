@@ -41,8 +41,7 @@ namespace rex
                 flags |= SDL_WINDOW_RESIZABLE;
             }
 
-            m_sdl_window =
-                SDL_CreateWindow(description.title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_windowed_width, m_windowed_height, flags);
+            m_sdl_window = SDL_CreateWindow(description.title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_windowed_width, m_windowed_height, flags);
 
             if (m_sdl_window == nullptr)
             {

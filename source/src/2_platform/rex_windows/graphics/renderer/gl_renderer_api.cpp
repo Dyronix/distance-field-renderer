@@ -1,25 +1,26 @@
-#include "rex_platform_pch.h"
+#include "rex_windows_pch.h"
 
-#include "renderer/glrendererapi.h"
-#include "renderer/glrenderpass.h"
-#include "renderer/glpipeline.h"
+#include "graphics/renderer/gl_renderer_api.h"
+#include "graphics/renderer/gl_render_pass.h"
+#include "graphics/renderer/gl_render_pipeline.h"
 
-#include "renderer/types/primitivetype.h"
+#include "graphics/resources/gl_texture_resource_manager.h"
+
+#include "renderer/types/primitive_type.h"
 #include "renderer/renderer.h"
 
-#include "resources/gltextureresourcemanagerapi.h"
-#include "resources/resourcefactory.h"
-#include "resources/uniformbufferset.h"
-#include "resources/vertexbuffer.h"
-#include "resources/indexbuffer.h"
+#include "resources/texture_resource_manager.h"
+#include "resources/resource_factory.h"
+#include "resources/uniform_buffer_set.h"
+#include "resources/vertex_buffer.h"
+#include "resources/index_buffer.h"
 #include "resources/material.h"
-#include "resources/shaderprogram.h"
-#include "resources/textureresourcemanager.h"
+#include "resources/shader_program.h"
 
 #include "model.h"
-#include "meshfactory.h"
 #include "triangle.h"
 #include "submesh.h"
+#include "mesh_factory.h"
 
 #include <map>
 
@@ -53,7 +54,7 @@ namespace rex
                 case PrimitiveType::QUADS: return GL_QUADS;
             }
 
-            S_ASSERT_X(false, "Invalid primitive type");
+            R_ASSERT_X(false, "Invalid primitive type");
             return 0;
         }
         //-------------------------------------------------------------------------
@@ -65,11 +66,8 @@ namespace rex
                 case CullMode::FRONT: return GL_FRONT;
                 case CullMode::FRONT_AND_BACK: return GL_FRONT_AND_BACK;
 
-                default: S_ASSERT_X(false, "Unsupported Cull Type"); return GL_BACK;
+                default: R_ASSERT_X(false, "Unsupported Cull Type"); return GL_BACK;
             }
-
-            S_ASSERT_X(false, "Invalid cull type");
-            return GL_BACK;
         }
         //-------------------------------------------------------------------------
         GLenum to_gl_winding_type(const FaceWinding& winding)
@@ -79,11 +77,8 @@ namespace rex
                 case FaceWinding::CLOCKWISE: return GL_CW;
                 case FaceWinding::COUNTER_CLOCKWISE: return GL_CCW;
 
-                default: S_ASSERT_X(false, "Unsupported winding Type"); return GL_CCW;
+                default: R_ASSERT_X(false, "Unsupported winding Type"); return GL_CCW;
             }
-
-            S_ASSERT_X(false, "Invalid winding type");
-            return GL_CCW;
         }
         //-------------------------------------------------------------------------
         GLenum to_gl_depth_func(const DepthTestFunction& function)
@@ -98,11 +93,8 @@ namespace rex
                 case DepthTestFunction::GREATER_OR_EQUAL: return GL_GEQUAL;
                 case DepthTestFunction::EQUAL: return GL_EQUAL;
                 case DepthTestFunction::NOT_EQUAL: return GL_NOTEQUAL;
-                default: S_ASSERT_X(false, "Unsupported depth function"); return GL_LESS;
+                default: R_ASSERT_X(false, "Unsupported depth function"); return GL_LESS;
             }
-
-            S_ASSERT_X(false, "Invalid depth function");
-            return GL_LESS;
         }
         //-------------------------------------------------------------------------
         GLenum to_gl_fill_mode(FillMode mode)
@@ -112,11 +104,8 @@ namespace rex
                 case FillMode::POINT: return GL_POINT;
                 case FillMode::LINE: return GL_LINE;
                 case FillMode::FILL: return GL_FILL;
-                default: S_ASSERT_X(false, "Unsupported fill mode"); return GL_FILL;
+                default: R_ASSERT_X(false, "Unsupported fill mode"); return GL_FILL;
             }
-
-            S_ASSERT_X(false, "Invalid fill mode");
-            return GL_FILL;
         }
 
         //-------------------------------------------------------------------------
@@ -202,8 +191,7 @@ namespace rex
             vertices[3].position = rex::vec3(x, y + height, 0.0f);  // TL
             vertices[3].texCoord = rex::vec2(0, 1);
 
-            g_fullscreen_quad_vertex_buffer =
-                ResourceFactory::createVertexBuffer(vertices, sizeof(QuadVertex) * quad_vertex_count, quad_vertex_count);
+            g_fullscreen_quad_vertex_buffer = ResourceFactory::create_vertex_buffer(vertices, sizeof(QuadVertex) * quad_vertex_count, quad_vertex_count);
 
             delete[] vertices;  // copied into the vertex buffer
 
@@ -211,7 +199,7 @@ namespace rex
 
             TriangleIndices indices[quad_triangle_count] = {{0, 1, 2}, {2, 3, 0}};
 
-            g_fullscreen_quad_index_buffer = ResourceFactory::createIndexBuffer(indices, quad_triangle_count);
+            g_fullscreen_quad_index_buffer = ResourceFactory::create_index_buffer(indices, quad_triangle_count);
         }
         //-------------------------------------------------------------------------
         void destroy_fullscreen_quad()
@@ -228,12 +216,12 @@ namespace rex
             int32 max_texture_units = 0;
             opengl::get_integer_value(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &max_texture_units);
 
-            TextureResourceManager::intialize(std::make_unique<TextureResourceManagerAPI>(max_texture_units));
+            TextureResourceManager::intialize(std::make_unique<opengl::TextureResourceManagerAPI>(max_texture_units));
         }
         //-------------------------------------------------------------------------
         void destroy_texture_resource_manager()
         {
-            TextureResourceManager::releaseAll();
+            TextureResourceManager::release_all();
         }
 
         //-------------------------------------------------------------------------
@@ -268,7 +256,7 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        void RendererAPI::setViewport(const rex::vec2& origin, const rex::vec2& size)
+        void RendererAPI::set_viewport(const rex::vec2& origin, const rex::vec2& size)
         {
             Renderer::submit([origin, size]()
                              {
@@ -277,7 +265,7 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        void RendererAPI::beginFrame()
+        void RendererAPI::begin_frame()
         {
             setup_rasterizer_state(RasterizerState());
             setup_face_cull_state(FaceCullState());
@@ -285,26 +273,26 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        void RendererAPI::beginRenderPass(ref_ptr<rex::Pipeline> pipeline, bool explicitClear /*= false*/)
+        void RendererAPI::begin_render_pass(ref_ptr<rex::Pipeline> pipeline, bool explicitClear /*= false*/)
         {
-            g_active_renderpass = pipeline->getRenderPass();
+            g_active_renderpass = pipeline->get_render_pass();
 
-            if (g_active_renderpass->getFrameBuffer() != nullptr)
+            if (g_active_renderpass->get_frame_buffer() != nullptr)
             {
-                g_active_renderpass->getFrameBuffer()->bind();
+                g_active_renderpass->get_frame_buffer()->bind();
             }
 
             if (explicitClear)
             {
                 Renderer::submit([instance = g_active_renderpass]()
                                  {
-                                     auto clear_color = instance->getClearColor();
-                                     auto clear_depth = instance->getClearDepth();
+                                     auto clear_color = instance->get_clear_color();
+                                     auto clear_depth = instance->get_clear_depth();
 
                                      opengl::clear_color(clear_color.red, clear_color.green, clear_color.blue, clear_color.alpha);
                                      opengl::clear_depth(clear_depth);
 
-                                     auto clear_flags = instance->getClearFlags();
+                                     auto clear_flags = instance->get_clear_flags();
 
                                      uint32 in_clear_flags = (uint32)clear_flags;
                                      uint32 out_clear_flags = 0;
@@ -322,53 +310,53 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        void RendererAPI::endFrame()
+        void RendererAPI::end_frame()
         {
             // Nothing to implement
         }
 
         //-------------------------------------------------------------------------
-        void RendererAPI::endRenderPass()
+        void RendererAPI::end_render_pass()
         {
-            if (g_active_renderpass->getFrameBuffer() != nullptr)
+            if (g_active_renderpass->get_frame_buffer() != nullptr)
             {
-                g_active_renderpass->getFrameBuffer()->unbind();
+                g_active_renderpass->get_frame_buffer()->unbind();
             }
 
             g_active_renderpass = nullptr;
         }
 
         //-------------------------------------------------------------------------
-        void RendererAPI::renderQuad(ref_ptr<rex::Pipeline> pipeline, rex::UniformBufferSet* uniformBufferSet, ref_ptr<rex::Material> material,
+        void RendererAPI::render_quad(ref_ptr<rex::Pipeline> pipeline, rex::UniformBufferSet* uniformBufferSet, ref_ptr<rex::Material> material,
                                      const rex::matrix4& transform)
         {
-            renderModelWithMaterial(pipeline, uniformBufferSet, mesh_factory::getUnitQuad(), transform, material);
+            render_model_with_material(pipeline, uniformBufferSet, mesh_factory::get_unit_quad(), transform, material);
         }
 
         //-------------------------------------------------------------------------
-        void RendererAPI::renderModel(ref_ptr<rex::Pipeline> pipeline, rex::UniformBufferSet* uniformBufferSet, ref_ptr<rex::Model> model,
+        void RendererAPI::render_model(ref_ptr<rex::Pipeline> pipeline, rex::UniformBufferSet* uniformBufferSet, ref_ptr<rex::Model> model,
                                       const rex::matrix4& transform)
         {
-            setup_rasterizer_state(pipeline->getRasterizerState());
-            setup_face_cull_state(pipeline->getFaceCullState());
-            setup_depth_test_state(pipeline->getDepthTestState());
+            setup_rasterizer_state(pipeline->get_rasterizer_state());
+            setup_face_cull_state(pipeline->get_face_cull_state());
+            setup_depth_test_state(pipeline->get_depth_test_state());
 
-            model->getVertexBuffer()->bind();
+            model->get_vertex_buffer()->bind();
             pipeline->bind();
-            model->getIndexBuffer()->bind();
+            model->get_index_buffer()->bind();
 
             Renderer::submit([pipeline, uniformBufferSet, model, transform]
                              {
-                                 auto& materials = model->getMaterials();
-                                 for (const Submesh& submesh : model->getSubmeshes())
+                                 auto& materials = model->get_materials();
+                                 for (const Submesh& submesh : model->get_submeshes())
                                  {
                                      auto material = materials[submesh.material_index];
                                      material->flush(IsRenderThread::YES);
 
                                      auto u_transform = transform * submesh.transform;
-                                     material->getShaderProgram()->setUniform("u_Transform", u_transform, IsRenderThread::YES);
+                                     material->get_shader_program()->set_uniform("u_Transform", u_transform, IsRenderThread::YES);
 
-                                     if (material->hasFlag(MaterialFlag::DepthTest))
+                                     if (material->has_flag(MaterialFlag::DepthTest))
                                      {
                                          opengl::enable(GL_DEPTH_TEST);
                                      }
@@ -377,38 +365,38 @@ namespace rex
                                          opengl::disable(GL_DEPTH_TEST);
                                      }
 
-                                     opengl::draw_elements(to_gl_primitive_type(pipeline->getPrimitiveType()), submesh.index_count, GL_UNSIGNED_INT,
+                                     opengl::draw_elements(to_gl_primitive_type(pipeline->get_primitive_type()), submesh.index_count, GL_UNSIGNED_INT,
                                                            (void*)(sizeof(uint32_t) * submesh.base_index));
                                  }
                              });
 
-            model->getIndexBuffer()->unbind();
+            model->get_index_buffer()->unbind();
             pipeline->unbind();
-            model->getVertexBuffer()->unbind();
+            model->get_vertex_buffer()->unbind();
         }
 
         //-------------------------------------------------------------------------
-        void RendererAPI::renderModelWithMaterial(ref_ptr<rex::Pipeline> pipeline, rex::UniformBufferSet* uniformBufferSet, ref_ptr<Model> model,
+        void RendererAPI::render_model_with_material(ref_ptr<rex::Pipeline> pipeline, rex::UniformBufferSet* uniformBufferSet, ref_ptr<Model> model,
                                                   const rex::matrix4& transform, ref_ptr<rex::Material> material)
         {
-            setup_rasterizer_state(pipeline->getRasterizerState());
-            setup_face_cull_state(pipeline->getFaceCullState());
-            setup_depth_test_state(pipeline->getDepthTestState());
+            setup_rasterizer_state(pipeline->get_rasterizer_state());
+            setup_face_cull_state(pipeline->get_face_cull_state());
+            setup_depth_test_state(pipeline->get_depth_test_state());
 
-            model->getVertexBuffer()->bind();
+            model->get_vertex_buffer()->bind();
             pipeline->bind();
-            model->getIndexBuffer()->bind();
+            model->get_index_buffer()->bind();
 
             Renderer::submit([pipeline, uniformBufferSet, model, transform, material]() mutable
                              {
-                                 for (const Submesh& submesh : model->getSubmeshes())
+                                 for (const Submesh& submesh : model->get_submeshes())
                                  {
                                      material->flush(IsRenderThread::YES);
 
                                      auto u_transform = transform * submesh.transform;
-                                     material->getShaderProgram()->setUniform("u_Transform", u_transform, IsRenderThread::YES);
+                                     material->get_shader_program()->set_uniform("u_Transform", u_transform, IsRenderThread::YES);
 
-                                     if (material->hasFlag(MaterialFlag::DepthTest))
+                                     if (material->has_flag(MaterialFlag::DepthTest))
                                      {
                                          opengl::enable(GL_DEPTH_TEST);
                                      }
@@ -417,23 +405,21 @@ namespace rex
                                          opengl::disable(GL_DEPTH_TEST);
                                      }
 
-                                     opengl::draw_elements(to_gl_primitive_type(pipeline->getPrimitiveType()), submesh.index_count, GL_UNSIGNED_INT,
-                                                           (void*)(sizeof(uint32_t) * submesh.base_index));
+                                     opengl::draw_elements(to_gl_primitive_type(pipeline->get_primitive_type()), submesh.index_count, GL_UNSIGNED_INT, (void*)(sizeof(uint32_t) * submesh.base_index));
                                  }
                              });
 
-            model->getIndexBuffer()->unbind();
+            model->get_index_buffer()->unbind();
             pipeline->unbind();
-            model->getVertexBuffer()->unbind();
+            model->get_vertex_buffer()->unbind();
         }
 
         //-------------------------------------------------------------------------
-        void RendererAPI::submitFullscreenQuad(ref_ptr<rex::Pipeline> pipeline, rex::UniformBufferSet* uniformBufferSet,
-                                               ref_ptr<rex::Material> material)
+        void RendererAPI::submit_fullscreen_quad(ref_ptr<rex::Pipeline> pipeline, rex::UniformBufferSet* /*uniformBufferSet*/, ref_ptr<rex::Material> material)
         {
-            setup_rasterizer_state(pipeline->getRasterizerState());
-            setup_face_cull_state(pipeline->getFaceCullState());
-            setup_depth_test_state(pipeline->getDepthTestState());
+            setup_rasterizer_state(pipeline->get_rasterizer_state());
+            setup_face_cull_state(pipeline->get_face_cull_state());
+            setup_depth_test_state(pipeline->get_depth_test_state());
 
             g_fullscreen_quad_vertex_buffer->bind();
             pipeline->bind();
@@ -443,7 +429,7 @@ namespace rex
 
             Renderer::submit([pipeline]()
                              {
-                                 opengl::draw_elements(to_gl_primitive_type(pipeline->getPrimitiveType()), g_fullscreen_quad_index_buffer->getCount(),
+                                 opengl::draw_elements(to_gl_primitive_type(pipeline->get_primitive_type()), g_fullscreen_quad_index_buffer->get_count(),
                                                        GL_UNSIGNED_INT, nullptr);
                              });
 
@@ -453,7 +439,7 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        ref_ptr<rex::Pipeline> RendererAPI::createPipeline(const PipelineDescription& description) const
+        ref_ptr<rex::Pipeline> RendererAPI::create_pipeline(const PipelineDescription& description) const
         {
             g_pipelines.push_back(make_ref<Pipeline>(description));
 
@@ -461,7 +447,7 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        ref_ptr<rex::RenderPass> RendererAPI::createRenderPass(const RenderPassDescription& description) const
+        ref_ptr<rex::RenderPass> RendererAPI::create_render_pass(const RenderPassDescription& description) const
         {
             g_renderpasses.push_back(make_ref<RenderPass>(description));
 

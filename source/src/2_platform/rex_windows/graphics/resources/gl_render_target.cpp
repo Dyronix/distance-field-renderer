@@ -2,8 +2,8 @@
 
 #include "renderer/renderer.h"
 
-#include "resources/gl_render_target.h"
-#include "resources/gl_texture_util.h"
+#include "graphics/resources/gl_render_target.h"
+#include "graphics/resources/gl_texture_util.h"
 
 #include "resources/texture_2d_description.h"
 
@@ -22,7 +22,7 @@ namespace rex
 
         //-------------------------------------------------------------------------
         RenderTarget::RenderTarget(Texture2DDescription&& desc)
-            : m_name(EName::SID_None)
+            : m_name(ESID::SID_None)
             , m_width(0)
             , m_height(0)
             , m_id(0)
@@ -51,7 +51,7 @@ namespace rex
             m_texel_format = desc.texel_format;
             m_format = desc.format;
             m_pixel_format = Pixel(m_texel_format, m_format);
-            m_local_storage = memory::Blob::copy(desc.data.getData(), desc.data.getSize());
+            m_local_storage = memory::Blob::copy(desc.data.get_data(), desc.data.get_size());
 
             invalidate(std::move(desc));
         }
@@ -64,7 +64,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void RenderTarget::invalidate()
         {
-            invalidate(getDescription(CopyImageData::YES));
+            invalidate(get_description(CopyImageData::YES));
         }
         //-------------------------------------------------------------------------
         void RenderTarget::invalidate(Texture2DDescription&& desc)
@@ -86,11 +86,11 @@ namespace rex
             auto height = desc.height;
             auto border = 0;
             auto format = to_opengl_texelformat(desc.texel_format);
-            auto type = to_opengl_pixeltype(pixel.getType());
+            auto type = to_opengl_pixeltype(pixel.get_type());
 
             if (desc.data)
             {
-                opengl::texture_image_2D(target, level, internal_format, width, height, border, format, type, desc.data.getDataAs<void>());
+                opengl::texture_image_2D(target, level, internal_format, width, height, border, format, type, desc.data.get_data_as<void>());
             }
             else
             {
@@ -122,7 +122,7 @@ namespace rex
             }
             else
             {
-                auto wraps = default_texture2d_wrapping();
+                auto wraps = default_texture_2D_wrapping();
                 for (auto& w : wraps)
                 {
                     set_wrap(w);
@@ -213,7 +213,7 @@ namespace rex
 
             if (copyImageData)
             {
-                description.data = memory::Blob::copy(m_local_storage.getData(), m_local_storage.getSize());
+                description.data = memory::Blob::copy(m_local_storage.get_data(), m_local_storage.get_size());
             }
 
             return description;
@@ -225,9 +225,9 @@ namespace rex
             opengl::bind_texture(GL_TEXTURE_2D, m_id);
 
             auto texelformat = to_opengl_texelformat(m_texel_format);
-            auto pixeltype = to_opengl_pixeltype(m_pixel_format.getType());
+            auto pixeltype = to_opengl_pixeltype(m_pixel_format.get_type());
 
-            opengl::texture_sub_image_2D(GL_TEXTURE_2D, 0, 0, 0, m_width, m_height, texelformat, pixeltype, textureData.getDataAs<void>());
+            opengl::texture_sub_image_2D(GL_TEXTURE_2D, 0, 0, 0, m_width, m_height, texelformat, pixeltype, textureData.get_data_as<void>());
             opengl::bind_texture(GL_TEXTURE_2D, 0);
         }
         //-------------------------------------------------------------------------

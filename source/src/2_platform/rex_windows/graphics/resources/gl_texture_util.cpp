@@ -4,6 +4,8 @@
 
 #include "resources/texture.h"
 
+#include "graphics/gl_api.h"
+
 namespace rex
 {
     namespace opengl
@@ -21,11 +23,8 @@ namespace rex
                 case Texel::Format::DEPTH_COMPONENT: return GL_DEPTH_COMPONENT;
                 case Texel::Format::DEPTH_STENCIL_COMPONENT: return GL_DEPTH_STENCIL;
 
-                default: S_ASSERT_X(false, "Unsupported texel format"); return 0;
+                default: R_ASSERT_X(false, "Unsupported texel format"); return 0;
             }
-
-            S_ASSERT_X(false, "Invalid texel format");
-            return 0;
         }
         //-------------------------------------------------------------------------
         uint32 to_opengl_textureformat(const Texture::Format& textureFormat)
@@ -90,11 +89,8 @@ namespace rex
                 case Texture::Format::DEPTH_COMPONENT_24_UNSIGNED_INTEGER_STENCIL_8_UNSIGNED_INTEGER: return GL_DEPTH24_STENCIL8;
                 case Texture::Format::DEPTH_COMPONENT_32_FLOAT_STENCIL_8_FLOAT: return GL_DEPTH32F_STENCIL8;
 
-                default: S_ASSERT_X(false, "Unsupported texture format"); return 0;
+                default: R_ASSERT_X(false, "Unsupported texture format"); return 0;
             }
-
-            S_ASSERT_X(false, "Invalid texture format");
-            return 0;
         }
         //-------------------------------------------------------------------------
         uint32 to_opengl_pixeltype(const Pixel::Type& pixelType)
@@ -116,11 +112,8 @@ namespace rex
                 case Pixel::Type::UNSIGNED_INT_24_8: return GL_UNSIGNED_INT_24_8;
                 case Pixel::Type::FLOAT_32_UNSIGNED_INT_24_8_REV: return GL_FLOAT_32_UNSIGNED_INT_24_8_REV;
 
-                default: S_ASSERT_X(false, "Unsupported pixel type"); return 0;
+                default: R_ASSERT_X(false, "Unsupported pixel type"); return 0;
             }
-
-            S_ASSERT_X(false, "Invalid pixel type");
-            return 0;
         }
     }
 }

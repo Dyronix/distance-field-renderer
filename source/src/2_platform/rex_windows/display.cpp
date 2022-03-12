@@ -19,8 +19,9 @@ namespace rex
     }
 
     //-------------------------------------------------------------------------
-    Display::Display(Display&& other) noexcept : m_description(std::exchange(other.m_description, {})),
-                                                 m_active_display_mode(std::exchange(other.m_active_display_mode, nullptr))
+    Display::Display(Display&& other) noexcept 
+        : m_description(std::exchange(other.m_description, {}))
+        , m_active_display_mode(std::exchange(other.m_active_display_mode, nullptr))
     {
     }
     //-------------------------------------------------------------------------

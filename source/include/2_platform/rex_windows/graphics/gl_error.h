@@ -15,9 +15,9 @@ namespace rex
 
 #ifdef REX_DEBUG
 #define GL_CALL(x)                                                                                                                                   \
-    rex::win32::opengl::gl_check_error();                                                                                                            \
+    rex::opengl::gl_check_error();                                                                                                            \
     x;                                                                                                                                               \
-    if (!rex::win32::opengl::gl_log_call(#x, __FILE__, __LINE__))                                                                                    \
+    if (!rex::opengl::gl_log_call(#x, __FILE__, __LINE__))                                                                                    \
     {                                                                                                                                                \
         DEBUG_BREAK();                                                                                                                               \
     }

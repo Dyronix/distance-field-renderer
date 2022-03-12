@@ -17,7 +17,8 @@ namespace rex
     }
 
     //-------------------------------------------------------------------------
-    DisplayMode::DisplayMode(DisplayMode&& other) noexcept : m_description(std::exchange(other.m_description, {}))
+    DisplayMode::DisplayMode(DisplayMode&& other) noexcept 
+        : m_description(std::exchange(other.m_description, {}))
     {
     }
 
