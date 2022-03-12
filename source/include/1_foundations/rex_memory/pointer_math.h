@@ -1,9 +1,5 @@
 #pragma once
 
-#include "types.h"
-
-#include <cstddef>
-
 namespace rex
 {
     namespace pointer_math

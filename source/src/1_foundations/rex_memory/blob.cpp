@@ -98,7 +98,8 @@ namespace rex
             memcpy(m_data.get(), other.m_data.get(), m_size);
         }
         //-------------------------------------------------------------------------
-        Blob::Blob(Blob&& other) noexcept : m_data(std::exchange(other.m_data, nullptr)), m_size(std::exchange(other.m_size, 0))
+        Blob::Blob(Blob&& other) noexcept 
+            : m_data(std::exchange(other.m_data, nullptr)), m_size(std::exchange(other.m_size, 0))
         {
         }
 

@@ -1,6 +1,7 @@
 #include "rex_memory_pch.h"
 
 #include "data_type.h"
+#include "memory_size.h"
 
 namespace rex
 {

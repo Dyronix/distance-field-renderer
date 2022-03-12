@@ -2,6 +2,9 @@
 
 #include <iostream>
 #include <memory>
+#include <cstddef>
+#include <ratio>
+#include <utility>
 
 #include <gsl/narrow>
 

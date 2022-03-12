@@ -1,9 +1,12 @@
 #pragma once
 
-#include "memory_size.h"
-
 namespace rex
 {
+    namespace memory
+    {
+        class size;
+    }
+    
     class DataType
     {
     public:

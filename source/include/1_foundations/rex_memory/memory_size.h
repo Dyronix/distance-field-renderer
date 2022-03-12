@@ -1,8 +1,5 @@
 #pragma once
 
-#include <ratio>
-#include <utility>
-
 namespace rex
 {
     namespace memory
