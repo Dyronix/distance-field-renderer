@@ -12,7 +12,7 @@
 extern rex::CoreApplication* rex::create_application(const ApplicationArguments& arguments);
 
 //--------------------------------------------------------------------------------------------
-int32 runProgram(int32 argc, char** argv)
+int32 run_program(int32 argc, char** argv)
 {
     std::cout << "Starting REX" << std::endl;
 
@@ -54,7 +54,7 @@ int32 runProgram(int32 argc, char** argv)
 //--------------------------------------------------------------------------------------------
 int32 main(int32 argc, char** argv)
 {
-    int32 result = runProgram(argc, argv);
+    int32 result = run_program(argc, argv);
 
     return result;
 }
@@ -64,7 +64,7 @@ int32 main(int32 argc, char** argv)
 //--------------------------------------------------------------------------------------------
 int32 main(int32 argc, char** argv)
 {
-    int32 result = runProgram(argc, argv);
+    int32 result = run_program(argc, argv);
 
     return result;
 }
@@ -74,7 +74,7 @@ int32 main(int32 argc, char** argv)
 //--------------------------------------------------------------------------------------------
 int32 main(int32 argc, char** argv)
 {
-    int32 result = runProgram(argc, argv);
+    int32 result = run_program(argc, argv);
 
     return result;
 }

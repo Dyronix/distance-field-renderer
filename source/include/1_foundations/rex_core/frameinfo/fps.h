@@ -11,33 +11,18 @@ namespace rex
     class FPS
     {
     public:
-        //--------------------------------------------------------------------------------------------
-        FPS()
-            : m_fps(0)
-            , m_fps_count(0)
-        {
-        }
+        FPS();
+        FPS(const FPS& other);
+        FPS(FPS&& other);
 
-        //--------------------------------------------------------------------------------------------
-        void update()
-        {
-            ++m_fps_count;
+        FPS& operator=(const FPS& other);
+        FPS& operator=(FPS&& other);
 
-            // one second elapsed? (= 1000 milliseconds)
-            if (m_fps_interval.value() > (unsigned)std::chrono::duration_cast<std::chrono::milliseconds>(1s).count())
-            {
-                m_fps = m_fps_count;
+        operator uint32() const;
 
-                m_fps_count = 0;
-                m_fps_interval = Interval();
-            }
-        }
+        void update();
 
-        //--------------------------------------------------------------------------------------------
-        uint32 get() const
-        {
-            return m_fps;
-        }
+        uint32 get() const;
 
     private:
         uint32 m_fps;

@@ -10,8 +10,10 @@
 #include <gsl/pointers>
 #include <gsl/narrow>
 
-#include "types.h"
 #include "defines.h"
+#include "types.h"
+
+#include "named_type.h"
 
 #include "rex_debug.h"
 
