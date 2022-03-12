@@ -40,6 +40,7 @@ external/sdl-windows/
 external/spdlog-windows/
 external/gsl-windows/
 external/crc-windows/
+external/glm-windows/
 
 scripts/__pycache__/
 
