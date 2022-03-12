@@ -6,6 +6,7 @@
 #include <optional>
 #include <iostream>
 #include <memory>
+#include <sstream>
 
 #include <gsl/pointers>
 #include <gsl/narrow>

@@ -1,5 +1,9 @@
 #pragma once
 
+#include "event.h"
+
+#include "core_window_flags.h"
+
 namespace rex
 {
     class Display;
@@ -13,6 +17,7 @@ namespace rex
             , fullscreen(false)
             , display(nullptr)
             , display_mode_index(0)
+            , flags()
         {
         }
 
@@ -22,6 +27,20 @@ namespace rex
         bool fullscreen;
         const Display* display;
         uint32 display_mode_index;
+        WindowFlags flags;
+        events::EventCallbackFn event_callback;
+    };
+
+    struct Focus
+    {
+        enum class Type
+        {
+            KEYBOARD,
+            MOUSE
+        };
+
+        Focus::Type type;
+        bool acquired;
     };
 
     class CoreWindow
@@ -34,6 +53,14 @@ namespace rex
         virtual void show() = 0;
         virtual void hide() = 0;
 
+        virtual void gained_focus(const Focus::Type& focus) = 0;
+        virtual void lost_focus(const Focus::Type& focus) = 0;
+
+        virtual bool is_visible() const = 0;
+        virtual bool is_windowed() const = 0;
+        virtual bool is_fullscreen() const = 0;
+
+        virtual bool set_title(const StringID& title) = 0;
         virtual bool set_windowed() = 0;
         virtual bool set_fullscreen(const Display* display = nullptr) = 0;
 
