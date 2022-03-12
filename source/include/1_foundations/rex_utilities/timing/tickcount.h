@@ -1,14 +1,12 @@
 #pragma once
 
-#include "types.h"
-
 #include <chrono>
 
 namespace rex
 {
     //-------------------------------------------------------------------------
     // simulation of Windows GetTickCount()
-    inline uint64 getTickCount()
+    inline uint64 get_tick_count()
     {
         return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
     }
@@ -27,7 +25,7 @@ namespace rex
         //-------------------------------------------------------------------------
         static time_point now() noexcept
         {
-            return time_point(duration(getTickCount()));
+            return time_point(duration(get_tick_count()));
         }
     };
 }

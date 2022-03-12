@@ -1,38 +1,29 @@
-#pragma once
+#include "rex_utilities_pch.h"
 
-#include <string>
+#include "yes_no_enum.h"
 
 namespace rex
 {
-    class YesNoEnum
-    {
-    public:
-        enum Type
-        {
-            NO,
-            YES
-        };
-
         //-------------------------------------------------------------------------
-        YesNoEnum(Type value)
+        YesNoEnum::YesNoEnum(Type value)
             : m_value(value)
         {
         }
 
         //-------------------------------------------------------------------------
-        operator Type() const
+        YesNoEnum::operator Type() const
         {
             return m_value;
         }
 
         //-------------------------------------------------------------------------
-        operator bool() const
+        YesNoEnum::operator bool() const
         {
             return m_value == Type::YES;
         }
 
         //-------------------------------------------------------------------------
-        std::string toString() const
+        std::string YesNoEnum::to_string() const
         {
             if (m_value == Type::YES)
             {
@@ -41,8 +32,4 @@ namespace rex
 
             return "No";
         }
-
-    private:
-        Type m_value;
-    };
 }

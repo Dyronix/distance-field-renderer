@@ -1,7 +1,5 @@
 #pragma once
 
-#include <type_traits>
-
 namespace rex
 {
     template <typename T, typename TParameter>
