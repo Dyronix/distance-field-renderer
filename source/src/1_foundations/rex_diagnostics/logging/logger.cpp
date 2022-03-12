@@ -1,5 +1,6 @@
 #include "rex_diagnostics_pch.h"
 
+#include "logging/loglevel.h"
 #include "logging/logger.h"
 
 #include <assert.h>
@@ -43,8 +44,8 @@ namespace rex
         //-------------------------------------------------------------------------
         void create()
         {
-            addLogger(tags::ENGINE_LOGGER_NAME);
-            addLogger(tags::CLIENT_LOGGER_NAME);
+            add_logger(tags::ENGINE_LOGGER_NAME);
+            add_logger(tags::CLIENT_LOGGER_NAME);
         }
         //-------------------------------------------------------------------------
         void destroy()
@@ -53,19 +54,19 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        bool addLogger(const char* name)
+        bool add_logger(const char* name)
         {
             const LogPattern DEFAULT_PATTERN = ("%^[%T][%=8l] %n: %v%$");
 
-            return addLogger(name, DEFAULT_PATTERN, level::LOGGING);
+            return add_logger(name, DEFAULT_PATTERN, level::LOGGING);
         }
         //-------------------------------------------------------------------------
-        bool addLogger(const char* name, const char* pattern)
+        bool add_logger(const char* name, const char* pattern)
         {
-            return addLogger(name, pattern, level::LOGGING);
+            return add_logger(name, pattern, level::LOGGING);
         }
         //-------------------------------------------------------------------------
-        bool addLogger(const char* name, const char* pattern, LogLevel level)
+        bool add_logger(const char* name, const char* pattern, const rex::LogLevel& level)
         {
             const LogLevelMap LOG_LEVELS = get_log_levels();
 
@@ -92,36 +93,36 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        bool hasLogger(const char* name)
+        bool has_logger(const char* name)
         {
             return find_logger(name) != nullptr;
         }
         //-------------------------------------------------------------------------
-        bool hasStream(const char* name)
+        bool has_stream(const char* name)
         {
             return g_log_streams.find(name) != std::cend(g_log_streams);
         }
 
         //-------------------------------------------------------------------------
-        rex::logging::LoggerObject& getLogger(const char* name)
+        rex::logging::LoggerObject& get_logger(const char* name)
         {
             auto logger = find_logger(name);
             if (logger == nullptr)
             {
-                addLogger(name);
-                return getLogger(name);
+                add_logger(name);
+                return get_logger(name);
             }
 
             return *logger;
         }
         //-------------------------------------------------------------------------
-        rex::logging::LoggerStream& getStream(const char* name)
+        rex::logging::LoggerStream& get_stream(const char* name)
         {
             auto logger = find_logger(name);
             if (logger == nullptr)
             {
-                addLogger(name);
-                return getStream(name);
+                add_logger(name);
+                return get_stream(name);
             }
 
             return g_log_streams.at(name);

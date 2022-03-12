@@ -1,7 +1,5 @@
 #pragma once
 
-#include "logging/loglevel.h"
-
 #pragma warning(push)
 #pragma warning(disable : 4702)
 
@@ -16,6 +14,8 @@
 
 namespace rex
 {
+    enum class LogLevel;
+
     namespace logging
     {
         using LoggerObject = spdlog::logger;
@@ -41,7 +41,7 @@ namespace rex
 
         bool add_logger(const char* name);
         bool add_logger(const char* name, const char* pattern);
-        bool add_logger(const char* name, const char* pattern, rex::LogLevel level);
+        bool add_logger(const char* name, const char* pattern, const rex::LogLevel& level);
 
         bool has_logger(const char* name);
         bool has_stream(const char* name);

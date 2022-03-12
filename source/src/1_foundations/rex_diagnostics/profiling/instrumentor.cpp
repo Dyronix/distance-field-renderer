@@ -24,13 +24,13 @@ namespace rex
         m_enabled = false;
     }
     //--------------------------------------------------------------------------------------------
-    bool Instrumentor::isEnabled() const
+    bool Instrumentor::is_enabled() const
     {
         return m_enabled;
     }
 
     //--------------------------------------------------------------------------------------------
-    void Instrumentor::beginSession(const std::string& name, const std::string& filepath)
+    void Instrumentor::begin_session(const std::string& name, const std::string& filepath)
     {
         std::lock_guard<std::mutex> lock(m_mutex);
         if (m_current_session)
@@ -39,14 +39,14 @@ namespace rex
             // Subsequent profiling output meant for the original session will end up in the
             // newly opened session instead.  That's better than having badly formatted
             // profiling output.
-            if (rex::logging::hasLogger(rex::logging::tags::ENGINE_LOGGER_NAME))
+            if (rex::logging::has_logger(rex::logging::tags::ENGINE_LOGGER_NAME))
             {
-                // Edge case: BeginSession() might be before Log::Init()
-                rex::logging::getLogger(rex::logging::tags::ENGINE_LOGGER_NAME)
-                    .error("Instrumentor::BeginSession('{0}') when session '{1}' already open.", name, m_current_session->name);
+                // Edge case: begin_session() might be before Log::Init()
+                rex::logging::get_logger(rex::logging::tags::ENGINE_LOGGER_NAME)
+                    .error("Instrumentor::begin_session('{0}') when session '{1}' already open.", name, m_current_session->name);
             }
 
-            internalEndSession();
+            internal_end_session();
         }
 
         m_output_stream.open(filepath);
@@ -54,24 +54,24 @@ namespace rex
         {
             m_current_session = new InstrumentationSession({name});
 
-            writeHeader();
+            write_header();
         }
-        else if (rex::logging::hasLogger(rex::logging::tags::ENGINE_LOGGER_NAME))
+        else if (rex::logging::has_logger(rex::logging::tags::ENGINE_LOGGER_NAME))
         {
             // Edge case: BeginSession() might be before Log::Init()
-            rex::logging::getLogger(rex::logging::tags::ENGINE_LOGGER_NAME).error("Instrumentor could not open results file '{0}'.", filepath);
+            rex::logging::get_logger(rex::logging::tags::ENGINE_LOGGER_NAME).error("Instrumentor could not open results file '{0}'.", filepath);
         }
     }
     //--------------------------------------------------------------------------------------------
-    void Instrumentor::endSession()
+    void Instrumentor::end_session()
     {
         std::lock_guard<std::mutex> lock(m_mutex);
 
-        internalEndSession();
+        internal_end_session();
     }
 
     //--------------------------------------------------------------------------------------------
-    void Instrumentor::writeProfile(const ProfileResult& result)
+    void Instrumentor::write_profile(const ProfileResult& result)
     {
         std::stringstream json;
 
@@ -105,13 +105,13 @@ namespace rex
     }
 
     //--------------------------------------------------------------------------------------------
-    void Instrumentor::writeHeader()
+    void Instrumentor::write_header()
     {
         m_output_stream << "{\"otherData\": {},\"traceEvents\":[{}";
         m_output_stream.flush();
     }
     //--------------------------------------------------------------------------------------------
-    void Instrumentor::writeFooter()
+    void Instrumentor::write_footer()
     {
         m_output_stream << "]}";
         m_output_stream.flush();
@@ -119,11 +119,11 @@ namespace rex
 
     //--------------------------------------------------------------------------------------------
     // Note: you must already own lock on m_mutex before calling InternalEndSession()
-    void Instrumentor::internalEndSession()
+    void Instrumentor::internal_end_session()
     {
         if (m_current_session)
         {
-            writeFooter();
+            write_footer();
             m_output_stream.close();
             delete m_current_session;
             m_current_session = nullptr;
@@ -154,7 +154,7 @@ namespace rex
         auto elapsed_time = std::chrono::time_point_cast<std::chrono::microseconds>(end_timepoint).time_since_epoch() -
                             std::chrono::time_point_cast<std::chrono::microseconds>(m_start_timepoint).time_since_epoch();
 
-        Instrumentor::get().writeProfile({m_name, highres_start, elapsed_time, std::this_thread::get_id()});
+        Instrumentor::get().write_profile({m_name, highres_start, elapsed_time, std::this_thread::get_id()});
 
         m_stopped = true;
     }
