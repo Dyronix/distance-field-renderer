@@ -349,7 +349,7 @@ namespace rex
 
             StringID material_name;
 
-            ref_ptr<ShaderProgram> material_shader;
+            ref_ptr<rex::ShaderProgram> material_shader;
 
             memory::Blob uniform_storage_buffer;
 

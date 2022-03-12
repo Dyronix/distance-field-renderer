@@ -5,12 +5,31 @@
 #include "win32_window.h"
 #include "win32_context.h"
 
+#include "layer.h"
+#include "layer_stack.h"
+
+#include "event_dispatcher.h"
+#include "event_queue.h"
+#include "event_bus.h"
+
+#include "window/window_close.h"
+#include "window/window_resize.h"
+
 #include "display.h"
 #include "display_manager.h"
 
 #include "world.h"
 
+#include "resources/resource_factory.h"
+#include "resources/resources_api.h"
+
+#include "renderer/renderer.h"
+#include "renderer/renderer_api.h"
+
+#include "sdl/sdl_sub_system.h"
+
 #include <SDL.h>
+#include <SDL_syswm.h>
 
 namespace rex
 {
@@ -19,6 +38,8 @@ namespace rex
         //-------------------------------------------------------------------------
         const int32 g_main_display = 0;
         const int32 g_main_display_mode = 0;
+
+        SDL_SysWMinfo g_sdl_system_info;
 
         //-------------------------------------------------------------------------
         Application::Application(const ApplicationDescription& description)
@@ -80,9 +101,23 @@ namespace rex
 #endif
 
                 create_display_manager();
+                create_layer_stack();
+                create_event_queue();
                 create_window();
-                create_application_loop();
                 create_context();
+                create_application_loop();
+
+                ResourceFactory::initialize(create_resources_api());
+                Renderer::initialize(create_renderer_api());
+
+                int32 window_width = m_window->get_width();
+                int32 window_height = m_window->get_height();
+
+                Renderer::set_viewport({0.0f, 0.0f}, {window_width, window_height});
+
+                on_app_initialize();
+
+                m_window->show();
 
                 // Run the main application loop!
                 m_application_loop->exec();
@@ -99,14 +134,145 @@ namespace rex
         //-------------------------------------------------------------------------
         bool Application::platform_shutdown()
         {
-            m_context.reset();
+            on_app_shutdown();
+
+            m_layer_stack->clear();
+            m_layer_stack.reset();
+
+            events::EventBus::destroy_instance();
+
+            Renderer::shutdown();
+            ResourceFactory::shutdown();
+
             m_application_loop.reset();
+            m_context.reset();
             m_window.reset();
             m_display_manager.reset();
 
             SDL_Quit();
 
             return true;
+        }
+
+        //-------------------------------------------------------------------------
+        void Application::on_app_initialize()
+        {
+            // Implement in derived class
+        }
+
+        //-------------------------------------------------------------------------
+        void Application::on_app_update(const FrameInfo& /*info*/)
+        {
+            // Implement in derived class
+        }
+        
+        //-------------------------------------------------------------------------
+        void Application::on_app_shutdown()
+        {
+            // Implement in derived class
+        }
+
+        //-------------------------------------------------------------------------
+        void Application::platform_update(const FrameInfo& info)
+        {
+            process_events();
+            process_render_queue(info);
+            process_window();
+        }
+        //-------------------------------------------------------------------------
+        void Application::platform_event(events::Event& event)
+        {
+            std::for_each(m_layer_stack->rbegin(), m_layer_stack->rend(), [&event](const std::unique_ptr<Layer>& layer) mutable
+                          {
+                              layer->handle_event(event);
+                          });
+
+            events::EventDispatcher dispatcher(event);
+            dispatcher.dispatch<events::WindowClose>([&](const events::WindowClose& closeEvent)
+                                                     {
+                                                         return on_window_close(closeEvent);
+                                                     });
+            dispatcher.dispatch<events::WindowResize>([&](const events::WindowResize& resizeEvent)
+                                                      {
+                                                          return on_window_resize(resizeEvent);
+                                                      });
+        }
+
+        //-------------------------------------------------------------------------
+        void Application::process_events()
+        {
+            if (!m_event_queue->empty())
+            {
+                int32 pump_count = 0;
+                events::Event evt = m_event_queue->next();
+                while (evt != nullptr && pump_count < events::EventQueue::EVENT_QUEUE_PUMP_COUNT)
+                {
+                    platform_event(evt);
+
+                    evt = m_event_queue->next();
+                    ++pump_count;
+                }
+            }
+        }
+        //-------------------------------------------------------------------------
+        void Application::process_render_queue(const FrameInfo& info)
+        {
+            bool is_visible = m_window->is_visible();
+
+            if (is_visible)
+            {
+                Renderer::begin_frame();
+
+                for (const std::unique_ptr<Layer>& layer : *m_layer_stack)
+                {
+                    if (layer->is_enabled())
+                    {
+                        layer->update(info);
+                    }
+                }
+#ifdef IMGUI
+#ifndef __EMSCRIPTEN__
+                if (get_application_description().enable_imgui)
+                {
+                    Renderer::submit([]()
+                                     {
+                                         imguicontext::begin();
+                                     });
+
+                    auto& stack = m_layer_stack;
+                    Renderer::submit([&stack]()
+                                     {
+                                         for (const std::unique_ptr<Layer>& layer : stack)
+                                         {
+                                             if (layer->is_im_gui_enabled())
+                                             {
+                                                 layer->imgui_render();
+                                             }
+                                         }
+                                     });
+
+                    Renderer::submit([]()
+                                     {
+                                         imguicontext::end();
+                                     });
+                }
+#endif
+#endif
+
+                on_app_update(info);
+
+                Renderer::end_frame();
+                Renderer::wait_and_render();
+
+                m_context->present();
+            }
+        }
+        //-------------------------------------------------------------------------
+        void Application::process_window()
+        {
+            // update_window_title(info.fps);
+
+            m_window->update();
         }
 
         //-------------------------------------------------------------------------
@@ -129,8 +295,28 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
+        void Application::create_layer_stack()
+        {
+            m_layer_stack = std::make_unique<LayerStack>();
+        }
+
+        //-------------------------------------------------------------------------
+        void Application::create_event_queue()
+        {
+            m_event_queue = std::make_unique<events::EventQueue>();
+
+            events::EventBus::create_instance();
+            events::EventBus::instance()->push_event_queue(m_event_queue.get(), events::EventBusImpl::Activate::YES);
+        }
+
+        //-------------------------------------------------------------------------
         void Application::create_window()
         {
+            uint32 window_flags = 0;
+            window_flags |= (int32)WindowFlags::Flags::RESIZABLE;
+            window_flags |= (int32)WindowFlags::Flags::ALLOW_HIGHDPI;
+            window_flags |= (int32)WindowFlags::Flags::HIDDEN;
+
             WindowDescription window_description;
 
             window_description.title = get_application_description().name;
@@ -138,10 +324,18 @@ namespace rex
             window_description.height = get_application_description().window_height;
             window_description.fullscreen = get_application_description().fullscreen;
             window_description.display = m_display_manager->get_active();
+            window_description.flags = WindowFlags((WindowFlags::Flags)window_flags);
+            window_description.event_callback = [& event_queue = *m_event_queue](events::Event & event)
+            {
+                event_queue.enqueue(event);
+            };
 
             m_window = std::make_unique<Window>(window_description);
 
+            SDL_VERSION(&g_sdl_system_info.version);
+
             R_INFO("Window ({0}, {1}) intialized.", m_window->get_width(), m_window->get_height());
+            R_INFO("\tusing subsystem: {0}", sdl::convert_to_sdl_subsystem_string(m_window->get_sdl_window(), &g_sdl_system_info).to_string());
         }
 
         //-------------------------------------------------------------------------
@@ -150,9 +344,9 @@ namespace rex
             auto display = m_display_manager->get_active();
             auto display_mode = display->get_active_mode();
 
-            auto fn = [](const FrameInfo& /*info*/)
+            auto fn = [&](const FrameInfo& info)
             {
-                // client code update ...
+                platform_update(info);
             };
 
             m_application_loop = std::make_unique<ApplicationLoop>(fn, display_mode->get_refresh_rate());
@@ -170,6 +364,42 @@ namespace rex
             R_INFO("\tversion: {0}", m_context->get_version());
             R_INFO("\trenderer: {0}", m_context->get_renderer());
             R_INFO("\tvendor: {0}", m_context->get_vendor());
+        }
+
+        //-------------------------------------------------------------------------
+        bool Application::on_window_close(const events::WindowClose& evt)
+        {
+            uint32 main_window_id = SDL_GetWindowID(m_window->get_sdl_window());
+            if (main_window_id != evt.get_window_id())
+            {
+                return false;
+            }
+
+            mark_for_destroy();
+
+            return true;
+        }
+        //-------------------------------------------------------------------------
+        bool Application::on_window_resize(const events::WindowResize& evt)
+        {
+            uint32 main_window_id = SDL_GetWindowID(m_window->get_sdl_window());
+            if (main_window_id != evt.get_window_id())
+            {
+                return false;
+            }
+
+            if (!m_window->is_visible() || evt.get_width() == 0 || evt.get_height() == 0)
+            {
+                m_window->hide();
+                return false;
+            }
+
+            rex::vec2 origin = rex::vec2(0.0f);
+            rex::vec2 size = rex::vec2((float)evt.get_width(), (float)evt.get_height());
+
+            Renderer::set_viewport(origin, size);
+
+            return true;
         }
     }
 }
