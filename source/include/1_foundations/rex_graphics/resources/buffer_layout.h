@@ -24,11 +24,11 @@ namespace rex
 
         BufferLayout();
         BufferLayout(const BufferLayout& other);
-        BufferLayout(BufferLayout&& other);
+        BufferLayout(BufferLayout&& other) noexcept;
         BufferLayout(const std::initializer_list<BufferElement>& elements);
 
         BufferLayout& operator=(const BufferLayout& other);
-        BufferLayout& operator=(BufferLayout&& other);
+        BufferLayout& operator=(BufferLayout&& other) noexcept;
 
         uint32 get_stride();
         const uint32 get_stride() const;

@@ -1,6 +1,7 @@
 #include "rex_graphics_pch.h"
 
 #include "resources/buffer_layout.h"
+
 #include "data_type.h"
 
 namespace rex
@@ -72,6 +73,37 @@ namespace rex
         , m_stride(0)
     {
         calculate_offsets_and_stride();
+    }
+
+    //-------------------------------------------------------------------------
+    BufferLayout::BufferLayout(const BufferLayout& other)
+        : m_elements(other.m_elements)
+        , m_stride(other.m_stride)
+    {
+    }
+
+    //-------------------------------------------------------------------------
+    BufferLayout::BufferLayout(BufferLayout&& other) noexcept
+        : m_elements(std::exchange(other.m_elements, {}))
+        , m_stride(std::exchange(other.m_stride, 0))
+    {
+    }
+
+    //-------------------------------------------------------------------------
+    rex::BufferLayout& BufferLayout::operator=(const BufferLayout& other)
+    {
+        m_elements = other.m_elements;
+        m_stride = other.m_stride;
+
+        return *this;
+    }
+    //-------------------------------------------------------------------------
+    rex::BufferLayout& BufferLayout::operator=(BufferLayout&& other) noexcept
+    {
+        m_elements = std::exchange(other.m_elements, {});
+        m_stride = std::exchange(other.m_stride, 0);
+
+        return *this;
     }
 
     //-------------------------------------------------------------------------
