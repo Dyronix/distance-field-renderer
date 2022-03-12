@@ -4,5 +4,14 @@
 
 namespace rex
 {
-    // Nothing to implement
+    //-------------------------------------------------------------------------
+    Environment::Environment() = default;
+    //-------------------------------------------------------------------------
+    Environment::~Environment() = default;
+
+    //-------------------------------------------------------------------------
+    Environment::operator bool() const
+    {
+        return skybox_texture_cube != nullptr;
+    }
 }

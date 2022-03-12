@@ -6,11 +6,10 @@ namespace rex
 {
     struct Environment
     {
-        //-------------------------------------------------------------------------
-        operator bool() const
-        {
-            return skybox_texture_cube != nullptr;
-        }
+        Environment();
+        ~Environment();
+
+        operator bool() const;
 
         ref_ptr<TextureCube> skybox_texture_cube;
     };
