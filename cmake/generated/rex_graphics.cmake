@@ -33,16 +33,18 @@ target_include_directories(rex_graphics PUBLIC ${CMAKE_SOURCE_DIR}/source/includ
 target_include_directories(rex_graphics PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_utilities)                
 target_include_directories(rex_graphics PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_std)                
 target_include_directories(rex_graphics PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_memory)                
+target_include_directories(rex_graphics PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_math)                
 
 # Set target link libraries
 target_link_libraries(rex_graphics PUBLIC rex_diagnostics)
 target_link_libraries(rex_graphics PUBLIC rex_utilities)
 target_link_libraries(rex_graphics PUBLIC rex_std)
 target_link_libraries(rex_graphics PUBLIC rex_memory)
+target_link_libraries(rex_graphics PUBLIC rex_math)
 
                                                                                                                              
 # Set project properties                                                                                                       
-set_target_properties(rex_graphics PROPERTIES FOLDER                                         1_foundations)  
+set_target_properties(rex_graphics PROPERTIES FOLDER                                         1_foundations/engine)  
 set_target_properties(rex_graphics PROPERTIES DEFINE_SYMBOL                                  "" )                    
 IF(MSVC AND REX_UNITY_BUILD)                                                                                                  
 	set_target_properties(rex_graphics PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY                ${BIN_DIR})               

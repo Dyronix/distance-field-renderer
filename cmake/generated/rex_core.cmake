@@ -39,7 +39,7 @@ target_link_libraries(rex_core PUBLIC rex_utilities)
 target_link_libraries(rex_core PUBLIC rex_std)
 
 # Set project properties
-set_target_properties(rex_core PROPERTIES FOLDER                                         1_foundations) 
+set_target_properties(rex_core PROPERTIES FOLDER                                         1_foundations/engine) 
 set_target_properties(rex_core PROPERTIES DEFINE_SYMBOL                                  "" )                   
 IF(MSVC AND REX_UNITY_BUILD)
 	set_target_properties(rex_core PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY                ${BIN_DIR})        

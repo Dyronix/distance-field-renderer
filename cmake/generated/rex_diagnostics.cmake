@@ -28,12 +28,7 @@ add_definitions(-D${UPPER_LIB_NAME}_LIB)
 
 # Set the include directories                                                                                    
 target_include_directories(rex_diagnostics PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_diagnostics)                                              
-target_include_directories(rex_diagnostics PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_utilities)
 target_include_directories(rex_diagnostics PUBLIC ${INCLUDE_SPDLOG})     
-
-# Set target link libraries
-target_link_libraries(rex_diagnostics PUBLIC rex_utilities)
-
                                                                                                                              
 # Set project properties                                                                                                       
 set_target_properties(rex_diagnostics PROPERTIES FOLDER                                         1_foundations)  

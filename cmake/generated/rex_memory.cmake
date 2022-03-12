@@ -38,7 +38,7 @@ target_link_libraries(rex_memory PUBLIC rex_diagnostics)
 target_link_libraries(rex_memory PUBLIC rex_utilities)
                                                                                                                              
 # Set project properties                                                                                                       
-set_target_properties(rex_memory PROPERTIES FOLDER                                         1_foundations)  
+set_target_properties(rex_memory PROPERTIES FOLDER                                         1_foundations/core)  
 set_target_properties(rex_memory PROPERTIES DEFINE_SYMBOL                                  "" )                    
 IF(MSVC AND REX_UNITY_BUILD)                                                                                                  
 	set_target_properties(rex_memory PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY                ${BIN_DIR})               
