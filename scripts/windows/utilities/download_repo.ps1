@@ -22,12 +22,12 @@ Function download_repo
 
     Write-Host "Testing path: $external_dir\$outputDirName"
 
-    # Check that we have the guideline support library
+    # Check that we have the library
     if (!(Test-Path "$external_dir\$outputDirName"))
     {
             try
         {
-            Write-Host "Downloading guideline support library into external folder $outputDirName"
+            Write-Host "Downloading library into external folder $outputDirName"
             $WebClient = New-Object System.Net.WebClient
             $WebClient.DownloadFile("$repositoryURL", "$externalDir\github-repository.zip")
         }
@@ -41,7 +41,7 @@ Function download_repo
 
         try
         {
-            Write-Host "Unzipping guideline support library into external\$outputDirName ..."
+            Write-Host "Unzipping library into external\$outputDirName ..."
             
             Expand-Archive "$externalDir\github-repository.zip" "$externalDir\."
             Rename-Item -Path "$externalDir\$outputArchiveName" -NewName "$outputDirName"
