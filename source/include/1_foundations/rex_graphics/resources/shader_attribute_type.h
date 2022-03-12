@@ -1,8 +1,8 @@
 #pragma once
 
-#include "datatype.h"
+#include "data_type.h"
 
-namespace sbt
+namespace rex
 {
     using ShaderAttributeType = DataType;
 }

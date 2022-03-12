@@ -1,13 +1,13 @@
 #pragma once
 
-#include "datatype.h"
+#include "data_type.h"
 
 namespace rex
 {
     namespace datatype_helper
     {
         //-------------------------------------------------------------------------
-        inline std::unordered_map<size_t, DataType>& getTypeIDs()
+        inline std::unordered_map<size_t, DataType>& get_type_i_ds()
         {
             static std::unordered_map<size_t, DataType> type_ids = {{typeid(int8).hash_code(), rex::DataType::INT8},
                                                                     {typeid(int16).hash_code(), rex::DataType::INT16},
@@ -42,10 +42,10 @@ namespace rex
 
         //-------------------------------------------------------------------------
         template <typename T>
-        inline bool isOfType(const DataType& type)
+        inline bool is_of_type(const DataType& type)
         {
-            auto it = getTypeIDs().find(typeid(T).hash_code());
-            if (it == std::cend(getTypeIDs()))
+            auto it = get_type_i_ds().find(typeid(T).hash_code());
+            if (it == std::cend(get_type_i_ds()))
             {
                 return false;
             }
@@ -55,10 +55,10 @@ namespace rex
 
         //-------------------------------------------------------------------------
         template <typename T>
-        inline const DataType getType()
+        inline const DataType get_type()
         {
-            auto it = getTypeIDs().find(typeid(T).hash_code());
-            if (it == std::cend(getTypeIDs()))
+            auto it = get_type_i_ds().find(typeid(T).hash_code());
+            if (it == std::cend(get_type_i_ds()))
             {
                 return DataType::NONE;
             }

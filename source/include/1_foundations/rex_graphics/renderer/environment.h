@@ -3,7 +3,7 @@
 #include "resources/texture_cube.h"
 
 namespace rex
-{
+{   
     struct Environment
     {
         //-------------------------------------------------------------------------

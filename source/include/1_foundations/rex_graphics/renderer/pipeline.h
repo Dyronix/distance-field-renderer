@@ -1,17 +1,14 @@
 #pragma once
 
-#include "memory/ref_counted_object.h"
-
-#include "resources/shader_program.h"
 #include "resources/buffer_layout.h"
+#include "resources/api_resource.h"
+#include "resources/shader_program.h"
 
+#include "renderer/types/primitive_type.h"
 #include "renderer/states/depth_test_state.h"
 #include "renderer/states/face_cull_state.h"
 #include "renderer/states/rasterizer_state.h"
-#include "renderer/types/primitive_type.h"
 #include "renderer/render_pass.h"
-
-#include "string/string_id.h"
 
 namespace rex
 {
@@ -25,7 +22,7 @@ namespace rex
             , facecull_state(FaceCullingEnabled::NO)
             , depth_test_state(DepthTestEnabled::NO)
             , rasterizer_state()
-            , name(EName::SID_None)
+            , name(ESID::SID_None)
         {
         }
 

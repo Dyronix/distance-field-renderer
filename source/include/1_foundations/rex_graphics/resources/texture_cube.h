@@ -1,17 +1,15 @@
 #pragma once
 
 #include "resources/texture.h"
-#include "resources/texturecubedescription.h"
 
-namespace sbt
+namespace rex
 {
+    struct TextureCubeDescription;
+
     class TextureCube : public Texture
     {
     public:
-        Texture::Type getTextureType() const override
-        {
-            return Texture::Type::TEXTURE_CUBE;
-        }
+        Texture::Type get_type() const override;
 
         virtual void invalidate(TextureCubeDescription&& desc) = 0;
     };
@@ -23,8 +21,8 @@ namespace sbt
 
         void release();
 
-        ref_ptr<TextureCube>& getTexture();
-        const ref_ptr<TextureCube>& getTexture() const;
+        ref_ptr<TextureCube>& get_texture();
+        const ref_ptr<TextureCube>& get_texture() const;
 
     private:
         ref_ptr<TextureCube> texture;

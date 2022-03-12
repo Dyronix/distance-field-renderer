@@ -1,8 +1,10 @@
 #pragma once
 
-#include "yesnoenum.h"
+#include "yes_no_enum.h"
 
 #include "renderer/renderer_command_queue.h"
+#include "renderer/pipeline.h"
+#include "renderer/render_pass.h"
 
 #define ENABLE_RENDERER_LOGGING 0
 #if ENABLE_RENDERER_LOGGING
@@ -23,8 +25,6 @@ namespace rex
     class UniformBufferSet;
     class Texture;
     class TextureCube;
-    class Pipeline;
-    class RenderPass;
 
     class Renderer
     {
@@ -51,11 +51,9 @@ namespace rex
 
         static void wait_and_render();
 
-        static void render_quad(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Material> material,
-                                const rex::matrix4& transform);
+        static void render_quad(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Material> material, const rex::matrix4& transform);
         static void render_model(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Model> model, const rex::matrix4& transform);
-        static void render_model_with_material(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Model> model,
-                                               const rex::matrix4& transform, ref_ptr<Material> material);
+        static void render_model_with_material(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Model> model, const rex::matrix4& transform, ref_ptr<Material> material);
 
         static void submit_fullscreen_quad(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Material> material);
         template <typename TFunction>
@@ -71,8 +69,7 @@ namespace rex
     template <typename TFunction>
     void rex::Renderer::submit(TFunction&& fn)
     {
-        R_ASSERT_X(get_render_command_queue()->getState() == RenderCommandQueueState::ACCEPT,
-                   "Cannot push new commands while executing or clearing render commands");
+        R_ASSERT_X(get_render_command_queue()->get_state() == RenderCommandQueueState::ACCEPT, "Cannot push new commands while executing or clearing render commands");
 
         get_render_command_queue()->push(std::move(fn));
     }

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "defines.h"
-
 namespace rex
 {
     enum class ClearFlags

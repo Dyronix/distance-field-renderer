@@ -1,7 +1,5 @@
 #pragma once
 
-#include "memory_size.h"
-
 #include "allocators/linear_allocator.h"
 
 namespace rex

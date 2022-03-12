@@ -1,6 +1,5 @@
 #pragma once
 
-#include "types.h"
 #include "blob.h"
 
 #include "resources/api_resource.h"
@@ -207,7 +206,7 @@ namespace rex
     protected:
         Texture() = default;
 
-        uint32 generatemip_count() const;
+        uint32 generate_mip_count() const;
     };
 
     class SolidColorTexture

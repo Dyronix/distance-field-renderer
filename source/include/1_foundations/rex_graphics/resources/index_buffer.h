@@ -1,10 +1,8 @@
 #pragma once
 
-#include "memory/refptr.h"
+#include "resources/api_resource.h"
 
-#include "resources/apiresource.h"
-
-namespace sbt
+namespace rex
 {
     class IndexBuffer : public Resource
     {

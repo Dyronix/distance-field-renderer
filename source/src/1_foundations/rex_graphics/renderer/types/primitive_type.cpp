@@ -1,5 +1,5 @@
 #include "rex_graphics_pch.h"
-#include "renderer/types/primitiv_etype.h"
+#include "renderer/types/primitive_type.h"
 
 namespace rex
 {

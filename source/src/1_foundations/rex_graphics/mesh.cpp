@@ -2,19 +2,20 @@
 
 #include "mesh.h"
 
-#include "datatype.h"
+#include "buffer_usage.h"
+#include "data_type.h"
 #include "vertex.h"
 #include "triangle.h"
 
-#include "resources/resourcefactory.h"
-#include "resources/vertexbuffer.h"
-#include "resources/indexbuffer.h"
+#include "resources/resource_factory.h"
+#include "resources/vertex_buffer.h"
+#include "resources/index_buffer.h"
 
 namespace rex
 {
     // IMesh
     //-------------------------------------------------------------------------
-    rex::BufferLayout rex::IMesh::makeBufferLayout()
+    rex::BufferLayout rex::IMesh::make_buffer_layout()
     {
         return {{DataType::VEC3, "a_Position"},
                 {DataType::VEC3, "a_Normal"},
@@ -24,18 +25,18 @@ namespace rex
     }
 
     //-------------------------------------------------------------------------
-    ref_ptr<rex::VertexBuffer> IMesh::createVertexBuffer(Vertex* vertices, uint32 count, Usage usage, const BufferLayout& layout)
+    ref_ptr<rex::VertexBuffer> IMesh::create_vertex_buffer(Vertex* vertices, uint32 count, BufferUsage usage, const BufferLayout& layout)
     {
-        auto vertex_buffer = ResourceFactory::createVertexBuffer(vertices, sizeof(Vertex) * count, count, usage);
+        auto vertex_buffer = ResourceFactory::create_vertex_buffer(vertices, sizeof(Vertex) * count, count, usage);
 
-        vertex_buffer->setLayout(layout);
+        vertex_buffer->set_layout(layout);
 
         return vertex_buffer;
     }
     //-------------------------------------------------------------------------
-    ref_ptr<rex::IndexBuffer> IMesh::createIndexBuffer(TriangleIndices* indices, uint32 count, Usage usage)
+    ref_ptr<rex::IndexBuffer> IMesh::create_index_buffer(TriangleIndices* indices, uint32 count, BufferUsage usage)
     {
-        return ResourceFactory::createIndexBuffer(indices, count, usage);
+        return ResourceFactory::create_index_buffer(indices, count, usage);
     }
 
     // Mesh
@@ -47,13 +48,13 @@ namespace rex
     {
     }
     //-------------------------------------------------------------------------
-    rex::Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<TriangleIndices>& indices, Usage usage)
+    rex::Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<TriangleIndices>& indices, BufferUsage usage)
         : m_vertex_buffer(nullptr)
         , m_index_buffer(nullptr)
-        , m_buffer_layout(makeBufferLayout())
+        , m_buffer_layout(make_buffer_layout())
     {
-        m_vertex_buffer = createVertexBuffer(vertices.data(), vertices.size(), usage, m_buffer_layout);
-        m_index_buffer = createIndexBuffer(indices.data(), indices.size(), usage);
+        m_vertex_buffer = create_vertex_buffer(vertices.data(), gsl::narrow<uint32>(vertices.size()), usage, m_buffer_layout);
+        m_index_buffer = create_index_buffer(indices.data(), gsl::narrow<uint32>(indices.size()), usage);
     }
     //-------------------------------------------------------------------------
     rex::Mesh::~Mesh()
@@ -63,38 +64,38 @@ namespace rex
     }
 
     //-------------------------------------------------------------------------
-    void rex::Mesh::setVertices(std::vector<Vertex>& vertices)
+    void rex::Mesh::set_vertices(std::vector<Vertex>& vertices)
     {
         m_vertex_buffer.reset();
-        m_vertex_buffer = createVertexBuffer(vertices.data(), vertices.size(), getUsage(), m_buffer_layout);
+        m_vertex_buffer = create_vertex_buffer(vertices.data(), gsl::narrow<uint32>(vertices.size()), get_usage(), m_buffer_layout);
     }
     //-------------------------------------------------------------------------
-    void rex::Mesh::setIndices(std::vector<TriangleIndices>& indices)
+    void rex::Mesh::set_indices(std::vector<TriangleIndices>& indices)
     {
         m_index_buffer.reset();
-        m_index_buffer = createIndexBuffer(indices.data(), indices.size(), getUsage());
+        m_index_buffer = create_index_buffer(indices.data(), gsl::narrow<uint32>(indices.size()), get_usage());
     }
 
     //-------------------------------------------------------------------------
-    const ref_ptr<rex::VertexBuffer>& rex::Mesh::getVertexBuffer() const
+    const ref_ptr<rex::VertexBuffer>& rex::Mesh::get_vertex_buffer() const
     {
         return m_vertex_buffer;
     }
     //-------------------------------------------------------------------------
-    const ref_ptr<rex::IndexBuffer>& rex::Mesh::getIndexBuffer() const
+    const ref_ptr<rex::IndexBuffer>& rex::Mesh::get_index_buffer() const
     {
         return m_index_buffer;
     }
 
     //-------------------------------------------------------------------------
-    uint32 rex::Mesh::getIndexBufferCount() const
+    uint32 rex::Mesh::get_index_buffer_count() const
     {
-        return static_cast<uint32>(m_index_buffer->getCount());
+        return static_cast<uint32>(m_index_buffer->get_count());
     }
     //-------------------------------------------------------------------------
-    uint32 rex::Mesh::getVertexBufferCount() const
+    uint32 rex::Mesh::get_vertex_buffer_count() const
     {
-        return static_cast<uint32>(m_vertex_buffer->getCount());
+        return static_cast<uint32>(m_vertex_buffer->get_count());
     }
 
     // Static Mesh
@@ -105,7 +106,7 @@ namespace rex
     }
     //-------------------------------------------------------------------------
     rex::StaticMesh::StaticMesh(std::vector<Vertex>& vertices, std::vector<TriangleIndices>& indices)
-        : Mesh(vertices, indices, Usage::STATIC_DRAW)
+        : Mesh(vertices, indices, BufferUsage::STATIC_DRAW)
     {
     }
     //-------------------------------------------------------------------------
@@ -114,9 +115,9 @@ namespace rex
     }
 
     //-------------------------------------------------------------------------
-    rex::Usage StaticMesh::getUsage() const
+    rex::BufferUsage StaticMesh::get_usage() const
     {
-        return Usage::STATIC_DRAW;
+        return BufferUsage::STATIC_DRAW;
     }
 
     // Dynamic Mesh
@@ -127,7 +128,7 @@ namespace rex
     }
     //-------------------------------------------------------------------------
     rex::DynamicMesh::DynamicMesh(std::vector<Vertex>& vertices, std::vector<TriangleIndices>& indices)
-        : Mesh(vertices, indices, Usage::DYNAMIC_DRAW)
+        : Mesh(vertices, indices, BufferUsage::DYNAMIC_DRAW)
     {
     }
     //-------------------------------------------------------------------------
@@ -136,8 +137,8 @@ namespace rex
     }
 
     //-------------------------------------------------------------------------
-    rex::Usage DynamicMesh::getUsage() const
+    rex::BufferUsage DynamicMesh::get_usage() const
     {
-        return Usage::DYNAMIC_DRAW;
+        return BufferUsage::DYNAMIC_DRAW;
     }
 }

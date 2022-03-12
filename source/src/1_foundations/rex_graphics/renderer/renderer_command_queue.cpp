@@ -2,7 +2,7 @@
 
 #include "renderer/renderer_command_queue.h"
 
-#include "raii/scope_guard.h"
+#include "scope_guard.h"
 
 #include "pointer_math.h"
 
@@ -10,7 +10,7 @@ namespace rex
 {
     //-------------------------------------------------------------------------
     RendererCommandQueue::RendererCommandQueue(const memory::size& size)
-        : m_linear_allocator(memory::createAllocator<memory::LinearAllocator>(size))
+        : m_linear_allocator(memory::create_allocator<memory::LinearAllocator>(size))
         , m_queue_state(RenderCommandQueueState::ACCEPT)
         , m_command_allocations(0)
     {
@@ -60,7 +60,7 @@ namespace rex
 
             size_t sizeof_func_ptr = *(size_t*)aligned_buffer;
 
-            aligned_buffer = pointer_math::jumpForward(aligned_buffer, sizeof_func_ptr);
+            aligned_buffer = pointer_math::jump_forward(aligned_buffer, sizeof_func_ptr);
 
             alignment_offset = pointer_math::alignment_offset(aligned_buffer, m_linear_allocator.get_alignment());
             aligned_buffer = pointer_math::jump_forward(aligned_buffer, alignment_offset);

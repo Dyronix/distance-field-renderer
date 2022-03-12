@@ -115,7 +115,7 @@ namespace rex
         g_renderer_api->end_render_pass();
         RENDERER_INFO("Renderer::endRenderPass: {0}", g_active_render_pass_name.to_string());
 
-        g_active_render_pass_name = EName::SID_None;
+        g_active_render_pass_name = ESID::SID_None;
     }
 
     //-------------------------------------------------------------------------
@@ -145,7 +145,7 @@ namespace rex
         g_renderer_api->render_quad(pipeline, uniformBufferSet, material, transform);
     }
     //-------------------------------------------------------------------------
-    void Renderer::renderModel(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Model> model, const rex::matrix4& transform)
+    void Renderer::render_model(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Model> model, const rex::matrix4& transform)
     {
         g_renderer_api->render_model(pipeline, uniformBufferSet, model, transform);
     }

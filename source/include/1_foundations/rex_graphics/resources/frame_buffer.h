@@ -1,6 +1,7 @@
 #pragma once
 
 #include "resources/api_resource.h"
+
 #include "resources/texture_2d_description.h"
 
 namespace rex
@@ -21,22 +22,17 @@ namespace rex
         StringID name;
     };
 
+    enum class FrameBufferDepthAttachmentOption
+    {
+        NONE,
+        DEPTH_ONLY,
+        STENCIL_ONLY,
+        DEPTH_STENCIL
+    };
+
     class FrameBuffer : public Resource
     {
     public:
-        using ColorAttachment = NamedType<ref_ptr<Texture>, struct CAttachment>;
-        using DepthAttachment = NamedType<ref_ptr<Texture>, struct DAttachment>;
-
-        using ColorAttachments = std::vector<ColorAttachment>;
-
-        enum class DepthAttachmentOption
-        {
-            NONE,
-            DEPTH_ONLY,
-            STENCIL_ONLY,
-            DEPTH_STENCIL
-        };
-
         virtual ~FrameBuffer() = default;
 
         virtual StringID get_name() const = 0;
@@ -44,11 +40,11 @@ namespace rex
         virtual int32 get_width() const = 0;
         virtual int32 get_height() const = 0;
 
-        virtual const ColorAttachments get_color_attachments() const = 0;
-        virtual const ColorAttachment get_color_attachment(int32 attachmentIndex = 0) const = 0;
-        virtual const DepthAttachment get_depth_attachment() const = 0;
+        virtual const std::vector<ref_ptr<Texture>> get_color_attachments() const = 0;
+        virtual const ref_ptr<Texture> get_color_attachment(int32 attachmentIndex = 0) const = 0;
+        virtual const ref_ptr<Texture> get_depth_attachment() const = 0;
 
-        virtual void resize(int32 width, int32 height, bool isRenderThread = IsRenderThread::NO) = 0;
+        virtual void resize(int32 width, int32 height, IsRenderThread isRenderThread = IsRenderThread::NO) = 0;
 
         virtual void bind(IsRenderThread isRenderThread = IsRenderThread::NO) const = 0;
         virtual void unbind(IsRenderThread isRenderThread = IsRenderThread::NO) const = 0;

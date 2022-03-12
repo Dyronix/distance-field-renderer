@@ -1,9 +1,6 @@
 #pragma once
 
-#include "degangle.h"
-#include "degradians.h"
-
-#include "aspectratio.h"
+#include "aspect_ratio.h"
 
 namespace rex
 {
@@ -17,13 +14,13 @@ namespace rex
 
         void reevaluate(const AspectRatio::Ratio& aspectRatio);
 
-        void setHorizontal(const DegAngle& h);
-        void setHorizontal(const DegAngle& h, const AspectRatio::Ratio& aspectRatio);
-        void setVertical(const DegAngle& v);
-        void setVertical(const DegAngle& v, const AspectRatio::Ratio& aspectRatio);
+        void set_horizontal(const DegAngle& h);
+        void set_horizontal(const DegAngle& h, const AspectRatio::Ratio& aspectRatio);
+        void set_vertical(const DegAngle& v);
+        void set_vertical(const DegAngle& v, const AspectRatio::Ratio& aspectRatio);
 
-        const DegAngle& getHorizontal() const;
-        const DegAngle& getVertical() const;
+        const DegAngle& get_horizontal() const;
+        const DegAngle& get_vertical() const;
 
     private:
         DegAngle m_horizontal;

@@ -1,6 +1,6 @@
 #include "rex_graphics_pch.h"
 
-#include "aspectratio.h"
+#include "aspect_ratio.h"
 
 namespace rex
 {
@@ -12,31 +12,31 @@ namespace rex
     {
     }
     //-------------------------------------------------------------------------
-    void AspectRatio::setWidth(float width)
+    void AspectRatio::set_width(float width)
     {
         m_width = width;
         m_ratio = Ratio(m_width, m_height);
     }
     //-------------------------------------------------------------------------
-    void AspectRatio::setHeight(float height)
+    void AspectRatio::set_height(float height)
     {
         m_height = height;
         m_ratio = Ratio(m_width, m_height);
     }
 
     //-------------------------------------------------------------------------
-    float AspectRatio::getWidth() const
+    float AspectRatio::get_width() const
     {
         return m_width;
     }
     //-------------------------------------------------------------------------
-    float AspectRatio::getHeight() const
+    float AspectRatio::get_height() const
     {
         return m_height;
     }
 
     //-------------------------------------------------------------------------
-    AspectRatio::Ratio AspectRatio::getRatio() const
+    AspectRatio::Ratio AspectRatio::get_ratio() const
     {
         return m_ratio;
     }

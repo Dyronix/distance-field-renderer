@@ -1,28 +1,25 @@
 #pragma once
 
-#include "string/stringid.h"
-#include "string/stringids.h"
+#include "resources/shader_attribute_type.h"
 
-#include "resources/shaderattributetype.h"
-
-namespace sbt
+namespace rex
 {
     class ShaderAttribute
     {
     public:
+        static ShaderAttribute EMPTY;
+        
         ShaderAttribute();
         ShaderAttribute(const StringID& name, ShaderAttributeType type, uint32 size, uint32 offset);
         ~ShaderAttribute();
 
-        const StringID& getName() const;
-        const ShaderAttributeType& getType() const;
+        const StringID& get_name() const;
+        const ShaderAttributeType& get_type() const;
 
-        uint32 getSize() const;
-        uint32 getOffset() const;
+        uint32 get_size() const;
+        uint32 get_offset() const;
 
-        bool isValid() const;
-
-        static ShaderAttribute EMPTY;
+        bool is_valid() const;
 
     private:
         StringID m_name;

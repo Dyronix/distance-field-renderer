@@ -1,35 +1,37 @@
 #include "rex_graphics_pch.h"
 
-#include "fieldofview.h"
+#include "field_of_view.h"
+
+#include "rad_angle.h"
 
 namespace rex
 {
     FieldOfView::FieldOfView(const DegAngle& horizontal, const DegAngle& vertical)
     {
-        setHorizontal(horizontal);
-        setVertical(vertical);
+        set_horizontal(horizontal);
+        set_vertical(vertical);
     }
 
     //-------------------------------------------------------------------------
     FieldOfView::FieldOfView(const DegAngle& vertical, const AspectRatio::Ratio& aspectRatio)
     {
-        setVertical(vertical, aspectRatio);
+        set_vertical(vertical, aspectRatio);
     }
 
     //-------------------------------------------------------------------------
     void FieldOfView::reevaluate(const AspectRatio::Ratio& aspectRatio)
     {
-        setHorizontal(getHorizontal(), aspectRatio);
-        setVertical(getVertical(), aspectRatio);
+        set_horizontal(get_horizontal(), aspectRatio);
+        set_vertical(get_vertical(), aspectRatio);
     }
 
     //-------------------------------------------------------------------------
-    void FieldOfView::setHorizontal(const DegAngle& h)
+    void FieldOfView::set_horizontal(const DegAngle& h)
     {
         m_horizontal = h;
     }
     //-------------------------------------------------------------------------
-    void FieldOfView::setHorizontal(const DegAngle& h, const AspectRatio::Ratio& aspectRatio)
+    void FieldOfView::set_horizontal(const DegAngle& h, const AspectRatio::Ratio& aspectRatio)
     {
         R_ASSERT(aspectRatio.get() != 0);
 
@@ -38,24 +40,24 @@ namespace rex
     }
 
     //-------------------------------------------------------------------------
-    void FieldOfView::setVertical(const DegAngle& v)
+    void FieldOfView::set_vertical(const DegAngle& v)
     {
         m_vertical = v;
     }
     //-------------------------------------------------------------------------
-    void FieldOfView::setVertical(const DegAngle& v, const AspectRatio::Ratio& aspectRatio)
+    void FieldOfView::set_vertical(const DegAngle& v, const AspectRatio::Ratio& aspectRatio)
     {
         m_vertical = v;
         m_horizontal = DegAngle(rad2deg(2.0f * std::atan(aspectRatio.get() * std::tan(m_vertical.to_rad() * 0.5f))));
     }
 
     //-------------------------------------------------------------------------
-    const DegAngle& FieldOfView::getHorizontal() const
+    const DegAngle& FieldOfView::get_horizontal() const
     {
         return m_horizontal;
     }
     //-------------------------------------------------------------------------
-    const DegAngle& FieldOfView::getVertical() const
+    const DegAngle& FieldOfView::get_vertical() const
     {
         return m_vertical;
     }

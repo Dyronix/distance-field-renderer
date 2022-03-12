@@ -1,17 +1,18 @@
 #pragma once
 
-#include "yesnoenum.h"
+#include "yes_no_enum.h"
 
-#include "clippingplanes.h"
-#include "fieldofview.h"
-#include "aspectratio.h"
+#include "clipping_planes.h"
+#include "field_of_view.h"
+#include "aspect_ratio.h"
 
-#include "degangle.h"
 #include "transform.h"
 
 namespace rex
 {
     struct FrameInfo;
+
+    class DegAngle;
 
     class PerspectiveCamera
     {
@@ -21,40 +22,40 @@ namespace rex
         PerspectiveCamera(const FieldOfView& fieldOfView, const AspectRatio& aspectRatio, const ClippingPlanes& clippingPlanes);
         ~PerspectiveCamera();
 
-        void setPosition(const rex::vec3& position);
-        void setRotation(const rex::quaternion& rotation);
+        void set_position(const rex::vec3& position);
+        void set_rotation(const rex::quaternion& rotation);
 
-        void setAspectRatio(const AspectRatio& ratio, AdjustFOV adjustFOV = AdjustFOV::NO);
-        void setVerticalFieldOfView(const DegAngle& angle);
-        void setHorizontalFieldOfView(const DegAngle& angle);
-        void setClippingPlanes(const ClippingPlanes& planes);
+        void set_aspect_ratio(const AspectRatio& ratio, AdjustFOV adjustFOV = AdjustFOV::NO);
+        void set_vertical_field_of_view(const DegAngle& angle);
+        void set_horizontal_field_of_view(const DegAngle& angle);
+        void set_clipping_planes(const ClippingPlanes& planes);
 
-        const rex::vec3& getPosition() const;
-        const rex::quaternion& getRotation() const;
+        const rex::vec3& get_position() const;
+        const rex::quaternion& get_rotation() const;
 
-        const AspectRatio& getAspectRatio() const;
-        const FieldOfView& getFieldOfView() const;
-        const DegAngle& getVerticalFieldOfView() const;
-        const DegAngle& getHorizontalFieldOfView() const;
-        const ClippingPlanes& getClippingPlanes() const;
+        const AspectRatio& get_aspect_ratio() const;
+        const FieldOfView& get_field_of_view() const;
+        const DegAngle& get_vertical_field_of_view() const;
+        const DegAngle& get_horizontal_field_of_view() const;
+        const ClippingPlanes& get_clipping_planes() const;
 
-        const rex::matrix4& getInverseViewProjectionMatrix() const;
-        const rex::matrix4& getViewProjectionMatrix() const;
-        const rex::matrix4& getProjectionMatrix() const;
-        const rex::matrix4& getViewMatrix() const;
-        const rex::matrix4& getFrustrumCorners() const;
-        const rex::matrix4& getWorldMatrix() const;
+        const rex::matrix4& get_inverse_view_projection_matrix() const;
+        const rex::matrix4& get_view_projection_matrix() const;
+        const rex::matrix4& get_projection_matrix() const;
+        const rex::matrix4& get_view_matrix() const;
+        const rex::matrix4& get_frustrum_corners() const;
+        const rex::matrix4& get_world_matrix() const;
 
-        const rex::vec3& getUpDirection() const;
-        const rex::vec3& getRightDirection() const;
-        const rex::vec3& getForwardDirection() const;
+        const rex::vec3& get_up_direction() const;
+        const rex::vec3& get_right_direction() const;
+        const rex::vec3& get_forward_direction() const;
 
     protected:
-        rex::matrix4 calculateViewMatrix() const;
-        rex::matrix4 calculateViewProjectionMatrix() const;
-        rex::matrix4 calculateFrustrumMatrix() const;
+        rex::matrix4 calculate_view_matrix() const;
+        rex::matrix4 calculate_view_projection_matrix() const;
+        rex::matrix4 calculate_frustrum_matrix() const;
 
-        void updateMatrices();
+        void update_matrices();
 
     private:
         Transform m_transform;

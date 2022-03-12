@@ -1,6 +1,6 @@
 #pragma once
 
-#include "yesnoenum.h"
+#include "yes_no_enum.h"
 #include "renderer/types/depth_test_function.h"
 
 namespace rex

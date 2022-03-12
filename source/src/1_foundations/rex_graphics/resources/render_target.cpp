@@ -5,7 +5,7 @@
 namespace rex
 {
     //-------------------------------------------------------------------------
-    Texture::Type get_texture_type() const
+    Texture::Type RenderTarget::get_type() const
     {
         return Texture::Type::RENDER_TARGET;
     }

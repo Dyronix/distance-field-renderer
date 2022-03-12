@@ -1,11 +1,9 @@
 #pragma once
 
-#include "memory/refptr.h"
+#include "resources/api_resource.h"
+#include "resources/shader_uniform.h"
 
-#include "resources/apiresource.h"
-#include "resources/shaderuniformblock.h"
-
-namespace sbt
+namespace rex
 {
     class UniformBuffer : public Resource
     {
@@ -13,13 +11,13 @@ namespace sbt
         UniformBuffer() = default;
         virtual ~UniformBuffer() = default;
 
-        virtual void setData(const void* data, uint32 size, uint32 offset = 0, IsRenderThread rt = IsRenderThread::NO) = 0;
+        virtual void set_data(const void* data, uint32 size, uint32 offset = 0, IsRenderThread rt = IsRenderThread::NO) = 0;
 
-        virtual StringID getName() const = 0;
+        virtual StringID get_name() const = 0;
 
-        virtual uint32 getBinding() const = 0;
-        virtual uint32 getSize() const = 0;
+        virtual uint32 get_binding() const = 0;
+        virtual uint32 get_size() const = 0;
 
-        virtual const ShaderUniforms& getUniforms() const = 0;
+        virtual const ShaderUniforms& get_uniforms() const = 0;
     };
 }

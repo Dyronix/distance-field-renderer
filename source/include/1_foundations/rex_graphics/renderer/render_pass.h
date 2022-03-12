@@ -4,6 +4,8 @@
 
 #include "types/clear_flags.h"
 
+#include "resources/frame_buffer.h"
+
 namespace rex
 {
     class FrameBuffer;

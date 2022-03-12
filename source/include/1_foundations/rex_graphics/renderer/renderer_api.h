@@ -1,15 +1,10 @@
 #pragma once
 
-#include "api_type.h"
+#include "renderer/pipeline.h"
+#include "renderer/render_pass.h"
 
 namespace rex
 {
-    struct PipelineDescription;
-    class Pipeline;
-
-    struct RenderPassDescription;
-    class RenderPass;
-
     class UniformBufferSet;
     class Material;
     class Model;
@@ -29,12 +24,9 @@ namespace rex
         virtual void end_frame() = 0;
         virtual void end_render_pass() = 0;
 
-        virtual void render_quad(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Material> material,
-                                 const rex::matrix4& transform) = 0;
-        virtual void render_model(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Model> model,
-                                  const rex::matrix4& transform) = 0;
-        virtual void render_model_with_material(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Model> model,
-                                                const rex::matrix4& transform, ref_ptr<Material> material) = 0;
+        virtual void render_quad(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Material> material, const rex::matrix4& transform) = 0;
+        virtual void render_model(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Model> model, const rex::matrix4& transform) = 0;
+        virtual void render_model_with_material(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Model> model, const rex::matrix4& transform, ref_ptr<Material> material) = 0;
 
         virtual void submit_fullscreen_quad(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Material> material) = 0;
 
@@ -43,8 +35,5 @@ namespace rex
 
     protected:
         RendererAPI() = default;
-
-    private:
-        static API::Type s_renderer_api;
     };
 }

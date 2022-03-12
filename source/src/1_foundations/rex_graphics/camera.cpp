@@ -23,29 +23,29 @@ namespace rex
     }
 
     //-------------------------------------------------------------------------
-    void Camera::setViewportSize(int32 width, int32 height)
+    void Camera::set_viewport_size(int32 width, int32 height)
     {
         R_ASSERT(width > 0 && height > 0);
 
         m_aspect_ratio = AspectRatio((float)width, (float)height);
 
-        onSetViewportSize(width, height);
+        on_set_viewport_size(width, height);
     }
 
     //-------------------------------------------------------------------------
-    const rex::matrix4& Camera::getProjectionMatrix() const
+    const rex::matrix4& Camera::get_projection_matrix() const
     {
         return m_projection;
     }
 
     //-------------------------------------------------------------------------
-    const rex::AspectRatio::Ratio Camera::getAspectRatio() const
+    const rex::AspectRatio::Ratio Camera::get_aspect_ratio() const
     {
-        return m_aspect_ratio.getRatio();
+        return m_aspect_ratio.get_ratio();
     }
 
     //-------------------------------------------------------------------------
-    void Camera::setProjectionMatrix(const rex::matrix4& projection)
+    void Camera::set_projection_matrix(const rex::matrix4& projection)
     {
         m_projection = projection;
     }

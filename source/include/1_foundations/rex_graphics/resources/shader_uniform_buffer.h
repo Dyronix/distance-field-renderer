@@ -1,11 +1,8 @@
 #pragma once
 
-#include "string/stringid.h"
-#include "string/stringids.h"
+#include "resources/shader_uniform.h"
 
-#include "resources/shaderuniform.h"
-
-namespace sbt
+namespace rex
 {
     struct ShaderUniformBuffer
     {

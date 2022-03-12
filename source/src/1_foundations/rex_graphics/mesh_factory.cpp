@@ -1,15 +1,15 @@
 #include "rex_graphics_pch.h"
 
-#include "degangle.h"
-
-#include "meshfactory.h"
+#include "mesh_factory.h"
 
 #include "vertex.h"
 #include "triangle.h"
 #include "submesh.h"
+#include "mesh.h"
+#include "model.h"
 
-#include "resources/vertexbuffer.h"
-#include "resources/indexbuffer.h"
+#include "resources/vertex_buffer.h"
+#include "resources/index_buffer.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -193,8 +193,8 @@ namespace rex
         //-------------------------------------------------------------------------
         GeometryPackage get_quad_geometry_package(const rex::vec3& size)
         {
-            float x = -size.x * 0.5;
-            float y = -size.y * 0.5;
+            float x = -size.x * 0.5f;
+            float y = -size.y * 0.5f;
             float width = size.x;
             float height = size.y;
 
@@ -397,28 +397,28 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        std::unique_ptr<IMesh> createBox(const rex::vec3& size)
+        std::unique_ptr<IMesh> create_box(const rex::vec3& size)
         {
             GeometryPackage package = get_cube_geometry_package(size);
 
             return std::make_unique<StaticMesh>(package.vertices, package.indices);
         }
         //-------------------------------------------------------------------------
-        std::unique_ptr<IMesh> createSphere(float radius)
+        std::unique_ptr<IMesh> create_sphere(float radius)
         {
             GeometryPackage package = get_sphere_geometry_package(radius);
 
             return std::make_unique<StaticMesh>(package.vertices, package.indices);
         }
         //-------------------------------------------------------------------------
-        std::unique_ptr<IMesh> createCapsule(float radius, float height)
+        std::unique_ptr<IMesh> create_capsule(float radius, float height)
         {
             GeometryPackage package = get_capsule_geometry_package(radius, height);
 
             return std::make_unique<StaticMesh>(package.vertices, package.indices);
         }
         //-------------------------------------------------------------------------
-        std::unique_ptr<rex::IMesh> createQuad(const rex::vec3& size)
+        std::unique_ptr<rex::IMesh> create_quad(const rex::vec3& size)
         {
             GeometryPackage package = get_quad_geometry_package(size);
 
@@ -426,28 +426,28 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        rex::ref_ptr<rex::Model> getUnitCube()
+        rex::ref_ptr<rex::Model> get_unit_cube()
         {
             R_ASSERT(g_unit_cube);
 
             return g_unit_cube;
         }
         //-------------------------------------------------------------------------
-        rex::ref_ptr<rex::Model> getUnitSphere()
+        rex::ref_ptr<rex::Model> get_unit_sphere()
         {
             R_ASSERT(g_unit_sphere);
 
             return g_unit_sphere;
         }
         //-------------------------------------------------------------------------
-        rex::ref_ptr<rex::Model> getUnitCapsule()
+        rex::ref_ptr<rex::Model> get_unit_capsule()
         {
             R_ASSERT(g_unit_capsule);
 
             return g_unit_capsule;
         }
         //-------------------------------------------------------------------------
-        rex::ref_ptr<rex::Model> getUnitQuad()
+        rex::ref_ptr<rex::Model> get_unit_quad()
         {
             R_ASSERT(g_unit_quad);
 

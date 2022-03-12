@@ -2,7 +2,7 @@
 
 namespace rex
 {
-    enum class Usage
+    enum class BufferUsage
     {
         NONE,
         STATIC_DRAW,

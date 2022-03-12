@@ -1,15 +1,18 @@
 #pragma once
 
 #include "resources/texture.h"
-#include "resources/texture_3d_description.h"
 
 namespace rex
 {
+    struct Texture3DDescription;
+    
     class Texture3D : public Texture
     {
     public:
-        Texture::Type get_texture_type() const override;
+        Texture::Type get_type() const override;
 
         virtual void invalidate(Texture3DDescription&& desc) = 0;
+
+        virtual uint32 get_depth() const = 0;
     };
 }

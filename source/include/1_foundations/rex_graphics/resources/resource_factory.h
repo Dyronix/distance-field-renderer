@@ -1,29 +1,28 @@
 #pragma once
 
-#include "memory/internalptr.h"
-
-#include "resources/texture2ddescription.h"
-#include "resources/texture3ddescription.h"
-#include "resources/texturecubedescription.h"
 #include "resources/texture.h"
-#include "resources/texturecube.h"
+#include "resources/texture_cube.h"
 
-#include "resources/shaderprogram.h"
-#include "resources/framebuffer.h"
-#include "resources/uniformbuffer.h"
-#include "resources/vertexbuffer.h"
-#include "resources/indexbuffer.h"
-#include "resources/material.h"
-#include "resources/shaderuniformblock.h"
-
-#include "usage.h"
-
-namespace sbt
+namespace rex
 {
     class ResourcesAPI;
+    class ShaderUniformBlock;
+    class Material;
+    class ShaderProgram;
+    class VertexBuffer;
+    class IndexBuffer;
+    class FrameBuffer;
 
     struct Vertex;
     struct TriangleIndices;
+    struct Texture2DDescription;
+    struct Texture3DDescription;
+    struct TextureCubeDescription;
+    struct ShaderProgramCreationInfo;
+    struct FrameBufferDescription;
+
+    enum class BufferUsage;
+    enum class FrameBufferDepthAttachmentOption;
 
     class ResourceFactory
     {
@@ -31,48 +30,33 @@ namespace sbt
         static void initialize(std::unique_ptr<ResourcesAPI> api);
         static void shutdown();
 
-        static ref_ptr<sbt::Texture> createTexture2D(const StringID& name = EName::SID_None,
-                                                     const Texture::Usage& textureUsage = Texture::Usage::UNSPECIFIED);
-        static ref_ptr<sbt::Texture> createTexture2D(uint32 width, uint32 height, const StringID& name = EName::SID_None,
-                                                     const Texture::Usage& textureUsage = Texture::Usage::UNSPECIFIED);
-        static ref_ptr<sbt::Texture> createTexture2D(Texture::Data&& textureData, uint32 width, uint32 height, const StringID& name = EName::SID_None,
-                                                     const Texture::Usage& textureUsage = Texture::Usage::UNSPECIFIED);
-        static ref_ptr<sbt::Texture> createTexture2D(void* textureData, size_t textureDataSize, uint32 width, uint32 height,
-                                                     const StringID& name = EName::SID_None,
-                                                     const Texture::Usage& textureUsage = Texture::Usage::UNSPECIFIED);
-        static ref_ptr<sbt::Texture> createTexture2D(Texture2DDescription&& desc);
+        static ref_ptr<rex::Texture> create_texture2d(const StringID& name = ESID::SID_None, const Texture::Usage& textureUsage = Texture::Usage::UNSPECIFIED);
+        static ref_ptr<rex::Texture> create_texture2d(uint32 width, uint32 height, const StringID& name = ESID::SID_None, const Texture::Usage& textureUsage = Texture::Usage::UNSPECIFIED);
+        static ref_ptr<rex::Texture> create_texture2d(Texture::Data&& textureData, uint32 width, uint32 height, const StringID& name = ESID::SID_None, const Texture::Usage& textureUsage = Texture::Usage::UNSPECIFIED);
+        static ref_ptr<rex::Texture> create_texture2d(void* textureData, size_t textureDataSize, uint32 width, uint32 height, const StringID& name = ESID::SID_None, const Texture::Usage& textureUsage = Texture::Usage::UNSPECIFIED);
+        static ref_ptr<rex::Texture> create_texture2d(Texture2DDescription&& desc);
 
-        static ref_ptr<sbt::Texture> createTexture3D(const StringID& name = EName::SID_None,
-                                                     const Texture::Usage& textureUsage = Texture::Usage::UNSPECIFIED);
-        static ref_ptr<sbt::Texture> createTexture3D(uint32 width, uint32 height, uint32 depth, const StringID& name = EName::SID_None,
-                                                     const Texture::Usage& textureUsage = Texture::Usage::UNSPECIFIED);
-        static ref_ptr<sbt::Texture> createTexture3D(Texture::Data&& textureData, uint32 width, uint32 height, uint32 depth,
-                                                     const StringID& name = EName::SID_None,
-                                                     const Texture::Usage& textureUsage = Texture::Usage::UNSPECIFIED);
-        static ref_ptr<sbt::Texture> createTexture3D(Texture3DDescription&& desc);
+        static ref_ptr<rex::Texture> create_texture3d(const StringID& name = ESID::SID_None, const Texture::Usage& textureUsage = Texture::Usage::UNSPECIFIED);
+        static ref_ptr<rex::Texture> create_texture3d(uint32 width, uint32 height, uint32 depth, const StringID& name = ESID::SID_None, const Texture::Usage& textureUsage = Texture::Usage::UNSPECIFIED);
+        static ref_ptr<rex::Texture> create_texture3d(Texture::Data&& textureData, uint32 width, uint32 height, uint32 depth, const StringID& name = ESID::SID_None, const Texture::Usage& textureUsage = Texture::Usage::UNSPECIFIED);
+        static ref_ptr<rex::Texture> create_texture3d(Texture3DDescription&& desc);
 
-        static ref_ptr<sbt::TextureCube> createTextureCube(const StringID& name = EName::SID_None,
-                                                           const Texture::Usage& textureUsage = Texture::Usage::UNSPECIFIED);
-        static ref_ptr<sbt::TextureCube> createTextureCube(uint32 width, uint32 height, const StringID& name = EName::SID_None,
-                                                           const Texture::Usage& textureUsage = Texture::Usage::UNSPECIFIED);
-        static ref_ptr<sbt::TextureCube> createTextureCube(Texture::Data&& textureData, uint32 width, uint32 height,
-                                                           const StringID& name = EName::SID_None,
-                                                           const Texture::Usage& textureUsage = Texture::Usage::UNSPECIFIED);
-        static ref_ptr<sbt::TextureCube> createTextureCube(void* textureData, size_t textureDataSize, uint32 width, uint32 height,
-                                                           const StringID& name = EName::SID_None,
-                                                           const Texture::Usage& textureUsage = Texture::Usage::UNSPECIFIED);
-        static ref_ptr<sbt::TextureCube> createTextureCube(TextureCubeDescription&& desc);
+        static ref_ptr<rex::TextureCube> create_texture_cube(const StringID& name = ESID::SID_None, const Texture::Usage& textureUsage = Texture::Usage::UNSPECIFIED);
+        static ref_ptr<rex::TextureCube> create_texture_cube(uint32 width, uint32 height, const StringID& name = ESID::SID_None, const Texture::Usage& textureUsage = Texture::Usage::UNSPECIFIED);
+        static ref_ptr<rex::TextureCube> create_texture_cube(Texture::Data&& textureData, uint32 width, uint32 height, const StringID& name = ESID::SID_None, const Texture::Usage& textureUsage = Texture::Usage::UNSPECIFIED);
+        static ref_ptr<rex::TextureCube> create_texture_cube(void* textureData, size_t textureDataSize, uint32 width, uint32 height, const StringID& name = ESID::SID_None, const Texture::Usage& textureUsage = Texture::Usage::UNSPECIFIED);
+        static ref_ptr<rex::TextureCube> create_texture_cube(TextureCubeDescription&& desc);
 
-        static ref_ptr<sbt::ShaderProgram> createShaderProgram(ShaderProgramCreationInfo&& creationInfo);
-        static ref_ptr<sbt::FrameBuffer> createFrameBuffer(FrameBufferDescription&& description, DepthAttachmentOption depthAttachmentOption);
-        static StringID createUniformBuffer(const ShaderUniformBlock& block);
+        static ref_ptr<rex::ShaderProgram> create_shader_program(ShaderProgramCreationInfo&& creationInfo);
+        static ref_ptr<rex::FrameBuffer> create_frame_buffer(FrameBufferDescription&& description, FrameBufferDepthAttachmentOption depthAttachmentOption);
+        static StringID create_uniform_buffer(const ShaderUniformBlock& block);
 
-        static ref_ptr<sbt::VertexBuffer> createVertexBuffer(void* vertices, uint32 size, uint32 count);
-        static ref_ptr<sbt::VertexBuffer> createVertexBuffer(void* vertices, uint32 size, uint32 count, Usage usage);
-        static ref_ptr<sbt::IndexBuffer> createIndexBuffer(TriangleIndices* indices, uint32 count);
-        static ref_ptr<sbt::IndexBuffer> createIndexBuffer(TriangleIndices* indices, uint32 count, Usage usage);
+        static ref_ptr<rex::VertexBuffer> create_vertex_buffer(void* vertices, uint32 size, uint32 count);
+        static ref_ptr<rex::VertexBuffer> create_vertex_buffer(void* vertices, uint32 size, uint32 count, BufferUsage usage);
+        static ref_ptr<rex::IndexBuffer> create_index_buffer(TriangleIndices* indices, uint32 count);
+        static ref_ptr<rex::IndexBuffer> create_index_buffer(TriangleIndices* indices, uint32 count, BufferUsage usage);
 
-        static ref_ptr<sbt::Material> createMaterial(ref_ptr<ShaderProgram> shader);
-        static ref_ptr<sbt::Material> createMaterial(ref_ptr<ShaderProgram> shader, const StringID& name);
+        static ref_ptr<rex::Material> create_material(ref_ptr<ShaderProgram> shader);
+        static ref_ptr<rex::Material> create_material(ref_ptr<ShaderProgram> shader, const StringID& name);
     };
 }

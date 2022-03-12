@@ -1,20 +1,10 @@
 #pragma once
 
-#include "memory/internalptr.h"
-
-#include "string/stringid.h"
-#include "string/stringids.h"
-
-#include "resources/indexbuffer.h"
-#include "resources/vertexbuffer.h"
 #include "resources/texture.h"
 #include "resources/material.h"
 
-#include "minmax.h"
+#include "min_max.h"
 #include "mesh.h"
-
-#include <vector>
-#include <memory>
 
 namespace rex
 {
@@ -22,7 +12,6 @@ namespace rex
     struct TriangleIndices;
     struct Submesh;
 
-    class Texture;
     class VertexBuffer;
     class IndexBuffer;
 
@@ -55,18 +44,18 @@ namespace rex
         Model(ModelCreationInfo& info);
         ~Model();
 
-        void setMaterial(uint32 index, const ref_ptr<Material>& material);
+        void set_material(uint32 index, const ref_ptr<Material>& material);
 
-        const StringID& getName() const;
+        const StringID& get_name() const;
 
-        uint32 getVertexCount() const;
-        uint32 getIndexCount() const;
+        uint32 get_vertex_count() const;
+        uint32 get_index_count() const;
 
-        const ref_ptr<VertexBuffer>& getVertexBuffer() const;
-        const ref_ptr<IndexBuffer>& getIndexBuffer() const;
+        const ref_ptr<VertexBuffer>& get_vertex_buffer() const;
+        const ref_ptr<IndexBuffer>& get_index_buffer() const;
 
-        const std::vector<Submesh>& getSubmeshes() const;
-        const MaterialContainer& getMaterials() const;
+        const std::vector<Submesh>& get_submeshes() const;
+        const MaterialContainer& get_materials() const;
 
     private:
         StringID m_name;

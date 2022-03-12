@@ -1,19 +1,14 @@
 #pragma once
 
-#include "types.h"
+#include "resources/shader_uniform_type.h"
 
-#include "string/stringid.h"
-#include "string/stringids.h"
-
-#include "resources/shaderuniformtype.h"
-
-#include <vector>
-
-namespace sbt
+namespace rex
 {
     class ShaderResource
     {
     public:
+        static ShaderResource EMPTY;
+
         enum class Domain
         {
             NONE,
@@ -24,16 +19,14 @@ namespace sbt
         ShaderResource();
         ShaderResource(const StringID& name, ShaderUniformType type, uint32 count, uint32 offset, uint32 reg);
 
-        const StringID& getName() const;
+        const StringID& get_name() const;
 
-        const ShaderUniformType& getType() const;
-        const uint32 getCount() const;
-        const uint32 getOffset() const;
-        const uint32 getRegister() const;
+        const ShaderUniformType& get_type() const;
+        const uint32 get_count() const;
+        const uint32 get_offset() const;
+        const uint32 get_register() const;
 
-        bool isValid() const;
-
-        static ShaderResource EMPTY;
+        bool is_valid() const;
 
     private:
         StringID m_name;

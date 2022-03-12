@@ -26,13 +26,13 @@ namespace rex
 
         AspectRatio(float width, float height);
 
-        void setWidth(float width);
-        void setHeight(float height);
+        void set_width(float width);
+        void set_height(float height);
 
-        float getWidth() const;
-        float getHeight() const;
+        float get_width() const;
+        float get_height() const;
 
-        Ratio getRatio() const;
+        Ratio get_ratio() const;
 
     private:
         float m_width;

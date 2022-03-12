@@ -1,27 +1,24 @@
 #pragma once
 
-#include "string/stringid.h"
-#include "string/stringids.h"
+#include "resources/shader_uniform_type.h"
 
-#include "resources/shaderuniformtype.h"
-
-namespace sbt
+namespace rex
 {
     class ShaderUniform
     {
     public:
+        static ShaderUniform EMPTY;
+
         ShaderUniform();
         ShaderUniform(const StringID& name, const ShaderUniformType& type, uint32 size, uint32 offset);
 
-        const StringID& getName() const;
-        const ShaderUniformType& getType() const;
+        const StringID& get_name() const;
+        const ShaderUniformType& get_type() const;
 
-        uint32 getSize() const;
-        uint32 getOffset() const;
+        uint32 get_size() const;
+        uint32 get_offset() const;
 
-        bool isValid() const;
-
-        static ShaderUniform EMPTY;
+        bool is_valid() const;
 
     private:
         StringID m_name;

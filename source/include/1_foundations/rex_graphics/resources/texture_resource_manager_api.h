@@ -1,21 +1,21 @@
 #pragma once
 
-#include "resources/texture.h"
-
-namespace sbt
+namespace rex
 {
+    class Texture;
+    
     class TextureResourceManagerAPI
     {
     public:
         virtual ~TextureResourceManagerAPI() = default;
 
-        virtual uint32 getMaxActivateTextureCount() const = 0;
-        virtual uint32 getActivatedTextureCount() const = 0;
+        virtual uint32 get_activated_texture_count() const = 0;
+        virtual uint32 get_max_activate_texture_count() const = 0;
 
-        virtual void activateTexture(const ref_ptr<sbt::Texture>& texture, int32 location, IsRenderThread isRenderThread = IsRenderThread::NO) = 0;
-        virtual void deactivateTexture(const ref_ptr<sbt::Texture>& texture, IsRenderThread isRenderThread = IsRenderThread::NO) = 0;
+        virtual void activate_texture(const ref_ptr<rex::Texture>& texture, int32 location, IsRenderThread isRenderThread = IsRenderThread::NO) = 0;
+        virtual void deactivate_texture(const ref_ptr<rex::Texture>& texture, IsRenderThread isRenderThread = IsRenderThread::NO) = 0;
 
-        virtual void releaseAll() = 0;
+        virtual void release_all() = 0;
 
     protected:
         TextureResourceManagerAPI() = default;

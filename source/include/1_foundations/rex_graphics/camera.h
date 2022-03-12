@@ -1,6 +1,6 @@
 #pragma once
 
-#include "aspectratio.h"
+#include "aspect_ratio.h"
 
 namespace rex
 {
@@ -11,18 +11,18 @@ namespace rex
         Camera(const AspectRatio& aspectRatio, const rex::matrix4& projection = rex::matrix4(1.0f));
         virtual ~Camera();
 
-        void setViewportSize(int32 width, int32 height);
+        void set_viewport_size(int32 width, int32 height);
 
-        const rex::matrix4& getProjectionMatrix() const;
-        const AspectRatio::Ratio getAspectRatio() const;
+        const rex::matrix4& get_projection_matrix() const;
+        const AspectRatio::Ratio get_aspect_ratio() const;
 
         bool operator==(const Camera& other) const;
         bool operator!=(const Camera& other) const;
 
     protected:
-        void setProjectionMatrix(const rex::matrix4& projection);
+        void set_projection_matrix(const rex::matrix4& projection);
 
-        virtual void onSetViewportSize(int32 width, int32 height) = 0;
+        virtual void on_set_viewport_size(int32 width, int32 height) = 0;
 
     private:
         rex::matrix4 m_projection;

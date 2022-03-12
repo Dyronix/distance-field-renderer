@@ -6,9 +6,6 @@
 #include "vertex.h"
 #include "triangle.h"
 
-#include "resources/texture.h"
-#include "resources/material.h"
-
 namespace rex
 {
     //-------------------------------------------------------------------------
@@ -45,7 +42,7 @@ namespace rex
     }
 
     //-------------------------------------------------------------------------
-    void Model::setMaterial(uint32 index, const ref_ptr<Material>& material)
+    void Model::set_material(uint32 index, const ref_ptr<Material>& material)
     {
         if (index >= m_materials.size())
         {
@@ -58,41 +55,41 @@ namespace rex
     }
 
     //-------------------------------------------------------------------------
-    const StringID& Model::getName() const
+    const StringID& Model::get_name() const
     {
         return m_name;
     }
 
     //-------------------------------------------------------------------------
-    uint32 Model::getVertexCount() const
+    uint32 Model::get_vertex_count() const
     {
-        return m_mesh.getVertexBufferCount();
+        return m_mesh.get_vertex_buffer_count();
     }
     //-------------------------------------------------------------------------
-    uint32 Model::getIndexCount() const
+    uint32 Model::get_index_count() const
     {
-        return m_mesh.getIndexBufferCount();
-    }
-
-    //-------------------------------------------------------------------------
-    const ref_ptr<rex::VertexBuffer>& Model::getVertexBuffer() const
-    {
-        return m_mesh.getVertexBuffer();
-    }
-    //-------------------------------------------------------------------------
-    const ref_ptr<rex::IndexBuffer>& Model::getIndexBuffer() const
-    {
-        return m_mesh.getIndexBuffer();
+        return m_mesh.get_index_buffer_count();
     }
 
     //-------------------------------------------------------------------------
-    const std::vector<rex::Submesh>& Model::getSubmeshes() const
+    const ref_ptr<rex::VertexBuffer>& Model::get_vertex_buffer() const
+    {
+        return m_mesh.get_vertex_buffer();
+    }
+    //-------------------------------------------------------------------------
+    const ref_ptr<rex::IndexBuffer>& Model::get_index_buffer() const
+    {
+        return m_mesh.get_index_buffer();
+    }
+
+    //-------------------------------------------------------------------------
+    const std::vector<rex::Submesh>& Model::get_submeshes() const
     {
         return m_submeshes;
     }
 
     //-------------------------------------------------------------------------
-    const MaterialContainer& Model::getMaterials() const
+    const MaterialContainer& Model::get_materials() const
     {
         return m_materials;
     }

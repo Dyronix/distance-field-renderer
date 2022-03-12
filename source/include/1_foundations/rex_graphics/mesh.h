@@ -1,14 +1,11 @@
 #pragma once
 
-#include "usage.h"
-
-#include "memory/refcountedobject.h"
-#include "memory/refptr.h"
-
-#include "resources/bufferlayout.h"
+#include "resources/buffer_layout.h"
 
 namespace rex
 {
+    enum class BufferUsage;
+
     struct Vertex;
     struct TriangleIndices;
 
@@ -20,38 +17,38 @@ namespace rex
     public:
         virtual ~IMesh() = default;
 
-        virtual Usage getUsage() const = 0;
+        virtual BufferUsage get_usage() const = 0;
 
-        virtual const ref_ptr<rex::VertexBuffer>& getVertexBuffer() const = 0;
-        virtual const ref_ptr<rex::IndexBuffer>& getIndexBuffer() const = 0;
+        virtual const ref_ptr<rex::VertexBuffer>& get_vertex_buffer() const = 0;
+        virtual const ref_ptr<rex::IndexBuffer>& get_index_buffer() const = 0;
 
-        virtual uint32 getIndexBufferCount() const = 0;
-        virtual uint32 getVertexBufferCount() const = 0;
+        virtual uint32 get_index_buffer_count() const = 0;
+        virtual uint32 get_vertex_buffer_count() const = 0;
 
     protected:
         IMesh() = default;
 
-        static BufferLayout makeBufferLayout();
+        static BufferLayout make_buffer_layout();
 
-        static ref_ptr<rex::VertexBuffer> createVertexBuffer(Vertex* vertices, uint32 count, Usage usage, const BufferLayout& layout);
-        static ref_ptr<rex::IndexBuffer> createIndexBuffer(TriangleIndices* indices, uint32 count, Usage usage);
+        static ref_ptr<rex::VertexBuffer> create_vertex_buffer(Vertex* vertices, uint32 count, BufferUsage usage, const BufferLayout& layout);
+        static ref_ptr<rex::IndexBuffer> create_index_buffer(TriangleIndices* indices, uint32 count, BufferUsage usage);
     };
 
     class Mesh : public IMesh
     {
     public:
         Mesh();
-        Mesh(std::vector<Vertex>& vertices, std::vector<TriangleIndices>& indices, Usage usage);
+        Mesh(std::vector<Vertex>& vertices, std::vector<TriangleIndices>& indices, BufferUsage usage);
         ~Mesh() override;
 
-        void setVertices(std::vector<Vertex>& vertices);
-        void setIndices(std::vector<TriangleIndices>& indices);
+        void set_vertices(std::vector<Vertex>& vertices);
+        void set_indices(std::vector<TriangleIndices>& indices);
 
-        const ref_ptr<rex::VertexBuffer>& getVertexBuffer() const override;
-        const ref_ptr<rex::IndexBuffer>& getIndexBuffer() const override;
+        const ref_ptr<rex::VertexBuffer>& get_vertex_buffer() const override;
+        const ref_ptr<rex::IndexBuffer>& get_index_buffer() const override;
 
-        virtual uint32 getIndexBufferCount() const override;
-        virtual uint32 getVertexBufferCount() const override;
+        virtual uint32 get_index_buffer_count() const override;
+        virtual uint32 get_vertex_buffer_count() const override;
 
     private:
         ref_ptr<VertexBuffer> m_vertex_buffer;
@@ -67,7 +64,7 @@ namespace rex
         StaticMesh(std::vector<Vertex>& vertices, std::vector<TriangleIndices>& indices);
         ~StaticMesh() override;
 
-        Usage getUsage() const override;
+        BufferUsage get_usage() const override;
     };
 
     class DynamicMesh : public Mesh
@@ -77,6 +74,6 @@ namespace rex
         DynamicMesh(std::vector<Vertex>& vertices, std::vector<TriangleIndices>& indices);
         ~DynamicMesh() override;
 
-        Usage getUsage() const override;
+        BufferUsage get_usage() const override;
     };
 }

@@ -1,20 +1,15 @@
 #pragma once
 
-#include "string/stringid.h"
-
-#include <vector>
-#include <unordered_map>
-
-namespace sbt
+namespace rex
 {
     class Texture;
 
     namespace texture_library
     {
-        bool add(const ref_ptr<sbt::Texture>& program);
-        bool add(const std::vector<ref_ptr<sbt::Texture>>& programs);
+        bool add(const ref_ptr<rex::Texture>& program);
+        bool add(const std::vector<ref_ptr<rex::Texture>>& programs);
 
-        ref_ptr<sbt::Texture> get(const StringID& programName);
+        ref_ptr<rex::Texture> get(const StringID& programName);
 
         void clear();
     };

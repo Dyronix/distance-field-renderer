@@ -1,6 +1,6 @@
 #pragma once
 
-#include "yesnoenum.h"
+#include "yes_no_enum.h"
 #include "renderer/types/cull_mode.h"
 #include "renderer/types/face_winding.h"
 

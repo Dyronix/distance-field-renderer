@@ -9,6 +9,6 @@ namespace rex
     public:
         virtual ~RenderTarget();
 
-        Texture::Type get_texture_type() const override;
+        Texture::Type get_type() const override;
     };
 }
