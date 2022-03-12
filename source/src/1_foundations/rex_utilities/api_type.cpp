@@ -61,40 +61,40 @@ namespace rex
 #elif REX_API_NONE
         return API::Type::UNSPECIFIED;
 #else
-    #error Unsupported API!
+#error Unsupported API!
 #endif
-    #elif defined REX_PLATFORM_MACOS
+#elif defined REX_PLATFORM_MACOS
 #if defined REX_API_OPENGL
         return API::Type::OPENGL;
 #elif defined REX_API_OPENGLES
-    #error Unsupported API!
+#error Unsupported API!
 #elif REX_API_NONE
         return API::Type::UNSPECIFIED;
 #else
-    #error Unsupported API!
+#error Unsupported API!
 #endif
 #elif defined REX_PLATFORM_LINUX
 #if defined REX_API_OPENGL
         return API::Type::OPENGL;
 #elif defined REX_API_OPENGLES
-    #error Unsupported API!
+#error Unsupported API!
 #elif REX_API_NONE
         return API::Type::UNSPECIFIED;
 #else
-    #error Unsupported API!
+#error Unsupported API!
 #endif
 #elif defined REX_PLATFORM_EMSCRIPTEN
 #if defined REX_API_OPENGL
-    #error Unsupported API!
+#error Unsupported API!
 #elif defined REX_API_OPENGLES
         return API::Type::OPENGL_ES;
 #elif REX_API_NONE
         return API::Type::UNSPECIFIED;
 #else
-    #error Unsupported API!
+#error Unsupported API!
 #endif
 #else
-    #error Unsupported Platform!
+#error Unsupported Platform!
 #endif
     }
     //-------------------------------------------------------------------------
@@ -126,8 +126,7 @@ namespace rex
                 case API::Type::OPENGL_ES: return "Open GL ES";
                 case API::Type::UNSPECIFIED: return "Unspecified";
 
-                default: assert(false && "Unsupported API type"); 
-                return "";
+                default: assert(false && "Unsupported API type"); return "";
             }
         }
     }

@@ -57,14 +57,10 @@ namespace rex
         void generate_textures(size_t count, uint32* textures);
         void activate_texture(uint32 texture);
         void bind_texture(uint32 target, uint32 texture);
-        void texture_image_2D(uint32 target, int32 level, int32 internalformat, size_t width, size_t height, int32 border, uint32 format, uint32 type,
-                              const void* data);
-        void texture_image_3D(uint32 target, int32 level, int32 internalformat, size_t width, size_t height, size_t depth, int32 border,
-                              uint32 format, uint32 type, const void* data);
-        void texture_sub_image_2D(uint32 target, int32 level, int32 xoffset, int32 yoffset, size_t width, size_t height, uint32 format, uint32 type,
-                                  const void* data);
-        void texture_sub_image_3D(uint32 target, int32 level, int32 xoffset, int32 yoffset, int32 zoffset, size_t width, size_t height, size_t depth,
-                                  uint32 format, uint32 type, const void* data);
+        void texture_image_2D(uint32 target, int32 level, int32 internalformat, size_t width, size_t height, int32 border, uint32 format, uint32 type, const void* data);
+        void texture_image_3D(uint32 target, int32 level, int32 internalformat, size_t width, size_t height, size_t depth, int32 border, uint32 format, uint32 type, const void* data);
+        void texture_sub_image_2D(uint32 target, int32 level, int32 xoffset, int32 yoffset, size_t width, size_t height, uint32 format, uint32 type, const void* data);
+        void texture_sub_image_3D(uint32 target, int32 level, int32 xoffset, int32 yoffset, int32 zoffset, size_t width, size_t height, size_t depth, uint32 format, uint32 type, const void* data);
         void set_texture_integer_parameter(uint32 target, uint32 pname, int32 param);
         void set_texture_float_parameter(uint32 target, uint32 pname, float param);
 

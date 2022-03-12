@@ -38,8 +38,8 @@
 
 //-------------------------------------------------------------------------
 // Logging features
-#define R_FATAL(...)                                                                                                                                 \
-    rex::logging::get_logger(REX_LOGGER_NAME).critical(__VA_ARGS__);                                                                                 \
+#define R_FATAL(...)                                                                                                                                                                                                                                     \
+    rex::logging::get_logger(REX_LOGGER_NAME).critical(__VA_ARGS__);                                                                                                                                                                                     \
     DEBUG_BREAK()
 #define R_ERROR(...) rex::logging::get_logger(REX_LOGGER_NAME).error(__VA_ARGS__)
 #define R_WARN(...) rex::logging::get_logger(REX_LOGGER_NAME).warn(__VA_ARGS__)
@@ -50,27 +50,27 @@
 //-------------------------------------------------------------------------
 // Assertions
 #ifdef REX_ASSERTIONS
-#define R_ASSERT_X(expr, ...)                                                                                                                        \
-    if (expr)                                                                                                                                        \
-    {                                                                                                                                                \
-    }                                                                                                                                                \
-    else                                                                                                                                             \
-    {                                                                                                                                                \
-        R_FATAL("Assertion Failed: {0}", __VA_ARGS__);                                                                                               \
+#define R_ASSERT_X(expr, ...)                                                                                                                                                                                                                            \
+    if (expr)                                                                                                                                                                                                                                            \
+    {                                                                                                                                                                                                                                                    \
+    }                                                                                                                                                                                                                                                    \
+    else                                                                                                                                                                                                                                                 \
+    {                                                                                                                                                                                                                                                    \
+        R_FATAL("Assertion Failed: {0}", __VA_ARGS__);                                                                                                                                                                                                   \
     }
-#define R_ASSERT(expr)                                                                                                                               \
-    if (expr)                                                                                                                                        \
-    {                                                                                                                                                \
-    }                                                                                                                                                \
-    else                                                                                                                                             \
-    {                                                                                                                                                \
-        R_FATAL("Assertion Failed: {0}", #expr);                                                                                                     \
+#define R_ASSERT(expr)                                                                                                                                                                                                                                   \
+    if (expr)                                                                                                                                                                                                                                            \
+    {                                                                                                                                                                                                                                                    \
+    }                                                                                                                                                                                                                                                    \
+    else                                                                                                                                                                                                                                                 \
+    {                                                                                                                                                                                                                                                    \
+        R_FATAL("Assertion Failed: {0}", #expr);                                                                                                                                                                                                         \
     }
 #else
-#define R_ASSERT_X(expr, ...)                                                                                                                        \
-    {                                                                                                                                                \
-        auto check = expr;                                                                                                                           \
-        UNUSED_PARAM(check);                                                                                                                         \
+#define R_ASSERT_X(expr, ...)                                                                                                                                                                                                                            \
+    {                                                                                                                                                                                                                                                    \
+        auto check = expr;                                                                                                                                                                                                                               \
+        UNUSED_PARAM(check);                                                                                                                                                                                                                             \
     }
 #define R_ASSERT(expr)
 #endif
@@ -78,10 +78,10 @@
 //-------------------------------------------------------------------------
 // Verification
 #define R_VERIFY_X(expr, ...) R_ASSERT_X(expr, __VA_ARGS__)
-#define R_VERIFY(expr)                                                                                                                               \
-    {                                                                                                                                                \
-        auto check = expr;                                                                                                                           \
-        UNUSED_PARAM(check);                                                                                                                         \
+#define R_VERIFY(expr)                                                                                                                                                                                                                                   \
+    {                                                                                                                                                                                                                                                    \
+        auto check = expr;                                                                                                                                                                                                                               \
+        UNUSED_PARAM(check);                                                                                                                                                                                                                             \
     }
 
 //-------------------------------------------------------------------------
@@ -110,10 +110,10 @@
 #define R_FUNC_SIG "HZ_FUNC_SIG unknown!"
 #endif
 
-#define _INTERNAL_R_PROFILE_SCOPE_LINE2(name, line)                                                                                                  \
-    if (rex::Instrumentor::get().is_enabled())                                                                                                       \
-    {                                                                                                                                                \
-        rex::InstrumentationTimer timer##line(name);                                                                                                 \
+#define _INTERNAL_R_PROFILE_SCOPE_LINE2(name, line)                                                                                                                                                                                                      \
+    if (rex::Instrumentor::get().is_enabled())                                                                                                                                                                                                           \
+    {                                                                                                                                                                                                                                                    \
+        rex::InstrumentationTimer timer##line(name);                                                                                                                                                                                                     \
     }
 #define _INTERNAL_R_PROFILE_SCOPE_LINE(name, line) _INTERNAL_R_PROFILE_SCOPE_LINE2(name, line)
 
@@ -162,20 +162,20 @@
 #define R_TODO(...) UNUSED_PARAM(__VA_ARGS__)
 #define R_TRACE(...) UNUSED_PARAM(__VA_ARGS__)
 
-#define R_ASSERT_X(expr, ...)                                                                                                                        \
-    {                                                                                                                                                \
-        auto check = expr;                                                                                                                           \
-        UNUSED_PARAM(check);                                                                                                                         \
+#define R_ASSERT_X(expr, ...)                                                                                                                                                                                                                            \
+    {                                                                                                                                                                                                                                                    \
+        auto check = expr;                                                                                                                                                                                                                               \
+        UNUSED_PARAM(check);                                                                                                                                                                                                                             \
     }
 #define R_ASSERT(expr)
 
 //-------------------------------------------------------------------------
 // Verification
 #define R_VERIFY_X(expr, ...) R_ASSERT_X(expr, __VA_ARGS__)
-#define R_VERIFY(expr)                                                                                                                               \
-    {                                                                                                                                                \
-        auto check = expr;                                                                                                                           \
-        UNUSED_PARAM(check);                                                                                                                         \
+#define R_VERIFY(expr)                                                                                                                                                                                                                                   \
+    {                                                                                                                                                                                                                                                    \
+        auto check = expr;                                                                                                                                                                                                                               \
+        UNUSED_PARAM(check);                                                                                                                                                                                                                             \
     }
 
 #define R_INITIALIZE_LOGGER()

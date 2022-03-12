@@ -9,9 +9,9 @@
 #define ENABLE_GL_PARAMETER_LOGGING 1
 
 #if ENABLE_GL_FUNCTION_LOGGING
-    #define GL_LOG R_INFO
+#define GL_LOG R_INFO
 #else
-    #define GL_LOG(...) UNUSED_PARAM(__VA_ARGS__)
+#define GL_LOG(...) UNUSED_PARAM(__VA_ARGS__)
 #endif
 
 namespace rex
@@ -223,8 +223,7 @@ namespace rex
                 case GL_BACK: return "GL_BACK, Only the back left and back right color buffers are written.";
                 case GL_LEFT: return "GL_LEFT, Only the front left and back left color buffers are written.";
                 case GL_RIGHT: return "GL_RIGHT, Only the front right and back right color buffers are written.";
-                case GL_FRONT_AND_BACK:
-                    return "GL_FRONT_AND_BACK, All the front and back color buffers (front left, front right, back left, back right) are written.";
+                case GL_FRONT_AND_BACK: return "GL_FRONT_AND_BACK, All the front and back color buffers (front left, front right, back left, back right) are written.";
             }
 
             R_WARN("Unknown drawbuffer target: {0}", target);
@@ -963,8 +962,7 @@ namespace rex
             GL_CALL(glBindTexture(target, texture));
         }
         //-------------------------------------------------------------------------
-        void texture_image_2D(uint32 target, int32 level, int32 internalformat, size_t width, size_t height, int32 border, uint32 format, uint32 type,
-                              const void* data)
+        void texture_image_2D(uint32 target, int32 level, int32 internalformat, size_t width, size_t height, int32 border, uint32 format, uint32 type, const void* data)
         {
             R_PROFILE_FUNCTION();
 
@@ -981,12 +979,10 @@ namespace rex
             GL_LOG("\tdata: {0}", fmt::ptr(data));
 #endif
 
-            GL_CALL(
-                glTexImage2D(target, level, internalformat, gsl::narrow<GLsizei>(width), gsl::narrow<GLsizei>(height), border, format, type, data));
+            GL_CALL(glTexImage2D(target, level, internalformat, gsl::narrow<GLsizei>(width), gsl::narrow<GLsizei>(height), border, format, type, data));
         }
         //-------------------------------------------------------------------------
-        void texture_image_3D(uint32 target, int32 level, int32 internalformat, size_t width, size_t height, size_t depth, int32 border,
-                              uint32 format, uint32 type, const void* data)
+        void texture_image_3D(uint32 target, int32 level, int32 internalformat, size_t width, size_t height, size_t depth, int32 border, uint32 format, uint32 type, const void* data)
         {
             R_PROFILE_FUNCTION();
 
@@ -1004,12 +1000,10 @@ namespace rex
             GL_LOG("\tdata: {0}", fmt::ptr(data));
 #endif
 
-            GL_CALL(glTexImage3D(target, level, internalformat, gsl::narrow<GLsizei>(width), gsl::narrow<GLsizei>(height),
-                                 gsl::narrow<GLsizei>(depth), border, format, type, data));
+            GL_CALL(glTexImage3D(target, level, internalformat, gsl::narrow<GLsizei>(width), gsl::narrow<GLsizei>(height), gsl::narrow<GLsizei>(depth), border, format, type, data));
         }
         //-------------------------------------------------------------------------
-        void texture_sub_image_2D(uint32 target, int32 level, int32 xoffset, int32 yoffset, size_t width, size_t height, uint32 format, uint32 type,
-                                  const void* data)
+        void texture_sub_image_2D(uint32 target, int32 level, int32 xoffset, int32 yoffset, size_t width, size_t height, uint32 format, uint32 type, const void* data)
         {
             R_PROFILE_FUNCTION();
 
@@ -1029,8 +1023,7 @@ namespace rex
             GL_CALL(glTexSubImage2D(target, level, xoffset, yoffset, gsl::narrow<GLsizei>(width), gsl::narrow<GLsizei>(height), format, type, data));
         }
         //-------------------------------------------------------------------------
-        void texture_sub_image_3D(uint32 target, int32 level, int32 xoffset, int32 yoffset, int32 zoffset, size_t width, size_t height, size_t depth,
-                                  uint32 format, uint32 type, const void* data)
+        void texture_sub_image_3D(uint32 target, int32 level, int32 xoffset, int32 yoffset, int32 zoffset, size_t width, size_t height, size_t depth, uint32 format, uint32 type, const void* data)
         {
             R_PROFILE_FUNCTION();
 
@@ -1049,8 +1042,7 @@ namespace rex
             GL_LOG("\tdata: {0}", fmt::ptr(data));
 #endif
 
-            GL_CALL(glTexSubImage3D(target, level, xoffset, yoffset, zoffset, gsl::narrow<GLsizei>(width), gsl::narrow<GLsizei>(height),
-                                    gsl::narrow<GLsizei>(depth), format, type, data));
+            GL_CALL(glTexSubImage3D(target, level, xoffset, yoffset, zoffset, gsl::narrow<GLsizei>(width), gsl::narrow<GLsizei>(height), gsl::narrow<GLsizei>(depth), format, type, data));
         }
         //-------------------------------------------------------------------------
         void set_texture_integer_parameter(uint32 target, uint32 pname, int32 param)

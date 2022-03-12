@@ -4,32 +4,32 @@
 
 namespace rex
 {
-        //-------------------------------------------------------------------------
-        YesNoEnum::YesNoEnum(Type value)
-            : m_value(value)
+    //-------------------------------------------------------------------------
+    YesNoEnum::YesNoEnum(Type value)
+        : m_value(value)
+    {
+    }
+
+    //-------------------------------------------------------------------------
+    YesNoEnum::operator Type() const
+    {
+        return m_value;
+    }
+
+    //-------------------------------------------------------------------------
+    YesNoEnum::operator bool() const
+    {
+        return m_value == Type::YES;
+    }
+
+    //-------------------------------------------------------------------------
+    std::string YesNoEnum::to_string() const
+    {
+        if (m_value == Type::YES)
         {
+            return "Yes";
         }
 
-        //-------------------------------------------------------------------------
-        YesNoEnum::operator Type() const
-        {
-            return m_value;
-        }
-
-        //-------------------------------------------------------------------------
-        YesNoEnum::operator bool() const
-        {
-            return m_value == Type::YES;
-        }
-
-        //-------------------------------------------------------------------------
-        std::string YesNoEnum::to_string() const
-        {
-            if (m_value == Type::YES)
-            {
-                return "Yes";
-            }
-
-            return "No";
-        }
+        return "No";
+    }
 }

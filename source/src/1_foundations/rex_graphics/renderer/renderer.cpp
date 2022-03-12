@@ -139,8 +139,7 @@ namespace rex
     }
 
     //-------------------------------------------------------------------------
-    void Renderer::render_quad(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Material> material,
-                               const rex::matrix4& transform)
+    void Renderer::render_quad(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Material> material, const rex::matrix4& transform)
     {
         g_renderer_api->render_quad(pipeline, uniformBufferSet, material, transform);
     }
@@ -150,8 +149,7 @@ namespace rex
         g_renderer_api->render_model(pipeline, uniformBufferSet, model, transform);
     }
     //-------------------------------------------------------------------------
-    void Renderer::render_model_with_material(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Model> model,
-                                              const rex::matrix4& transform, ref_ptr<Material> material)
+    void Renderer::render_model_with_material(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Model> model, const rex::matrix4& transform, ref_ptr<Material> material)
     {
         g_renderer_api->render_model_with_material(pipeline, uniformBufferSet, model, transform, material);
     }

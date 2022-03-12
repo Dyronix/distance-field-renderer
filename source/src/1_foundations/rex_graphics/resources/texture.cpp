@@ -212,7 +212,6 @@ namespace rex
 
             default: R_ASSERT_X(false, "Unsupported image format"); return "";
         }
-
     }
 
     //-------------------------------------------------------------------------

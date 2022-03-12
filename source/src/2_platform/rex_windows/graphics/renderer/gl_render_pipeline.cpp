@@ -20,19 +20,14 @@ namespace rex
                 {
                     case DataType::IVEC2:
                     case DataType::IVEC3:
-                    case DataType::IVEC4:
-                        return DataType::INT32;
+                    case DataType::IVEC4: return DataType::INT32;
                     case DataType::UIVEC2:
                     case DataType::UIVEC3:
-                    case DataType::UIVEC4:
-                        return DataType::UNSIGNED_INT32;
+                    case DataType::UIVEC4: return DataType::UNSIGNED_INT32;
                     case DataType::VEC2:
                     case DataType::VEC3:
-                    case DataType::VEC4:
-                        return DataType::FLOAT32;
-                default:
-                    R_ASSERT_X(false, "Unknown element type");
-                    return DataType::NONE;
+                    case DataType::VEC4: return DataType::FLOAT32;
+                    default: R_ASSERT_X(false, "Unknown element type"); return DataType::NONE;
                 }
             }
 
@@ -46,28 +41,28 @@ namespace rex
             void define_attribute_data_int(uint32 index, const BufferElement& element, uint32 stride)
             {
                 opengl::vertex_attrib_i_pointer(
-                    index,                                                      // Specifies the index of the generic vertex attribute to be modified.
-                    element.component_count,                                    // Specifies the number of components per generic vertex attribute.
-                    to_open_gl_data_type(get_element_buffer_type(element.type)),    // Specifies the data type of each component in the array.
-                    stride,                                                     // Specifies the byte offset between consecutive generic vertex attributes. 
-#pragma warning( push )
-#pragma warning( disable : 4312 )
-                    (const void*)element.offset);                               // Specifies a offset of the first component of the first generic vertex attribute in the array in the data store of the buffer currently bound to the GL_ARRAY_BUFFER target.
-#pragma warning( pop )
+                    index,                                                        // Specifies the index of the generic vertex attribute to be modified.
+                    element.component_count,                                      // Specifies the number of components per generic vertex attribute.
+                    to_open_gl_data_type(get_element_buffer_type(element.type)),  // Specifies the data type of each component in the array.
+                    stride,                                                       // Specifies the byte offset between consecutive generic vertex attributes.
+#pragma warning(push)
+#pragma warning(disable : 4312)
+                    (const void*)element.offset);  // Specifies a offset of the first component of the first generic vertex attribute in the array in the data store of the buffer currently bound to the GL_ARRAY_BUFFER target.
+#pragma warning(pop)
             }
             //-------------------------------------------------------------------------
             void define_attribute_data_float(uint32 index, const BufferElement& element, uint32 stride)
             {
                 opengl::vertex_attrib_pointer(
-                    index,                                                      // Specifies the index of the generic vertex attribute to be modified.
-                    element.component_count,                                    // Specifies the number of components per generic vertex attribute.
-                    to_open_gl_data_type(get_element_buffer_type(element.type)),    // Specifies the data type of each component in the array.
-                    element.normalized ? GL_TRUE : GL_FALSE,                    // Specifies whether fixed-point data values should be normalized (GL_TRUE) or converted directly as fixed-point values (GL_FALSE) when they are accessed.
-                    stride,                                                     // Specifies the byte offset between consecutive generic vertex attributes. 
-#pragma warning( push )
-#pragma warning( disable : 4312 )
-                    (const void*)element.offset);                               // Specifies a offset of the first component of the first generic vertex attribute in the array in the data store of the buffer currently bound to the GL_ARRAY_BUFFER target.
-#pragma warning( pop )
+                    index,                                                        // Specifies the index of the generic vertex attribute to be modified.
+                    element.component_count,                                      // Specifies the number of components per generic vertex attribute.
+                    to_open_gl_data_type(get_element_buffer_type(element.type)),  // Specifies the data type of each component in the array.
+                    element.normalized ? GL_TRUE : GL_FALSE,                      // Specifies whether fixed-point data values should be normalized (GL_TRUE) or converted directly as fixed-point values (GL_FALSE) when they are accessed.
+                    stride,                                                       // Specifies the byte offset between consecutive generic vertex attributes.
+#pragma warning(push)
+#pragma warning(disable : 4312)
+                    (const void*)element.offset);  // Specifies a offset of the first component of the first generic vertex attribute in the array in the data store of the buffer currently bound to the GL_ARRAY_BUFFER target.
+#pragma warning(pop)
             }
 
             //-------------------------------------------------------------------------
@@ -75,38 +70,32 @@ namespace rex
             {
                 switch (element.type)
                 {
-                case DataType::INT32:
-                case DataType::IVEC2:
-                case DataType::IVEC3:
-                case DataType::IVEC4:
-                case DataType::UNSIGNED_INT32:
-                case DataType::UIVEC2:
-                case DataType::UIVEC3:
-                case DataType::UIVEC4:
-                case DataType::BOOL:
-                    define_attribute_data_int(index, element, stride);
-                    break;
+                    case DataType::INT32:
+                    case DataType::IVEC2:
+                    case DataType::IVEC3:
+                    case DataType::IVEC4:
+                    case DataType::UNSIGNED_INT32:
+                    case DataType::UIVEC2:
+                    case DataType::UIVEC3:
+                    case DataType::UIVEC4:
+                    case DataType::BOOL: define_attribute_data_int(index, element, stride); break;
 
-                case DataType::FLOAT32:
-                case DataType::VEC2:
-                case DataType::VEC3:
-                case DataType::VEC4:
-                case DataType::MAT3:
-                case DataType::MAT4:
-                    define_attribute_data_float(index, element, stride);
-                    break;
+                    case DataType::FLOAT32:
+                    case DataType::VEC2:
+                    case DataType::VEC3:
+                    case DataType::VEC4:
+                    case DataType::MAT3:
+                    case DataType::MAT4: define_attribute_data_float(index, element, stride); break;
 
-                default:
-                    R_ASSERT_X(false, "Unsupported data type");
-                    break;
+                    default: R_ASSERT_X(false, "Unsupported data type"); break;
                 }
             }
         }
 
         //-------------------------------------------------------------------------
         Pipeline::Pipeline(const PipelineDescription& pipelineDesc)
-            :m_description(pipelineDesc)
-            ,m_vertex_array_id(0)
+            : m_description(pipelineDesc)
+            , m_vertex_array_id(0)
         {
             RENDERER_INFO("Submitting - Creating Pipeline: {0}", pipelineDesc.name.to_string());
 
@@ -132,12 +121,12 @@ namespace rex
             {
                 ref_ptr<Pipeline> instance(this);
                 Renderer::submit([instance]() mutable
-                    {
-                        RENDERER_INFO("Executing - Destroying Pipeline: {0}", instance->m_description.name.to_string());
+                                 {
+                                     RENDERER_INFO("Executing - Destroying Pipeline: {0}", instance->m_description.name.to_string());
 
-                        opengl::delete_vertex_arrays(1, &instance->m_vertex_array_id);
-                        instance->m_vertex_array_id = 0;
-                    });
+                                     opengl::delete_vertex_arrays(1, &instance->m_vertex_array_id);
+                                     instance->m_vertex_array_id = 0;
+                                 });
             }
 
             m_description.renderpass.reset();
@@ -208,16 +197,16 @@ namespace rex
 
             ref_ptr<Pipeline> instance(this);
             Renderer::submit([instance]() mutable
-                {
-                    RENDERER_INFO("Executing - Creating Pipeline: {0}", instance->m_description.name.to_string());
+                             {
+                                 RENDERER_INFO("Executing - Creating Pipeline: {0}", instance->m_description.name.to_string());
 
-                    if (instance->m_vertex_array_id)
-                    {
-                        instance->release();
-                    }
+                                 if (instance->m_vertex_array_id)
+                                 {
+                                     instance->release();
+                                 }
 
-                    opengl::generate_vertex_arrays(1, &instance->m_vertex_array_id);
-                });
+                                 opengl::generate_vertex_arrays(1, &instance->m_vertex_array_id);
+                             });
         }
 
         //-------------------------------------------------------------------------
@@ -237,21 +226,21 @@ namespace rex
 
             ref_ptr<const Pipeline> instance(this);
             Renderer::submit([instance]()
-                {
-                    RENDERER_INFO("Executing - Bind Pipeline: {0}", instance->m_description.name.to_string());
+                             {
+                                 RENDERER_INFO("Executing - Bind Pipeline: {0}", instance->m_description.name.to_string());
 
-                    opengl::bind_vertex_array(instance->m_vertex_array_id);
+                                 opengl::bind_vertex_array(instance->m_vertex_array_id);
 
-                    uint32_t attrib_index = 0;
+                                 uint32_t attrib_index = 0;
 
-                    for (const auto& element : instance->m_description.layout.get_elements())
-                    {
-                        pipeline::enable_vertex_attribute_array(attrib_index);
-                        pipeline::define_vertex_attribute_data(attrib_index, element, instance->m_description.layout.get_stride());
+                                 for (const auto& element : instance->m_description.layout.get_elements())
+                                 {
+                                     pipeline::enable_vertex_attribute_array(attrib_index);
+                                     pipeline::define_vertex_attribute_data(attrib_index, element, instance->m_description.layout.get_stride());
 
-                        attrib_index++;
-                    }
-                });
+                                     attrib_index++;
+                                 }
+                             });
         }
 
         //-------------------------------------------------------------------------
@@ -261,11 +250,11 @@ namespace rex
 
             ref_ptr<const Pipeline> instance(this);
             Renderer::submit([instance]()
-                {
-                    RENDERER_INFO("Executing - UnBind Pipeline: {0}", instance->m_description.name.to_string());
+                             {
+                                 RENDERER_INFO("Executing - UnBind Pipeline: {0}", instance->m_description.name.to_string());
 
-                    opengl::bind_vertex_array(0);
-                });
+                                 opengl::bind_vertex_array(0);
+                             });
         }
     }
 }

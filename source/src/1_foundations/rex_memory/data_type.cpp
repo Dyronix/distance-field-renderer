@@ -56,9 +56,7 @@ namespace rex
             case DataType::SAMPLERCUBE: return sizeof(int32);
 
             case DataType::BOOL: return sizeof(bool);
-            case DataType::STRING:
-                std::cout << ("Size of string cannot be defined use: std::string::size() * sizeof(std::string::operator[](int))");
-                return gsl::narrow<size_t>(-1);
+            case DataType::STRING: std::cout << ("Size of string cannot be defined use: std::string::size() * sizeof(std::string::operator[](int))"); return gsl::narrow<size_t>(-1);
         }
 
         assert(false && "Unknown DataType!");
@@ -125,8 +123,8 @@ namespace rex
     //-------------------------------------------------------------------------
     bool is_vector_type(DataType type)
     {
-        return type == DataType::IVEC2 || type == DataType::IVEC3 || type == DataType::IVEC4 || type == DataType::UIVEC2 ||
-               type == DataType::UIVEC3 || type == DataType::UIVEC4 || type == DataType::VEC2 || type == DataType::VEC3 || type == DataType::VEC4;
+        return type == DataType::IVEC2 || type == DataType::IVEC3 || type == DataType::IVEC4 || type == DataType::UIVEC2 || type == DataType::UIVEC3 || type == DataType::UIVEC4 || type == DataType::VEC2 || type == DataType::VEC3 ||
+               type == DataType::VEC4;
     }
 
     //-------------------------------------------------------------------------
@@ -138,9 +136,8 @@ namespace rex
     //-------------------------------------------------------------------------
     bool is_primitive_type(DataType type)
     {
-        return type == DataType::BOOL || type == DataType::FLOAT32 || type == DataType::INT8 || type == DataType::INT16 || type == DataType::INT32 ||
-               type == DataType::INT64 || type == DataType::UNSIGNED_INT8 || type == DataType::UNSIGNED_INT16 || type == DataType::UNSIGNED_INT32 ||
-               type == DataType::UNSIGNED_INT64;
+        return type == DataType::BOOL || type == DataType::FLOAT32 || type == DataType::INT8 || type == DataType::INT16 || type == DataType::INT32 || type == DataType::INT64 || type == DataType::UNSIGNED_INT8 || type == DataType::UNSIGNED_INT16 ||
+               type == DataType::UNSIGNED_INT32 || type == DataType::UNSIGNED_INT64;
     }
 
     namespace conversions
@@ -216,9 +213,7 @@ namespace rex
                 case DataType::SAMPLER3D: return sizeof(uint32);
                 case DataType::SAMPLERCUBE: return sizeof(uint32);
 
-                case DataType::STRING:
-                    std::cout << ("Size of string cannot be defined use: std::string::size() * sizeof(std::string::operator[](int))");
-                    return gsl::narrow<size_t>(-1);
+                case DataType::STRING: std::cout << ("Size of string cannot be defined use: std::string::size() * sizeof(std::string::operator[](int))"); return gsl::narrow<size_t>(-1);
             }
 
             R_ASSERT_X(false, "Invalid Data Type");

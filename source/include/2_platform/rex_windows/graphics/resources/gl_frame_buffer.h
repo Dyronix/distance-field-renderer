@@ -37,7 +37,8 @@ namespace rex
             void unbind(IsRenderThread isRenderThread = IsRenderThread::NO) const override;
 
         private:
-            void invalidate(ColorAttachmentDescriptions&& colorDescriptions, DepthAttachmentDescription&& depthDescription, rex::FrameBufferDepthAttachmentOption depthAttachmentOption = FrameBufferDepthAttachmentOption::NONE, IsRenderThread isRenderThread = IsRenderThread::NO);
+            void invalidate(ColorAttachmentDescriptions&& colorDescriptions, DepthAttachmentDescription&& depthDescription, rex::FrameBufferDepthAttachmentOption depthAttachmentOption = FrameBufferDepthAttachmentOption::NONE,
+                            IsRenderThread isRenderThread = IsRenderThread::NO);
 
             StringID m_name;
 

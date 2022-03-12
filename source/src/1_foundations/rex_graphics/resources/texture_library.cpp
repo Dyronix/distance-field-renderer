@@ -22,7 +22,7 @@ namespace rex
             return true;
         }
         //-------------------------------------------------------------------------
-        bool add(const std::vector< ref_ptr<rex::Texture>>& programs)
+        bool add(const std::vector<ref_ptr<rex::Texture>>& programs)
         {
             bool result = true;
             for (auto& p : programs)
@@ -38,9 +38,7 @@ namespace rex
         {
             auto it = g_textures.find(programName);
 
-            return it != std::cend(g_textures)
-                ? it->second
-                : nullptr;
+            return it != std::cend(g_textures) ? it->second : nullptr;
         }
 
         //-------------------------------------------------------------------------

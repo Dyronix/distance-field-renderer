@@ -8,7 +8,7 @@ namespace rex
     {
         Texture3DDescription();
         Texture3DDescription(const Texture3DDescription& other) = delete;
-        Texture3DDescription(Texture3DDescription&& other) noexcept ;
+        Texture3DDescription(Texture3DDescription&& other) noexcept;
 
         Texture3DDescription& operator=(Texture3DDescription& other) = delete;
         Texture3DDescription& operator=(Texture3DDescription&& other) noexcept;

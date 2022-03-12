@@ -22,13 +22,14 @@ namespace rex
 
             ref_ptr<IndexBuffer> instance(this);
             Renderer::submit([instance, usage]() mutable
-                {
-                    RENDERER_INFO("Executing - Creating Index Buffer");
+                             {
+                                 RENDERER_INFO("Executing - Creating Index Buffer");
 
-                    opengl::generate_buffers(1, &instance->m_buffer_id);
-                    opengl::bind_buffer(GL_ELEMENT_ARRAY_BUFFER, instance->m_buffer_id);
-                    opengl::buffer_data(GL_ELEMENT_ARRAY_BUFFER, gsl::narrow<uint32>(instance->m_local_storate.get_size()), instance->m_local_storate.get_data_as<void>(), usage == BufferUsage::STATIC_DRAW ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
-                });
+                                 opengl::generate_buffers(1, &instance->m_buffer_id);
+                                 opengl::bind_buffer(GL_ELEMENT_ARRAY_BUFFER, instance->m_buffer_id);
+                                 opengl::buffer_data(GL_ELEMENT_ARRAY_BUFFER, gsl::narrow<uint32>(instance->m_local_storate.get_size()), instance->m_local_storate.get_data_as<void>(),
+                                                     usage == BufferUsage::STATIC_DRAW ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
+                             });
         }
 
         //-------------------------------------------------------------------------
@@ -38,10 +39,10 @@ namespace rex
             {
                 ref_ptr<IndexBuffer> instance(this);
                 Renderer::submit([instance]() mutable
-                    {
-                        opengl::delete_buffers(1, &instance->m_buffer_id);
-                        instance->m_buffer_id = 0;
-                    });
+                                 {
+                                     opengl::delete_buffers(1, &instance->m_buffer_id);
+                                     instance->m_buffer_id = 0;
+                                 });
             }
         }
 
@@ -52,11 +53,11 @@ namespace rex
 
             ref_ptr<const IndexBuffer> instance(this);
             Renderer::submit([instance]()
-                {
-                    RENDERER_INFO("Executing - Bind Index Buffer");
+                             {
+                                 RENDERER_INFO("Executing - Bind Index Buffer");
 
-                    opengl::bind_buffer(GL_ELEMENT_ARRAY_BUFFER, instance->m_buffer_id);
-                });
+                                 opengl::bind_buffer(GL_ELEMENT_ARRAY_BUFFER, instance->m_buffer_id);
+                             });
         }
 
         //-------------------------------------------------------------------------
@@ -66,11 +67,11 @@ namespace rex
 
             ref_ptr<const IndexBuffer> instance(this);
             Renderer::submit([instance]()
-                {
-                    RENDERER_INFO("Executing - Unbind Index Buffer");
+                             {
+                                 RENDERER_INFO("Executing - Unbind Index Buffer");
 
-                    opengl::bind_buffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-                });
+                                 opengl::bind_buffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+                             });
         }
 
         //-------------------------------------------------------------------------
@@ -116,6 +117,5 @@ namespace rex
         {
             return m_triangle_count;
         }
-
     }
 }

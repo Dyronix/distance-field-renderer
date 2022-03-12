@@ -22,7 +22,7 @@ namespace rex
             return true;
         }
         //-------------------------------------------------------------------------
-        bool add(const std::vector< ref_ptr<rex::ShaderProgram>>& programs)
+        bool add(const std::vector<ref_ptr<rex::ShaderProgram>>& programs)
         {
             bool result = true;
             for (auto& p : programs)
@@ -38,20 +38,17 @@ namespace rex
         {
             auto it = g_programs.find(programName);
 
-            return it != std::cend(g_programs)
-                ? it->second
-                : nullptr;
+            return it != std::cend(g_programs) ? it->second : nullptr;
         }
 
         //-------------------------------------------------------------------------
         std::vector<rex::ref_ptr<rex::ShaderProgram>> getAll()
         {
             std::vector<ref_ptr<ShaderProgram>> programs;
-            std::transform(std::cbegin(g_programs), std::cend(g_programs), std::back_inserter(programs),
-                [](const auto& pair)
-                {
-                    return pair.second;
-                });
+            std::transform(std::cbegin(g_programs), std::cend(g_programs), std::back_inserter(programs), [](const auto& pair)
+                           {
+                               return pair.second;
+                           });
 
             return programs;
         }

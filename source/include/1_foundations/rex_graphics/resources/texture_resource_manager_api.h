@@ -3,7 +3,7 @@
 namespace rex
 {
     class Texture;
-    
+
     class TextureResourceManagerAPI
     {
     public:

@@ -21,21 +21,21 @@ namespace rex
 
         //-------------------------------------------------------------------------
         TextureCube::TextureCube(const StringID& name /*= ESID::SID_None*/, const Texture::Usage& textureUsage /*= Texture::Usage::UNSPECIFIED*/)
-            :m_name(ESID::SID_None)
-            ,m_width(0)
-            ,m_height(0)
-            ,m_id(0)
-            ,m_sampler_id(0)
-            ,m_usage(Texture::Usage::UNSPECIFIED)
-            ,m_wrap_r(Texture::Wrap::Type::CLAMP)
-            ,m_wrap_s(Texture::Wrap::Type::CLAMP)
-            ,m_wrap_t(Texture::Wrap::Type::CLAMP)
-            ,m_min_filter(Texture::Filter::Type::LINEAR)
-            ,m_mag_filter(Texture::Filter::Type::LINEAR)
-            ,m_format(Texture::Format::UNKNOWN)
-            ,m_texel_format(Texel::Format::UNKNOWN)
-            ,m_pixel_format(m_texel_format, m_format)
-            ,m_local_storage()
+            : m_name(ESID::SID_None)
+            , m_width(0)
+            , m_height(0)
+            , m_id(0)
+            , m_sampler_id(0)
+            , m_usage(Texture::Usage::UNSPECIFIED)
+            , m_wrap_r(Texture::Wrap::Type::CLAMP)
+            , m_wrap_s(Texture::Wrap::Type::CLAMP)
+            , m_wrap_t(Texture::Wrap::Type::CLAMP)
+            , m_min_filter(Texture::Filter::Type::LINEAR)
+            , m_mag_filter(Texture::Filter::Type::LINEAR)
+            , m_format(Texture::Format::UNKNOWN)
+            , m_texel_format(Texel::Format::UNKNOWN)
+            , m_pixel_format(m_texel_format, m_format)
+            , m_local_storage()
         {
             RENDERER_INFO("Submitting - Create Texture Cube: {0}", name.to_string());
 
@@ -46,38 +46,38 @@ namespace rex
 
             ref_ptr<TextureCube> instance(this);
             Renderer::submit([instance]() mutable
-                {
-                    RENDERER_INFO("Executing - Create Texture Cube: {0}", instance->m_name.to_string());
+                             {
+                                 RENDERER_INFO("Executing - Create Texture Cube: {0}", instance->m_name.to_string());
 
-                    opengl::generate_textures(1, &instance->m_id);
+                                 opengl::generate_textures(1, &instance->m_id);
 
-                    opengl::bind_texture(GL_TEXTURE_CUBE_MAP, instance->m_id);
+                                 opengl::bind_texture(GL_TEXTURE_CUBE_MAP, instance->m_id);
 
-                    instance->set_filter({ Texture::Filter::Action::MINIFICATION, Texture::Filter::Type::LINEAR });
-                    instance->set_filter({ Texture::Filter::Action::MAGNIFICATION, Texture::Filter::Type::LINEAR });
-                    instance->set_wrap({ Texture::Wrap::Coordinate::WRAP_S, Texture::Wrap::Type::REPEAT });
-                    instance->set_wrap({ Texture::Wrap::Coordinate::WRAP_T, Texture::Wrap::Type::REPEAT });
+                                 instance->set_filter({Texture::Filter::Action::MINIFICATION, Texture::Filter::Type::LINEAR});
+                                 instance->set_filter({Texture::Filter::Action::MAGNIFICATION, Texture::Filter::Type::LINEAR});
+                                 instance->set_wrap({Texture::Wrap::Coordinate::WRAP_S, Texture::Wrap::Type::REPEAT});
+                                 instance->set_wrap({Texture::Wrap::Coordinate::WRAP_T, Texture::Wrap::Type::REPEAT});
 
-                    opengl::bind_texture(GL_TEXTURE_CUBE_MAP, 0);
-                });
+                                 opengl::bind_texture(GL_TEXTURE_CUBE_MAP, 0);
+                             });
         }
         //-------------------------------------------------------------------------
         TextureCube::TextureCube(uint32 width, uint32 height, const StringID& name /*= ESID::SID_None*/, const Texture::Usage& textureUsage /*= Texture::Usage::UNSPECIFIED*/)
-            :m_name(ESID::SID_None)
-            ,m_width(0)
-            ,m_height(0)
-            ,m_id(0)
-            ,m_sampler_id(0)
-            ,m_usage(Texture::Usage::UNSPECIFIED)
-            ,m_wrap_r(Texture::Wrap::Type::CLAMP)
-            ,m_wrap_s(Texture::Wrap::Type::CLAMP)
-            ,m_wrap_t(Texture::Wrap::Type::CLAMP)
-            ,m_min_filter(Texture::Filter::Type::LINEAR)
-            ,m_mag_filter(Texture::Filter::Type::LINEAR)
-            ,m_format(Texture::Format::UNKNOWN)
-            ,m_texel_format(Texel::Format::UNKNOWN)
-            ,m_pixel_format(m_texel_format, m_format)
-            ,m_local_storage()
+            : m_name(ESID::SID_None)
+            , m_width(0)
+            , m_height(0)
+            , m_id(0)
+            , m_sampler_id(0)
+            , m_usage(Texture::Usage::UNSPECIFIED)
+            , m_wrap_r(Texture::Wrap::Type::CLAMP)
+            , m_wrap_s(Texture::Wrap::Type::CLAMP)
+            , m_wrap_t(Texture::Wrap::Type::CLAMP)
+            , m_min_filter(Texture::Filter::Type::LINEAR)
+            , m_mag_filter(Texture::Filter::Type::LINEAR)
+            , m_format(Texture::Format::UNKNOWN)
+            , m_texel_format(Texel::Format::UNKNOWN)
+            , m_pixel_format(m_texel_format, m_format)
+            , m_local_storage()
         {
             if (width > GL_MAX_TEXTURE_SIZE || height > GL_MAX_TEXTURE_SIZE)
             {
@@ -103,21 +103,21 @@ namespace rex
         }
         //-------------------------------------------------------------------------
         TextureCube::TextureCube(Texture::Data&& textureData, uint32 width, uint32 height, const StringID& name /*= ESID::SID_None*/, const Texture::Usage& textureUsage /*= Texture::Usage::UNSPECIFIED*/)
-            :m_name(ESID::SID_None)
-            ,m_width(0)
-            ,m_height(0)
-            ,m_id(0)
-            ,m_sampler_id(0)
-            ,m_usage(Texture::Usage::UNSPECIFIED)
-            ,m_wrap_r(Texture::Wrap::Type::CLAMP)
-            ,m_wrap_s(Texture::Wrap::Type::CLAMP)
-            ,m_wrap_t(Texture::Wrap::Type::CLAMP)
-            ,m_min_filter(Texture::Filter::Type::LINEAR)
-            ,m_mag_filter(Texture::Filter::Type::LINEAR)
-            ,m_format(Texture::Format::UNKNOWN)
-            ,m_texel_format(Texel::Format::UNKNOWN)
-            ,m_pixel_format(m_texel_format, m_format)
-            ,m_local_storage()
+            : m_name(ESID::SID_None)
+            , m_width(0)
+            , m_height(0)
+            , m_id(0)
+            , m_sampler_id(0)
+            , m_usage(Texture::Usage::UNSPECIFIED)
+            , m_wrap_r(Texture::Wrap::Type::CLAMP)
+            , m_wrap_s(Texture::Wrap::Type::CLAMP)
+            , m_wrap_t(Texture::Wrap::Type::CLAMP)
+            , m_min_filter(Texture::Filter::Type::LINEAR)
+            , m_mag_filter(Texture::Filter::Type::LINEAR)
+            , m_format(Texture::Format::UNKNOWN)
+            , m_texel_format(Texel::Format::UNKNOWN)
+            , m_pixel_format(m_texel_format, m_format)
+            , m_local_storage()
         {
             if (width > GL_MAX_TEXTURE_SIZE || height > GL_MAX_TEXTURE_SIZE)
             {
@@ -141,21 +141,21 @@ namespace rex
         }
         //-------------------------------------------------------------------------
         TextureCube::TextureCube(TextureCubeDescription&& desc)
-            :m_name(ESID::SID_None)
-            ,m_width(0)
-            ,m_height(0)
-            ,m_id(0)
-            ,m_sampler_id(0)
-            ,m_usage(Texture::Usage::UNSPECIFIED)
-            ,m_wrap_r(Texture::Wrap::Type::CLAMP)
-            ,m_wrap_s(Texture::Wrap::Type::CLAMP)
-            ,m_wrap_t(Texture::Wrap::Type::CLAMP)
-            ,m_min_filter(Texture::Filter::Type::LINEAR)
-            ,m_mag_filter(Texture::Filter::Type::LINEAR)
-            ,m_format(Texture::Format::UNKNOWN)
-            ,m_texel_format(Texel::Format::UNKNOWN)
-            ,m_pixel_format(m_texel_format, m_format)
-            ,m_local_storage()
+            : m_name(ESID::SID_None)
+            , m_width(0)
+            , m_height(0)
+            , m_id(0)
+            , m_sampler_id(0)
+            , m_usage(Texture::Usage::UNSPECIFIED)
+            , m_wrap_r(Texture::Wrap::Type::CLAMP)
+            , m_wrap_s(Texture::Wrap::Type::CLAMP)
+            , m_wrap_t(Texture::Wrap::Type::CLAMP)
+            , m_min_filter(Texture::Filter::Type::LINEAR)
+            , m_mag_filter(Texture::Filter::Type::LINEAR)
+            , m_format(Texture::Format::UNKNOWN)
+            , m_texel_format(Texel::Format::UNKNOWN)
+            , m_pixel_format(m_texel_format, m_format)
+            , m_local_storage()
         {
             if (desc.width > GL_MAX_TEXTURE_SIZE || desc.height > GL_MAX_TEXTURE_SIZE)
             {
@@ -198,76 +198,76 @@ namespace rex
             store_data_chunks(std::move(desc.data));
 
             ref_ptr<TextureCube> instance(this);
-            Renderer::submit([instance, filters = desc.filters, wraps = desc.wraps]() mutable
-                {
-                    RENDERER_INFO("Executing - Create Texture Cube: {0}", instance->m_name.to_string());
+            Renderer::submit([ instance, filters = desc.filters, wraps = desc.wraps ]() mutable
+                             {
+                                 RENDERER_INFO("Executing - Create Texture Cube: {0}", instance->m_name.to_string());
 
-                    opengl::generate_textures(1, &instance->m_id);
-                    opengl::bind_texture(GL_TEXTURE_CUBE_MAP, instance->m_id);
+                                 opengl::generate_textures(1, &instance->m_id);
+                                 opengl::bind_texture(GL_TEXTURE_CUBE_MAP, instance->m_id);
 
-                    if (filters.size() == 0)
-                    {
-                        auto default_filters = default_texture_filter();
-                        for (auto& f : default_filters)
-                        {
-                            instance->assign_filter(f);
-                        }
-                    }
-                    else
-                    {
-                        for (int8 i = 0; i < filters.size(); ++i)
-                        {
-                            instance->assign_filter(filters[i]);
-                        }
-                    }
+                                 if (filters.size() == 0)
+                                 {
+                                     auto default_filters = default_texture_filter();
+                                     for (auto& f : default_filters)
+                                     {
+                                         instance->assign_filter(f);
+                                     }
+                                 }
+                                 else
+                                 {
+                                     for (int8 i = 0; i < filters.size(); ++i)
+                                     {
+                                         instance->assign_filter(filters[i]);
+                                     }
+                                 }
 
-                    if (wraps.size() == 0)
-                    {
-                        auto default_wraps = default_texture_3D_wrapping();
-                        for (int8 i = 0; i < default_wraps.size(); ++i)
-                        {
-                            instance->assign_wrap(default_wraps[i]);
-                        }
-                    }
-                    else
-                    {
-                        for (int8 i = 0; i < wraps.size(); ++i)
-                        {
-                            instance->assign_wrap(wraps[i]);
-                        }
-                    }
+                                 if (wraps.size() == 0)
+                                 {
+                                     auto default_wraps = default_texture_3D_wrapping();
+                                     for (int8 i = 0; i < default_wraps.size(); ++i)
+                                     {
+                                         instance->assign_wrap(default_wraps[i]);
+                                     }
+                                 }
+                                 else
+                                 {
+                                     for (int8 i = 0; i < wraps.size(); ++i)
+                                     {
+                                         instance->assign_wrap(wraps[i]);
+                                     }
+                                 }
 
-                    auto pixel = Pixel(instance->m_texel_format, instance->m_format);
+                                 auto pixel = Pixel(instance->m_texel_format, instance->m_format);
 
-                    //auto target = GL_TEXTURE_CUBE_MAP;
-                    R_TODO("Target is not used, is this correct?");
-                    auto level = 0;
-                    auto internal_format = to_opengl_textureformat(instance->m_format);
-                    auto width = instance->m_width;
-                    auto height = instance->m_height;
-                    R_TODO("Depth is not used, is this correct?");
-                    //auto depth = NUM_CUBE_FACES;
-                    auto border = 0;
-                    auto format = to_opengl_texelformat(instance->m_texel_format);
-                    auto type = to_opengl_pixeltype(pixel.get_type());
+                                 // auto target = GL_TEXTURE_CUBE_MAP;
+                                 R_TODO("Target is not used, is this correct?");
+                                 auto level = 0;
+                                 auto internal_format = to_opengl_textureformat(instance->m_format);
+                                 auto width = instance->m_width;
+                                 auto height = instance->m_height;
+                                 R_TODO("Depth is not used, is this correct?");
+                                 // auto depth = NUM_CUBE_FACES;
+                                 auto border = 0;
+                                 auto format = to_opengl_texelformat(instance->m_texel_format);
+                                 auto type = to_opengl_pixeltype(pixel.get_type());
 
-                    R_ASSERT(width != 0 && height != 0);
+                                 R_ASSERT(width != 0 && height != 0);
 
-                    uint32 offset = GL_TEXTURE_CUBE_MAP_NEGATIVE_X - GL_TEXTURE_CUBE_MAP_POSITIVE_X;
-                    for (uint8 i = 0; i < NUM_CUBE_FACES; ++i)
-                    {
-                        if (instance->m_local_storage[i] && instance->m_local_storage[i].get_size() > 0_bytes)
-                        {
-                            opengl::texture_image_2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + (i * offset), level, internal_format, width, height, border, format, type, instance->m_local_storage[i].get_data_as<void>());
-                        }
-                        else
-                        {
-                            opengl::texture_image_2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + (i * offset), level, internal_format, width, height, border, format, type, nullptr);
-                        }
-                    }
+                                 uint32 offset = GL_TEXTURE_CUBE_MAP_NEGATIVE_X - GL_TEXTURE_CUBE_MAP_POSITIVE_X;
+                                 for (uint8 i = 0; i < NUM_CUBE_FACES; ++i)
+                                 {
+                                     if (instance->m_local_storage[i] && instance->m_local_storage[i].get_size() > 0_bytes)
+                                     {
+                                         opengl::texture_image_2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + (i * offset), level, internal_format, width, height, border, format, type, instance->m_local_storage[i].get_data_as<void>());
+                                     }
+                                     else
+                                     {
+                                         opengl::texture_image_2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + (i * offset), level, internal_format, width, height, border, format, type, nullptr);
+                                     }
+                                 }
 
-                    opengl::bind_texture(GL_TEXTURE_CUBE_MAP, 0);
-                });
+                                 opengl::bind_texture(GL_TEXTURE_CUBE_MAP, 0);
+                             });
         }
         //-------------------------------------------------------------------------
         void TextureCube::release()
@@ -392,46 +392,46 @@ namespace rex
 
             ref_ptr<TextureCube> instance(this);
             Renderer::submit([instance]()
-            {
-                opengl::bind_texture(GL_TEXTURE_CUBE_MAP, instance->m_id);
+                             {
+                                 opengl::bind_texture(GL_TEXTURE_CUBE_MAP, instance->m_id);
 
-                auto texelformat = to_opengl_texelformat(instance->m_texel_format);
-                auto pixeltype = to_opengl_pixeltype(instance->m_pixel_format.get_type());
+                                 auto texelformat = to_opengl_texelformat(instance->m_texel_format);
+                                 auto pixeltype = to_opengl_pixeltype(instance->m_pixel_format.get_type());
 
-                uint32 offset = GL_TEXTURE_CUBE_MAP_NEGATIVE_X - GL_TEXTURE_CUBE_MAP_POSITIVE_X;
-                for (uint8 i = 0; i < NUM_CUBE_FACES; ++i)
-                {
-                    opengl::texture_sub_image_2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + (i * offset), 0, 0, 0, instance->m_width, instance->m_height, texelformat, pixeltype, instance->m_local_storage[i].get_data_as<void>());
-                }
+                                 uint32 offset = GL_TEXTURE_CUBE_MAP_NEGATIVE_X - GL_TEXTURE_CUBE_MAP_POSITIVE_X;
+                                 for (uint8 i = 0; i < NUM_CUBE_FACES; ++i)
+                                 {
+                                     opengl::texture_sub_image_2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + (i * offset), 0, 0, 0, instance->m_width, instance->m_height, texelformat, pixeltype, instance->m_local_storage[i].get_data_as<void>());
+                                 }
 
-                opengl::bind_texture(GL_TEXTURE_CUBE_MAP, 0);
-            });
+                                 opengl::bind_texture(GL_TEXTURE_CUBE_MAP, 0);
+                             });
         }
         //-------------------------------------------------------------------------
         void TextureCube::set_wrap(const Texture::Wrap& textureWrap)
         {
             ref_ptr<TextureCube> instance(this);
             Renderer::submit([instance, textureWrap]() mutable
-                {
-                    opengl::bind_texture(GL_TEXTURE_CUBE_MAP, instance->m_id);
+                             {
+                                 opengl::bind_texture(GL_TEXTURE_CUBE_MAP, instance->m_id);
 
-                    instance->assign_wrap(textureWrap);
+                                 instance->assign_wrap(textureWrap);
 
-                    opengl::bind_texture(GL_TEXTURE_CUBE_MAP, 0);
-                });
+                                 opengl::bind_texture(GL_TEXTURE_CUBE_MAP, 0);
+                             });
         }
         //-------------------------------------------------------------------------
         void TextureCube::set_filter(const Texture::Filter& textureFilter)
         {
             ref_ptr<TextureCube> instance(this);
             Renderer::submit([instance, textureFilter]() mutable
-                {
-                    opengl::bind_texture(GL_TEXTURE_CUBE_MAP, instance->m_id);
+                             {
+                                 opengl::bind_texture(GL_TEXTURE_CUBE_MAP, instance->m_id);
 
-                    instance->assign_filter(textureFilter);
+                                 instance->assign_filter(textureFilter);
 
-                    opengl::bind_texture(GL_TEXTURE_CUBE_MAP, 0);
-                });
+                                 opengl::bind_texture(GL_TEXTURE_CUBE_MAP, 0);
+                             });
         }
         //-------------------------------------------------------------------------
         void TextureCube::set_format(const Texel& texelFormat, const Texture::Format& textureFormat)
@@ -458,9 +458,9 @@ namespace rex
             {
                 ref_ptr<const TextureCube> instance(this);
                 Renderer::submit([instance]()
-                    {
-                        opengl::bind_texture(GL_TEXTURE_CUBE_MAP, instance->m_id);
-                    });
+                                 {
+                                     opengl::bind_texture(GL_TEXTURE_CUBE_MAP, instance->m_id);
+                                 });
             }
         }
         //-------------------------------------------------------------------------
@@ -474,10 +474,9 @@ namespace rex
             {
                 ref_ptr<const TextureCube> instance(this);
                 Renderer::submit([instance]()
-                    {
-                        opengl::bind_texture(GL_TEXTURE_CUBE_MAP, 0);
-                    });
-
+                                 {
+                                     opengl::bind_texture(GL_TEXTURE_CUBE_MAP, 0);
+                                 });
             }
         }
 
@@ -488,8 +487,14 @@ namespace rex
 
             switch (filter.action)
             {
-            case Texture::Filter::Action::MINIFICATION: opengl::set_texture_integer_parameter(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, type); m_min_filter = filter.type; break;
-            case Texture::Filter::Action::MAGNIFICATION: opengl::set_texture_integer_parameter(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, type); m_mag_filter = filter.type; break;
+                case Texture::Filter::Action::MINIFICATION:
+                    opengl::set_texture_integer_parameter(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, type);
+                    m_min_filter = filter.type;
+                    break;
+                case Texture::Filter::Action::MAGNIFICATION:
+                    opengl::set_texture_integer_parameter(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, type);
+                    m_mag_filter = filter.type;
+                    break;
             }
         }
         //-------------------------------------------------------------------------
@@ -499,9 +504,18 @@ namespace rex
 
             switch (wrap.coordinate)
             {
-            case Texture::Wrap::Coordinate::WRAP_R: opengl::set_texture_integer_parameter(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, type); m_wrap_r = wrap.type; break;
-            case Texture::Wrap::Coordinate::WRAP_S: opengl::set_texture_integer_parameter(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, type); m_wrap_s = wrap.type; break;
-            case Texture::Wrap::Coordinate::WRAP_T: opengl::set_texture_integer_parameter(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, type); m_wrap_t = wrap.type; break;
+                case Texture::Wrap::Coordinate::WRAP_R:
+                    opengl::set_texture_integer_parameter(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, type);
+                    m_wrap_r = wrap.type;
+                    break;
+                case Texture::Wrap::Coordinate::WRAP_S:
+                    opengl::set_texture_integer_parameter(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, type);
+                    m_wrap_s = wrap.type;
+                    break;
+                case Texture::Wrap::Coordinate::WRAP_T:
+                    opengl::set_texture_integer_parameter(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, type);
+                    m_wrap_t = wrap.type;
+                    break;
             }
         }
 

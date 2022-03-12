@@ -9,28 +9,25 @@ namespace rex
 
     //-------------------------------------------------------------------------
     ShaderAttribute::ShaderAttribute()
-        :m_name(ESID::SID_None)
+        : m_name(ESID::SID_None)
         , m_type(ShaderAttributeType::NONE)
         , m_size(0)
         , m_offset(0)
     {
-
     }
 
     //-------------------------------------------------------------------------
     ShaderAttribute::ShaderAttribute(const StringID& name, ShaderAttributeType type, uint32 size, uint32 offset)
-        :m_name(name)
+        : m_name(name)
         , m_type(type)
         , m_size(size)
         , m_offset(offset)
     {
-
     }
 
     //-------------------------------------------------------------------------
     ShaderAttribute::~ShaderAttribute()
     {
-
     }
 
     //-------------------------------------------------------------------------

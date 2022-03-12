@@ -20,7 +20,7 @@ namespace rex
     template <class T, class Deleter = void (*)(T*)>
     using internal_ref_ptr = std::shared_ptr<T>;
 
-    // Create a new instance of an internal_scope_ptr type. 
+    // Create a new instance of an internal_scope_ptr type.
     // The factory method will forward all its arguments on to the target object constructor.
     template <class T, class... Args>
     inline internal_scope_ptr<T> make_internal_scope_ptr(Args&&... args)
@@ -28,7 +28,7 @@ namespace rex
         return internal_scope_ptr<T>(new T(std::forward<Args>(args)...), &internal_ptr_deleter::deleter<T>);
     }
 
-    // Create a new instance of an internal_ref_ptr type. 
+    // Create a new instance of an internal_ref_ptr type.
     // The factory method will forward all its arguments on to the target object constructor.
     template <class T, class... Args>
     inline internal_ref_ptr<T> make_internal_ref_ptr(Args&&... args)

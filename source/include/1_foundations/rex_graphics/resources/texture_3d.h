@@ -5,7 +5,7 @@
 namespace rex
 {
     struct Texture3DDescription;
-    
+
     class Texture3D : public Texture
     {
     public:

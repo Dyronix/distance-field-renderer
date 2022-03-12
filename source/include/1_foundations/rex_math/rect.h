@@ -7,18 +7,20 @@ namespace rex
     {
         //-------------------------------------------------------------------------
         BaseRect()
-            :x(T())
-            ,y(T())
-            ,width(T())
-            ,height(T())
-        {}
+            : x(T())
+            , y(T())
+            , width(T())
+            , height(T())
+        {
+        }
         //-------------------------------------------------------------------------
         BaseRect(T inX, T inY, T inWidth, T inHeight)
-            :x(inX)
-            ,y(inY)
-            ,width(inWidth)
-            ,height(inHeight)
-        {}
+            : x(inX)
+            , y(inY)
+            , width(inWidth)
+            , height(inHeight)
+        {
+        }
 
         T x;
         T y;

@@ -10,7 +10,7 @@ namespace rex
     {
         //-------------------------------------------------------------------------
         RenderPass::RenderPass(const RenderPassDescription& description)
-            :m_renderpass_description(description)
+            : m_renderpass_description(description)
         {
             RENDERER_INFO("Creating Render Pass: {0}", description.name.to_string());
         }

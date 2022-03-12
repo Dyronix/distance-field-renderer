@@ -8,7 +8,7 @@ namespace rex
     {
     public:
         static ShaderAttribute EMPTY;
-        
+
         ShaderAttribute();
         ShaderAttribute(const StringID& name, ShaderAttributeType type, uint32 size, uint32 offset);
         ~ShaderAttribute();

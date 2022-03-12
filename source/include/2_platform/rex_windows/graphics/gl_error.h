@@ -14,12 +14,12 @@ namespace rex
 }
 
 #ifdef REX_DEBUG
-#define GL_CALL(x)                                                                                                                                   \
-    rex::opengl::gl_check_error();                                                                                                            \
-    x;                                                                                                                                               \
-    if (!rex::opengl::gl_log_call(#x, __FILE__, __LINE__))                                                                                    \
-    {                                                                                                                                                \
-        DEBUG_BREAK();                                                                                                                               \
+#define GL_CALL(x)                                                                                                                                                                                                                                       \
+    rex::opengl::gl_check_error();                                                                                                                                                                                                                       \
+    x;                                                                                                                                                                                                                                                   \
+    if (!rex::opengl::gl_log_call(#x, __FILE__, __LINE__))                                                                                                                                                                                               \
+    {                                                                                                                                                                                                                                                    \
+        DEBUG_BREAK();                                                                                                                                                                                                                                   \
     }
 #else
 #define GL_CALL(x) x

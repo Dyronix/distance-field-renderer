@@ -6,7 +6,7 @@ namespace rex
     {
         class size;
     }
-    
+
     class DataType
     {
     public:

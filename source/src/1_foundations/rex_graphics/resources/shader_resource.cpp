@@ -6,24 +6,22 @@ rex::ShaderResource rex::ShaderResource::EMPTY = {};
 
 //-------------------------------------------------------------------------
 rex::ShaderResource::ShaderResource()
-    :m_name(ESID::SID_None)
-    ,m_type(ShaderUniformType::NONE)
-    ,m_count(0)
-    ,m_offset(0)
-    ,m_register(0)
+    : m_name(ESID::SID_None)
+    , m_type(ShaderUniformType::NONE)
+    , m_count(0)
+    , m_offset(0)
+    , m_register(0)
 {
-
 }
 
 //-------------------------------------------------------------------------
 rex::ShaderResource::ShaderResource(const StringID& name, ShaderUniformType type, uint32 count, uint32 offset, uint32 reg)
-    :m_name(name)
-    ,m_type(type)
-    ,m_count(count)
-    ,m_offset(offset)
-    ,m_register(reg)
+    : m_name(name)
+    , m_type(type)
+    , m_count(count)
+    , m_offset(offset)
+    , m_register(reg)
 {
-
 }
 
 //-------------------------------------------------------------------------

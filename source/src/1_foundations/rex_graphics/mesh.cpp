@@ -17,11 +17,7 @@ namespace rex
     //-------------------------------------------------------------------------
     rex::BufferLayout rex::IMesh::make_buffer_layout()
     {
-        return {{DataType::VEC3, "a_Position"},
-                {DataType::VEC3, "a_Normal"},
-                {DataType::VEC3, "a_Tangent"},
-                {DataType::VEC3, "a_Binormal"},
-                {DataType::VEC2, "a_TexCoord"}};
+        return {{DataType::VEC3, "a_Position"}, {DataType::VEC3, "a_Normal"}, {DataType::VEC3, "a_Tangent"}, {DataType::VEC3, "a_Binormal"}, {DataType::VEC2, "a_TexCoord"}};
     }
 
     //-------------------------------------------------------------------------

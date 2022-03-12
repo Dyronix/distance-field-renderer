@@ -24,34 +24,34 @@ namespace rex
             void define_attribute_data_int(uint32 index, const BufferElement& element, uint32 stride)
             {
                 opengl::vertex_attrib_i_pointer(
-                    index,                                      // Specifies the index of the generic vertex attribute to be modified.
-                    element.component_count,                    // Specifies the number of components per generic vertex attribute.
-                    to_open_gl_data_type(element.type),             // Specifies the data type of each component in the array.
-                    stride,                                     // Specifies the byte offset between consecutive generic vertex attributes. 
-#pragma warning( push )
-#pragma warning( disable : 4312 )
-                    (const void*)element.offset);               // Specifies a offset of the first component of the first generic vertex attribute in the array in the data store of the buffer currently bound to the GL_ARRAY_BUFFER target.
-#pragma warning( pop )
+                    index,                               // Specifies the index of the generic vertex attribute to be modified.
+                    element.component_count,             // Specifies the number of components per generic vertex attribute.
+                    to_open_gl_data_type(element.type),  // Specifies the data type of each component in the array.
+                    stride,                              // Specifies the byte offset between consecutive generic vertex attributes.
+#pragma warning(push)
+#pragma warning(disable : 4312)
+                    (const void*)element.offset);  // Specifies a offset of the first component of the first generic vertex attribute in the array in the data store of the buffer currently bound to the GL_ARRAY_BUFFER target.
+#pragma warning(pop)
             }
             //-------------------------------------------------------------------------
             void define_vertex_attribute_data(uint32 index, const BufferElement& element, uint32 stride)
             {
                 opengl::vertex_attrib_pointer(
-                    index,                                      // Specifies the index of the generic vertex attribute to be modified.
-                    element.component_count,                    // Specifies the number of components per generic vertex attribute.
-                    to_open_gl_data_type(element.type),             // Specifies the data type of each component in the array.
-                    element.normalized ? GL_TRUE : GL_FALSE,    // Specifies whether fixed-point data values should be normalized (GL_TRUE) or converted directly as fixed-point values (GL_FALSE) when they are accessed.
-                    stride,                                     // Specifies the byte offset between consecutive generic vertex attributes. 
-#pragma warning( push )
-#pragma warning( disable : 4312 )
-                    (const void*)element.offset);               // Specifies a offset of the first component of the first generic vertex attribute in the array in the data store of the buffer currently bound to the GL_ARRAY_BUFFER target.
-#pragma warning( pop )
+                    index,                                    // Specifies the index of the generic vertex attribute to be modified.
+                    element.component_count,                  // Specifies the number of components per generic vertex attribute.
+                    to_open_gl_data_type(element.type),       // Specifies the data type of each component in the array.
+                    element.normalized ? GL_TRUE : GL_FALSE,  // Specifies whether fixed-point data values should be normalized (GL_TRUE) or converted directly as fixed-point values (GL_FALSE) when they are accessed.
+                    stride,                                   // Specifies the byte offset between consecutive generic vertex attributes.
+#pragma warning(push)
+#pragma warning(disable : 4312)
+                    (const void*)element.offset);  // Specifies a offset of the first component of the first generic vertex attribute in the array in the data store of the buffer currently bound to the GL_ARRAY_BUFFER target.
+#pragma warning(pop)
             }
         }
 
         //-------------------------------------------------------------------------
         VertexArray::VertexArray()
-            :m_index_buffer(nullptr)
+            : m_index_buffer(nullptr)
         {
             opengl::generate_vertex_arrays(1, &m_array_id);
         }
@@ -91,7 +91,7 @@ namespace rex
             vertexBuffer->bind();
 
             const BufferLayout& layout = vertexBuffer->get_layout();
-            for(uint32 i = 0; i < layout.get_size(); ++i)
+            for (uint32 i = 0; i < layout.get_size(); ++i)
             {
                 vertex_array::enable_vertex_attribute_array(i);
                 vertex_array::define_vertex_attribute_data(i, layout[i], layout.get_stride());
@@ -130,7 +130,7 @@ namespace rex
         //-------------------------------------------------------------------------
         IndexBuffer* VertexArray::get_index_buffer()
         {
-            return m_index_buffer;     
+            return m_index_buffer;
         }
 
         //-------------------------------------------------------------------------

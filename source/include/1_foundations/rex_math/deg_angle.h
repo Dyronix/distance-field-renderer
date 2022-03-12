@@ -7,7 +7,7 @@
 namespace rex
 {
     //-------------------------------------------------------------------------
-    template<typename T>
+    template <typename T>
     constexpr T deg2rad(T angle)
     {
         static_assert(std::numeric_limits<T>::is_iec559, "'radians' only accept floating-point input");

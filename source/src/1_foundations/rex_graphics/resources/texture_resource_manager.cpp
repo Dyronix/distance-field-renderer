@@ -5,8 +5,8 @@
 
 namespace rex
 {
-    std::unique_ptr<TextureResourceManagerAPI>  g_texture_resource_manager = nullptr;
-    uint32                                      g_max_texture_count = 0;
+    std::unique_ptr<TextureResourceManagerAPI> g_texture_resource_manager = nullptr;
+    uint32 g_max_texture_count = 0;
 
     //-------------------------------------------------------------------------
     void TextureResourceManager::intialize(std::unique_ptr<TextureResourceManagerAPI> manager)
@@ -37,5 +37,4 @@ namespace rex
     {
         g_texture_resource_manager->release_all();
     }
-
 }

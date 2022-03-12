@@ -2,14 +2,15 @@
 
 namespace rex
 {
-    template<typename T>
+    template <typename T>
     struct BasePoint
     {
         //-------------------------------------------------------------------------
         BasePoint(T xPos = T(), T yPos = T())
-            :x(xPos)
-            ,y(yPos)
-        {}
+            : x(xPos)
+            , y(yPos)
+        {
+        }
 
         T x;
         T y;

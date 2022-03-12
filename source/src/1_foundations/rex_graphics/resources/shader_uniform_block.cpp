@@ -9,28 +9,25 @@ namespace rex
 
     //-------------------------------------------------------------------------
     ShaderUniformBlock::ShaderUniformBlock()
-        :m_name(ESID::SID_None)
-        ,m_size(0)
-        ,m_binding(0)
-        ,m_uniforms()
+        : m_name(ESID::SID_None)
+        , m_size(0)
+        , m_binding(0)
+        , m_uniforms()
     {
-
     }
 
     //-------------------------------------------------------------------------
     ShaderUniformBlock::ShaderUniformBlock(const StringID& name, uint32 size, uint32 binding, const rex::ShaderUniforms& uniforms)
-        :m_name(name)
-        ,m_size(size)
-        ,m_binding(binding)
-        ,m_uniforms(uniforms)
+        : m_name(name)
+        , m_size(size)
+        , m_binding(binding)
+        , m_uniforms(uniforms)
     {
-
     }
 
     //-------------------------------------------------------------------------
     ShaderUniformBlock::~ShaderUniformBlock()
     {
-
     }
 
     //-------------------------------------------------------------------------

@@ -10,35 +10,33 @@ namespace rex
     {
         switch (type)
         {
-        case DataType::FLOAT32:         return 1;
-        case DataType::VEC2:            return 2;
-        case DataType::VEC3:            return 3;
-        case DataType::VEC4:            return 4;
+            case DataType::FLOAT32: return 1;
+            case DataType::VEC2: return 2;
+            case DataType::VEC3: return 3;
+            case DataType::VEC4: return 4;
 
-        case DataType::MAT3:            return 3 * 3;
-        case DataType::MAT4:            return 4 * 4;
+            case DataType::MAT3: return 3 * 3;
+            case DataType::MAT4: return 4 * 4;
 
-        case DataType::INT8:            return 1;
-        case DataType::INT16:           return 1;
-        case DataType::INT32:           return 1;
-        case DataType::INT64:           return 1;
-        case DataType::IVEC2:           return 2;
-        case DataType::IVEC3:           return 3;
-        case DataType::IVEC4:           return 4;
+            case DataType::INT8: return 1;
+            case DataType::INT16: return 1;
+            case DataType::INT32: return 1;
+            case DataType::INT64: return 1;
+            case DataType::IVEC2: return 2;
+            case DataType::IVEC3: return 3;
+            case DataType::IVEC4: return 4;
 
-        case DataType::UNSIGNED_INT8:   return 1;
-        case DataType::UNSIGNED_INT16:  return 1;
-        case DataType::UNSIGNED_INT32:  return 1;
-        case DataType::UNSIGNED_INT64:  return 1;
-        case DataType::UIVEC2:          return 2;
-        case DataType::UIVEC3:          return 3;
-        case DataType::UIVEC4:          return 4;
+            case DataType::UNSIGNED_INT8: return 1;
+            case DataType::UNSIGNED_INT16: return 1;
+            case DataType::UNSIGNED_INT32: return 1;
+            case DataType::UNSIGNED_INT64: return 1;
+            case DataType::UIVEC2: return 2;
+            case DataType::UIVEC3: return 3;
+            case DataType::UIVEC4: return 4;
 
-        case DataType::BOOL:            return 1;
+            case DataType::BOOL: return 1;
 
-        default:
-            R_ASSERT_X(false, "Invalid DataType");
-            return 0;
+            default: R_ASSERT_X(false, "Invalid DataType"); return 0;
         }
     }
 
@@ -50,21 +48,24 @@ namespace rex
         , offset(0)
         , normalized(false)
         , component_count(0)
-    {}
+    {
+    }
     //-------------------------------------------------------------------------
     BufferElement::BufferElement(DataType type, const std::string& elementName, bool shouldNormalize)
-        :name(elementName)
-        ,type(type)
-        ,size((uint32)type.to_size())
-        ,offset(0)
-        ,normalized(shouldNormalize)
-        ,component_count(get_component_count(type))
-    {}
+        : name(elementName)
+        , type(type)
+        , size((uint32)type.to_size())
+        , offset(0)
+        , normalized(shouldNormalize)
+        , component_count(get_component_count(type))
+    {
+    }
 
     //-------------------------------------------------------------------------
     BufferLayout::BufferLayout()
         : m_stride(0)
-    {}
+    {
+    }
     //-------------------------------------------------------------------------
     BufferLayout::BufferLayout(const std::initializer_list<BufferElement>& elements)
         : m_elements(elements)
@@ -81,7 +82,7 @@ namespace rex
     //-------------------------------------------------------------------------
     const uint32 BufferLayout::get_stride() const
     {
-        return m_stride;    
+        return m_stride;
     }
 
     //-------------------------------------------------------------------------

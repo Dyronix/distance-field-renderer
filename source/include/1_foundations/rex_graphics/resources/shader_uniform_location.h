@@ -12,7 +12,7 @@ namespace rex
 
         operator bool() const;
         operator int32() const;
-        
+
         int32 get() const;
 
     private:

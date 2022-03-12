@@ -327,15 +327,13 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        void RendererAPI::render_quad(ref_ptr<rex::Pipeline> pipeline, rex::UniformBufferSet* uniformBufferSet, ref_ptr<rex::Material> material,
-                                     const rex::matrix4& transform)
+        void RendererAPI::render_quad(ref_ptr<rex::Pipeline> pipeline, rex::UniformBufferSet* uniformBufferSet, ref_ptr<rex::Material> material, const rex::matrix4& transform)
         {
             render_model_with_material(pipeline, uniformBufferSet, mesh_factory::get_unit_quad(), transform, material);
         }
 
         //-------------------------------------------------------------------------
-        void RendererAPI::render_model(ref_ptr<rex::Pipeline> pipeline, rex::UniformBufferSet* uniformBufferSet, ref_ptr<rex::Model> model,
-                                      const rex::matrix4& transform)
+        void RendererAPI::render_model(ref_ptr<rex::Pipeline> pipeline, rex::UniformBufferSet* uniformBufferSet, ref_ptr<rex::Model> model, const rex::matrix4& transform)
         {
             setup_rasterizer_state(pipeline->get_rasterizer_state());
             setup_face_cull_state(pipeline->get_face_cull_state());
@@ -365,8 +363,7 @@ namespace rex
                                          opengl::disable(GL_DEPTH_TEST);
                                      }
 
-                                     opengl::draw_elements(to_gl_primitive_type(pipeline->get_primitive_type()), submesh.index_count, GL_UNSIGNED_INT,
-                                                           (void*)(sizeof(uint32_t) * submesh.base_index));
+                                     opengl::draw_elements(to_gl_primitive_type(pipeline->get_primitive_type()), submesh.index_count, GL_UNSIGNED_INT, (void*)(sizeof(uint32_t) * submesh.base_index));
                                  }
                              });
 
@@ -376,8 +373,7 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        void RendererAPI::render_model_with_material(ref_ptr<rex::Pipeline> pipeline, rex::UniformBufferSet* uniformBufferSet, ref_ptr<Model> model,
-                                                  const rex::matrix4& transform, ref_ptr<rex::Material> material)
+        void RendererAPI::render_model_with_material(ref_ptr<rex::Pipeline> pipeline, rex::UniformBufferSet* uniformBufferSet, ref_ptr<Model> model, const rex::matrix4& transform, ref_ptr<rex::Material> material)
         {
             setup_rasterizer_state(pipeline->get_rasterizer_state());
             setup_face_cull_state(pipeline->get_face_cull_state());
@@ -429,8 +425,7 @@ namespace rex
 
             Renderer::submit([pipeline]()
                              {
-                                 opengl::draw_elements(to_gl_primitive_type(pipeline->get_primitive_type()), g_fullscreen_quad_index_buffer->get_count(),
-                                                       GL_UNSIGNED_INT, nullptr);
+                                 opengl::draw_elements(to_gl_primitive_type(pipeline->get_primitive_type()), g_fullscreen_quad_index_buffer->get_count(), GL_UNSIGNED_INT, nullptr);
                              });
 
             g_fullscreen_quad_index_buffer->unbind();

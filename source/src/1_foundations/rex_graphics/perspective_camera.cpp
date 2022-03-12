@@ -109,8 +109,7 @@ namespace rex
         }
 
         m_clipping_planes = planes;
-        m_projection_matrix = rex::perspective(m_field_of_view.get_vertical().to_rad(), m_aspect_ratio.get_ratio().get(), m_clipping_planes.near_plane,
-                                               m_clipping_planes.far_plane);
+        m_projection_matrix = rex::perspective(m_field_of_view.get_vertical().to_rad(), m_aspect_ratio.get_ratio().get(), m_clipping_planes.near_plane, m_clipping_planes.far_plane);
 
         m_transform.reevaluate();
         update_matrices();

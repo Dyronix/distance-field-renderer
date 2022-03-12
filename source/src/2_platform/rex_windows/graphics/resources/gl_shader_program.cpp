@@ -16,15 +16,15 @@
 #define ENABLE_SHADERCODE_LOGGING 1
 
 #if ENABLE_SHADERCODE_LOGGING
-    #define SHADER_PROGRAM_TRACE R_TRACE
-    #define SHADER_PROGRAM_INFO R_INFO
-    #define SHADER_PROGRAM_WARN R_WARN
-    #define SHADER_PROGRAM_ERROR R_ERROR
+#define SHADER_PROGRAM_TRACE R_TRACE
+#define SHADER_PROGRAM_INFO R_INFO
+#define SHADER_PROGRAM_WARN R_WARN
+#define SHADER_PROGRAM_ERROR R_ERROR
 #else
-    #define SHADER_PROGRAM_TRACE(...) UNUSED_PARAM(__VA_ARGS__)
-    #define SHADER_PROGRAM_INFO(...) UNUSED_PARAM(__VA_ARGS__)
-    #define SHADER_PROGRAM_WARN(...) UNUSED_PARAM(__VA_ARGS__)
-    #define SHADER_PROGRAM_ERROR(...) UNUSED_PARAM(__VA_ARGS__)
+#define SHADER_PROGRAM_TRACE(...) UNUSED_PARAM(__VA_ARGS__)
+#define SHADER_PROGRAM_INFO(...) UNUSED_PARAM(__VA_ARGS__)
+#define SHADER_PROGRAM_WARN(...) UNUSED_PARAM(__VA_ARGS__)
+#define SHADER_PROGRAM_ERROR(...) UNUSED_PARAM(__VA_ARGS__)
 #endif
 
 namespace rex
@@ -45,10 +45,10 @@ namespace rex
             GLint max_count;
             opengl::get_program_integer_value(programID, GL_ACTIVE_UNIFORM_MAX_LENGTH, &max_count);
 
-            GLint           size;                           // size of the variable
-            GLenum          type;                           // type of the variable (float, vec3 or mat4, etc)
-            GLchar*         name = new GLchar[max_count];   // variable name in GLSL
-            GLsizei         length;                         // name length
+            GLint size;                            // size of the variable
+            GLenum type;                           // type of the variable (float, vec3 or mat4, etc)
+            GLchar* name = new GLchar[max_count];  // variable name in GLSL
+            GLsizei length;                        // name length
 
             uint32 total_size = 0;
             ShaderUniforms uniforms;
@@ -87,10 +87,10 @@ namespace rex
             opengl::get_program_integer_value(programID, GL_ACTIVE_UNIFORMS, &count);
             opengl::get_program_integer_value(programID, GL_ACTIVE_UNIFORM_MAX_LENGTH, &max_count);
 
-            GLint           size;                           // size of the variable
-            GLenum          type;                           // type of the variable (float, vec3 or mat4, etc)
-            GLchar*         name = new GLchar[max_count];   // variable name in GLSL
-            GLsizei         length;                         // name length
+            GLint size;                            // size of the variable
+            GLenum type;                           // type of the variable (float, vec3 or mat4, etc)
+            GLchar* name = new GLchar[max_count];  // variable name in GLSL
+            GLsizei length;                        // name length
 
             uint32 total_size = 0;
             ShaderUniformMap uniforms;
@@ -114,7 +114,7 @@ namespace rex
                     SHADER_PROGRAM_TRACE("\tFound duplicate uniform ({0}), use the uniform block to access this uniform", uniform_sid_name.to_string());
                     continue;
                 }
-                
+
                 uniforms.insert(std::make_pair(uniform_sid_name, ShaderUniform(uniform_sid_name, uniform_type, uniform_size, uniform_offset)));
                 total_size += uniform_size;
 
@@ -174,9 +174,9 @@ namespace rex
         //-------------------------------------------------------------------------
         ShaderUniformBlock make_uniform_block(const uint32 programID, GLint blockIndex, GLint maxCount)
         {
-            GLchar* name = new GLchar[maxCount];                            // variable name in GLSL
-            GLsizei length = -1;                                            // name length
-            GLint   binding = UniformBufferSet::get_new_binding_point();    // unique binding point
+            GLchar* name = new GLchar[maxCount];                        // variable name in GLSL
+            GLsizei length = -1;                                        // name length
+            GLint binding = UniformBufferSet::get_new_binding_point();  // unique binding point
 
             opengl::get_active_uniform_block_name(programID, (GLuint)blockIndex, maxCount, &length, (int8*)name);
 
@@ -214,7 +214,7 @@ namespace rex
 
             ShaderUniformBlockMap blocks;
             for (int32 i = 0; i < count; ++i)
-            { 
+            {
                 ShaderUniformBlock new_block = make_uniform_block(programID, i, max_count);
 
                 auto uniform_buffer = UniformBufferSet::instance()->get(new_block.get_name());
@@ -258,10 +258,10 @@ namespace rex
             opengl::get_program_integer_value(programID, GL_ACTIVE_ATTRIBUTES, &count);
             opengl::get_program_integer_value(programID, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &max_count);
 
-            GLint           size;                           // size of the variable
-            GLenum          type;                           // type of the variable (float, vec3 or mat4, etc)
-            GLchar*         name = new GLchar[max_count];   // variable name in GLSL
-            GLsizei         length;                         // name length
+            GLint size;                            // size of the variable
+            GLenum type;                           // type of the variable (float, vec3 or mat4, etc)
+            GLchar* name = new GLchar[max_count];  // variable name in GLSL
+            GLsizei length;                        // name length
 
             uint32 total_size = 0;
             ShaderAttributeMap attributes;
@@ -309,10 +309,10 @@ namespace rex
             opengl::get_program_integer_value(programID, GL_ACTIVE_UNIFORMS, &count);
             opengl::get_program_integer_value(programID, GL_ACTIVE_UNIFORM_MAX_LENGTH, &max_count);
 
-            GLint           size;                           // size of the variable
-            GLenum          type;                           // type of the variable (float, vec3 or mat4, etc)
-            GLchar*         name = new GLchar[max_count];   // variable name in GLSL
-            GLsizei         length;                         // name length
+            GLint size;                            // size of the variable
+            GLenum type;                           // type of the variable (float, vec3 or mat4, etc)
+            GLchar* name = new GLchar[max_count];  // variable name in GLSL
+            GLsizei length;                        // name length
 
             uint32 total_size = 0;
             uint32 texture_register = 0;
@@ -340,21 +340,21 @@ namespace rex
 
                 switch (uniform_type)
                 {
-                case ShaderUniformType::SAMPLER2D:
-                case ShaderUniformType::SAMPLER3D:
-                case ShaderUniformType::SAMPLERCUBE:
-                    resources.insert(std::make_pair(uniform_sid_name, ShaderResource(uniform_sid_name, uniform_type, 1, total_size, texture_register)));
-                    ++texture_register;
+                    case ShaderUniformType::SAMPLER2D:
+                    case ShaderUniformType::SAMPLER3D:
+                    case ShaderUniformType::SAMPLERCUBE:
+                        resources.insert(std::make_pair(uniform_sid_name, ShaderResource(uniform_sid_name, uniform_type, 1, total_size, texture_register)));
+                        ++texture_register;
 
-                    total_size += uniform_size;
-                    break;
-                default:
-                    //
-                    //  Even if we do not encounter a resource we still keep track of the total size.
-                    //  Uniforms can be declared in any order so Samplers can be declared throughout the entire shader.
-                    //
-                    total_size += uniform_size;
-                    continue;
+                        total_size += uniform_size;
+                        break;
+                    default:
+                        //
+                        //  Even if we do not encounter a resource we still keep track of the total size.
+                        //  Uniforms can be declared in any order so Samplers can be declared throughout the entire shader.
+                        //
+                        total_size += uniform_size;
+                        continue;
                 }
             }
 
@@ -392,25 +392,26 @@ namespace rex
 
             std::string program_shader_code = vertex_shader_code + fragment_shader_code;
 
-            return gsl::narrow<uint32>(std::hash<std::string>{} (program_shader_code));
+            return gsl::narrow<uint32>(std::hash<std::string>{}(program_shader_code));
         }
 
         struct ShaderProgram::Internal
         {
             //-------------------------------------------------------------------------
             Internal()
-                :tag(ESID::SID_None)
-                ,queue_index(0)
-                ,program_id(0)
-                ,is_linked(false)
-                ,is_bound(false)
-            {}
+                : tag(ESID::SID_None)
+                , queue_index(0)
+                , program_id(0)
+                , is_linked(false)
+                , is_bound(false)
+            {
+            }
 
             //-------------------------------------------------------------------------
             bool check_link_status()
             {
                 int32 linked_status = 0;
-                opengl::get_program_integer_value(program_id, GL_LINK_STATUS, (int32 *)&linked_status);
+                opengl::get_program_integer_value(program_id, GL_LINK_STATUS, (int32*)&linked_status);
                 if (linked_status == GL_FALSE)
                 {
                     int32 max_length = 0;
@@ -443,14 +444,14 @@ namespace rex
                 VertexShader vertex_shader(vertexShaderCode.get_data(), vertexShaderCode.get_size());
                 if (!vertex_shader)
                 {
-                    return false;   // compilation failed
+                    return false;  // compilation failed
                 }
 
                 SHADER_PROGRAM_TRACE("{0}", fragmentShaderCode.get_data_as<char>());
                 FragmentShader fragment_shader(fragmentShaderCode.get_data(), fragmentShaderCode.get_size());
                 if (!fragment_shader)
                 {
-                    return false;   // compilation failed
+                    return false;  // compilation failed
                 }
 
                 // Vertex and fragment shaders are successfully compiled.
@@ -503,12 +504,12 @@ namespace rex
             }
 
             //-------------------------------------------------------------------------
-            template<typename T>
+            template <typename T>
             bool find_and_cache_uniform(const uint32& programID, const StringID& inName, std::unordered_map<StringID, T>& uniformLocations)
             {
                 if (uniformLocations.find(inName) == std::end(uniformLocations))
                 {
-                    char*  name;
+                    char* name;
                     size_t size;
 
                     inName.to_string(&name, size);
@@ -516,7 +517,7 @@ namespace rex
                     SHADER_PROGRAM_TRACE("Caching uniform: {0}, for shader program with ID: {1}", name, programID);
 
                     int32 location = opengl::get_uniform_location(programID, (int8*)name);
-                    uniformLocations[inName] = { location };
+                    uniformLocations[inName] = {location};
 
                     if (location == -1)
                     {
@@ -553,7 +554,7 @@ namespace rex
             }
 
             //-------------------------------------------------------------------------
-            bool upload_mat3(const StringID &inName, const rex::matrix3 &mat, IsRenderThread rt)
+            bool upload_mat3(const StringID& inName, const rex::matrix3& mat, IsRenderThread rt)
             {
                 if (!find_and_cache_uniform(program_id, inName, uniform_locations))
                 {
@@ -571,15 +572,15 @@ namespace rex
                 else
                 {
                     Renderer::submit([location, mat]()
-                        {
-                            opengl::uniform_matrix_3fv(location, 1, false, rex::value_ptr(mat));
-                        });
+                                     {
+                                         opengl::uniform_matrix_3fv(location, 1, false, rex::value_ptr(mat));
+                                     });
                 }
 
                 return true;
             }
             //-------------------------------------------------------------------------
-            bool upload_mat4(const StringID & inName, const rex::matrix4 &mat, IsRenderThread rt)
+            bool upload_mat4(const StringID& inName, const rex::matrix4& mat, IsRenderThread rt)
             {
                 if (!find_and_cache_uniform(program_id, inName, uniform_locations))
                 {
@@ -590,23 +591,23 @@ namespace rex
 
                 SHADER_PROGRAM_TRACE("Uploading MAT4 uniform. Location: {0}, Name: {1}, Value: {2}", std::to_string(location), inName.to_string(), rex::to_string(mat));
 
-                if(rt)
+                if (rt)
                 {
                     opengl::uniform_matrix_4fv(location, 1, false, rex::value_ptr(mat));
                 }
                 else
-                { 
+                {
                     Renderer::submit([location, mat]()
-                        {
-                            opengl::uniform_matrix_4fv(location, 1, false, rex::value_ptr(mat));
-                        });
+                                     {
+                                         opengl::uniform_matrix_4fv(location, 1, false, rex::value_ptr(mat));
+                                     });
                 }
 
                 return true;
             }
 
             //-------------------------------------------------------------------------
-            bool upload_float(const StringID & inName, const float value, IsRenderThread rt)
+            bool upload_float(const StringID& inName, const float value, IsRenderThread rt)
             {
                 if (!find_and_cache_uniform(program_id, inName, uniform_locations))
                 {
@@ -624,15 +625,15 @@ namespace rex
                 else
                 {
                     Renderer::submit([location, value]()
-                        {
-                            opengl::uniform_1f(location, value);
-                        });
+                                     {
+                                         opengl::uniform_1f(location, value);
+                                     });
                 }
 
                 return true;
             }
             //-------------------------------------------------------------------------
-            bool upload_float2(const StringID & inName, const rex::vec2 &value, IsRenderThread rt)
+            bool upload_float2(const StringID& inName, const rex::vec2& value, IsRenderThread rt)
             {
                 if (!find_and_cache_uniform(program_id, inName, uniform_locations))
                 {
@@ -650,15 +651,15 @@ namespace rex
                 else
                 {
                     Renderer::submit([location, value]()
-                        {
-                            opengl::uniform_2f(location, value.x, value.y);
-                        });
+                                     {
+                                         opengl::uniform_2f(location, value.x, value.y);
+                                     });
                 }
 
                 return true;
             }
             //-------------------------------------------------------------------------
-            bool upload_float3(const StringID & inName, const rex::vec3 &value, IsRenderThread rt)
+            bool upload_float3(const StringID& inName, const rex::vec3& value, IsRenderThread rt)
             {
                 if (!find_and_cache_uniform(program_id, inName, uniform_locations))
                 {
@@ -676,15 +677,15 @@ namespace rex
                 else
                 {
                     Renderer::submit([location, value]()
-                        {
-                            opengl::uniform_3f(location, value.x, value.y, value.z);
-                        });
+                                     {
+                                         opengl::uniform_3f(location, value.x, value.y, value.z);
+                                     });
                 }
 
                 return true;
             }
             //-------------------------------------------------------------------------
-            bool upload_float4(const StringID & inName, const rex::vec4 &value, IsRenderThread rt)
+            bool upload_float4(const StringID& inName, const rex::vec4& value, IsRenderThread rt)
             {
                 if (!find_and_cache_uniform(program_id, inName, uniform_locations))
                 {
@@ -702,9 +703,9 @@ namespace rex
                 else
                 {
                     Renderer::submit([location, value]()
-                        {
-                            opengl::uniform_4f(location, value.x, value.y, value.z, value.w);
-                        });
+                                     {
+                                         opengl::uniform_4f(location, value.x, value.y, value.z, value.w);
+                                     });
                 }
 
                 return true;
@@ -728,9 +729,9 @@ namespace rex
                 else
                 {
                     Renderer::submit([location, values, size]()
-                        {
-                            opengl::uniform_1fv(location, size, values);
-                        });
+                                     {
+                                         opengl::uniform_1fv(location, size, values);
+                                     });
                 }
 
                 return true;
@@ -755,9 +756,9 @@ namespace rex
                 else
                 {
                     Renderer::submit([location, value]()
-                        {
-                            opengl::uniform_1i(location, value);
-                        });
+                                     {
+                                         opengl::uniform_1i(location, value);
+                                     });
                 }
 
                 return true;
@@ -781,9 +782,9 @@ namespace rex
                 else
                 {
                     Renderer::submit([location, value]()
-                        {
-                            opengl::uniform_2i(location, value.x, value.y);
-                        });
+                                     {
+                                         opengl::uniform_2i(location, value.x, value.y);
+                                     });
                 }
 
                 return true;
@@ -807,9 +808,9 @@ namespace rex
                 else
                 {
                     Renderer::submit([location, value]()
-                        {
-                            opengl::uniform_3i(location, value.x, value.y, value.z);
-                        });
+                                     {
+                                         opengl::uniform_3i(location, value.x, value.y, value.z);
+                                     });
                 }
 
                 return true;
@@ -833,9 +834,9 @@ namespace rex
                 else
                 {
                     Renderer::submit([location, value]()
-                        {
-                            opengl::uniform_4i(location, value.x, value.y, value.z, value.w);
-                        });
+                                     {
+                                         opengl::uniform_4i(location, value.x, value.y, value.z, value.w);
+                                     });
                 }
 
                 return true;
@@ -859,9 +860,9 @@ namespace rex
                 else
                 {
                     Renderer::submit([location, value]()
-                        {
-                            opengl::uniform_1ui(location, value);
-                        });
+                                     {
+                                         opengl::uniform_1ui(location, value);
+                                     });
                 }
 
                 return true;
@@ -876,11 +877,10 @@ namespace rex
                     return shader_uniforms;
                 }
 
-                std::transform(std::begin(uniforms), std::end(uniforms), std::back_inserter(shader_uniforms),
-                    [](const auto& pair)
-                    {
-                        return pair.second;
-                    });
+                std::transform(std::begin(uniforms), std::end(uniforms), std::back_inserter(shader_uniforms), [](const auto& pair)
+                               {
+                                   return pair.second;
+                               });
 
                 return shader_uniforms;
             }
@@ -893,11 +893,10 @@ namespace rex
                     return shader_attributes;
                 }
 
-                std::transform(std::begin(attributes), std::end(attributes), std::back_inserter(shader_attributes),
-                    [](const auto& pair)
-                    {
-                        return pair.second;
-                    });
+                std::transform(std::begin(attributes), std::end(attributes), std::back_inserter(shader_attributes), [](const auto& pair)
+                               {
+                                   return pair.second;
+                               });
 
                 return shader_attributes;
             }
@@ -910,11 +909,10 @@ namespace rex
                     return shader_resources;
                 }
 
-                std::transform(std::begin(resources), std::end(resources), std::back_inserter(shader_resources),
-                    [](const auto& pair)
-                    {
-                        return pair.second;
-                    });
+                std::transform(std::begin(resources), std::end(resources), std::back_inserter(shader_resources), [](const auto& pair)
+                               {
+                                   return pair.second;
+                               });
 
                 return shader_resources;
             }
@@ -927,11 +925,10 @@ namespace rex
                     return shader_blocks;
                 }
 
-                std::transform(std::begin(blocks), std::end(blocks), std::back_inserter(shader_blocks),
-                    [](const auto& pair)
-                    {
-                        return pair.second;
-                    });
+                std::transform(std::begin(blocks), std::end(blocks), std::back_inserter(shader_blocks), [](const auto& pair)
+                               {
+                                   return pair.second;
+                               });
 
                 return shader_blocks;
             }
@@ -959,7 +956,7 @@ namespace rex
 
         //-------------------------------------------------------------------------
         ShaderProgram::ShaderProgram(ShaderProgramCreationInfo&& info)
-            :m_internal(rex::make_internal_scope_ptr<Internal>())
+            : m_internal(rex::make_internal_scope_ptr<Internal>())
         {
             m_internal->tag = info.tag;
             m_internal->queue_index = string_conversion::string_to_int(info.queue.to_string());
@@ -1074,18 +1071,14 @@ namespace rex
         {
             auto it = m_internal->uniforms.find(name);
 
-            return it != std::cend(m_internal->uniforms)
-                ? it->second
-                : ShaderUniform::EMPTY;
+            return it != std::cend(m_internal->uniforms) ? it->second : ShaderUniform::EMPTY;
         }
         //-------------------------------------------------------------------------
         const rex::ShaderUniformLocation& ShaderProgram::get_uniform_location(const StringID& name) const
         {
             auto it = m_internal->uniform_locations.find(name);
 
-            return it != std::cend(m_internal->uniform_locations)
-                ? it->second
-                : ShaderUniformLocation::EMPTY;
+            return it != std::cend(m_internal->uniform_locations) ? it->second : ShaderUniformLocation::EMPTY;
         }
         //-------------------------------------------------------------------------
         const rex::ShaderUniforms ShaderProgram::get_uniforms() const
@@ -1104,9 +1097,7 @@ namespace rex
         {
             auto it = m_internal->attributes.find(name);
 
-            return it != std::cend(m_internal->attributes)
-                ? it->second
-                : ShaderAttribute::EMPTY;
+            return it != std::cend(m_internal->attributes) ? it->second : ShaderAttribute::EMPTY;
         }
         //-------------------------------------------------------------------------
         const rex::ShaderAttributes ShaderProgram::get_attributes() const
@@ -1125,9 +1116,7 @@ namespace rex
         {
             auto it = m_internal->resources.find(name);
 
-            return it != std::cend(m_internal->resources)
-                ? it->second
-                : ShaderResource::EMPTY;
+            return it != std::cend(m_internal->resources) ? it->second : ShaderResource::EMPTY;
         }
         //-------------------------------------------------------------------------
         const rex::ShaderResourceLocation& ShaderProgram::get_resource_location(const StringID& name) const
@@ -1158,9 +1147,7 @@ namespace rex
         {
             auto it = m_internal->blocks.find(name);
 
-            return it != std::cend(m_internal->blocks)
-                ? it->second
-                : ShaderUniformBlock::EMPTY;
+            return it != std::cend(m_internal->blocks) ? it->second : ShaderUniformBlock::EMPTY;
         }
         //-------------------------------------------------------------------------
         const rex::ShaderUniformBlocks ShaderProgram::get_uniform_blocks() const
@@ -1198,12 +1185,12 @@ namespace rex
             {
                 ref_ptr<const ShaderProgram> instance(this);
                 Renderer::submit([instance]() mutable
-                    {
-                        R_ASSERT(instance->m_internal->program_id != 0);
+                                 {
+                                     R_ASSERT(instance->m_internal->program_id != 0);
 
-                        opengl::use_program(instance->m_internal->program_id);
-                        instance->m_internal->is_bound = true;
-                    });
+                                     opengl::use_program(instance->m_internal->program_id);
+                                     instance->m_internal->is_bound = true;
+                                 });
             }
         }
         //-------------------------------------------------------------------------
@@ -1218,10 +1205,10 @@ namespace rex
             {
                 ref_ptr<const ShaderProgram> instance(this);
                 Renderer::submit([instance]()
-                    {
-                        opengl::use_program(0);
-                        instance->m_internal->is_bound = false;
-                    });
+                                 {
+                                     opengl::use_program(0);
+                                     instance->m_internal->is_bound = false;
+                                 });
             }
         }
 

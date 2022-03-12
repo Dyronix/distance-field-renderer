@@ -34,26 +34,26 @@ namespace rex
 
         //-------------------------------------------------------------------------
         UniformBuffer::UniformBuffer(const ShaderUniformBlock& block)
-            :m_buffer_id(0)
-            ,m_uniform_buffer_desc(block)
-            ,m_local_storage(memory::make_blob(nullptr, block.get_size()))
+            : m_buffer_id(0)
+            , m_uniform_buffer_desc(block)
+            , m_local_storage(memory::make_blob(nullptr, block.get_size()))
         {
             RENDERER_INFO("Submitting - Creating Uniform Buffer: name - {0}", block.get_name().to_string());
 
             ref_ptr<UniformBuffer> instance(this);
             Renderer::submit([instance]() mutable
-                {
-                    RENDERER_INFO("Executing - Creating Uniform Buffer: name - {0}", instance->m_uniform_buffer_desc.get_name().to_string());
+                             {
+                                 RENDERER_INFO("Executing - Creating Uniform Buffer: name - {0}", instance->m_uniform_buffer_desc.get_name().to_string());
 
-                    R_ASSERT_X(instance->m_uniform_buffer_desc.get_size() != 0, "Size of a uniform buffer cannot be 0");
+                                 R_ASSERT_X(instance->m_uniform_buffer_desc.get_size() != 0, "Size of a uniform buffer cannot be 0");
 
-                    opengl::generate_buffers(1, &instance->m_buffer_id);
-                    opengl::bind_buffer(GL_UNIFORM_BUFFER, instance->m_buffer_id);
-                    opengl::buffer_data(GL_UNIFORM_BUFFER, instance->m_uniform_buffer_desc.get_size(), nullptr, GL_DYNAMIC_DRAW);
-                    opengl::bind_buffer(GL_UNIFORM_BUFFER, 0);
+                                 opengl::generate_buffers(1, &instance->m_buffer_id);
+                                 opengl::bind_buffer(GL_UNIFORM_BUFFER, instance->m_buffer_id);
+                                 opengl::buffer_data(GL_UNIFORM_BUFFER, instance->m_uniform_buffer_desc.get_size(), nullptr, GL_DYNAMIC_DRAW);
+                                 opengl::bind_buffer(GL_UNIFORM_BUFFER, 0);
 
-                    opengl::bind_buffer_range(GL_UNIFORM_BUFFER, instance->m_uniform_buffer_desc.get_binding(), instance->m_buffer_id, 0, instance->m_uniform_buffer_desc.get_size());
-                });
+                                 opengl::bind_buffer_range(GL_UNIFORM_BUFFER, instance->m_uniform_buffer_desc.get_binding(), instance->m_buffer_id, 0, instance->m_uniform_buffer_desc.get_size());
+                             });
 
 #ifdef REX_DEBUG
             if (!uniform_buffer_set::g_managed)
@@ -71,10 +71,10 @@ namespace rex
             {
                 ref_ptr<UniformBuffer> instance(this);
                 Renderer::submit([instance]() mutable
-                    {
-                        opengl::delete_buffers(1, &instance->m_buffer_id);
-                        instance->m_buffer_id = 0;
-                    });
+                                 {
+                                     opengl::delete_buffers(1, &instance->m_buffer_id);
+                                     instance->m_buffer_id = 0;
+                                 });
             }
         }
 
@@ -97,7 +97,7 @@ namespace rex
             // TODO: local storage should be potentially replaced with render thread storage
             memcpy(pointer_math::jump_forward(m_local_storage.get_data(), offset), data, size);
 
-            if(rt)
+            if (rt)
             {
                 opengl::bind_buffer(GL_UNIFORM_BUFFER, m_buffer_id);
                 opengl::buffer_sub_data(GL_UNIFORM_BUFFER, offset, size, m_local_storage.get_data());
@@ -107,11 +107,11 @@ namespace rex
             {
                 ref_ptr<UniformBuffer> instance(this);
                 Renderer::submit([instance, offset, size]()
-                    {
-                        opengl::bind_buffer(GL_UNIFORM_BUFFER, instance->m_buffer_id);
-                        opengl::buffer_sub_data(GL_UNIFORM_BUFFER, offset, size, instance->m_local_storage.get_data());
-                        opengl::bind_buffer(GL_UNIFORM_BUFFER, 0);
-                    });
+                                 {
+                                     opengl::bind_buffer(GL_UNIFORM_BUFFER, instance->m_buffer_id);
+                                     opengl::buffer_sub_data(GL_UNIFORM_BUFFER, offset, size, instance->m_local_storage.get_data());
+                                     opengl::bind_buffer(GL_UNIFORM_BUFFER, 0);
+                                 });
             }
         }
 

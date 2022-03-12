@@ -23,31 +23,31 @@ namespace rex
             Texture2D(Texture2DDescription&& desc);
             ~Texture2D() override;
 
-            void                    invalidate() override;
-            void                    invalidate(Texture2DDescription&& desc) override;
-            void                    release() override;
+            void invalidate() override;
+            void invalidate(Texture2DDescription&& desc) override;
+            void release() override;
 
-            const StringID&         get_name() const override;
+            const StringID& get_name() const override;
 
-            Texture2DDescription    get_description(CopyImageData copyImageData = CopyImageData::NO) const;
+            Texture2DDescription get_description(CopyImageData copyImageData = CopyImageData::NO) const;
 
-            const Texture::Data&    get_data() const override;
-            Texture::Usage          get_usage() const override;
-            Texture::Format         get_format() const override;
-            Texel::Format           get_channels() const override;
+            const Texture::Data& get_data() const override;
+            Texture::Usage get_usage() const override;
+            Texture::Format get_format() const override;
+            Texel::Format get_channels() const override;
 
-            uint32                  get_width() const override;
-            uint32                  get_height() const override;
+            uint32 get_width() const override;
+            uint32 get_height() const override;
 
-            uint32                  get_id() const override;
+            uint32 get_id() const override;
 
-            void                    set_data(Texture::Data&& textureData) override;
-            void                    set_wrap(const Texture::Wrap& textureWrap) override;
-            void                    set_filter(const Texture::Filter& textureFilter) override;
-            void                    set_format(const Texel& texelFormat, const Texture::Format& textureFormat) override;
+            void set_data(Texture::Data&& textureData) override;
+            void set_wrap(const Texture::Wrap& textureWrap) override;
+            void set_filter(const Texture::Filter& textureFilter) override;
+            void set_format(const Texel& texelFormat, const Texture::Format& textureFormat) override;
 
-            void                    bind(IsRenderThread isRenderThread = IsRenderThread::NO) const override;
-            void                    unbind(IsRenderThread isRenderThread = IsRenderThread::NO) const override;
+            void bind(IsRenderThread isRenderThread = IsRenderThread::NO) const override;
+            void unbind(IsRenderThread isRenderThread = IsRenderThread::NO) const override;
 
         private:
             void assign_filter(const Filter& filter);

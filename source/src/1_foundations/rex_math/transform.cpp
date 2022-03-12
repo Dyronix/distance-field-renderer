@@ -10,21 +10,24 @@ namespace rex
 {
     //-------------------------------------------------------------------------
     Transform::Transform()
-        :Transform::Transform({0.0f, 0.0f, 0.0f}, { 1.0f, 1.0f, 1.0f }, rex::identity<rex::quaternion>())
-    {}
+        : Transform::Transform({0.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f}, rex::identity<rex::quaternion>())
+    {
+    }
     //-------------------------------------------------------------------------
     Transform::Transform(const rex::vec3& position)
-        :Transform::Transform(position, { 1.0f, 1.0f, 1.0f }, rex::identity<rex::quaternion>())
-    {}
+        : Transform::Transform(position, {1.0f, 1.0f, 1.0f}, rex::identity<rex::quaternion>())
+    {
+    }
     //-------------------------------------------------------------------------
-    Transform::Transform(const rex::vec3 & position, const rex::vec3 & scale)
-        :Transform::Transform(position, scale, rex::identity<rex::quaternion>())
-    {}
+    Transform::Transform(const rex::vec3& position, const rex::vec3& scale)
+        : Transform::Transform(position, scale, rex::identity<rex::quaternion>())
+    {
+    }
     //-------------------------------------------------------------------------
     Transform::Transform(const rex::vec3& position, const rex::vec3& scale, const rex::quaternion& rotation)
-        :m_position(position)
-        ,m_scale(scale)
-        ,m_rotation(rotation)
+        : m_position(position)
+        , m_scale(scale)
+        , m_rotation(rotation)
     {
         update_direction_vectors();
         update_matrices();
@@ -81,7 +84,7 @@ namespace rex
         }
 
         m_rotation = rotation;
-    
+
         update_direction_vectors();
         update_matrices();
     }
@@ -90,7 +93,7 @@ namespace rex
     void Transform::translate(const rex::vec3& delta)
     {
         m_position += delta;
-    
+
         update_direction_vectors();
         update_matrices();
     }
@@ -99,7 +102,7 @@ namespace rex
     void Transform::scale(const rex::vec3& delta)
     {
         m_scale += delta;
-    
+
         update_direction_vectors();
         update_matrices();
     }
@@ -107,8 +110,8 @@ namespace rex
     //-------------------------------------------------------------------------
     void Transform::scale(const float delta)
     {
-        m_scale += rex::vec3( delta, delta, delta );
-    
+        m_scale += rex::vec3(delta, delta, delta);
+
         update_direction_vectors();
         update_matrices();
     }
@@ -173,9 +176,7 @@ namespace rex
     //-------------------------------------------------------------------------
     bool Transform::operator==(const Transform& other) const
     {
-        return  rex::is_identical(m_position, other.m_position) &&
-                rex::is_identical(m_scale, other.m_scale) &&
-                rex::is_identical(m_rotation, other.m_rotation);
+        return rex::is_identical(m_position, other.m_position) && rex::is_identical(m_scale, other.m_scale) && rex::is_identical(m_rotation, other.m_rotation);
     }
     //-------------------------------------------------------------------------
     bool Transform::operator!=(const Transform& other) const

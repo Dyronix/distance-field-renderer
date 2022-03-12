@@ -23,11 +23,11 @@ namespace rex
             TextureCube(TextureCubeDescription&& desc);
             ~TextureCube() override;
 
-            void                    invalidate() override;
-            void                    invalidate(TextureCubeDescription&& desc) override;
-            void                    release() override;
+            void invalidate() override;
+            void invalidate(TextureCubeDescription&& desc) override;
+            void release() override;
 
-            const StringID&         get_name() const override;
+            const StringID& get_name() const override;
 
             TextureCubeDescription get_description(CopyImageData copyImageData = CopyImageData::NO) const;
 
@@ -46,13 +46,13 @@ namespace rex
             void set_filter(const Texture::Filter& textureFilter) override;
             void set_format(const Texel& texelFormat, const Texture::Format& textureFormat) override;
 
-            void                    bind(IsRenderThread isRenderThread = IsRenderThread::NO) const override;
-            void                    unbind(IsRenderThread isRenderThread = IsRenderThread::NO) const override;
+            void bind(IsRenderThread isRenderThread = IsRenderThread::NO) const override;
+            void unbind(IsRenderThread isRenderThread = IsRenderThread::NO) const override;
 
         private:
-            void                    assign_filter(const Filter& filter);
-            void                    assign_wrap(const Wrap& wrap);
-            void                    store_data_chunks(Texture::Data&& data);
+            void assign_filter(const Filter& filter);
+            void assign_wrap(const Wrap& wrap);
+            void store_data_chunks(Texture::Data&& data);
 
             StringID m_name;
 

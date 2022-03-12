@@ -5,8 +5,7 @@
 namespace rex
 {
     //-------------------------------------------------------------------------
-    StringEntry::StringEntry(const char* chars, size_t charCount) noexcept 
-        : m_characters(), m_size(charCount)
+    StringEntry::StringEntry(const char* chars, size_t charCount) noexcept : m_characters(), m_size(charCount)
     {
         m_characters.reset((char*)malloc(charCount + 1));
 
@@ -14,8 +13,7 @@ namespace rex
         std::memcpy(m_characters.get(), chars, charCount);
     }
     //-------------------------------------------------------------------------
-    StringEntry::StringEntry(StringEntry&& other) noexcept 
-        : m_characters(std::move(other.m_characters)), m_size(std::move(other.m_size))
+    StringEntry::StringEntry(StringEntry&& other) noexcept : m_characters(std::move(other.m_characters)), m_size(std::move(other.m_size))
     {
     }
 

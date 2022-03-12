@@ -61,8 +61,7 @@ namespace rex
             {
                 auto color_attachment = RenderTarget::create(std::move(descriptions[i]));
 
-                opengl::framebuffer_texture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + (offset * i), GL_TEXTURE_2D, color_attachment->get_id(),
-                                              0);
+                opengl::framebuffer_texture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + (offset * i), GL_TEXTURE_2D, color_attachment->get_id(), 0);
 
                 color_attachments.push_back(std::move(color_attachment));
             }
@@ -216,8 +215,7 @@ namespace rex
         const std::vector<ref_ptr<Texture>> FrameBuffer::get_color_attachments() const
         {
             std::vector<ref_ptr<Texture>> color_attachments;
-            std::transform(std::begin(m_color_attachments), std::end(m_color_attachments), std::back_inserter(color_attachments),
-                           [](const auto& attachment)
+            std::transform(std::begin(m_color_attachments), std::end(m_color_attachments), std::back_inserter(color_attachments), [](const auto& attachment)
                            {
                                return ref_ptr<Texture>(attachment);
                            });
@@ -271,12 +269,7 @@ namespace rex
             else
             {
                 ref_ptr<FrameBuffer> instance(this);
-                Renderer::submit([
-                    instance,
-                    color_descriptions = std::move(colorDescriptions),
-                    depth_description = std::move(depthDescription),
-                    depthAttachmentOption
-                ]() mutable
+                Renderer::submit([ instance, color_descriptions = std::move(colorDescriptions), depth_description = std::move(depthDescription), depthAttachmentOption ]() mutable
                                  {
                                      RENDERER_INFO("Executing - Creating Framebuffer: {0}", instance->m_name.to_string());
 

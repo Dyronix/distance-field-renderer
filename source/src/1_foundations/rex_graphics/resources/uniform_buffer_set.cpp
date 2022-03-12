@@ -7,8 +7,8 @@
 namespace rex
 {
     //-------------------------------------------------------------------------
-    rex::UniformBufferSet*  UniformBufferSet::s_instance        = nullptr;
-    std::vector<int32>      UniformBufferSet::s_binding_points  = {};
+    rex::UniformBufferSet* UniformBufferSet::s_instance = nullptr;
+    std::vector<int32> UniformBufferSet::s_binding_points = {};
 
     //-------------------------------------------------------------------------
     int32 generate_unique_binding_point(int32 bindingPoint)
@@ -94,15 +94,12 @@ namespace rex
 
         auto& buffers = m_uniform_buffers.at(frame);
 
-        auto it = std::find_if(std::cbegin(buffers), std::cend(buffers),
-            [binding](const auto& pair)
-            {
-                return pair.second->get_binding() == binding;
-            });
+        auto it = std::find_if(std::cbegin(buffers), std::cend(buffers), [binding](const auto& pair)
+                               {
+                                   return pair.second->get_binding() == binding;
+                               });
 
-        return it != std::cend(buffers)
-            ? it->second
-            : nullptr;
+        return it != std::cend(buffers) ? it->second : nullptr;
     }
     //-------------------------------------------------------------------------
     ref_ptr<UniformBuffer> UniformBufferSet::get(const StringID& name, uint32 frame) const
@@ -111,15 +108,12 @@ namespace rex
 
         auto& buffers = m_uniform_buffers.at(frame);
 
-        auto it = std::find_if(std::cbegin(buffers), std::cend(buffers),
-            [name](const auto& pair)
-            {
-                return pair.second->get_name() == name;
-            });
+        auto it = std::find_if(std::cbegin(buffers), std::cend(buffers), [name](const auto& pair)
+                               {
+                                   return pair.second->get_name() == name;
+                               });
 
-        return it != std::cend(buffers)
-            ? it->second
-            : nullptr;
+        return it != std::cend(buffers) ? it->second : nullptr;
     }
 
     //-------------------------------------------------------------------------
@@ -133,11 +127,10 @@ namespace rex
                 continue;
             }
 
-            auto it = std::find_if(std::cbegin(pair.second), std::cend(pair.second),
-                [binding = block.get_binding()](const auto& child_pair)
-                {
-                    return child_pair.second->get_binding() == binding;
-                });
+            auto it = std::find_if(std::cbegin(pair.second), std::cend(pair.second), [binding = block.get_binding()](const auto& child_pair)
+                                   {
+                                       return child_pair.second->get_binding() == binding;
+                                   });
 
             if (it != std::cend(pair.second))
             {

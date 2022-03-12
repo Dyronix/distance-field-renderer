@@ -19,43 +19,43 @@ namespace rex
     }
     //-------------------------------------------------------------------------
     Texture2DDescription::Texture2DDescription(Texture2DDescription&& other) noexcept : name(std::move(other.name)),
-                                                                    width(std::move(other.width)),
-                                                                    height(std::move(other.height)),
-                                                                    texel_format(std::move(other.texel_format)),
-                                                                    usage(std::move(other.usage)),
-                                                                    format(std::move(other.format)),
-                                                                    wraps(std::move(other.wraps)),
-                                                                    filters(std::move(other.filters)),
-                                                                    data(std::move(other.data))
+                                                                                        width(std::move(other.width)),
+                                                                                        height(std::move(other.height)),
+                                                                                        texel_format(std::move(other.texel_format)),
+                                                                                        usage(std::move(other.usage)),
+                                                                                        format(std::move(other.format)),
+                                                                                        wraps(std::move(other.wraps)),
+                                                                                        filters(std::move(other.filters)),
+                                                                                        data(std::move(other.data))
     {
     }
 
     //-------------------------------------------------------------------------
     Texture2DDescription& Texture2DDescription::operator=(Texture2DDescription&& other) noexcept
+    {
+        // Guard self assignment
+        if (this == &other)
         {
-            // Guard self assignment
-            if (this == &other)
-            {
-                return *this;
-            }
-
-            this->name = std::move(other.name);
-
-            this->width = std::move(other.width);
-            this->height = std::move(other.height);
-
-            this->texel_format = std::move(other.texel_format);
-
-            this->usage = std::move(other.usage);
-            this->format = std::move(other.format);
-
-            this->wraps = std::move(other.wraps);
-            this->filters = std::move(other.filters);
-
-            this->data = std::move(other.data);
-
             return *this;
         }
+
+        this->name = std::move(other.name);
+
+        this->width = std::move(other.width);
+        this->height = std::move(other.height);
+
+        this->texel_format = std::move(other.texel_format);
+
+        this->usage = std::move(other.usage);
+        this->format = std::move(other.format);
+
+        this->wraps = std::move(other.wraps);
+        this->filters = std::move(other.filters);
+
+        this->data = std::move(other.data);
+
+        return *this;
+    }
 
     //-------------------------------------------------------------------------
     Texel::Format get_texel_format(Texture::Format textureFormat)

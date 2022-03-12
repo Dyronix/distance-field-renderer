@@ -22,8 +22,8 @@ namespace rex
         //-------------------------------------------------------------------------
         using ActiveTextureVector = std::vector<ActiveTexture>;
 
-        uint32                  g_max_texture_count     = 0;
-        ActiveTextureVector     g_activated_textures    = {};
+        uint32 g_max_texture_count = 0;
+        ActiveTextureVector g_activated_textures = {};
 
         //-------------------------------------------------------------------------
         TextureResourceManagerAPI::TextureResourceManagerAPI(uint32 maxTextureCount)
@@ -65,10 +65,10 @@ namespace rex
                 else
                 {
                     Renderer::submit([available_slot, texture]()
-                        {
-                            opengl::activate_texture(available_slot);
-                            texture->bind(IsRenderThread::YES);
-                        });
+                                     {
+                                         opengl::activate_texture(available_slot);
+                                         texture->bind(IsRenderThread::YES);
+                                     });
                 }
 
                 ActiveTexture activate_texture;
@@ -83,11 +83,10 @@ namespace rex
         //-------------------------------------------------------------------------
         void TextureResourceManagerAPI::deactivate_texture(const ref_ptr<rex::Texture>& texture, IsRenderThread rt)
         {
-            auto it = std::find_if(std::cbegin(g_activated_textures), std::cend(g_activated_textures),
-                [id = texture->get_id()](const ActiveTexture& activeTexture)
-                {
-                    return id == activeTexture.texture_id;
-                });
+            auto it = std::find_if(std::cbegin(g_activated_textures), std::cend(g_activated_textures), [id = texture->get_id()](const ActiveTexture& activeTexture)
+                                   {
+                                       return id == activeTexture.texture_id;
+                                   });
 
             if (it == std::cend(g_activated_textures))
             {
@@ -102,11 +101,11 @@ namespace rex
             }
             else
             {
-                Renderer::submit([available_slot = it->texture_slot, texture = it->texture]()
-                    {
-                        opengl::activate_texture(available_slot);
-                        texture->unbind(IsRenderThread::YES);
-                    });
+                Renderer::submit([ available_slot = it->texture_slot, texture = it->texture ]()
+                                 {
+                                     opengl::activate_texture(available_slot);
+                                     texture->unbind(IsRenderThread::YES);
+                                 });
             }
 
             g_activated_textures.erase(it);
@@ -123,6 +122,5 @@ namespace rex
 
             g_activated_textures.clear();
         }
-
     }
 }

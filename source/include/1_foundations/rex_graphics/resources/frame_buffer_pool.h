@@ -19,19 +19,55 @@ namespace rex
         virtual ~FrameBufferPool();
 
         //
-        inline PoolIt                 begin() { return m_framebuffer_pool.begin(); }
-        inline ConstPoolIt            begin() const { return m_framebuffer_pool.begin(); }
-        inline ConstPoolIt            cbegin() const { return begin(); }
-        inline PoolIt                 end() { return m_framebuffer_pool.end(); }
-        inline ConstPoolIt            end() const { return m_framebuffer_pool.end(); }
-        inline ConstPoolIt            cend() const { return end(); }
+        inline PoolIt begin()
+        {
+            return m_framebuffer_pool.begin();
+        }
+        inline ConstPoolIt begin() const
+        {
+            return m_framebuffer_pool.begin();
+        }
+        inline ConstPoolIt cbegin() const
+        {
+            return begin();
+        }
+        inline PoolIt end()
+        {
+            return m_framebuffer_pool.end();
+        }
+        inline ConstPoolIt end() const
+        {
+            return m_framebuffer_pool.end();
+        }
+        inline ConstPoolIt cend() const
+        {
+            return end();
+        }
 
-        inline ReversePoolIt          rbegin() { return m_framebuffer_pool.rbegin(); }
-        inline ConstReversePoolIt     rbegin() const { return m_framebuffer_pool.rbegin(); }
-        inline ConstReversePoolIt     crbegin() const { return rbegin(); }
-        inline ReversePoolIt          rend() { return m_framebuffer_pool.rend(); }
-        inline ConstReversePoolIt     rend() const { return rend(); }
-        inline ConstReversePoolIt     crend() const { return m_framebuffer_pool.crend(); }
+        inline ReversePoolIt rbegin()
+        {
+            return m_framebuffer_pool.rbegin();
+        }
+        inline ConstReversePoolIt rbegin() const
+        {
+            return m_framebuffer_pool.rbegin();
+        }
+        inline ConstReversePoolIt crbegin() const
+        {
+            return rbegin();
+        }
+        inline ReversePoolIt rend()
+        {
+            return m_framebuffer_pool.rend();
+        }
+        inline ConstReversePoolIt rend() const
+        {
+            return rend();
+        }
+        inline ConstReversePoolIt crend() const
+        {
+            return m_framebuffer_pool.crend();
+        }
 
         void clear();
         void add(const ref_ptr<FrameBuffer>& buffer);

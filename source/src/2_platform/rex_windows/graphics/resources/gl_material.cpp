@@ -26,9 +26,9 @@ namespace rex
         {
             //-------------------------------------------------------------------------
             Internal(ref_ptr<rex::ShaderProgram> shader, const StringID& name)
-                :material_shader(shader)
-                ,material_name(name)
-                ,flags((int32)MaterialFlag::None)
+                : material_shader(shader)
+                , material_name(name)
+                , flags((int32)MaterialFlag::None)
             {
                 if (shader == nullptr)
                 {
@@ -62,78 +62,78 @@ namespace rex
 
                     switch (uniform.get_type())
                     {
-                    case ShaderUniformType::BOOL:
-                    case ShaderUniformType::UNSIGNED_INT32:
-                    {
-                        const uint32_t value = memory::reader::read<uint32>(buffer, uniform.get_offset());
-                        material_shader->set_uniform(name, value, rt);
-                        break;
-                    }
-                    case ShaderUniformType::INT32:
-                    {
-                        const int value = memory::reader::read<int32>(buffer, uniform.get_offset());
-                        material_shader->set_uniform(name, value, rt);
-                        break;
-                    }
-                    case ShaderUniformType::IVEC2:
-                    {
-                        const rex::vec2i& value = memory::reader::read<rex::vec2i>(buffer, uniform.get_offset());
-                        material_shader->set_uniform(name, value, rt);
-                        break;
-                    }
-                    case ShaderUniformType::IVEC3:
-                    {
-                        const rex::vec3i& value = memory::reader::read<rex::vec3i>(buffer, uniform.get_offset());
-                        material_shader->set_uniform(name, value, rt);
-                        break;
-                    }
-                    case ShaderUniformType::IVEC4:
-                    {
-                        const rex::vec4i& value = memory::reader::read<rex::vec4i>(buffer, uniform.get_offset());
-                        material_shader->set_uniform(name, value, rt);
-                        break;
-                    }
-                    case ShaderUniformType::FLOAT32:
-                    {
-                        const float value = memory::reader::read<float>(buffer, uniform.get_offset());
-                        material_shader->set_uniform(name, value, rt);
-                        break;
-                    }
-                    case ShaderUniformType::VEC2:
-                    {
-                        const rex::vec2& value = memory::reader::read<rex::vec2>(buffer, uniform.get_offset());
-                        material_shader->set_uniform(name, value, rt);
-                        break;
-                    }
-                    case ShaderUniformType::VEC3:
-                    {
-                        const rex::vec3& value = memory::reader::read<rex::vec3>(buffer, uniform.get_offset());
-                        material_shader->set_uniform(name, value, rt);
-                        break;
-                    }
-                    case ShaderUniformType::VEC4:
-                    {
-                        const rex::vec4& value = memory::reader::read<rex::vec4>(buffer, uniform.get_offset());
-                        material_shader->set_uniform(name, value, rt);
-                        break;
-                    }
-                    case ShaderUniformType::MAT3:
-                    {
-                        const rex::matrix3& value = memory::reader::read<rex::matrix3>(buffer, uniform.get_offset());
-                        material_shader->set_uniform(name, value, rt);
-                        break;
-                    }
-                    case ShaderUniformType::MAT4:
-                    {
-                        const rex::matrix4& value = memory::reader::read<rex::matrix4>(buffer, uniform.get_offset());
-                        material_shader->set_uniform(name, value, rt);
-                        break;
-                    }
-                    default:
-                    {
-                        R_WARN("Shader Uniform Type: \"{0}\" is not a uniform type", conversions::to_display_string(uniform.get_type()));
-                        break;
-                    }
+                        case ShaderUniformType::BOOL:
+                        case ShaderUniformType::UNSIGNED_INT32:
+                        {
+                            const uint32_t value = memory::reader::read<uint32>(buffer, uniform.get_offset());
+                            material_shader->set_uniform(name, value, rt);
+                            break;
+                        }
+                        case ShaderUniformType::INT32:
+                        {
+                            const int value = memory::reader::read<int32>(buffer, uniform.get_offset());
+                            material_shader->set_uniform(name, value, rt);
+                            break;
+                        }
+                        case ShaderUniformType::IVEC2:
+                        {
+                            const rex::vec2i& value = memory::reader::read<rex::vec2i>(buffer, uniform.get_offset());
+                            material_shader->set_uniform(name, value, rt);
+                            break;
+                        }
+                        case ShaderUniformType::IVEC3:
+                        {
+                            const rex::vec3i& value = memory::reader::read<rex::vec3i>(buffer, uniform.get_offset());
+                            material_shader->set_uniform(name, value, rt);
+                            break;
+                        }
+                        case ShaderUniformType::IVEC4:
+                        {
+                            const rex::vec4i& value = memory::reader::read<rex::vec4i>(buffer, uniform.get_offset());
+                            material_shader->set_uniform(name, value, rt);
+                            break;
+                        }
+                        case ShaderUniformType::FLOAT32:
+                        {
+                            const float value = memory::reader::read<float>(buffer, uniform.get_offset());
+                            material_shader->set_uniform(name, value, rt);
+                            break;
+                        }
+                        case ShaderUniformType::VEC2:
+                        {
+                            const rex::vec2& value = memory::reader::read<rex::vec2>(buffer, uniform.get_offset());
+                            material_shader->set_uniform(name, value, rt);
+                            break;
+                        }
+                        case ShaderUniformType::VEC3:
+                        {
+                            const rex::vec3& value = memory::reader::read<rex::vec3>(buffer, uniform.get_offset());
+                            material_shader->set_uniform(name, value, rt);
+                            break;
+                        }
+                        case ShaderUniformType::VEC4:
+                        {
+                            const rex::vec4& value = memory::reader::read<rex::vec4>(buffer, uniform.get_offset());
+                            material_shader->set_uniform(name, value, rt);
+                            break;
+                        }
+                        case ShaderUniformType::MAT3:
+                        {
+                            const rex::matrix3& value = memory::reader::read<rex::matrix3>(buffer, uniform.get_offset());
+                            material_shader->set_uniform(name, value, rt);
+                            break;
+                        }
+                        case ShaderUniformType::MAT4:
+                        {
+                            const rex::matrix4& value = memory::reader::read<rex::matrix4>(buffer, uniform.get_offset());
+                            material_shader->set_uniform(name, value, rt);
+                            break;
+                        }
+                        default:
+                        {
+                            R_WARN("Shader Uniform Type: \"{0}\" is not a uniform type", conversions::to_display_string(uniform.get_type()));
+                            break;
+                        }
                     }
                 }
             }
@@ -158,54 +158,54 @@ namespace rex
 
                     switch (resource.get_type())
                     {
-                    case ShaderUniformType::SAMPLER2D:
-                    {
-                        if (resource_register > texture_units)
+                        case ShaderUniformType::SAMPLER2D:
                         {
-                            R_WARN("Resource with name: {0}, not set. Sampler Location ( {1} ) > Max Texture Units ( {2} )", resource_name.to_string(), resource_register, texture_units);
+                            if (resource_register > texture_units)
+                            {
+                                R_WARN("Resource with name: {0}, not set. Sampler Location ( {1} ) > Max Texture Units ( {2} )", resource_name.to_string(), resource_register, texture_units);
+                                break;
+                            }
+
+                            R_TRACE("[Material: {0}] Binding texture 2D with name {1} to slot {2}", material_name.to_string(), resource_name.to_string(), resource_register);
+
+                            material_shader->set_uniform(resource_name, resource_register, rt);
+                            TextureResourceManager::activate_texture(ref_ptr<Texture>(textures[resource_register]), resource_register, rt);
+                            break;
+                        }
+                        case ShaderUniformType::SAMPLER3D:
+                        {
+                            if (resource_register > texture_units)
+                            {
+                                R_WARN("Resource with name: {0}, not set. Sampler Location ( {1} ) > Max Texture Units ( { 2 } )", resource_name.to_string(), resource_register, texture_units);
+                                break;
+                            }
+
+                            R_TRACE("[Material: {0}] Binding texture 3D with name {1} to slot {2}", material_name.to_string(), resource_name.to_string(), resource_register);
+
+                            material_shader->set_uniform(resource_name, resource_register, rt);
+                            TextureResourceManager::activate_texture(ref_ptr<Texture>(textures[resource_register]), resource_register, rt);
+                            break;
+                        }
+                        case ShaderUniformType::SAMPLERCUBE:
+                        {
+                            if (resource_register > texture_units)
+                            {
+                                R_WARN("Resource with name: {0}, not set. Sampler Location ( {1} ) > Max Texture Units ( { 2 } )", resource_name.to_string(), resource_register, texture_units);
+                                break;
+                            }
+
+                            R_TRACE("[Material: {0}] Binding texture CUBE with name {1} to slot {2}", material_name.to_string(), resource_name.to_string(), resource_register);
+
+                            material_shader->set_uniform(resource_name, resource_register, rt);
+                            TextureResourceManager::activate_texture(ref_ptr<Texture>(texture_cubes[resource_register]), resource_register, rt);
                             break;
                         }
 
-                        R_TRACE("[Material: {0}] Binding texture 2D with name {1} to slot {2}", material_name.to_string(), resource_name.to_string(), resource_register);
-
-                        material_shader->set_uniform(resource_name, resource_register, rt);
-                        TextureResourceManager::activate_texture(ref_ptr<Texture>(textures[resource_register]), resource_register, rt);
-                        break;
-                    }
-                    case ShaderUniformType::SAMPLER3D:
-                    {
-                        if (resource_register > texture_units)
+                        default:
                         {
-                            R_WARN("Resource with name: {0}, not set. Sampler Location ( {1} ) > Max Texture Units ( { 2 } )", resource_name.to_string(), resource_register, texture_units);
+                            R_WARN("Shader Uniform Type: \"{0}\" is not a resource type", conversions::to_display_string(resource.get_type()));
                             break;
                         }
-
-                        R_TRACE("[Material: {0}] Binding texture 3D with name {1} to slot {2}", material_name.to_string(), resource_name.to_string(), resource_register);
-
-                        material_shader->set_uniform(resource_name, resource_register, rt);
-                        TextureResourceManager::activate_texture(ref_ptr<Texture>(textures[resource_register]), resource_register, rt);
-                        break;
-                    }
-                    case ShaderUniformType::SAMPLERCUBE:
-                    {
-                        if (resource_register > texture_units)
-                        {
-                            R_WARN("Resource with name: {0}, not set. Sampler Location ( {1} ) > Max Texture Units ( { 2 } )", resource_name.to_string(), resource_register, texture_units);
-                            break;
-                        }
-
-                        R_TRACE("[Material: {0}] Binding texture CUBE with name {1} to slot {2}", material_name.to_string(), resource_name.to_string(), resource_register);
-
-                        material_shader->set_uniform(resource_name, resource_register, rt);
-                        TextureResourceManager::activate_texture(ref_ptr<Texture>(texture_cubes[resource_register]), resource_register, rt);
-                        break;
-                    }
-
-                    default:
-                    {
-                        R_WARN("Shader Uniform Type: \"{0}\" is not a resource type", conversions::to_display_string(resource.get_type()));
-                        break;
-                    }
                     }
                 }
             }
@@ -249,7 +249,7 @@ namespace rex
             }
 
             //-------------------------------------------------------------------------
-            template<typename T>
+            template <typename T>
             void set(const StringID& name, const T& value)
             {
                 const auto& decl = find_uniform_declaration(name);
@@ -306,7 +306,7 @@ namespace rex
             }
 
             //-------------------------------------------------------------------------
-            template<typename T>
+            template <typename T>
             T get(const StringID& name)
             {
                 const auto& decl = find_resource_declaration(name);
@@ -325,7 +325,7 @@ namespace rex
                 }
 
                 uint32 slot = decl.get_register();
-                
+
                 R_ASSERT_X(slot < textures.size(), "Texture slot is invalid!");
 
                 return textures[slot];
@@ -361,14 +361,12 @@ namespace rex
 
         //-------------------------------------------------------------------------
         Material::Material(ref_ptr<rex::ShaderProgram> shader, const StringID& name)
-            :m_internal(rex::make_internal_scope_ptr<Internal>(shader, name))
+            : m_internal(rex::make_internal_scope_ptr<Internal>(shader, name))
         {
-
         }
         //-------------------------------------------------------------------------
         Material::~Material()
         {
-
         }
 
         //-------------------------------------------------------------------------

@@ -5,7 +5,7 @@
 namespace rex
 {
     class Texture;
-    
+
     class TextureResourceManager
     {
     public:

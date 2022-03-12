@@ -19,33 +19,33 @@ namespace rex
     std::unique_ptr<ResourcesAPI> g_resources_api = nullptr;
 
     //-------------------------------------------------------------------------
-    void ResourceFactory::initialize(std::unique_ptr<ResourcesAPI> api) 
+    void ResourceFactory::initialize(std::unique_ptr<ResourcesAPI> api)
     {
         g_resources_api = std::move(api);
     }
     //-------------------------------------------------------------------------
-    void ResourceFactory::shutdown() 
+    void ResourceFactory::shutdown()
     {
         g_resources_api.reset();
     }
 
     //-------------------------------------------------------------------------
-    ref_ptr<rex::Texture> ResourceFactory::create_texture2d(const StringID& name, const Texture::Usage &textureUsage)
+    ref_ptr<rex::Texture> ResourceFactory::create_texture2d(const StringID& name, const Texture::Usage& textureUsage)
     {
         return g_resources_api->create_texture2d(name, textureUsage);
     }
     //-------------------------------------------------------------------------
-    ref_ptr<rex::Texture> ResourceFactory::create_texture2d(uint32 width, uint32 height, const StringID& name, const Texture::Usage &textureUsage)
+    ref_ptr<rex::Texture> ResourceFactory::create_texture2d(uint32 width, uint32 height, const StringID& name, const Texture::Usage& textureUsage)
     {
         return g_resources_api->create_texture2d(width, height, name, textureUsage);
     }
     //-------------------------------------------------------------------------
-    ref_ptr<rex::Texture> ResourceFactory::create_texture2d(Texture::Data&& textureData, uint32 width, uint32 height, const StringID& name, const Texture::Usage &textureUsage)
+    ref_ptr<rex::Texture> ResourceFactory::create_texture2d(Texture::Data&& textureData, uint32 width, uint32 height, const StringID& name, const Texture::Usage& textureUsage)
     {
         return g_resources_api->create_texture2d(std::move(textureData), width, height, name, textureUsage);
     }
     //-------------------------------------------------------------------------
-    ref_ptr<rex::Texture> ResourceFactory::create_texture2d(void *textureData, size_t textureDataSize, uint32 width, uint32 height, const StringID& name, const Texture::Usage &textureUsage)
+    ref_ptr<rex::Texture> ResourceFactory::create_texture2d(void* textureData, size_t textureDataSize, uint32 width, uint32 height, const StringID& name, const Texture::Usage& textureUsage)
     {
         return g_resources_api->create_texture2d(textureData, textureDataSize, width, height, name, textureUsage);
     }
@@ -56,17 +56,17 @@ namespace rex
     }
 
     //-------------------------------------------------------------------------
-    ref_ptr<rex::Texture> ResourceFactory::create_texture3d(const StringID& name, const Texture::Usage &textureUsage)
+    ref_ptr<rex::Texture> ResourceFactory::create_texture3d(const StringID& name, const Texture::Usage& textureUsage)
     {
         return g_resources_api->create_texture3d(name, textureUsage);
     }
     //-------------------------------------------------------------------------
-    ref_ptr<rex::Texture> ResourceFactory::create_texture3d(uint32 width, uint32 height, uint32 depth, const StringID& name, const Texture::Usage &textureUsage)
+    ref_ptr<rex::Texture> ResourceFactory::create_texture3d(uint32 width, uint32 height, uint32 depth, const StringID& name, const Texture::Usage& textureUsage)
     {
         return g_resources_api->create_texture3d(width, height, depth, name, textureUsage);
     }
     //-------------------------------------------------------------------------
-    ref_ptr<rex::Texture> ResourceFactory::create_texture3d(Texture::Data&& textureData, uint32 width, uint32 height, uint32 depth, const StringID& name, const Texture::Usage &textureUsage)
+    ref_ptr<rex::Texture> ResourceFactory::create_texture3d(Texture::Data&& textureData, uint32 width, uint32 height, uint32 depth, const StringID& name, const Texture::Usage& textureUsage)
     {
         return g_resources_api->create_texture3d(std::move(textureData), width, height, depth, name, textureUsage);
     }
@@ -92,7 +92,8 @@ namespace rex
         return g_resources_api->create_texture_cube(std::move(textureData), width, height, name, textureUsage);
     }
     //-------------------------------------------------------------------------
-    rex::ref_ptr<rex::TextureCube> ResourceFactory::create_texture_cube(void* textureData, size_t textureDataSize, uint32 width, uint32 height, const StringID& name /*= ESID::SID_None*/, const Texture::Usage& textureUsage /*= Texture::Usage::UNSPECIFIED*/)
+    rex::ref_ptr<rex::TextureCube> ResourceFactory::create_texture_cube(void* textureData, size_t textureDataSize, uint32 width, uint32 height, const StringID& name /*= ESID::SID_None*/,
+                                                                        const Texture::Usage& textureUsage /*= Texture::Usage::UNSPECIFIED*/)
     {
         return g_resources_api->create_texture_cube(textureData, textureDataSize, width, height, name, textureUsage);
     }
@@ -109,7 +110,7 @@ namespace rex
     }
 
     //-------------------------------------------------------------------------
-    ref_ptr<rex::FrameBuffer> ResourceFactory::create_frame_buffer(FrameBufferDescription&& description, FrameBufferDepthAttachmentOption depthAttachmentOption) 
+    ref_ptr<rex::FrameBuffer> ResourceFactory::create_frame_buffer(FrameBufferDescription&& description, FrameBufferDepthAttachmentOption depthAttachmentOption)
     {
         return g_resources_api->create_frame_buffer(std::move(description), depthAttachmentOption);
     }

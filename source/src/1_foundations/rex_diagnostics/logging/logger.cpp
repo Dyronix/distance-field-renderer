@@ -27,10 +27,8 @@ namespace rex
         //-------------------------------------------------------------------------
         LogLevelMap get_log_levels()
         {
-            return {{rex::LogLevel::OFF, spdlog::level::off},    {rex::LogLevel::FATAL, spdlog::level::critical},
-                    {rex::LogLevel::ERROR, spdlog::level::err},  {rex::LogLevel::WARN, spdlog::level::warn},
-                    {rex::LogLevel::INFO, spdlog::level::info},  {rex::LogLevel::DEBUG, spdlog::level::debug},
-                    {rex::LogLevel::TRACE, spdlog::level::trace}};
+            return {{rex::LogLevel::OFF, spdlog::level::off},   {rex::LogLevel::FATAL, spdlog::level::critical}, {rex::LogLevel::ERROR, spdlog::level::err},  {rex::LogLevel::WARN, spdlog::level::warn},
+                    {rex::LogLevel::INFO, spdlog::level::info}, {rex::LogLevel::DEBUG, spdlog::level::debug},    {rex::LogLevel::TRACE, spdlog::level::trace}};
         }
 
         //-------------------------------------------------------------------------

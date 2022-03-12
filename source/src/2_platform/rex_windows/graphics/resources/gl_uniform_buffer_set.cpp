@@ -9,15 +9,13 @@ namespace rex
     {
         //-------------------------------------------------------------------------
         UniformBufferSet::UniformBufferSet(uint32 maxFrames /*= 3u*/)
-            :rex::UniformBufferSet(maxFrames)
+            : rex::UniformBufferSet(maxFrames)
         {
-
         }
 
         //-------------------------------------------------------------------------
         UniformBufferSet::~UniformBufferSet()
         {
-
         }
 
         //-------------------------------------------------------------------------

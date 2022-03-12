@@ -42,7 +42,8 @@ namespace rex
             return ref_ptr<rex::Texture>(make_ref<opengl::Texture2D>(std::move(textureData), width, height, name, textureUsage));
         }
         //-------------------------------------------------------------------------
-        ref_ptr<rex::Texture> ResourcesAPI::create_texture2d(void* textureData, size_t textureDataSize, uint32 width, uint32 height, const StringID& name /* = ESID::SID_None */, const Texture::Usage& textureUsage /*= Texture::Usage::UNSPECIFIED*/) const
+        ref_ptr<rex::Texture> ResourcesAPI::create_texture2d(void* textureData, size_t textureDataSize, uint32 width, uint32 height, const StringID& name /* = ESID::SID_None */,
+                                                             const Texture::Usage& textureUsage /*= Texture::Usage::UNSPECIFIED*/) const
         {
             return create_texture2d(memory::make_blob(reinterpret_cast<memory::byte*>(textureData), textureDataSize), width, height, name, textureUsage);
         }
@@ -89,7 +90,8 @@ namespace rex
             return ref_ptr<rex::TextureCube>(make_ref<opengl::TextureCube>(std::move(textureData), width, height, name, textureUsage));
         }
         //-------------------------------------------------------------------------
-        rex::ref_ptr<rex::TextureCube> ResourcesAPI::create_texture_cube(void* textureData, size_t textureDataSize, uint32 width, uint32 height, const StringID& name /*= ESID::SID_None*/, const Texture::Usage& textureUsage /*= Texture::Usage::UNSPECIFIED*/) const
+        rex::ref_ptr<rex::TextureCube> ResourcesAPI::create_texture_cube(void* textureData, size_t textureDataSize, uint32 width, uint32 height, const StringID& name /*= ESID::SID_None*/,
+                                                                         const Texture::Usage& textureUsage /*= Texture::Usage::UNSPECIFIED*/) const
         {
             return create_texture_cube(memory::make_blob(reinterpret_cast<memory::byte*>(textureData), textureDataSize), width, height, name, textureUsage);
         }

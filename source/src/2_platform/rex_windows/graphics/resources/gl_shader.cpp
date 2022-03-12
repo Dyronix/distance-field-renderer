@@ -15,10 +15,8 @@ namespace rex
         {
             switch (type)
             {
-            case ShaderType::FRAGMENT:
-                return "Fragment shader";
-            case ShaderType::VERTEX:
-                return "Vertex shader";
+                case ShaderType::FRAGMENT: return "Fragment shader";
+                case ShaderType::VERTEX: return "Vertex shader";
             }
 
             R_ASSERT_X(false, "Invalid shader type");
@@ -31,11 +29,9 @@ namespace rex
             uint32 shader_type = 0;
             switch (type)
             {
-            case ShaderType::VERTEX: shader_type = GL_VERTEX_SHADER; break;
-            case ShaderType::FRAGMENT: shader_type = GL_FRAGMENT_SHADER; break;
-            default:
-                R_ERROR("Unsupported shader type");
-                return 0;
+                case ShaderType::VERTEX: shader_type = GL_VERTEX_SHADER; break;
+                case ShaderType::FRAGMENT: shader_type = GL_FRAGMENT_SHADER; break;
+                default: R_ERROR("Unsupported shader type"); return 0;
             }
 
             // Read our shaders into the appropriate buffers
@@ -44,8 +40,8 @@ namespace rex
 
             // Send the vertex shader source code to GL
             // Note that std::string's .c_str is NULL character terminated.
-            //const char* source_cstr = data;
-            //GLint source_length = source.size();
+            // const char* source_cstr = data;
+            // GLint source_length = source.size();
             opengl::shader_source(shader_id, 1, (const int8**)&data, 0);
 
             // Compile the vertex shader
@@ -74,15 +70,15 @@ namespace rex
 
                 return 0;
             }
-            
-            return shader_id;            
+
+            return shader_id;
         }
 
         //-------------------------------------------------------------------------
         Shader::Shader(ShaderType type, const memory::byte* data, size_t dataSize)
-            :m_shader_id(0)
+            : m_shader_id(0)
         {
-    	    m_shader_id = compile(type, data, dataSize);
+            m_shader_id = compile(type, data, dataSize);
         }
         //-------------------------------------------------------------------------
         Shader::~Shader()

@@ -15,8 +15,11 @@ namespace rex
         public:
             ~Shader();
 
-            //implicit conversion
-            operator uint32() const { return m_shader_id; }
+            // implicit conversion
+            operator uint32() const
+            {
+                return m_shader_id;
+            }
 
         protected:
             Shader(ShaderType type, const memory::byte* data, size_t dataSize);
@@ -29,15 +32,17 @@ namespace rex
         {
         public:
             VertexShader(const memory::byte* data, size_t dataSize)
-                :Shader(ShaderType::VERTEX, data, dataSize)
-            {}
+                : Shader(ShaderType::VERTEX, data, dataSize)
+            {
+            }
         };
         class FragmentShader : public Shader
         {
         public:
             FragmentShader(const memory::byte* data, size_t dataSize)
-                :Shader(ShaderType::FRAGMENT, data, dataSize)
-            {}
+                : Shader(ShaderType::FRAGMENT, data, dataSize)
+            {
+            }
         };
     }
 }

@@ -22,7 +22,7 @@ namespace rex
     struct FrameBufferDescription;
 
     enum class BufferUsage;
-    enum class FrameBufferDepthAttachmentOption;    
+    enum class FrameBufferDepthAttachmentOption;
 
     class ResourcesAPI
     {

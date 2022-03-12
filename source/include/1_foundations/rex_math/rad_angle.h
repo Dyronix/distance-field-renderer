@@ -7,7 +7,7 @@
 namespace rex
 {
     //-------------------------------------------------------------------------
-    template<typename T>
+    template <typename T>
     constexpr T rad2deg(T angle)
     {
         static_assert(std::numeric_limits<T>::is_iec559, "'degrees' only accept floating-point input");
@@ -34,7 +34,7 @@ namespace rex
 
         float get() const;
         float to_degree() const;
-        
+
         bool operator<(const RadAngle angle) const;
         bool operator<=(const RadAngle angle) const;
         bool operator>(const RadAngle angle) const;
@@ -59,7 +59,7 @@ namespace rex
 }
 
 //-------------------------------------------------------------------------
-inline rex::RadAngle operator "" _rad(long double angle)
+inline rex::RadAngle operator"" _rad(long double angle)
 {
     return rex::RadAngle((float)angle);
 }
