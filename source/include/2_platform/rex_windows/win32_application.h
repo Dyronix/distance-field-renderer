@@ -10,6 +10,7 @@ namespace rex
 
     class DisplayManager;
     class LayerStack;
+    class Layer;
 
     namespace events
     {
@@ -40,6 +41,8 @@ namespace rex
             void quit() override;
 
         protected:
+            void push_back_layer(std::unique_ptr<Layer> layer);
+
             bool platform_initialize() override;
             bool platform_shutdown() override;
 

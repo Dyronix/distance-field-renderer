@@ -74,6 +74,12 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
+        void Application::push_back_layer(std::unique_ptr<Layer> layer)
+        {
+            m_layer_stack->push(std::move(layer));
+        }
+
+        //-------------------------------------------------------------------------
         bool Application::platform_initialize()
         {
             /*
@@ -171,7 +177,7 @@ namespace rex
         {
             // Implement in derived class
         }
-        
+
         //-------------------------------------------------------------------------
         void Application::on_app_shutdown()
         {
