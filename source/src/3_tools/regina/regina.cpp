@@ -1,10 +1,13 @@
 #include "regina_pch.h"
 
 #include "entry_point.h"
+
 #include "regina.h"
 #include "regina_layer.h"
 
 #include "application_arguments.h"
+
+#include "core_window.h"
 
 //-----------------------------------------------------------------------
 rex::CoreApplication* rex::create_application(const ApplicationArguments& arguments)
@@ -40,7 +43,9 @@ namespace regina
     //-------------------------------------------------------------------------
     void Application::on_app_initialize()
     {
-        push_back_layer(std::make_unique<ReginaLayer>());
+        const rex::CoreWindow* window = get_window();
+
+        push_back_layer(std::make_unique<ReginaLayer>(window));
     }
 
 }
