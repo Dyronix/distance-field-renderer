@@ -2,6 +2,7 @@
 
 #include "entry_point.h"
 #include "regina.h"
+#include "regina_layer.h"
 
 #include "application_arguments.h"
 
@@ -34,4 +35,12 @@ namespace regina
     Application::~Application()
     {
     }
+
+
+    //-------------------------------------------------------------------------
+    void Application::on_app_initialize()
+    {
+        push_back_layer(std::make_unique<ReginaLayer>());
+    }
+
 }

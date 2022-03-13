@@ -9,5 +9,7 @@ namespace regina
     public:
         Application(const rex::ApplicationDescription& description);
         ~Application() override;
+
+        void on_app_initialize() override;
     };
 }
