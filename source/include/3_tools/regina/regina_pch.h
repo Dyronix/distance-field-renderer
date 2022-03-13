@@ -34,11 +34,22 @@
 #include <glm/gtc/matrix_access.hpp>
 #pragma warning(pop)
 
+#include "common.h"
+#include "geometric.h"
+
 #include "vec2.h"
 #include "vec3.h"
 #include "vec4.h"
 
 #include "matrix.h"
+#include "matrix_clip_space.h"
+#include "matrix_transform.h"
+
+#include "quaternion.h"
+#include "quaternion_geometric.h"
 
 #include "deg_angle.h"
 #include "rad_angle.h"
+
+#include "algorithms/clamp.h"
+#include "algorithms/identical.h"
