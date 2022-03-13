@@ -32,6 +32,7 @@ target_include_directories(regina PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_fo
 target_include_directories(regina PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_diagnostics)
 target_include_directories(regina PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_glad)
 target_include_directories(regina PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_hid)
+target_include_directories(regina PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_scenegraph)
 target_include_directories(regina PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_windows)
 
 # Set the link libraries
@@ -41,6 +42,7 @@ target_link_libraries(regina PUBLIC rex_utilities)
 target_link_libraries(regina PUBLIC rex_diagnostics)
 target_link_libraries(regina PUBLIC rex_glad)
 target_link_libraries(regina PUBLIC rex_hid)
+target_link_libraries(regina PUBLIC rex_scenegraph)
 target_link_libraries(regina PUBLIC rex_windows)
 
 
