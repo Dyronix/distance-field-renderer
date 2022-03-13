@@ -11,6 +11,8 @@ namespace rex
     class DisplayManager;
     class LayerStack;
     class Layer;
+    class CoreWindow;
+    class CoreContext;
 
     namespace events
     {
@@ -35,6 +37,9 @@ namespace rex
         public:
             Application(const ApplicationDescription& description);
             ~Application() override;
+
+            const CoreWindow* get_window() const;
+            const CoreContext* get_context() const;
 
             bool is_marked_for_destruction() const;
 

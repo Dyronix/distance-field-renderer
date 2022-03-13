@@ -56,6 +56,17 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
+        const CoreWindow* Application::get_window() const
+        {
+            return m_window.get();
+        }
+        //-------------------------------------------------------------------------
+        const CoreContext* Application::get_context() const
+        {
+            return m_context.get();
+        }
+
+        //-------------------------------------------------------------------------
         bool Application::is_marked_for_destruction() const
         {
             return m_is_marked_for_destruction;
