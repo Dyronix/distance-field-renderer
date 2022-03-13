@@ -27,16 +27,20 @@ add_executable(regina ${regina_LIBS_INC} ${regina_LIBS_SRC})
 # Set the include directories
 target_include_directories(regina PUBLIC ${CMAKE_SOURCE_DIR}/source/include/3_tools/regina)
 target_include_directories(regina PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_core)
+target_include_directories(regina PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_graphics)
 target_include_directories(regina PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_utilities)
 target_include_directories(regina PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_diagnostics)
 target_include_directories(regina PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_glad)
+target_include_directories(regina PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_hid)
 target_include_directories(regina PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_windows)
 
 # Set the link libraries
 target_link_libraries(regina PUBLIC rex_core)
+target_link_libraries(regina PUBLIC rex_graphics)
 target_link_libraries(regina PUBLIC rex_utilities)
 target_link_libraries(regina PUBLIC rex_diagnostics)
 target_link_libraries(regina PUBLIC rex_glad)
+target_link_libraries(regina PUBLIC rex_hid)
 target_link_libraries(regina PUBLIC rex_windows)
 
 
