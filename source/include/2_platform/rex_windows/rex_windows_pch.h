@@ -8,6 +8,7 @@
 #include <map>
 #include <unordered_map>
 #include <sstream>
+#include <ostream>
 
 #include <gsl/narrow>
 #include <gsl/pointers>

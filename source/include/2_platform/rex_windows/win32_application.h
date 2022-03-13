@@ -61,6 +61,7 @@ namespace rex
             void create_event_queue();
             void create_layer_stack();
             void create_window();
+            void create_input();
             void create_application_loop();
             void create_context();
 

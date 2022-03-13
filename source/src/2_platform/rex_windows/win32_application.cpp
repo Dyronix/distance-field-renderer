@@ -5,6 +5,8 @@
 #include "win32_window.h"
 #include "win32_context.h"
 
+#include "input/win32_input.h"
+
 #include "layer.h"
 #include "layer_stack.h"
 
@@ -104,6 +106,7 @@ namespace rex
                 create_layer_stack();
                 create_event_queue();
                 create_window();
+                create_input();
                 create_context();
                 create_application_loop();
 
@@ -146,6 +149,9 @@ namespace rex
 
             m_application_loop.reset();
             m_context.reset();
+
+            Input::destroy_instance();
+
             m_window.reset();
             m_display_manager.reset();
 
@@ -336,6 +342,11 @@ namespace rex
 
             R_INFO("Window ({0}, {1}) intialized.", m_window->get_width(), m_window->get_height());
             R_INFO("\tusing subsystem: {0}", sdl::convert_to_sdl_subsystem_string(m_window->get_sdl_window(), &g_sdl_system_info).to_string());
+        }
+        //-------------------------------------------------------------------------
+        void Application::create_input()
+        {
+            Input::create_instance(*m_window);
         }
 
         //-------------------------------------------------------------------------

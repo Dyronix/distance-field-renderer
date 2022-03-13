@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+
 #include <SDL_events.h>
 
 namespace rex
