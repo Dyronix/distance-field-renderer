@@ -41,6 +41,7 @@ external/spdlog-windows/
 external/gsl-windows/
 external/crc-windows/
 external/glm-windows/
+external/entt-windows/
 
 scripts/__pycache__/
 

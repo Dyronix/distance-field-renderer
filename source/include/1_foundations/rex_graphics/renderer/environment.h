@@ -4,6 +4,9 @@
 
 namespace rex
 {
+    struct PointLight;
+    struct DirectionalLight;
+
     struct Environment
     {
         Environment();
@@ -12,5 +15,16 @@ namespace rex
         operator bool() const;
 
         ref_ptr<TextureCube> skybox_texture_cube;
+    };
+
+    struct LightEnvironment
+    {
+        LightEnvironment();
+        ~LightEnvironment();
+
+        operator bool() const;
+
+        std::vector<PointLight>         point_lights;
+        std::vector<DirectionalLight>   directional_lights;
     };
 }

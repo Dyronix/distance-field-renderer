@@ -100,7 +100,7 @@ namespace rex
     {
         g_active_render_pass_name = pipeline->get_render_pass()->get_debug_name();
 
-        RENDERER_INFO("Renderer::beginRenderPass: {0}", g_active_render_pass_name.to_string());
+        RENDERER_INFO("Renderer::begin_render_pass: {0}", g_active_render_pass_name.to_string());
         g_renderer_api->begin_render_pass(pipeline, explicitClear);
     }
 
