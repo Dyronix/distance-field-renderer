@@ -174,7 +174,7 @@ namespace rex
                 g_frame_buffer_pool.add(this);
             }
 #else
-            R_ASSERT_X(framebuffer_pool::g_managed, "Use \"ResourceFactory::createFrameBuffer()\" to instantiate a framebuffer.");
+            R_ASSERT_X(framebuffer_pool::g_managed, "Use \"ResourceFactory::create_frame_buffer()\" to instantiate a framebuffer.");
 #endif
         }
         //-------------------------------------------------------------------------

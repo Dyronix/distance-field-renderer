@@ -5,7 +5,7 @@
 #include <SDL_keyboard.h>
 #include <SDL_scancode.h>
 
-#if defined SBT_PLATFORM_WINDOWS
+#if defined rex_PLATFORM_WINDOWS
 #undef DELETE
 #endif
 
