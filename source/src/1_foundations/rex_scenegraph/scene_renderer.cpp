@@ -21,7 +21,7 @@
 namespace rex
 {
     //-------------------------------------------------------------------------
-    ClearPassOptions  make_clear_pass_options()
+    ClearPassOptions make_clear_pass_options()
     {
         ClearPassOptions options;
 
@@ -38,14 +38,14 @@ namespace rex
 
     //-------------------------------------------------------------------------
     SceneRenderer::SceneRenderer(ref_ptr<ecs::Scene> scene, SceneRenderPasses&& renderPasses)
-        :m_previous_scenerenderpass(nullptr)
-        ,m_current_scenerenderpass(nullptr)
-        ,m_renderpasses(std::move(renderPasses))
-        ,m_draw_list()
-        ,m_active_scene(scene)
-        ,m_pipeline_setup(false)
-        ,m_is_active(false)
-        ,m_clear_pass(make_clear_pass_options(), CreateFrameBuffer::NO)
+        : m_previous_scenerenderpass(nullptr)
+        , m_current_scenerenderpass(nullptr)
+        , m_renderpasses(std::move(renderPasses))
+        , m_draw_list()
+        , m_active_scene(scene)
+        , m_pipeline_setup(false)
+        , m_is_active(false)
+        , m_clear_pass(make_clear_pass_options(), CreateFrameBuffer::NO)
     {
         for (const auto& pass : m_renderpasses)
         {
@@ -62,9 +62,9 @@ namespace rex
         }
 
         Renderer::submit([instance]() mutable
-            {
-                instance->m_pipeline_setup = true;
-            });
+                         {
+                             instance->m_pipeline_setup = true;
+                         });
     }
     //-------------------------------------------------------------------------
     SceneRenderer::~SceneRenderer()
@@ -101,7 +101,7 @@ namespace rex
             return;
         }
 
-        if(get_scene()->get_viewport_width() != width)
+        if (get_scene()->get_viewport_width() != width)
         {
             get_scene()->set_viewport_width(width);
             m_needs_resize = true;
@@ -180,13 +180,13 @@ namespace rex
                 camera_data.view = view;
 
                 Renderer::submit([camera_data]()
-                    {
-                        auto buffer = UniformBufferSet::instance()->get(CAMERA_UNIFORM_BUFFER_NAME);
+                                 {
+                                     auto buffer = UniformBufferSet::instance()->get(CAMERA_UNIFORM_BUFFER_NAME);
 
-                        R_ASSERT_X(buffer, "No known Camera uniform buffer");
+                                     R_ASSERT_X(buffer, "No known Camera uniform buffer");
 
-                        buffer->set_data(&camera_data, sizeof(camera_data), 0u, IsRenderThread::YES);
-                    });
+                                     buffer->set_data(&camera_data, sizeof(camera_data), 0u, IsRenderThread::YES);
+                                 });
 
                 setup_lights();
 
@@ -256,7 +256,7 @@ namespace rex
     //-------------------------------------------------------------------------
     void SceneRenderer::submit_model(const ref_ptr<Model>& model, const rex::matrix4& transform, const ref_ptr<Material>& overrideMaterial)
     {
-        m_draw_list.push_back({ model, overrideMaterial, transform });
+        m_draw_list.push_back({model, overrideMaterial, transform});
     }
 
     //-------------------------------------------------------------------------
@@ -267,15 +267,12 @@ namespace rex
             return nullptr;
         }
 
-        auto it = std::find_if(std::begin(m_renderpasses), std::end(m_renderpasses),
-            [id](std::unique_ptr<SceneRenderPass>& renderpass)
-            {
-                return renderpass->get_name() == id;
-            });
+        auto it = std::find_if(std::begin(m_renderpasses), std::end(m_renderpasses), [id](std::unique_ptr<SceneRenderPass>& renderpass)
+                               {
+                                   return renderpass->get_name() == id;
+                               });
 
-        return it != std::cend(m_renderpasses)
-            ? (*it).get()
-            : nullptr;
+        return it != std::cend(m_renderpasses) ? (*it).get() : nullptr;
     }
     //-------------------------------------------------------------------------
     rex::SceneRenderPass* SceneRenderer::get_previous_render_pass()
@@ -296,15 +293,12 @@ namespace rex
             return nullptr;
         }
 
-        auto it = std::find_if(std::cbegin(m_renderpasses), std::cend(m_renderpasses),
-            [id](const std::unique_ptr<SceneRenderPass>& renderpass)
-            {
-                return renderpass->get_name() == id;
-            });
+        auto it = std::find_if(std::cbegin(m_renderpasses), std::cend(m_renderpasses), [id](const std::unique_ptr<SceneRenderPass>& renderpass)
+                               {
+                                   return renderpass->get_name() == id;
+                               });
 
-        return it != std::cend(m_renderpasses)
-            ? (*it).get()
-            : nullptr;
+        return it != std::cend(m_renderpasses) ? (*it).get() : nullptr;
     }
     //-------------------------------------------------------------------------
     const rex::SceneRenderPasses& SceneRenderer::get_scene_render_passes() const
@@ -389,30 +383,30 @@ namespace rex
         std::memcpy(ub_point_lights.point_lights, point_lights.data(), sizeof(PointLight) * point_lights.size());
 
         Renderer::submit([&ub_point_lights]()
-            {
-                auto buffer = UniformBufferSet::instance()->get(POINTLIGHTS_UNIFORM_BUFFER_NAME);
+                         {
+                             auto buffer = UniformBufferSet::instance()->get(POINTLIGHTS_UNIFORM_BUFFER_NAME);
 
-                R_ASSERT_X(buffer, "No known Point light uniform buffer");
+                             R_ASSERT_X(buffer, "No known Point light uniform buffer");
 
-                buffer->set_data(&ub_point_lights, sizeof(ub_point_lights), 0u, IsRenderThread::YES);
-            });
+                             buffer->set_data(&ub_point_lights, sizeof(ub_point_lights), 0u, IsRenderThread::YES);
+                         });
 
         R_TODO("Setup directional lights");
 
         // const std::vector<DirectionalLight>& dir_lights = get_scene()->getLightEnvironment().directional_lights;
-        // 
+        //
         // UBDirectionalLights ub_dir_lights = m_ub_directional_lights;
-        // 
+        //
         // ub_dir_lights.count = uint32(dir_lights.size());
-        // 
+        //
         // std::memcpy(ub_dir_lights.dir_lights, dir_lights.data(), sizeof(DirectionalLight) * dir_lights.size());
-        // 
+        //
         // Renderer::submit([&ub_point_lights]()
         //     {
         //         auto buffer = UniformBufferSet::instance()->get(DIRECTIONALLIGHTS_UNIFORM_BUFFER_NAME);
-        // 
+        //
         //         R_ASSERT_X(buffer, "No known Directional light uniform buffer");
-        // 
+        //
         //         buffer->set_data(&ub_point_lights, sizeof(ub_point_lights), 0u, IsRenderThread::YES);
         //     });
     }

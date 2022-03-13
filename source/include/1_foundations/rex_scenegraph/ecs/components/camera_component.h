@@ -11,16 +11,16 @@ namespace rex
             CameraComponent();
             CameraComponent(const CameraComponent& other);
             CameraComponent(const SceneCamera& t, bool hasFixedAspectRatio = false);
-         
-            operator SceneCamera& ();
-            operator const SceneCamera& () const;
-         
+
+            operator SceneCamera&();
+            operator const SceneCamera&() const;
+
             bool operator==(const CameraComponent& other) const;
             bool operator!=(const CameraComponent& other) const;
 
-            SceneCamera     camera;
+            SceneCamera camera;
 
-            bool            has_fixed_aspect_ratio;
+            bool has_fixed_aspect_ratio;
         };
     }
 }

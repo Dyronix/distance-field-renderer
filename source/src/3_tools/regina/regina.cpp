@@ -39,7 +39,6 @@ namespace regina
     {
     }
 
-
     //-------------------------------------------------------------------------
     void Application::on_app_initialize()
     {
@@ -47,5 +46,4 @@ namespace regina
 
         push_back_layer(std::make_unique<ReginaLayer>(window));
     }
-
 }

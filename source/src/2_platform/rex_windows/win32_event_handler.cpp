@@ -110,7 +110,9 @@ namespace rex
                     switch (event.type)
                     {
                         // Window
-                        case SDL_WINDOWEVENT: handle_window_events(event, native_event_blob); break;
+                        case SDL_WINDOWEVENT:
+                            handle_window_events(event, native_event_blob);
+                            break;
 
                         // Text
                         case SDL_TEXTINPUT:

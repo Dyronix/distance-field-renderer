@@ -22,44 +22,44 @@ namespace rex
             Scene(const StringID& name);
             ~Scene();
 
-            void                    update();
+            void update();
 
-            Entity                  create_entity();
-            Entity                  create_entity(const StringID& name);
+            Entity create_entity();
+            Entity create_entity(const StringID& name);
 
-            void                    mark_for_post_poned_destroy_entity(Entity entity);
-            void                    mark_for_immediate_destroy_entity(Entity entity);
+            void mark_for_post_poned_destroy_entity(Entity entity);
+            void mark_for_immediate_destroy_entity(Entity entity);
 
-            void                    set_name(const StringID& name);
-            void                    set_environment(const Environment& env);
-            void                    set_viewport_width(int32 width);
-            void                    set_viewport_height(int32 height);
+            void set_name(const StringID& name);
+            void set_environment(const Environment& env);
+            void set_viewport_width(int32 width);
+            void set_viewport_height(int32 height);
 
-            const StringID&         get_name() const;
-            const Environment&      get_environment() const;
-            const int32             get_viewport_width() const;
-            const int32             get_viewport_height() const;
+            const StringID& get_name() const;
+            const Environment& get_environment() const;
+            const int32 get_viewport_width() const;
+            const int32 get_viewport_height() const;
             const LightEnvironment& get_light_environment() const;
 
-            entt::registry&         get_registry();
-            const entt::registry&   get_registry() const;
+            entt::registry& get_registry();
+            const entt::registry& get_registry() const;
 
-            size_t                  get_entity_count() const;
+            size_t get_entity_count() const;
 
         private:
             using PostUpdateQueue = std::vector<std::function<void()>>;
 
-            StringID                m_name;
+            StringID m_name;
 
-            Environment             m_environment;
-            LightEnvironment        m_light_environment;
+            Environment m_environment;
+            LightEnvironment m_light_environment;
 
-            entt::registry          m_register;
+            entt::registry m_register;
 
-            PostUpdateQueue         m_post_update_queue;
+            PostUpdateQueue m_post_update_queue;
 
-            int32                   m_viewport_width;
-            int32                   m_viewport_height;
+            int32 m_viewport_width;
+            int32 m_viewport_height;
         };
     }
 }

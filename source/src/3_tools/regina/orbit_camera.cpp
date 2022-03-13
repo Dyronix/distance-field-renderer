@@ -9,12 +9,12 @@ namespace regina
 {
     //-------------------------------------------------------------------------
     OrbitCamera::OrbitCamera(const OrbitCameraDescription& desc)
-        :m_description(desc)
-        ,m_camera(nullptr)
-        ,m_camera_transform(nullptr)
-        ,m_initial_camera_position(rex::vec3(0.0f))
-        ,m_initial_camera_rotation(rex::identity<rex::quaternion>())
-        ,m_camera_state({ m_description.camera_settings.can_rotate_yaw, m_description.camera_settings.can_rotate_pitch, m_description.camera_settings.can_zoom })
+        : m_description(desc)
+        , m_camera(nullptr)
+        , m_camera_transform(nullptr)
+        , m_initial_camera_position(rex::vec3(0.0f))
+        , m_initial_camera_rotation(rex::identity<rex::quaternion>())
+        , m_camera_state({m_description.camera_settings.can_rotate_yaw, m_description.camera_settings.can_rotate_pitch, m_description.camera_settings.can_zoom})
     {
         if (!desc.camera_settings.can_rotate_pitch && !desc.camera_settings.can_rotate_yaw && !desc.camera_settings.can_zoom)
         {
@@ -40,7 +40,6 @@ namespace regina
     //-------------------------------------------------------------------------
     OrbitCamera::~OrbitCamera()
     {
-
     }
 
     //-------------------------------------------------------------------------
@@ -250,7 +249,7 @@ namespace regina
     //-------------------------------------------------------------------------
     const rex::MinMax<float> OrbitCamera::get_camera_pitch_range() const
     {
-        return { m_description.orbit_settings.get_minimum_pitch_angle(), m_description.orbit_settings.get_maximum_pitch_angle() };
+        return {m_description.orbit_settings.get_minimum_pitch_angle(), m_description.orbit_settings.get_maximum_pitch_angle()};
     }
 
     //-------------------------------------------------------------------------

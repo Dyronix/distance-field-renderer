@@ -15,16 +15,17 @@ namespace rex
     struct GeometryPassOptions
     {
         GeometryPassOptions()
-            :pass_name(ESID::SID_None)
-            ,geometry_shader_name("pbr_static"_sid)
-            ,grid_shader_name("grid"_sid)
-            ,skybox_shader_name("skybox"_sid)
-            ,show_environment(false)
-            ,show_grid(false)
-            ,backface_culling(true)
-            ,grid_scale(16.025f)
-            ,grid_size(0.025f)
-        {}
+            : pass_name(ESID::SID_None)
+            , geometry_shader_name("pbr_static"_sid)
+            , grid_shader_name("grid"_sid)
+            , skybox_shader_name("skybox"_sid)
+            , show_environment(false)
+            , show_grid(false)
+            , backface_culling(true)
+            , grid_scale(16.025f)
+            , grid_size(0.025f)
+        {
+        }
 
         StringID pass_name;
         StringID geometry_shader_name;
@@ -66,11 +67,11 @@ namespace rex
         void create_sky_box_pipeline();
         void create_grid_pipeline();
 
-        StringID                m_active_environment;
-        
-        GeometryPassOptions     m_options;
-        CreateFrameBuffer       m_create_framebuffer;
+        StringID m_active_environment;
 
-        ref_ptr<Model>          m_sky_model;
+        GeometryPassOptions m_options;
+        CreateFrameBuffer m_create_framebuffer;
+
+        ref_ptr<Model> m_sky_model;
     };
 }

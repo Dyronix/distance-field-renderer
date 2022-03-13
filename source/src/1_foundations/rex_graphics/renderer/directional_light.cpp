@@ -8,19 +8,22 @@ namespace rex
 {
     //-------------------------------------------------------------------------
     DirectionalLight::DirectionalLight()
-        :direction(1.0f)
+        : direction(1.0f)
         , intensity(1.0f)
-    {}
+    {
+    }
     //-------------------------------------------------------------------------
     DirectionalLight::DirectionalLight(const DirectionalLight& other)
-        :direction(other.direction)
+        : direction(other.direction)
         , intensity(other.intensity)
-    {}
+    {
+    }
     //-------------------------------------------------------------------------
     DirectionalLight::DirectionalLight(const rex::vec3& inDirection, float inIntensity)
-        :direction(inDirection)
+        : direction(inDirection)
         , intensity(inIntensity)
-    {}
+    {
+    }
 
     //-------------------------------------------------------------------------
     bool DirectionalLight::operator==(const DirectionalLight& other) const

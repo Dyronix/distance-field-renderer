@@ -10,34 +10,30 @@ namespace rex
 {
     namespace ecs
     {
-
         //-------------------------------------------------------------------------
         Entity::Entity()
-            :m_entity_handle(entt::null)
-            ,m_scene(nullptr)
+            : m_entity_handle(entt::null)
+            , m_scene(nullptr)
         {
         }
 
         //-------------------------------------------------------------------------
         Entity::Entity(entt::entity handle, Scene* scene)
-            :m_entity_handle(handle)
-            ,m_scene(scene)
+            : m_entity_handle(handle)
+            , m_scene(scene)
         {
-
         }
 
         //-------------------------------------------------------------------------
         Entity::Entity(const Entity& other)
-            :m_entity_handle(other.m_entity_handle)
-            ,m_scene(other.m_scene)
+            : m_entity_handle(other.m_entity_handle)
+            , m_scene(other.m_scene)
         {
-
         }
 
         //-------------------------------------------------------------------------
         Entity::~Entity()
         {
-
         }
 
         //-------------------------------------------------------------------------

@@ -6,21 +6,18 @@
 
 namespace regina
 {
-
     //-------------------------------------------------------------------------
     MouseOrbitCameraController::MouseOrbitCameraController(rex::InputImpl* inputInstance, int16 mouseCode, const OrbitCameraDescription& desc)
-        :OrbitCameraController(desc)
-        ,m_input_instance(inputInstance)
-        ,m_mouse_code(mouseCode)
-        ,m_mouse_enabled(true)
+        : OrbitCameraController(desc)
+        , m_input_instance(inputInstance)
+        , m_mouse_code(mouseCode)
+        , m_mouse_enabled(true)
     {
-
     }
 
     //-------------------------------------------------------------------------
     MouseOrbitCameraController::~MouseOrbitCameraController()
     {
-
     }
 
     //-------------------------------------------------------------------------
@@ -45,5 +42,4 @@ namespace regina
 
         return true;
     }
-
 }

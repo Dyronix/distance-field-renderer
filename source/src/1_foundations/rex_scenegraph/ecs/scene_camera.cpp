@@ -10,13 +10,13 @@ namespace rex
 
         //-------------------------------------------------------------------------
         SceneCamera::SceneCamera()
-            :Camera(DEFAULT_ASPECT)
-            ,m_projection_type(ProjectionType::PERSPECTIVE)
-            ,m_perspective_fov(45_deg, DEFAULT_ASPECT.get_ratio())
-            ,m_perspective_clip(0.01f, 1000.0f)
-            ,m_ortho_size(10.0f)
-            ,m_ortho_clip(0.01f, 1000.0f)
-            ,m_active(false)
+            : Camera(DEFAULT_ASPECT)
+            , m_projection_type(ProjectionType::PERSPECTIVE)
+            , m_perspective_fov(45_deg, DEFAULT_ASPECT.get_ratio())
+            , m_perspective_clip(0.01f, 1000.0f)
+            , m_ortho_size(10.0f)
+            , m_ortho_clip(0.01f, 1000.0f)
+            , m_active(false)
         {
             recalculate_projection();
         }
@@ -24,7 +24,6 @@ namespace rex
         //-------------------------------------------------------------------------
         SceneCamera::~SceneCamera()
         {
-
         }
 
         //-------------------------------------------------------------------------

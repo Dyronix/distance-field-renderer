@@ -3,7 +3,7 @@
 namespace rex
 {
     class Material;
-    
+
     namespace ecs
     {
         struct MaterialComponent

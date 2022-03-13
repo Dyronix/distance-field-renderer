@@ -3,7 +3,7 @@
 namespace rex
 {
     class Model;
-    
+
     namespace ecs
     {
         struct ModelComponent

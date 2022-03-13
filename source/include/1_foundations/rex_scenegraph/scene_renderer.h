@@ -24,10 +24,10 @@ namespace rex
 
     struct DrawCommand
     {
-        ref_ptr<Model>      model;
-        ref_ptr<Material>   override_material;
-    
-        rex::matrix4           transform;
+        ref_ptr<Model> model;
+        ref_ptr<Material> override_material;
+
+        rex::matrix4 transform;
     };
 
     using SceneRenderPasses = std::vector<std::unique_ptr<SceneRenderPass>>;
@@ -39,33 +39,33 @@ namespace rex
         SceneRenderer(ref_ptr<ecs::Scene> scene, SceneRenderPasses&& renderPasses);
         ~SceneRenderer();
 
-        void                            destroy();
+        void destroy();
 
-        void                            set_scene(const ref_ptr<ecs::Scene>& scene);
-        void                            set_viewport_width(int32 width);
-        void                            set_viewport_height(int32 height);
+        void set_scene(const ref_ptr<ecs::Scene>& scene);
+        void set_viewport_width(int32 width);
+        void set_viewport_height(int32 height);
 
-        void                            begin_scene();
-        void                            end_scene();
+        void begin_scene();
+        void end_scene();
 
-        void                            submit_model(const ref_ptr<Model>& model);
-        void                            submit_model(const ref_ptr<Model>& model, const rex::matrix4& transform);
-        void                            submit_model(const ref_ptr<Model>& model, const rex::matrix4& transform, const ref_ptr<Material>& overrideMaterial);
+        void submit_model(const ref_ptr<Model>& model);
+        void submit_model(const ref_ptr<Model>& model, const rex::matrix4& transform);
+        void submit_model(const ref_ptr<Model>& model, const rex::matrix4& transform, const ref_ptr<Material>& overrideMaterial);
 
-        SceneRenderPass*                get_scene_render_pass(const StringID& id);
-        SceneRenderPass*                get_previous_render_pass();
-        SceneRenderPass*                get_active_render_pass();
+        SceneRenderPass* get_scene_render_pass(const StringID& id);
+        SceneRenderPass* get_previous_render_pass();
+        SceneRenderPass* get_active_render_pass();
 
-        const SceneRenderPass*          get_scene_render_pass(const StringID& id) const;
-        const SceneRenderPasses&        get_scene_render_passes() const;
-        const SceneRenderPass*          get_previous_render_pass() const;
-        const SceneRenderPass*          get_active_render_pass() const;
+        const SceneRenderPass* get_scene_render_pass(const StringID& id) const;
+        const SceneRenderPasses& get_scene_render_passes() const;
+        const SceneRenderPass* get_previous_render_pass() const;
+        const SceneRenderPass* get_active_render_pass() const;
 
-        const int32                    get_viewport_width() const;
-        const int32                    get_viewport_height() const;
+        const int32 get_viewport_width() const;
+        const int32 get_viewport_height() const;
 
-        ref_ptr<ecs::Scene>&            get_scene();
-        const ref_ptr<ecs::Scene>&      get_scene() const;
+        ref_ptr<ecs::Scene>& get_scene();
+        const ref_ptr<ecs::Scene>& get_scene() const;
 
         const std::vector<DrawCommand>& get_draw_commands() const;
 
@@ -85,9 +85,10 @@ namespace rex
         struct ActiveCameraData
         {
             ActiveCameraData()
-                :camera_component(nullptr)
-                ,camera_transform_component(nullptr)
-            {}
+                : camera_component(nullptr)
+                , camera_transform_component(nullptr)
+            {
+            }
 
             operator bool()
             {
@@ -108,32 +109,31 @@ namespace rex
 
         struct UBDirectionalLights
         {
-            uint32              count                   { 0 };
-            uint32              padding                 { 0 };
-            DirectionalLight    dir_lights[4]           {};
+            uint32 count{0};
+            uint32 padding{0};
+            DirectionalLight dir_lights[4]{};
         } m_ub_directional_lights;
 
         struct UBPointLights
         {
-            uint32              count                   { 0 };
-            uint32              padding                 { 0 };
-            PointLight          point_lights[1024]      {};
+            uint32 count{0};
+            uint32 padding{0};
+            PointLight point_lights[1024]{};
         } m_ub_point_lights;
 
+        SceneRenderPass* m_previous_scenerenderpass;
+        SceneRenderPass* m_current_scenerenderpass;
 
-        SceneRenderPass*    m_previous_scenerenderpass;
-        SceneRenderPass*    m_current_scenerenderpass;
-
-        ClearPass           m_clear_pass;
-        SceneRenderPasses   m_renderpasses;
-        DrawCommands        m_draw_list;
+        ClearPass m_clear_pass;
+        SceneRenderPasses m_renderpasses;
+        DrawCommands m_draw_list;
 
         ref_ptr<ecs::Scene> m_active_scene;
 
-        bool                m_pipeline_setup;
-        bool                m_is_active;
-        bool                m_needs_resize;
+        bool m_pipeline_setup;
+        bool m_is_active;
+        bool m_needs_resize;
 
-        ActiveCameraData    m_active_camera_data;
+        ActiveCameraData m_active_camera_data;
     };
 }

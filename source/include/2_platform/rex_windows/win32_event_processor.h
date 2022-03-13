@@ -15,7 +15,7 @@ namespace rex
     namespace win32
     {
         class Window;
-        
+
         class EventProcessor
         {
         public:

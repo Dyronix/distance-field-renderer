@@ -167,12 +167,10 @@ namespace regina
         description.camera_settings.enabled = initial_enabled;
 
         // Focus
-        description.focus_settings = create_focus_settings(camera_settings::CAMERA_FOCUS, camera_settings::MIN_FOCUS_DISTANCE,
-                                                           camera_settings::MAX_FOCUS_DISTANCE, camera_settings::FOCUS_DISTANCE);
+        description.focus_settings = create_focus_settings(camera_settings::CAMERA_FOCUS, camera_settings::MIN_FOCUS_DISTANCE, camera_settings::MAX_FOCUS_DISTANCE, camera_settings::FOCUS_DISTANCE);
 
         // Orbit
-        description.orbit_settings = create_orbit_settings(camera_settings::ROTATION_SPEED, camera_settings::MIN_PITCH_ANGLE,
-                                                           camera_settings::MAX_PITCH_ANGLE);
+        description.orbit_settings = create_orbit_settings(camera_settings::ROTATION_SPEED, camera_settings::MIN_PITCH_ANGLE, camera_settings::MAX_PITCH_ANGLE);
 
         // Mouse
         description.mouse_settings = create_mouse_settings(camera_settings::MOVE_SENSITIVITY, camera_settings::SCROLL_SENSITIVITY);
@@ -291,13 +289,13 @@ namespace regina
     {
         rex::SceneRenderPasses renderpasses;
 
-        //auto predepth = create_pre_depth_pass(create_pre_depth_pass_options());
-        //auto geometry = create_geometry_pass(create_geometry_pass_options());
-        //auto composite = create_composite_pass(create_composite_pass_options());
+        // auto predepth = create_pre_depth_pass(create_pre_depth_pass_options());
+        // auto geometry = create_geometry_pass(create_geometry_pass_options());
+        // auto composite = create_composite_pass(create_composite_pass_options());
         //
-        //renderpasses.push_back(std::move(predepth));
-        //renderpasses.push_back(std::move(geometry));
-        //renderpasses.push_back(std::move(composite));
+        // renderpasses.push_back(std::move(predepth));
+        // renderpasses.push_back(std::move(geometry));
+        // renderpasses.push_back(std::move(composite));
 
         m_scene_renderer = rex::make_ref<rex::SceneRenderer>(m_scene, std::move(renderpasses));
     }

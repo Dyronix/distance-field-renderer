@@ -7,7 +7,7 @@ namespace rex
         PointLight();
         PointLight(const PointLight& other);
         PointLight(const rex::vec3& inPosition, float inIntensity, float inMinAttenuation, float inMaxAttenuation);
-     
+
         bool operator==(const PointLight& other) const;
         bool operator!=(const PointLight& other) const;
 

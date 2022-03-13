@@ -19,11 +19,11 @@ namespace regina
 
     //-------------------------------------------------------------------------
     OrbitCameraController::OrbitCameraController(const OrbitCameraDescription& desc)
-        :m_orbit_camera(desc)
-        ,m_focus_controller(desc.focus_settings)
-        ,m_orbit_controller(get_orbit_angles_from_camera_rotation(desc.camera_settings.camera_rotation), desc.orbit_settings)
-        ,m_vertical_mouse_movement(0.0f)
-        ,m_horizontal_mouse_movement(0.0f)
+        : m_orbit_camera(desc)
+        , m_focus_controller(desc.focus_settings)
+        , m_orbit_controller(get_orbit_angles_from_camera_rotation(desc.camera_settings.camera_rotation), desc.orbit_settings)
+        , m_vertical_mouse_movement(0.0f)
+        , m_horizontal_mouse_movement(0.0f)
     {
         if (!desc.camera_settings.can_rotate_pitch && !desc.camera_settings.can_rotate_yaw && !desc.camera_settings.can_zoom)
         {
@@ -34,7 +34,6 @@ namespace regina
     //-------------------------------------------------------------------------
     OrbitCameraController::~OrbitCameraController()
     {
-
     }
 
     //-------------------------------------------------------------------------
@@ -79,8 +78,14 @@ namespace regina
     void OrbitCameraController::on_event(rex::events::Event& evt)
     {
         rex::events::EventDispatcher dispatcher(evt);
-        dispatcher.dispatch<rex::events::MouseScroll>([&](const rex::events::MouseScroll& scrollEvent) { return on_mouse_scrolled(scrollEvent); });
-        dispatcher.dispatch<rex::events::MouseMove>([&](const rex::events::MouseMove& moveEvent) { return on_mouse_moved(moveEvent); });
+        dispatcher.dispatch<rex::events::MouseScroll>([&](const rex::events::MouseScroll& scrollEvent)
+                                                      {
+                                                          return on_mouse_scrolled(scrollEvent);
+                                                      });
+        dispatcher.dispatch<rex::events::MouseMove>([&](const rex::events::MouseMove& moveEvent)
+                                                    {
+                                                        return on_mouse_moved(moveEvent);
+                                                    });
     }
 
     //-------------------------------------------------------------------------
@@ -122,8 +127,7 @@ namespace regina
     //-------------------------------------------------------------------------
     void OrbitCameraController::set_focus_range(const rex::MinMax<float> distance)
     {
-        if (rex::is_identical(distance.minimum, m_orbit_camera.get_min_focus_distance()) &&
-            rex::is_identical(distance.maximum, m_orbit_camera.get_max_focus_distance()))
+        if (rex::is_identical(distance.minimum, m_orbit_camera.get_min_focus_distance()) && rex::is_identical(distance.maximum, m_orbit_camera.get_max_focus_distance()))
         {
             return;
         }
@@ -150,8 +154,7 @@ namespace regina
     {
         auto pitch_range = m_orbit_camera.get_camera_pitch_range();
 
-        if (rex::is_identical(pitchRange.minimum, pitch_range.minimum) &&
-            rex::is_identical(pitchRange.maximum, pitch_range.maximum))
+        if (rex::is_identical(pitchRange.minimum, pitch_range.minimum) && rex::is_identical(pitchRange.maximum, pitch_range.maximum))
         {
             return;
         }
@@ -258,7 +261,7 @@ namespace regina
 
             rex::quaternion look_rotation = m_orbit_controller.calculate_look_rotation(rotation_input, rotation_default);
 
-            // Look position 
+            // Look position
             rex::vec3 look_direction = look_rotation * rex::world_forward<float>();
             rex::vec3 look_position = m_focus_controller.calculate_focus_position(look_direction);
 
@@ -269,7 +272,7 @@ namespace regina
     //-------------------------------------------------------------------------
     void OrbitCameraController::orbit(const rex::quaternion& lookRotation)
     {
-        // Look position 
+        // Look position
         rex::vec3 look_direction = lookRotation * rex::world_forward<float>();
         rex::vec3 look_position = m_focus_controller.calculate_focus_position(look_direction);
 

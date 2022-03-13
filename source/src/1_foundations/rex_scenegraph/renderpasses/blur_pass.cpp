@@ -22,9 +22,9 @@ namespace rex
 {
     //-------------------------------------------------------------------------
     BlurPass::BlurPass(const BlurPassOptions& options, CreateFrameBuffer create_frame_buffer)
-        :SceneRenderPass(options.pass_name)
-        ,m_options(options)
-        ,m_create_framebuffer(create_frame_buffer)
+        : SceneRenderPass(options.pass_name)
+        , m_options(options)
+        , m_create_framebuffer(create_frame_buffer)
     {
         R_ASSERT(is_power_of_two(options.blur_width));
         R_ASSERT(is_power_of_two(options.blur_height));
@@ -58,7 +58,7 @@ namespace rex
         RenderPassDescription blur_renderpass_desc;
 
         blur_renderpass_desc.framebuffer = framebuffer;
-        blur_renderpass_desc.clear_color = { 0.15f, 0.15f, 0.15f, 1.0f };
+        blur_renderpass_desc.clear_color = {0.15f, 0.15f, 0.15f, 1.0f};
         blur_renderpass_desc.clear_flags = COLOR_ONLY;
         blur_renderpass_desc.clear_depth = 1.0f;
         blur_renderpass_desc.name = "Blur";
@@ -66,15 +66,11 @@ namespace rex
         PipelineDescription blur_pipeline_desc;
 
         blur_pipeline_desc.shader = shader_library::get(m_options.shader_name);
-        blur_pipeline_desc.layout =
-        {
-            { DataType::VEC3, "a_Position" },
-            { DataType::VEC2, "a_TexCoord" }
-        };
+        blur_pipeline_desc.layout = {{DataType::VEC3, "a_Position"}, {DataType::VEC2, "a_TexCoord"}};
         blur_pipeline_desc.renderpass = Renderer::create_render_pass(blur_renderpass_desc);
         blur_pipeline_desc.name = "Blur";
-        blur_pipeline_desc.depth_test_state = { DepthTestEnabled::NO };
-        blur_pipeline_desc.facecull_state = { FaceCullingEnabled::NO };
+        blur_pipeline_desc.depth_test_state = {DepthTestEnabled::NO};
+        blur_pipeline_desc.facecull_state = {FaceCullingEnabled::NO};
 
         create_pipeline(blur_pipeline_desc);
         create_material(blur_pipeline_desc.shader, "Simple Blur");

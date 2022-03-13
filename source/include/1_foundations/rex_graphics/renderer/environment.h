@@ -24,7 +24,7 @@ namespace rex
 
         operator bool() const;
 
-        std::vector<PointLight>         point_lights;
-        std::vector<DirectionalLight>   directional_lights;
+        std::vector<PointLight> point_lights;
+        std::vector<DirectionalLight> directional_lights;
     };
 }

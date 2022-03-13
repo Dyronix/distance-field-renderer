@@ -20,17 +20,15 @@ namespace rex
 {
     //-------------------------------------------------------------------------
     CompositePass::CompositePass(const CompositePassOptions& options, CreateFrameBuffer create_frame_buffer)
-        :SceneRenderPass(options.pass_name)
-        ,m_options(options)
-        ,m_create_framebuffer(create_frame_buffer)
+        : SceneRenderPass(options.pass_name)
+        , m_options(options)
+        , m_create_framebuffer(create_frame_buffer)
     {
-
     }
 
     //-------------------------------------------------------------------------
     CompositePass::~CompositePass()
     {
-
     }
 
     //-------------------------------------------------------------------------
@@ -63,7 +61,7 @@ namespace rex
         RenderPassDescription composite_renderpass_desc;
 
         composite_renderpass_desc.framebuffer = framebuffer;
-        composite_renderpass_desc.clear_color = { 0.15f, 0.15f, 0.15f, 1.0f };
+        composite_renderpass_desc.clear_color = {0.15f, 0.15f, 0.15f, 1.0f};
         composite_renderpass_desc.clear_flags = CLEAR_COLOR_AND_DEPTH;
         composite_renderpass_desc.clear_depth = 1.0f;
         composite_renderpass_desc.name = "Composite";
@@ -71,15 +69,11 @@ namespace rex
         PipelineDescription composite_pipeline_desc;
 
         composite_pipeline_desc.shader = shader_library::get(m_options.shader_name);
-        composite_pipeline_desc.layout =
-        {
-            { DataType::VEC3, "a_Position" },
-            { DataType::VEC2, "a_TexCoord" }
-        };
+        composite_pipeline_desc.layout = {{DataType::VEC3, "a_Position"}, {DataType::VEC2, "a_TexCoord"}};
         composite_pipeline_desc.renderpass = Renderer::create_render_pass(composite_renderpass_desc);
         composite_pipeline_desc.name = "Composite";
-        composite_pipeline_desc.depth_test_state = { DepthTestEnabled::YES, DepthTestFunction::ALWAYS, DepthBufferReadOnly::YES };
-        composite_pipeline_desc.facecull_state = { FaceCullingEnabled::NO };
+        composite_pipeline_desc.depth_test_state = {DepthTestEnabled::YES, DepthTestFunction::ALWAYS, DepthBufferReadOnly::YES};
+        composite_pipeline_desc.facecull_state = {FaceCullingEnabled::NO};
 
         create_pipeline(composite_pipeline_desc);
 

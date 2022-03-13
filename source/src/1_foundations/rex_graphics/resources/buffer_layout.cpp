@@ -83,9 +83,7 @@ namespace rex
     }
 
     //-------------------------------------------------------------------------
-    BufferLayout::BufferLayout(BufferLayout&& other) noexcept
-        : m_elements(std::exchange(other.m_elements, {}))
-        , m_stride(std::exchange(other.m_stride, 0))
+    BufferLayout::BufferLayout(BufferLayout&& other) noexcept : m_elements(std::exchange(other.m_elements, {})), m_stride(std::exchange(other.m_stride, 0))
     {
     }
 

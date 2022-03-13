@@ -26,8 +26,9 @@ namespace regina
     public:
         //-------------------------------------------------------------------------
         FocusController(const FocusSettings& settings)
-            :m_focus_settings(settings)
-        {}
+            : m_focus_settings(settings)
+        {
+        }
         ~FocusController() = default;
 
         //-------------------------------------------------------------------------
@@ -53,8 +54,8 @@ namespace regina
     public:
         //-------------------------------------------------------------------------
         OrbitController(const rex::vec3& orbitAngles, const OrbitSettings& orbitSettings)
-            :m_orbit_angles(orbitAngles)
-            ,m_orbit_settings(orbitSettings)
+            : m_orbit_angles(orbitAngles)
+            , m_orbit_settings(orbitSettings)
         {
         }
         ~OrbitController() = default;
@@ -137,8 +138,8 @@ namespace regina
             return new_orbit_angles;
         }
 
-        rex::vec3       m_orbit_angles;
-        OrbitSettings   m_orbit_settings;
+        rex::vec3 m_orbit_angles;
+        OrbitSettings m_orbit_settings;
     };
 
     class OrbitCameraController
@@ -147,60 +148,63 @@ namespace regina
         OrbitCameraController(const OrbitCameraDescription& desc);
         virtual ~OrbitCameraController();
 
-        void                                enable();
-        void                                disable();
+        void enable();
+        void disable();
 
-        void                                reset();
-             
-        void                                on_update(const rex::FrameInfo& info);
-        void                                on_event(rex::events::Event& evt);
+        void reset();
 
-        void                                set_camera(rex::Camera* inCamera);
-        void                                set_camera_transform(rex::Transform* inTransform);
-        void                                set_viewport(float width, float height);
+        void on_update(const rex::FrameInfo& info);
+        void on_event(rex::events::Event& evt);
 
-        void                                set_focus(const rex::vec3& target);
-        void                                set_focus_distance(float distance);
-        void                                set_focus_range(const rex::MinMax<float> distance);
+        void set_camera(rex::Camera* inCamera);
+        void set_camera_transform(rex::Transform* inTransform);
+        void set_viewport(float width, float height);
 
-        void                                set_rotation_speed(float rotationSpeed);
-        void                                set_pitch_range(const rex::MinMax<float> pitchRange);
+        void set_focus(const rex::vec3& target);
+        void set_focus_distance(float distance);
+        void set_focus_range(const rex::MinMax<float> distance);
 
-        void                                set_mouse_move_sensitivity(float move);
-        void                                set_mouse_scroll_sensitivity(float scroll);
+        void set_rotation_speed(float rotationSpeed);
+        void set_pitch_range(const rex::MinMax<float> pitchRange);
 
-        void                                enable_yaw_rotation();
-        void                                enable_pitch_rotation();
-        void                                enable_zoom();
-            
-        void                                disable_yaw_rotation();
-        void                                disable_pitch_rotation();
-        void                                disable_zoom();
+        void set_mouse_move_sensitivity(float move);
+        void set_mouse_scroll_sensitivity(float scroll);
 
-        const rex::vec3&                 get_focus() const;
-        const float                         get_focus_distance() const;
+        void enable_yaw_rotation();
+        void enable_pitch_rotation();
+        void enable_zoom();
 
-        rex::Camera*                             get_camera();
-        const rex::Camera*                       get_camera() const;
+        void disable_yaw_rotation();
+        void disable_pitch_rotation();
+        void disable_zoom();
 
-        bool                                is_enabled() const;
+        const rex::vec3& get_focus() const;
+        const float get_focus_distance() const;
+
+        rex::Camera* get_camera();
+        const rex::Camera* get_camera() const;
+
+        bool is_enabled() const;
 
     protected:
-        virtual bool                        on_can_rotate() const { return true; }
+        virtual bool on_can_rotate() const
+        {
+            return true;
+        }
 
     private:
-        void                                orbit();
-        void                                orbit(const rex::quaternion& lookRotation);
+        void orbit();
+        void orbit(const rex::quaternion& lookRotation);
 
-        bool                                on_mouse_scrolled(const rex::events::MouseScroll& scrollEvt);
-        bool                                on_mouse_moved(const rex::events::MouseMove& moveEvt);
+        bool on_mouse_scrolled(const rex::events::MouseScroll& scrollEvt);
+        bool on_mouse_moved(const rex::events::MouseMove& moveEvt);
 
-        FocusController                     m_focus_controller;
-        OrbitController                     m_orbit_controller;
+        FocusController m_focus_controller;
+        OrbitController m_orbit_controller;
 
-        OrbitCamera                         m_orbit_camera;
+        OrbitCamera m_orbit_camera;
 
-        float                               m_vertical_mouse_movement;
-        float                               m_horizontal_mouse_movement;
+        float m_vertical_mouse_movement;
+        float m_horizontal_mouse_movement;
     };
 }

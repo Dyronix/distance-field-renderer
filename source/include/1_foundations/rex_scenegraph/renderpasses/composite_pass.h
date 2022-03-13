@@ -15,18 +15,19 @@ namespace rex
     struct CompositePassOptions
     {
         CompositePassOptions()
-            :pass_name(ESID::SID_None)
-            ,shader_name("blit"_sid)
-            ,color_buffer(ESID::SID_None)
-            ,gamma_correction(2.2f)
-        {}
+            : pass_name(ESID::SID_None)
+            , shader_name("blit"_sid)
+            , color_buffer(ESID::SID_None)
+            , gamma_correction(2.2f)
+        {
+        }
 
-        StringID            pass_name;
-        StringID            shader_name;
+        StringID pass_name;
+        StringID shader_name;
 
-        SceneRenderPassID   color_buffer;
+        SceneRenderPassID color_buffer;
 
-        float               gamma_correction;
+        float gamma_correction;
     };
 
     class CompositePass : public SceneRenderPass
@@ -40,7 +41,7 @@ namespace rex
         void begin(const ecs::SceneCamera& camera, const Transform& cameraTransform) override;
         void render() override;
         void end() override;
-        
+
     protected:
         void on_initialize(const ref_ptr<SceneRenderer>& renderer) override;
         void on_shutdown() override;

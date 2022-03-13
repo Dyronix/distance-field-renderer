@@ -14,7 +14,7 @@ namespace rex
     namespace win32
     {
         class EventProcessor;
-        
+
         struct WindowCallbackFunctions
         {
             using WindowCallbackFn = std::function<void(SDL_WindowEvent)>;

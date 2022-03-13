@@ -14,10 +14,10 @@ namespace rex
         public:
             using OrthographicSize = float;
 
-            enum class ProjectionType 
+            enum class ProjectionType
             {
-                PERSPECTIVE     = 0,
-                ORTHOGRAPHIC    = 1 
+                PERSPECTIVE = 0,
+                ORTHOGRAPHIC = 1
             };
 
             SceneCamera();
@@ -56,7 +56,6 @@ namespace rex
             void on_set_viewport_size(int32 width, int32 height) override;
 
         private:
-
             ProjectionType m_projection_type;
 
             FieldOfView m_perspective_fov;

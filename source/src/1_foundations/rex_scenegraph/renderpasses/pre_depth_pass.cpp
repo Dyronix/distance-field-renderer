@@ -23,20 +23,17 @@
 
 namespace rex
 {
-
     //-------------------------------------------------------------------------
     PreDepthPass::PreDepthPass(const PreDepthPassOptions& options, CreateFrameBuffer create_frame_buffer)
-        :SceneRenderPass(options.pass_name)
-        ,m_options(options)
-        ,m_create_framebuffer(create_frame_buffer)
+        : SceneRenderPass(options.pass_name)
+        , m_options(options)
+        , m_create_framebuffer(create_frame_buffer)
     {
-
     }
 
     //-------------------------------------------------------------------------
     PreDepthPass::~PreDepthPass()
     {
-
     }
 
     //-------------------------------------------------------------------------
@@ -63,7 +60,7 @@ namespace rex
         RenderPassDescription predepth_renderpass_desc;
 
         predepth_renderpass_desc.framebuffer = framebuffer;
-        predepth_renderpass_desc.clear_color = { m_options.far_plane, m_options.far_plane, m_options.far_plane, 1.0f };
+        predepth_renderpass_desc.clear_color = {m_options.far_plane, m_options.far_plane, m_options.far_plane, 1.0f};
         predepth_renderpass_desc.clear_depth = 1.0f;
         predepth_renderpass_desc.clear_flags = CLEAR_COLOR_AND_DEPTH;
         predepth_renderpass_desc.name = "PreDepth";
@@ -71,25 +68,18 @@ namespace rex
         PipelineDescription predepth_pipeline_desc;
 
         predepth_pipeline_desc.shader = shader_library::get(m_options.shader_name);
-        predepth_pipeline_desc.layout =
-        {
-            { DataType::VEC3, "a_Position" },
-            { DataType::VEC3, "a_Normal"   },
-            { DataType::VEC3, "a_Tangent"  },
-            { DataType::VEC3, "a_Binormal" },
-            { DataType::VEC2, "a_TexCoord" }
-        };
+        predepth_pipeline_desc.layout = {{DataType::VEC3, "a_Position"}, {DataType::VEC3, "a_Normal"}, {DataType::VEC3, "a_Tangent"}, {DataType::VEC3, "a_Binormal"}, {DataType::VEC2, "a_TexCoord"}};
         predepth_pipeline_desc.renderpass = Renderer::create_render_pass(predepth_renderpass_desc);
-        predepth_pipeline_desc.depth_test_state = { DepthTestEnabled::YES, DepthTestFunction::LESS, DepthBufferReadOnly::NO };
+        predepth_pipeline_desc.depth_test_state = {DepthTestEnabled::YES, DepthTestFunction::LESS, DepthBufferReadOnly::NO};
         predepth_pipeline_desc.name = "PreDepth";
 
         if (m_options.backface_culling)
         {
-            predepth_pipeline_desc.facecull_state = { FaceCullingEnabled::YES, FaceCullingCullMode::BACK, FaceWinding::COUNTER_CLOCKWISE };
+            predepth_pipeline_desc.facecull_state = {FaceCullingEnabled::YES, FaceCullingCullMode::BACK, FaceWinding::COUNTER_CLOCKWISE};
         }
         else
         {
-            predepth_pipeline_desc.facecull_state = { FaceCullingEnabled::NO };
+            predepth_pipeline_desc.facecull_state = {FaceCullingEnabled::NO};
         }
 
         create_pipeline(predepth_pipeline_desc);

@@ -48,9 +48,9 @@ namespace rex
 
         //-------------------------------------------------------------------------
         Scene::Scene(const StringID& name)
-            :m_name(name)
-            ,m_viewport_width(0)
-            ,m_viewport_height(0)
+            : m_name(name)
+            , m_viewport_width(0)
+            , m_viewport_height(0)
         {
             m_environment.skybox_texture_cube = Renderer::get_black_texture_cube();
         }
@@ -106,7 +106,7 @@ namespace rex
         //-------------------------------------------------------------------------
         rex::ecs::Entity Scene::create_entity(const StringID& name)
         {
-            Entity entity = { m_register.create(), this };
+            Entity entity = {m_register.create(), this};
 
             StringID entity_name = name == ESID::SID_None ? "entity"_sid : name;
 
@@ -120,9 +120,9 @@ namespace rex
         void Scene::mark_for_post_poned_destroy_entity(Entity entity)
         {
             m_post_update_queue.emplace_back([&, entity]()
-                {
-                    mark_for_immediate_destroy_entity(entity);
-                });
+                                             {
+                                                 mark_for_immediate_destroy_entity(entity);
+                                             });
         }
         //-------------------------------------------------------------------------
         void Scene::mark_for_immediate_destroy_entity(Entity entity)
@@ -203,6 +203,5 @@ namespace rex
         {
             return m_register.size();
         }
-
     }
 }

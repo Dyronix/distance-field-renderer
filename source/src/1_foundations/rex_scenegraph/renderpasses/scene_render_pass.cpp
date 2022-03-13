@@ -16,10 +16,9 @@ namespace rex
 {
     //-------------------------------------------------------------------------
     SceneRenderPass::SceneRenderPass(const StringID& name)
-        :m_name(name)
-        ,m_is_enabled(true)
+        : m_name(name)
+        , m_is_enabled(true)
     {
-
     }
 
     //-------------------------------------------------------------------------
@@ -117,11 +116,10 @@ namespace rex
             return nullptr;
         }
 
-        auto it = std::find_if(std::begin(m_pipeline_map), std::end(m_pipeline_map),
-            [name](const auto& pair)
-            {
-                return name == pair.first;
-            });
+        auto it = std::find_if(std::begin(m_pipeline_map), std::end(m_pipeline_map), [name](const auto& pair)
+                               {
+                                   return name == pair.first;
+                               });
 
         if (it == std::end(m_pipeline_map))
         {
@@ -139,11 +137,10 @@ namespace rex
             return nullptr;
         }
 
-        auto it = std::find_if(std::cbegin(m_pipeline_map), std::cend(m_pipeline_map),
-            [name](const auto& pair)
-            {
-                return name == pair.first;
-            });
+        auto it = std::find_if(std::cbegin(m_pipeline_map), std::cend(m_pipeline_map), [name](const auto& pair)
+                               {
+                                   return name == pair.first;
+                               });
 
         if (it == std::cend(m_pipeline_map))
         {
@@ -173,11 +170,10 @@ namespace rex
             return nullptr;
         }
 
-        auto it = std::find_if(std::cbegin(m_material_map), std::cend(m_material_map),
-            [name](const auto& pair)
-            {
-                return name == pair.first;
-            });
+        auto it = std::find_if(std::cbegin(m_material_map), std::cend(m_material_map), [name](const auto& pair)
+                               {
+                                   return name == pair.first;
+                               });
 
         if (it == std::cend(m_material_map))
         {
@@ -195,11 +191,10 @@ namespace rex
             return nullptr;
         }
 
-        auto it = std::find_if(std::cbegin(m_material_map), std::cend(m_material_map),
-            [name](const auto& pair)
-            {
-                return name == pair.first;
-            });
+        auto it = std::find_if(std::cbegin(m_material_map), std::cend(m_material_map), [name](const auto& pair)
+                               {
+                                   return name == pair.first;
+                               });
 
         if (it == std::cend(m_material_map))
         {
@@ -244,7 +239,7 @@ namespace rex
         auto m = ResourceFactory::create_material(shader, materialName);
 
         m_material_map.insert(std::make_pair(materialName, m));
-        
+
         return m;
     }
 
@@ -271,7 +266,7 @@ namespace rex
     {
         // Nothing to implement
     }
-    
+
     //-------------------------------------------------------------------------
     void SceneRenderPass::on_shutdown()
     {

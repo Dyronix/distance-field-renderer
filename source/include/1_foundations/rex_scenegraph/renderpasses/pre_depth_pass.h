@@ -14,20 +14,21 @@ namespace rex
     struct PreDepthPassOptions
     {
         PreDepthPassOptions()
-            :pass_name(ESID::SID_None)
-            ,shader_name("predepth"_sid)
-            ,backface_culling(true)
-            ,near_plane(0.1f)
-            ,far_plane(1000.0)
-        {}
+            : pass_name(ESID::SID_None)
+            , shader_name("predepth"_sid)
+            , backface_culling(true)
+            , near_plane(0.1f)
+            , far_plane(1000.0)
+        {
+        }
 
-        StringID    pass_name;
-        StringID    shader_name;
+        StringID pass_name;
+        StringID shader_name;
 
-        bool        backface_culling;
+        bool backface_culling;
 
-        float       near_plane;
-        float       far_plane;
+        float near_plane;
+        float far_plane;
     };
 
     class PreDepthPass : public SceneRenderPass

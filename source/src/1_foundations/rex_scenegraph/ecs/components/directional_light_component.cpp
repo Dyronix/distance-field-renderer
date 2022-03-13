@@ -12,17 +12,20 @@ namespace rex
         DirectionalLightComponent::DirectionalLightComponent()
             : is_active(true)
             , intensity(1.0f)
-        {}
+        {
+        }
         //-------------------------------------------------------------------------
         DirectionalLightComponent::DirectionalLightComponent(const DirectionalLightComponent& other)
             : is_active(other.is_active)
             , intensity(other.intensity)
-        {}
+        {
+        }
         //-------------------------------------------------------------------------
         DirectionalLightComponent::DirectionalLightComponent(bool inActive, float inIntensity)
-            :is_active(inActive)
+            : is_active(inActive)
             , intensity(inIntensity)
-        {}
+        {
+        }
 
         //-------------------------------------------------------------------------
         bool DirectionalLightComponent::operator==(const DirectionalLightComponent& other) const

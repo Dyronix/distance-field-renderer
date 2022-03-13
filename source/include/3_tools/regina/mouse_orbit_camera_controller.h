@@ -22,8 +22,8 @@ namespace regina
         bool on_can_rotate() const override;
 
     private:
-        rex::InputImpl*  m_input_instance;
-        bool    m_mouse_enabled;
-        int16   m_mouse_code;
+        rex::InputImpl* m_input_instance;
+        bool m_mouse_enabled;
+        int16 m_mouse_code;
     };
 }

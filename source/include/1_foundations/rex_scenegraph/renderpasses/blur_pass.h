@@ -14,20 +14,21 @@ namespace rex
     struct BlurPassOptions
     {
         BlurPassOptions()
-            :pass_name(ESID::SID_None)
-            ,shader_name("blur"_sid)
-            ,color_buffer(ESID::SID_None)
-            ,blur_width(4)
-            ,blur_height(4)
-        {}
+            : pass_name(ESID::SID_None)
+            , shader_name("blur"_sid)
+            , color_buffer(ESID::SID_None)
+            , blur_width(4)
+            , blur_height(4)
+        {
+        }
 
-        StringID            pass_name;
-        StringID            shader_name;
+        StringID pass_name;
+        StringID shader_name;
 
-        SceneRenderPassID   color_buffer;
+        SceneRenderPassID color_buffer;
 
-        int32               blur_width;
-        int32               blur_height;
+        int32 blur_width;
+        int32 blur_height;
     };
 
     class BlurPass : public SceneRenderPass

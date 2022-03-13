@@ -34,18 +34,16 @@ namespace rex
 
     //-------------------------------------------------------------------------
     GeometryPass::GeometryPass(const GeometryPassOptions& options, CreateFrameBuffer create_frame_buffer)
-        :SceneRenderPass(options.pass_name)
-        ,m_active_environment(ESID::SID_None)
-        ,m_options(options)
-        ,m_create_framebuffer(create_frame_buffer)
+        : SceneRenderPass(options.pass_name)
+        , m_active_environment(ESID::SID_None)
+        , m_options(options)
+        , m_create_framebuffer(create_frame_buffer)
     {
-
     }
 
     //-------------------------------------------------------------------------
     GeometryPass::~GeometryPass()
     {
-
     }
 
     //-------------------------------------------------------------------------
@@ -166,7 +164,7 @@ namespace rex
         RenderPassDescription geometry_renderpass_desc;
 
         geometry_renderpass_desc.framebuffer = framebuffer;
-        geometry_renderpass_desc.clear_color = { 0.15f, 0.15f, 0.15f, 1.0f };
+        geometry_renderpass_desc.clear_color = {0.15f, 0.15f, 0.15f, 1.0f};
         geometry_renderpass_desc.clear_depth = 1.0f;
         geometry_renderpass_desc.clear_flags = CLEAR_COLOR_AND_DEPTH;
         geometry_renderpass_desc.name = "Geometry";
@@ -174,25 +172,18 @@ namespace rex
         PipelineDescription geometry_pipeline_desc;
 
         geometry_pipeline_desc.shader = shader_library::get(m_options.geometry_shader_name);
-        geometry_pipeline_desc.layout =
-        {
-            { DataType::VEC3, "a_Position" },
-            { DataType::VEC3, "a_Normal"   },
-            { DataType::VEC3, "a_Tangent"  },
-            { DataType::VEC3, "a_Binormal" },
-            { DataType::VEC2, "a_TexCoord" }
-        };
+        geometry_pipeline_desc.layout = {{DataType::VEC3, "a_Position"}, {DataType::VEC3, "a_Normal"}, {DataType::VEC3, "a_Tangent"}, {DataType::VEC3, "a_Binormal"}, {DataType::VEC2, "a_TexCoord"}};
         geometry_pipeline_desc.renderpass = Renderer::create_render_pass(geometry_renderpass_desc);
-        geometry_pipeline_desc.depth_test_state = { DepthTestEnabled::YES, DepthTestFunction::LESS, DepthBufferReadOnly::NO };
+        geometry_pipeline_desc.depth_test_state = {DepthTestEnabled::YES, DepthTestFunction::LESS, DepthBufferReadOnly::NO};
         geometry_pipeline_desc.name = GEOMETRY_PIPELINE_NAME;
-        
+
         if (m_options.backface_culling)
         {
-            geometry_pipeline_desc.facecull_state = { FaceCullingEnabled::YES, FaceCullingCullMode::BACK, FaceWinding::COUNTER_CLOCKWISE };
+            geometry_pipeline_desc.facecull_state = {FaceCullingEnabled::YES, FaceCullingCullMode::BACK, FaceWinding::COUNTER_CLOCKWISE};
         }
         else
         {
-            geometry_pipeline_desc.facecull_state = { FaceCullingEnabled::NO };
+            geometry_pipeline_desc.facecull_state = {FaceCullingEnabled::NO};
         }
 
         create_pipeline(geometry_pipeline_desc);
@@ -203,18 +194,11 @@ namespace rex
         PipelineDescription skybox_pipeline_desc;
 
         skybox_pipeline_desc.shader = shader_library::get(m_options.skybox_shader_name);
-        skybox_pipeline_desc.layout =
-        {
-            { DataType::VEC3, "a_Position" },
-            { DataType::VEC3, "a_Normal"   },
-            { DataType::VEC3, "a_Tangent"  },
-            { DataType::VEC3, "a_Binormal" },
-            { DataType::VEC2, "a_TexCoord" }
-        };
+        skybox_pipeline_desc.layout = {{DataType::VEC3, "a_Position"}, {DataType::VEC3, "a_Normal"}, {DataType::VEC3, "a_Tangent"}, {DataType::VEC3, "a_Binormal"}, {DataType::VEC2, "a_TexCoord"}};
         skybox_pipeline_desc.renderpass = get_pipeline()->get_render_pass();
-        skybox_pipeline_desc.depth_test_state = { DepthTestEnabled::YES, DepthTestFunction::LESS_OR_EQUAL, DepthBufferReadOnly::NO };
-        skybox_pipeline_desc.facecull_state = { FaceCullingEnabled::NO };
-        skybox_pipeline_desc.rasterizer_state = { FillMode::FILL };
+        skybox_pipeline_desc.depth_test_state = {DepthTestEnabled::YES, DepthTestFunction::LESS_OR_EQUAL, DepthBufferReadOnly::NO};
+        skybox_pipeline_desc.facecull_state = {FaceCullingEnabled::NO};
+        skybox_pipeline_desc.rasterizer_state = {FillMode::FILL};
         skybox_pipeline_desc.name = SKYBOX_PIPELINE_NAME;
 
         create_pipeline(skybox_pipeline_desc);
@@ -233,17 +217,10 @@ namespace rex
         PipelineDescription grid_pipeline_desc;
 
         grid_pipeline_desc.shader = shader_library::get(m_options.grid_shader_name);
-        grid_pipeline_desc.layout =
-        {
-            { DataType::VEC3, "a_Position" },
-            { DataType::VEC3, "a_Normal"   },
-            { DataType::VEC3, "a_Tangent"  },
-            { DataType::VEC3, "a_Binormal" },
-            { DataType::VEC2, "a_TexCoord" }
-        };
+        grid_pipeline_desc.layout = {{DataType::VEC3, "a_Position"}, {DataType::VEC3, "a_Normal"}, {DataType::VEC3, "a_Tangent"}, {DataType::VEC3, "a_Binormal"}, {DataType::VEC2, "a_TexCoord"}};
         grid_pipeline_desc.renderpass = get_pipeline()->get_render_pass();
-        grid_pipeline_desc.depth_test_state = { DepthTestEnabled::YES, DepthTestFunction::LESS, DepthBufferReadOnly::NO };
-        grid_pipeline_desc.facecull_state = { FaceCullingEnabled::NO };
+        grid_pipeline_desc.depth_test_state = {DepthTestEnabled::YES, DepthTestFunction::LESS, DepthBufferReadOnly::NO};
+        grid_pipeline_desc.facecull_state = {FaceCullingEnabled::NO};
         grid_pipeline_desc.name = GRID_PIPELINE_NAME;
 
         create_pipeline(grid_pipeline_desc);

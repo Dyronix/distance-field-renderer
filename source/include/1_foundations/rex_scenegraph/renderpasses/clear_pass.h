@@ -15,22 +15,23 @@ namespace rex
     struct ClearPassOptions
     {
         ClearPassOptions()
-            :pass_name(ESID::SID_None)
-            ,shader_name(ESID::SID_None)
-            ,clear_color(colors::white)
-        {}
+            : pass_name(ESID::SID_None)
+            , shader_name(ESID::SID_None)
+            , clear_color(colors::white)
+        {
+        }
 
-        StringID    pass_name;
-        StringID    shader_name;
+        StringID pass_name;
+        StringID shader_name;
 
-        Color       clear_color;
+        Color clear_color;
     };
 
     class ClearPass : public SceneRenderPass
     {
     public:
         ClearPass(const ClearPassOptions& options, CreateFrameBuffer create_frame_buffer = CreateFrameBuffer::YES);
-        ~ClearPass() override; 
+        ~ClearPass() override;
 
         void begin(const ecs::SceneCamera& camera, const Transform& cameraTransform) override;
         void render() override;

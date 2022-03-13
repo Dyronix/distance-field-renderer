@@ -17,17 +17,15 @@ namespace rex
 {
     //-------------------------------------------------------------------------
     ClearPass::ClearPass(const ClearPassOptions& options, CreateFrameBuffer create_frame_buffer)
-        :SceneRenderPass(options.pass_name)
-        ,m_options(options)
-        ,m_create_framebuffer(create_frame_buffer)
+        : SceneRenderPass(options.pass_name)
+        , m_options(options)
+        , m_create_framebuffer(create_frame_buffer)
     {
-
     }
 
     //-------------------------------------------------------------------------
     ClearPass::~ClearPass()
     {
-
     }
 
     //-------------------------------------------------------------------------
@@ -53,7 +51,7 @@ namespace rex
         RenderPassDescription clear_renderpass_desc;
 
         clear_renderpass_desc.framebuffer = framebuffer;
-        clear_renderpass_desc.clear_color = { m_options.clear_color.red, m_options.clear_color.green, m_options.clear_color.blue, m_options.clear_color.alpha };
+        clear_renderpass_desc.clear_color = {m_options.clear_color.red, m_options.clear_color.green, m_options.clear_color.blue, m_options.clear_color.alpha};
         clear_renderpass_desc.clear_flags = COLOR_ONLY;
         clear_renderpass_desc.clear_depth = 1.0f;
         clear_renderpass_desc.name = "Clear";
@@ -61,15 +59,11 @@ namespace rex
         PipelineDescription clear_pipeline_desc;
 
         clear_pipeline_desc.shader = shader_library::get(m_options.shader_name);
-        clear_pipeline_desc.layout =
-        {
-            { DataType::VEC3, "a_Position" },
-            { DataType::VEC2, "a_TexCoord" }
-        };
+        clear_pipeline_desc.layout = {{DataType::VEC3, "a_Position"}, {DataType::VEC2, "a_TexCoord"}};
         clear_pipeline_desc.renderpass = Renderer::create_render_pass(clear_renderpass_desc);
         clear_pipeline_desc.name = "Clear";
-        clear_pipeline_desc.depth_test_state = { DepthTestEnabled::NO };
-        clear_pipeline_desc.facecull_state = { FaceCullingEnabled::NO };
+        clear_pipeline_desc.depth_test_state = {DepthTestEnabled::NO};
+        clear_pipeline_desc.facecull_state = {FaceCullingEnabled::NO};
 
         create_pipeline(clear_pipeline_desc);
     }
