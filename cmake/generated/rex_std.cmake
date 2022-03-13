@@ -30,7 +30,7 @@ add_definitions(-D${UPPER_LIB_NAME}_LIB)
 # Set the include directories                                                                                                  
 target_include_directories(rex_std PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_std)                
 target_include_directories(rex_std PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_diagnostics)                
-target_include_directories(rex_std PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_rex_utilities)              
+target_include_directories(rex_std PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_utilities)              
 target_include_directories(rex_std PUBLIC ${INCLUDE_GSL})  
 target_include_directories(rex_std PUBLIC ${INCLUDE_CRC})  
 
