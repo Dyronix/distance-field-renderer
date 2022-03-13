@@ -21,7 +21,6 @@ namespace rex
         void attach();
         void detach();
 
-        void load_content();
         void update(const FrameInfo& info);
         void imgui_render();
         void handle_event(events::Event& evt);
@@ -36,7 +35,6 @@ namespace rex
         virtual void on_attach(){/* Nothing to implement */};
         virtual void on_detach(){/* Nothing to implement */};
 
-        virtual void on_load_content();
         virtual void on_update(const FrameInfo& /* info */);
         virtual void on_im_gui_render();
         virtual void on_event(events::Event& /* event */);

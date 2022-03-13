@@ -39,12 +39,6 @@ namespace rex
     }
 
     //-------------------------------------------------------------------------
-    void Layer::load_content()
-    {
-        on_load_content();
-    }
-
-    //-------------------------------------------------------------------------
     void Layer::update(const FrameInfo& info)
     {
         on_update(info);
@@ -86,12 +80,6 @@ namespace rex
     const bool Layer::is_im_gui_enabled() const
     {
         return m_imgui_enabled;
-    }
-
-    //-------------------------------------------------------------------------
-    void Layer::Layer::on_load_content()
-    {
-        // Nothing to implement
     }
 
     //-------------------------------------------------------------------------
