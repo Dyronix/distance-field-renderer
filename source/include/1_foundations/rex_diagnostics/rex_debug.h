@@ -30,10 +30,12 @@
 
 //-------------------------------------------------------------------------
 // REX Logger Names
-#if defined(REX_CORE_LIB) || defined(REX_UTILITIES_LIB) || defined(REX_GLAD_LIB) || defined(REX_DIAGNOSTICS_LIB)
+#if defined(REX_CORE_LIB) || defined(REX_UTILITIES_LIB) || defined(REX_GLAD_LIB) || defined(REX_DIAGNOSTICS_LIB)                                                                                                                                         \
+    || defined(REX_IO_LIB) || defined(REX_HID_LIB) || defined(REX_EVENTS_LIB) || defined(REX_GRAPHICS_LIB) || defined(REX_MATH_LIB)                                                                                                                      \
+    || defined(REX_MEMORY_LIB) || defined(REX_SCENEGRAPH_LIB) || defined(REX_STD_LIB) || defined(REX_WINDOWS_LIB)
 #define REX_LOGGER_NAME rex::logging::tags::ENGINE_LOGGER_NAME
 #else
-#define REX_LOGGER_NAME rex::logging::tags::CLIENT_LOGGER_NAME
+    #define REX_LOGGER_NAME rex::logging::tags::CLIENT_LOGGER_NAME
 #endif
 
 //-------------------------------------------------------------------------
