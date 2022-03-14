@@ -385,14 +385,14 @@ namespace rex
             return resources_map;
         }
         //-------------------------------------------------------------------------
-        uint32 create_hash(memory::Blob& vertexShaderCode, memory::Blob& fragmentShadercode)
+        size_t create_hash(memory::Blob& vertexShaderCode, memory::Blob& fragmentShadercode)
         {
             std::string vertex_shader_code = std::string(vertexShaderCode.get_data_as<const char>());
             std::string fragment_shader_code = std::string(fragmentShadercode.get_data_as<const char>());
 
             std::string program_shader_code = vertex_shader_code + fragment_shader_code;
 
-            return gsl::narrow<uint32>(std::hash<std::string>{}(program_shader_code));
+            return std::hash<std::string>{}(program_shader_code);
         }
 
         struct ShaderProgram::Internal
@@ -937,7 +937,7 @@ namespace rex
 
             uint32 queue_index;
             uint32 program_id;
-            uint32 hash;
+            size_t hash;
 
             bool is_linked;
             bool is_bound;
