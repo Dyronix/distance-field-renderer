@@ -43,21 +43,24 @@ target_link_libraries(rex_core PUBLIC rex_events)
 # Set project properties
 set_target_properties(rex_core PROPERTIES FOLDER                                         1_foundations/engine) 
 set_target_properties(rex_core PROPERTIES DEFINE_SYMBOL                                  "" )                   
-IF(MSVC AND REX_UNITY_BUILD)
-	set_target_properties(rex_core PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY                ${BIN_DIR})        
+IF(MSVC)
+	set_property(TARGET rex_core PROPERTY VS_DEBUGGER_WORKING_DIRECTORY                	 ${BIN_DIR})        
+
 	set_target_properties(rex_core PROPERTIES ARCHIVE_OUTPUT_DIRECTORY                     ${BIN_DIR})        
 	set_target_properties(rex_core PROPERTIES LIBRARY_OUTPUT_DIRECTORY                     ${BIN_DIR})        
 	set_target_properties(rex_core PROPERTIES RUNTIME_OUTPUT_DIRECTORY                     ${BIN_DIR})        
 
-
-	set_target_properties(rex_core PROPERTIES VS_GLOBAL_EnableUnitySupport                 True)                    
-	set_target_properties(rex_core PROPERTIES VS_GLOBAL_IncludeInUnityFile                 True)
-	set_target_properties(rex_core PROPERTIES VS_GLOBAL_OrderInUnityFile                   100)
-	set_target_properties(rex_core PROPERTIES VS_GLOBAL_CombineFilesOnlyFromTheSameFolder  false)
-	set_target_properties(rex_core PROPERTIES VS_GLOBAL_MinFilesInUnityFile                2)
-	set_target_properties(rex_core PROPERTIES VS_GLOBAL_MaxFilesInUnityFile                0)
-	set_target_properties(rex_core PROPERTIES VS_GLOBAL_MinUnityFiles                      1)
-	set_target_properties(rex_core PROPERTIES VS_GLOBAL_UnityFilesDirectory                .)
+	IF(REX_UNITY_BUILD)
+		set_target_properties(rex_core PROPERTIES VS_GLOBAL_EnableUnitySupport                 True)                    
+		set_target_properties(rex_core PROPERTIES VS_GLOBAL_IncludeInUnityFile                 True)
+		set_target_properties(rex_core PROPERTIES VS_GLOBAL_OrderInUnityFile                   100)
+		set_target_properties(rex_core PROPERTIES VS_GLOBAL_CombineFilesOnlyFromTheSameFolder  false)
+		set_target_properties(rex_core PROPERTIES VS_GLOBAL_MinFilesInUnityFile                2)
+		set_target_properties(rex_core PROPERTIES VS_GLOBAL_MaxFilesInUnityFile                0)
+		set_target_properties(rex_core PROPERTIES VS_GLOBAL_MinUnityFiles                      1)
+		set_target_properties(rex_core PROPERTIES VS_GLOBAL_UnityFilesDirectory                .)
+	ENDIF()
+	
 ENDIF()
 
 

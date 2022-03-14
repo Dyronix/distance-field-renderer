@@ -33,21 +33,24 @@ target_include_directories(rex_diagnostics PUBLIC ${INCLUDE_SPDLOG})
 # Set project properties                                                                                                       
 set_target_properties(rex_diagnostics PROPERTIES FOLDER                                         1_foundations)  
 set_target_properties(rex_diagnostics PROPERTIES DEFINE_SYMBOL                                  "" )                    
-IF(MSVC AND REX_UNITY_BUILD)                                                                                                               
-	set_target_properties(rex_diagnostics PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY                ${BIN_DIR})               
-	set_target_properties(rex_diagnostics PROPERTIES ARCHIVE_OUTPUT_DIRECTORY                     ${BIN_DIR})               
-	set_target_properties(rex_diagnostics PROPERTIES LIBRARY_OUTPUT_DIRECTORY                     ${BIN_DIR})               
-	set_target_properties(rex_diagnostics PROPERTIES RUNTIME_OUTPUT_DIRECTORY                     ${BIN_DIR})               
+IF(MSVC)
+	set_property(TARGET rex_diagnostics PROPERTY VS_DEBUGGER_WORKING_DIRECTORY                	 ${BIN_DIR})        
 
-                                                                                                                             
-	set_target_properties(rex_diagnostics PROPERTIES VS_GLOBAL_EnableUnitySupport                 True)                     
-	set_target_properties(rex_diagnostics PROPERTIES VS_GLOBAL_IncludeInUnityFile                 True)                     
-	set_target_properties(rex_diagnostics PROPERTIES VS_GLOBAL_OrderInUnityFile                   100)                      
-	set_target_properties(rex_diagnostics PROPERTIES VS_GLOBAL_CombineFilesOnlyFromTheSameFolder  false)                    
-	set_target_properties(rex_diagnostics PROPERTIES VS_GLOBAL_MinFilesInUnityFile                2)                        
-	set_target_properties(rex_diagnostics PROPERTIES VS_GLOBAL_MaxFilesInUnityFile                0)                        
-	set_target_properties(rex_diagnostics PROPERTIES VS_GLOBAL_MinUnityFiles                      1)                        
-	set_target_properties(rex_diagnostics PROPERTIES VS_GLOBAL_UnityFilesDirectory                .)                        
+	set_target_properties(rex_diagnostics PROPERTIES ARCHIVE_OUTPUT_DIRECTORY                     ${BIN_DIR})        
+	set_target_properties(rex_diagnostics PROPERTIES LIBRARY_OUTPUT_DIRECTORY                     ${BIN_DIR})        
+	set_target_properties(rex_diagnostics PROPERTIES RUNTIME_OUTPUT_DIRECTORY                     ${BIN_DIR})        
+
+	IF(REX_UNITY_BUILD)
+		set_target_properties(rex_diagnostics PROPERTIES VS_GLOBAL_EnableUnitySupport                 True)                    
+		set_target_properties(rex_diagnostics PROPERTIES VS_GLOBAL_IncludeInUnityFile                 True)
+		set_target_properties(rex_diagnostics PROPERTIES VS_GLOBAL_OrderInUnityFile                   100)
+		set_target_properties(rex_diagnostics PROPERTIES VS_GLOBAL_CombineFilesOnlyFromTheSameFolder  false)
+		set_target_properties(rex_diagnostics PROPERTIES VS_GLOBAL_MinFilesInUnityFile                2)
+		set_target_properties(rex_diagnostics PROPERTIES VS_GLOBAL_MaxFilesInUnityFile                0)
+		set_target_properties(rex_diagnostics PROPERTIES VS_GLOBAL_MinUnityFiles                      1)
+		set_target_properties(rex_diagnostics PROPERTIES VS_GLOBAL_UnityFilesDirectory                .)
+	ENDIF()
+	
 ENDIF()
 
 

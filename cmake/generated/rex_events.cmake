@@ -42,23 +42,26 @@ target_link_libraries(rex_events PUBLIC rex_memory)
 
                                                                                                                              
 # Set project properties                                                                                                       
-set_target_properties(rex_events PROPERTIES FOLDER                                         1_foundations/engine)  
+set_target_properties(rex_events PROPERTIES FOLDER                                         1_foundations/core)  
 set_target_properties(rex_events PROPERTIES DEFINE_SYMBOL                                  "" )                    
-IF(MSVC AND REX_UNITY_BUILD)                                                                                                  
-	set_target_properties(rex_events PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY                ${BIN_DIR})               
-	set_target_properties(rex_events PROPERTIES ARCHIVE_OUTPUT_DIRECTORY                     ${BIN_DIR})               
-	set_target_properties(rex_events PROPERTIES LIBRARY_OUTPUT_DIRECTORY                     ${BIN_DIR})               
-	set_target_properties(rex_events PROPERTIES RUNTIME_OUTPUT_DIRECTORY                     ${BIN_DIR})               
+IF(MSVC)
+	set_property(TARGET rex_events PROPERTY VS_DEBUGGER_WORKING_DIRECTORY                	 ${BIN_DIR})        
 
-                                                                                                                             
-	set_target_properties(rex_events PROPERTIES VS_GLOBAL_EnableUnitySupport                 True)                     
-	set_target_properties(rex_events PROPERTIES VS_GLOBAL_IncludeInUnityFile                 True)                     
-	set_target_properties(rex_events PROPERTIES VS_GLOBAL_OrderInUnityFile                   100)                      
-	set_target_properties(rex_events PROPERTIES VS_GLOBAL_CombineFilesOnlyFromTheSameFolder  false)                    
-	set_target_properties(rex_events PROPERTIES VS_GLOBAL_MinFilesInUnityFile                2)                        
-	set_target_properties(rex_events PROPERTIES VS_GLOBAL_MaxFilesInUnityFile                0)                        
-	set_target_properties(rex_events PROPERTIES VS_GLOBAL_MinUnityFiles                      1)                        
-	set_target_properties(rex_events PROPERTIES VS_GLOBAL_UnityFilesDirectory                .)                        
+	set_target_properties(rex_events PROPERTIES ARCHIVE_OUTPUT_DIRECTORY                     ${BIN_DIR})        
+	set_target_properties(rex_events PROPERTIES LIBRARY_OUTPUT_DIRECTORY                     ${BIN_DIR})        
+	set_target_properties(rex_events PROPERTIES RUNTIME_OUTPUT_DIRECTORY                     ${BIN_DIR})        
+
+	IF(REX_UNITY_BUILD)
+		set_target_properties(rex_events PROPERTIES VS_GLOBAL_EnableUnitySupport                 True)                    
+		set_target_properties(rex_events PROPERTIES VS_GLOBAL_IncludeInUnityFile                 True)
+		set_target_properties(rex_events PROPERTIES VS_GLOBAL_OrderInUnityFile                   100)
+		set_target_properties(rex_events PROPERTIES VS_GLOBAL_CombineFilesOnlyFromTheSameFolder  false)
+		set_target_properties(rex_events PROPERTIES VS_GLOBAL_MinFilesInUnityFile                2)
+		set_target_properties(rex_events PROPERTIES VS_GLOBAL_MaxFilesInUnityFile                0)
+		set_target_properties(rex_events PROPERTIES VS_GLOBAL_MinUnityFiles                      1)
+		set_target_properties(rex_events PROPERTIES VS_GLOBAL_UnityFilesDirectory                .)
+	ENDIF()
+	
 ENDIF()
 
 
