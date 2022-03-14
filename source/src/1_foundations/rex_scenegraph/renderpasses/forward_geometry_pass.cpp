@@ -1,6 +1,6 @@
 #include "rex_scenegraph_pch.h"
 
-#include "renderpasses/geometry_pass.h"
+#include "renderpasses/forward_geometry_pass.h"
 
 #include "scene_renderer.h"
 #include "mesh_factory.h"
@@ -33,7 +33,7 @@ namespace rex
     const StringID SKYBOX_MATERIAL_NAME = "Skybox"_sid;
 
     //-------------------------------------------------------------------------
-    GeometryPass::GeometryPass(const GeometryPassOptions& options, CreateFrameBuffer create_frame_buffer)
+    ForwardGeometryPass::ForwardGeometryPass(const ForwardGeometryPassOptions& options, CreateFrameBuffer create_frame_buffer)
         : SceneRenderPass(options.pass_name)
         , m_active_environment(ESID::SID_None)
         , m_options(options)
@@ -42,12 +42,12 @@ namespace rex
     }
 
     //-------------------------------------------------------------------------
-    GeometryPass::~GeometryPass()
+    ForwardGeometryPass::~ForwardGeometryPass()
     {
     }
 
     //-------------------------------------------------------------------------
-    void GeometryPass::on_initialize(const ref_ptr<SceneRenderer>& /*renderer*/)
+    void ForwardGeometryPass::on_initialize(const ref_ptr<SceneRenderer>& /*renderer*/)
     {
         create_geometry_pipeline();
         create_sky_box_pipeline();
@@ -55,51 +55,51 @@ namespace rex
     }
 
     //-------------------------------------------------------------------------
-    void GeometryPass::on_shutdown()
+    void ForwardGeometryPass::on_shutdown()
     {
         m_sky_model.reset();
     }
 
     //-------------------------------------------------------------------------
-    void GeometryPass::enable_grid()
+    void ForwardGeometryPass::enable_grid()
     {
         m_options.show_grid = true;
     }
     //-------------------------------------------------------------------------
-    void GeometryPass::disable_grid()
+    void ForwardGeometryPass::disable_grid()
     {
         m_options.show_grid = false;
     }
     //-------------------------------------------------------------------------
-    void GeometryPass::toggle_grid()
+    void ForwardGeometryPass::toggle_grid()
     {
         m_options.show_grid = !m_options.show_grid;
     }
 
     //-------------------------------------------------------------------------
-    void GeometryPass::enable_skybox()
+    void ForwardGeometryPass::enable_skybox()
     {
         m_options.show_environment = true;
     }
     //-------------------------------------------------------------------------
-    void GeometryPass::disable_skybox()
+    void ForwardGeometryPass::disable_skybox()
     {
         m_options.show_environment = false;
     }
     //-------------------------------------------------------------------------
-    void GeometryPass::toggle_skybox()
+    void ForwardGeometryPass::toggle_skybox()
     {
         m_options.show_environment = !m_options.show_environment;
     }
 
     //-------------------------------------------------------------------------
-    void GeometryPass::begin(const ecs::SceneCamera& camera, const Transform& cameraTransform)
+    void ForwardGeometryPass::begin(const ecs::SceneCamera& camera, const Transform& cameraTransform)
     {
         UNUSED_PARAM(camera);
         UNUSED_PARAM(cameraTransform);
     }
     //-------------------------------------------------------------------------
-    void GeometryPass::render()
+    void ForwardGeometryPass::render()
     {
         Renderer::begin_render_pass(get_pipeline(GEOMETRY_PIPELINE_NAME), Renderer::ExplicitClear::YES);
 
@@ -135,13 +135,13 @@ namespace rex
         Renderer::end_render_pass();
     }
     //-------------------------------------------------------------------------
-    void GeometryPass::end()
+    void ForwardGeometryPass::end()
     {
         // Nothing to implement
     }
 
     //-------------------------------------------------------------------------
-    void GeometryPass::create_geometry_pipeline()
+    void ForwardGeometryPass::create_geometry_pipeline()
     {
         ref_ptr<FrameBuffer> framebuffer = nullptr;
 
@@ -189,7 +189,7 @@ namespace rex
         create_pipeline(geometry_pipeline_desc);
     }
     //-------------------------------------------------------------------------
-    void GeometryPass::create_sky_box_pipeline()
+    void ForwardGeometryPass::create_sky_box_pipeline()
     {
         PipelineDescription skybox_pipeline_desc;
 
@@ -212,7 +212,7 @@ namespace rex
         m_active_environment = get_scene()->get_environment().skybox_texture_cube->get_name();
     }
     //-------------------------------------------------------------------------
-    void GeometryPass::create_grid_pipeline()
+    void ForwardGeometryPass::create_grid_pipeline()
     {
         PipelineDescription grid_pipeline_desc;
 

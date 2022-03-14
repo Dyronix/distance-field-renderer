@@ -12,9 +12,9 @@ namespace rex
     class SceneRenderer;
     class Model;
 
-    struct GeometryPassOptions
+    struct ForwardGeometryPassOptions
     {
-        GeometryPassOptions()
+        ForwardGeometryPassOptions()
             : pass_name(ESID::SID_None)
             , geometry_shader_name("pbr_static"_sid)
             , grid_shader_name("grid"_sid)
@@ -40,11 +40,11 @@ namespace rex
         float grid_size;
     };
 
-    class GeometryPass : public SceneRenderPass
+    class ForwardGeometryPass : public SceneRenderPass
     {
     public:
-        GeometryPass(const GeometryPassOptions& options, CreateFrameBuffer create_frame_buffer = CreateFrameBuffer::YES);
-        ~GeometryPass() override;
+        ForwardGeometryPass(const ForwardGeometryPassOptions& options, CreateFrameBuffer create_frame_buffer = CreateFrameBuffer::YES);
+        ~ForwardGeometryPass() override;
 
         void enable_grid();
         void disable_grid();
@@ -69,7 +69,7 @@ namespace rex
 
         StringID m_active_environment;
 
-        GeometryPassOptions m_options;
+        ForwardGeometryPassOptions m_options;
         CreateFrameBuffer m_create_framebuffer;
 
         ref_ptr<Model> m_sky_model;
