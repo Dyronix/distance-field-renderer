@@ -178,6 +178,7 @@ add_definitions(-DREX_API_${UPPER_GRAPHICS_API_TARGET})
 # --------------------------------
 # Add subdirectories
 # --------------------------------
+add_subdirectory(${EXTERNALS_DIR}/assimp-${LOWER_PLATFORM_TARGET})
 add_subdirectory(${SRC_DIR})
 
 message(STATUS "#---------------------- Ending project generation ----------------------")

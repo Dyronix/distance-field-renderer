@@ -35,6 +35,7 @@ target_include_directories(regina PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_fo
 target_include_directories(regina PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_io)
 target_include_directories(regina PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_scenegraph)
 target_include_directories(regina PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_windows)
+target_include_directories(regina PUBLIC ${INCLUDE_ASSIMP})
 
 # Set the link libraries
 target_link_libraries(regina PUBLIC rex_core)
@@ -46,6 +47,7 @@ target_link_libraries(regina PUBLIC rex_hid)
 target_link_libraries(regina PUBLIC rex_io)
 target_link_libraries(regina PUBLIC rex_scenegraph)
 target_link_libraries(regina PUBLIC rex_windows)
+target_link_libraries(regina PUBLIC ${LIB_ASSIMP})
 
 # Set project properties
 set_target_properties(regina PROPERTIES FOLDER                                         3_tools) 
