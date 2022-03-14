@@ -66,7 +66,7 @@ namespace rex
 #pragma warning(disable : 4996)
                 R_ERROR("{0}", info_log.data());
 #pragma warning(pop)
-                R_ASSERT_X(false, "Shader compilation failure");
+                R_ASSERT_X(false, "Compiling shader - failed");
 
                 return 0;
             }

@@ -975,13 +975,13 @@ namespace rex
             R_ASSERT_X(info.vertexShaderCode.get_size() != 0_bytes, "No shader code was found.");
             R_ASSERT_X(info.fragmentShaderCode.get_size() != 0_bytes, "No shader code was found");
 
-            SHADER_PROGRAM_INFO("Compiling shader: {0}", info.tag.to_string());
+            SHADER_PROGRAM_TRACE("[Shader Program] Compiling {0} - start", info.tag.to_string());
             if (!m_internal->create(std::move(info.vertexShaderCode), std::move(info.fragmentShaderCode)))
             {
                 SHADER_PROGRAM_ERROR("Shader creation failed");
                 return;
             }
-            SHADER_PROGRAM_INFO("Shader compilation successfull: {0}", get_name().to_string());
+            SHADER_PROGRAM_INFO("[Shader Program] Compiling {0} - success", get_name().to_string());
 
             for (const auto& pair : m_internal->blocks)
             {
