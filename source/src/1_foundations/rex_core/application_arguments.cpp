@@ -16,8 +16,13 @@ namespace rex
 
         // First argument is our working directory
         R_TODO("Capture the working directory when parsing application arguments");
+        
+        R_INFO("[Application Argument] idx: 0, value: {0}", inArgv[0]);
+
         for (int i = 1; i < inArgc; ++i)
         {
+            R_INFO("[Application Argument] idx:{0}, value: {1}", i, inArgv[0]);
+
             ApplicationArgument argument = application_argument_parser::parse(inArgv[i]);
 
             m_arguments.insert(std::make_pair(create_sid(argument.key), create_sid(argument.value)));
