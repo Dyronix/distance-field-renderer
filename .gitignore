@@ -42,6 +42,7 @@ external/gsl-windows/
 external/crc-windows/
 external/glm-windows/
 external/entt-windows/
+external/assimp-windows/
 
 scripts/__pycache__/
 
