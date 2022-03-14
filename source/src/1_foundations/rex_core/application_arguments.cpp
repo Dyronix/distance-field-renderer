@@ -21,7 +21,7 @@ namespace rex
 
         for (int i = 1; i < inArgc; ++i)
         {
-            R_INFO("[Application Argument] idx:{0}, value: {1}", i, inArgv[0]);
+            R_INFO("[Application Argument] idx: {0}, value: {1}", i, inArgv[i]);
 
             ApplicationArgument argument = application_argument_parser::parse(inArgv[i]);
 
