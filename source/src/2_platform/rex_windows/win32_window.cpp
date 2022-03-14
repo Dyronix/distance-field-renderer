@@ -105,7 +105,7 @@ namespace rex
 
             SDL_ShowWindow(m_sdl_window);
 
-            m_window_presentation &= window_presentation::VISIBLE;
+            m_window_presentation |= window_presentation::VISIBLE;
         }
 
         //-------------------------------------------------------------------------
@@ -197,8 +197,8 @@ namespace rex
             SDL_SetWindowPosition(m_sdl_window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
             SDL_SetWindowSize(m_sdl_window, m_windowed_width, m_windowed_height);
 
-            m_window_presentation &= window_presentation::WINDOWED;
             m_window_presentation &= ~window_presentation::FULLSCREEN;
+            m_window_presentation |= window_presentation::WINDOWED;
 
             return true;
         }
@@ -226,7 +226,7 @@ namespace rex
             }
 
             m_window_presentation &= ~window_presentation::WINDOWED;
-            m_window_presentation &= window_presentation::FULLSCREEN;
+            m_window_presentation |= window_presentation::FULLSCREEN;
 
             return true;
         }
@@ -326,7 +326,7 @@ namespace rex
                 case SDL_WINDOWEVENT_FOCUS_LOST: { lost_focus(Focus::Type::KEYBOARD);
                 }
                 break;
-                case SDL_WINDOWEVENT_SHOWN: { m_window_presentation &= window_presentation::VISIBLE;
+                case SDL_WINDOWEVENT_SHOWN: { m_window_presentation |= window_presentation::VISIBLE;
                 }
                 break;
                 case SDL_WINDOWEVENT_HIDDEN: { m_window_presentation &= ~window_presentation::VISIBLE;
