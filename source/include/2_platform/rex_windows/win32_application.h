@@ -13,6 +13,7 @@ namespace rex
     class Layer;
     class CoreWindow;
     class CoreContext;
+    class FPS;
 
     namespace events
     {
@@ -61,7 +62,7 @@ namespace rex
 
             void process_events();
             void process_render_queue(const FrameInfo& info);
-            void process_window();
+            void process_window(const FrameInfo& info);
 
             void mark_for_destroy();
 
@@ -75,6 +76,8 @@ namespace rex
 
             bool on_window_close(const events::WindowClose& evt);
             bool on_window_resize(const events::WindowResize& evt);
+
+            void update_window_title(const FPS& fps);
 
             bool m_is_marked_for_destruction;
 

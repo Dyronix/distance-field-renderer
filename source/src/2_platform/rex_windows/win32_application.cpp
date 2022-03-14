@@ -21,6 +21,8 @@
 #include "display_manager.h"
 
 #include "world.h"
+#include "frameinfo/frameinfo.h"
+#include "frameinfo/fps.h"
 
 #include "resources/resource_factory.h"
 #include "resources/resources_api.h"
@@ -200,7 +202,7 @@ namespace rex
         {
             process_events();
             process_render_queue(info);
-            process_window();
+            process_window(info);
         }
         //-------------------------------------------------------------------------
         void Application::platform_event(events::Event& event)
@@ -291,9 +293,9 @@ namespace rex
             }
         }
         //-------------------------------------------------------------------------
-        void Application::process_window()
+        void Application::process_window(const FrameInfo& info)
         {
-            // update_window_title(info.fps);
+            update_window_title(info.fps);
 
             m_window->update();
         }
@@ -429,5 +431,18 @@ namespace rex
 
             return true;
         }
-    }
+
+        //-------------------------------------------------------------------------
+        void Application::update_window_title(const FPS& fps)
+        {
+            std::stringstream stream;
+
+            stream << get_application_description().name;
+            stream << " - FPS: ";
+            stream << fps.get();
+
+            m_window->set_title(create_sid(stream.str()));
+        }
+
+    } // namespace win32
 }
