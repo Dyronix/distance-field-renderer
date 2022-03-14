@@ -171,7 +171,7 @@ namespace rex
             SDL_SetWindowTitle(m_sdl_window, name);
 
             const char* error = SDL_GetError();
-            if (error == nullptr)
+            if (std::strcmp(error, "") == 0)
             {
                 return true;
             }
