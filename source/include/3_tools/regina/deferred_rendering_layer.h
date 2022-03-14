@@ -16,7 +16,8 @@ namespace rex
     class SceneRenderPass;
 
     struct PreDepthPassOptions;
-    struct GeometryPassOptions;
+    struct DeferredGeometryPassOptions;
+    struct DeferredLightPassOptions;
     struct CompositePassOptions;
 
     class CoreWindow;
@@ -25,15 +26,15 @@ namespace rex
     {
         class Scene;
     }
-}
+} // namespace rex
 
 namespace regina
 {
-    class ReginaLayer : public rex::Layer
+    class DeferredRenderingLayer : public rex::Layer
     {
     public:
-        ReginaLayer(const rex::CoreWindow* window);
-        ~ReginaLayer() override;
+        DeferredRenderingLayer(const rex::CoreWindow* window);
+        ~DeferredRenderingLayer() override;
 
         void on_attach() override;
         void on_detach() override;
@@ -47,7 +48,8 @@ namespace regina
         void setup_scene_renderer();
 
         std::unique_ptr<rex::SceneRenderPass> create_pre_depth_pass(const rex::PreDepthPassOptions& options) const;
-        std::unique_ptr<rex::SceneRenderPass> create_geometry_pass(const rex::GeometryPassOptions& options) const;
+        std::unique_ptr<rex::SceneRenderPass> create_deferred_geometry_pass(const rex::DeferredGeometryPassOptions& options) const;
+        std::unique_ptr<rex::SceneRenderPass> create_deferred_light_pass(const rex::DeferredLightPassOptions& options) const;
         std::unique_ptr<rex::SceneRenderPass> create_composite_pass(const rex::CompositePassOptions& options) const;
 
         rex::ecs::SceneCamera m_camera;
@@ -58,4 +60,4 @@ namespace regina
 
         const rex::CoreWindow* m_window;
     };
-}
+} // namespace regina
