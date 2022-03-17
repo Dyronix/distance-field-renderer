@@ -58,17 +58,17 @@ namespace rex
     //-------------------------------------------------------------------------
     void DeferredGeometryPass::render()
     {
-        Renderer::begin_render_pass(get_pipeline(GEOMETRY_PIPELINE_NAME), Renderer::ExplicitClear::YES);
+        Renderer::begin_render_pass(get_pipeline(), Renderer::ExplicitClear::YES);
 
         for (auto& dc : get_scene_renderer()->get_draw_commands())
         {
             if (dc.override_material)
             {
-                Renderer::render_model_with_material(get_pipeline(GEOMETRY_PIPELINE_NAME), UniformBufferSet::instance(), dc.model, dc.transform, dc.override_material);
+                Renderer::render_model_with_material(get_pipeline(), UniformBufferSet::instance(), dc.model, dc.transform, dc.override_material);
             }
             else
             {
-                Renderer::render_model(get_pipeline(GEOMETRY_PIPELINE_NAME), UniformBufferSet::instance(), dc.model, dc.transform);
+                Renderer::render_model(get_pipeline(), UniformBufferSet::instance(), dc.model, dc.transform);
             }
         }
 
@@ -97,7 +97,7 @@ namespace rex
             geometry_framebuffer_desc.color_attachments.push_back(std::move(create_color_attachment_description(vp_width, vp_height, Texture::Format::RGBA_32_FLOAT)));
             geometry_framebuffer_desc.color_attachments.push_back(std::move(create_color_attachment_description(vp_width, vp_height, Texture::Format::RGBA_32_FLOAT)));
             geometry_framebuffer_desc.color_attachments.push_back(std::move(create_color_attachment_description(vp_width, vp_height, Texture::Format::RGBA_32_FLOAT)));
-            geometry_framebuffer_desc.depth_attachment = std::move(create_depth_attachment_description(vp_width, vp_height, Texture::Format::DEPTH_COMPONENT_32_FLOAT));
+            geometry_framebuffer_desc.depth_attachment = std::move(create_depth_attachment_description(vp_width, vp_height, Texture::Format::DEPTH_COMPONENT_24_INTEGER));
             geometry_framebuffer_desc.name = "Geometry";
 
             framebuffer = ResourceFactory::create_frame_buffer(std::move(geometry_framebuffer_desc), FrameBufferDepthAttachmentOption::DEPTH_ONLY);
@@ -129,20 +129,5 @@ namespace rex
         }
 
         create_pipeline(geometry_pipeline_desc);
-
-        ref_ptr<Texture> diffuse_texture = texture_library::get(m_options.diffuse_texture_name);
-        if(diffuse_texture == nullptr)
-        {
-            diffuse_texture = Renderer::get_white_texture();
-        }
-        ref_ptr<Texture> specular_texture = texture_library::get(m_options.specular_texture_name);
-        if(specular_texture == nullptr)
-        {
-            specular_texture = Renderer::get_black_texture();
-        }
-        
-        auto material = create_material(geometry_pipeline_desc.shader, "Deferred Geometry");
-        material->set_texture2d("u_Texture_Diffuse", diffuse_texture);
-        material->set_texture2d("u_Texture_Specular", specular_texture);
     }
 }
