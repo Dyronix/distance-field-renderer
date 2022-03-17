@@ -77,7 +77,8 @@ namespace rex
             //-------------------------------------------------------------------------
             void Context::set_vertical_update(const SwapInterval& interval)
             {
-                if (SDL_GL_SetSwapInterval(gsl::narrow<int32>(interval)) == -1)
+                int32 swap_interval = gsl::narrow<int32>(interval);
+                if (SDL_GL_SetSwapInterval(swap_interval) == -1)
                 {
                     R_ERROR("Swap interval not supported");
                     R_ERROR(SDL_GetError());
