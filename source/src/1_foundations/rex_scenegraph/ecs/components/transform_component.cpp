@@ -21,6 +21,26 @@ namespace rex
             : transform(t)
         {
         }
+        //-------------------------------------------------------------------------
+        TransformComponent::TransformComponent(TransformComponent&& other) noexcept
+            : transform(std::exchange(other.transform, {}))
+        {
+        }
+
+        //-------------------------------------------------------------------------
+        rex::ecs::TransformComponent& TransformComponent::operator=(const TransformComponent& other)
+        {
+            this->transform = other.transform;
+
+            return *this;
+        }
+
+        //-------------------------------------------------------------------------
+        rex::ecs::TransformComponent& TransformComponent::operator=(TransformComponent&& other) noexcept
+        {
+            this->transform = std::exchange(other.transform, {});
+            return *this;
+        }
 
         //-------------------------------------------------------------------------
         TransformComponent::operator Transform&()
@@ -43,5 +63,5 @@ namespace rex
         {
             return !(*this == other);
         }
-    }
-}
+    } // namespace ecs
+} // namespace rex

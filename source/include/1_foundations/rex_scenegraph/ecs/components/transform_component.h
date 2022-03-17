@@ -10,7 +10,11 @@ namespace rex
         {
             TransformComponent();
             TransformComponent(const TransformComponent& other);
+            TransformComponent(TransformComponent&& other) noexcept;
             TransformComponent(const Transform& t);
+
+            TransformComponent& operator=(const TransformComponent& other);
+            TransformComponent& operator=(TransformComponent&& other) noexcept;
 
             operator Transform&();
             operator const Transform&() const;
