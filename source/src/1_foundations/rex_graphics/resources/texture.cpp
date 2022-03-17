@@ -287,6 +287,8 @@ namespace rex
                 case Texture::Usage::DIFFUSE: return "Texture Usage: Diffuse";
                 case Texture::Usage::SPECUALR: return "Texture Usage: Specular";
                 case Texture::Usage::NORMAL: return "Texture Usage: Normal";
+                case Texture::Usage::AMBIENT_OCCLUSION: return "Texture Usage: Ambient Occlusion";
+                case Texture::Usage::ROUGHNESS: return "Texture Usage: Roughness";
 
                 case Texture::Usage::COLOR_ATTACHMENT: return "Texture Usage: Color Attachment";
                 case Texture::Usage::DEPTH_ATTACHMENT: return "Texture Usage: Depth Attachment";

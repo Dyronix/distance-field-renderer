@@ -98,6 +98,8 @@ namespace rex
             DIFFUSE,
             SPECUALR,
             NORMAL,
+            AMBIENT_OCCLUSION,
+            ROUGHNESS,
 
             COLOR_ATTACHMENT,
             DEPTH_ATTACHMENT,
