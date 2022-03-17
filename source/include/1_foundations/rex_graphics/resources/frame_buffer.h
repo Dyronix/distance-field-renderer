@@ -30,6 +30,19 @@ namespace rex
         DEPTH_STENCIL
     };
 
+    enum class FrameBufferCopyOption
+    {
+        COLOR,
+        DEPTH,
+        STENCIL
+    };
+
+    enum class FrameBufferFilterOption
+    {
+        NEAREST,
+        LINEAR
+    };
+
     class FrameBuffer : public Resource
     {
     public:
@@ -48,5 +61,7 @@ namespace rex
 
         virtual void bind(IsRenderThread isRenderThread = IsRenderThread::NO) const = 0;
         virtual void unbind(IsRenderThread isRenderThread = IsRenderThread::NO) const = 0;
+        virtual bool is_bound() const = 0;
+        virtual uint32 get_id() const = 0;
     };
 }

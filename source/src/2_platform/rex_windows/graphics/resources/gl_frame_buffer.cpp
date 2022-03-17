@@ -150,6 +150,7 @@ namespace rex
         FrameBuffer::FrameBuffer(FrameBufferDescription&& description, FrameBufferDepthAttachmentOption depthAttachmentOption)
             : m_buffer_id(0)
             , m_depth_attachment_option(depthAttachmentOption)
+            , m_is_bound(false)
         {
             RENDERER_INFO("Submitting - Creating Framebuffer: {0}", description.name.to_string());
 
@@ -184,6 +185,8 @@ namespace rex
 
             if (m_buffer_id)
             {
+                m_is_bound = false;
+
                 ref_ptr<FrameBuffer> instance(this);
                 Renderer::submit([instance]() mutable
                                  {
@@ -393,6 +396,8 @@ namespace rex
 
                 opengl::bind_framebuffer(GL_FRAMEBUFFER, m_buffer_id);
                 opengl::viewport(0, 0, get_width(), get_height());
+
+                m_is_bound = true;
             }
             else
             {
@@ -405,6 +410,8 @@ namespace rex
 
                                      opengl::bind_framebuffer(GL_FRAMEBUFFER, instance->m_buffer_id);
                                      opengl::viewport(0, 0, instance->get_width(), instance->get_height());
+
+                                     instance->m_is_bound = true;
                                  });
             }
         }
@@ -416,19 +423,36 @@ namespace rex
                 RENDERER_INFO("Unbind Framebuffer: {0}", m_name.to_string());
 
                 opengl::bind_framebuffer(GL_FRAMEBUFFER, 0);
+
+                m_is_bound = false;
             }
             else
             {
                 RENDERER_INFO("Submitting - Unbind Framebuffer: {0}", m_name.to_string());
 
                 ref_ptr<const FrameBuffer> instance(this);
-                Renderer::submit([instance]()
+                Renderer::submit([instance]() 
                                  {
                                      RENDERER_INFO("Executing - Unbind Framebuffer: {0}", instance->m_name.to_string());
 
                                      opengl::bind_framebuffer(GL_FRAMEBUFFER, 0);
+
+                                     instance->m_is_bound = false;
                                  });
             }
         }
-    }
+
+        //-------------------------------------------------------------------------
+        bool FrameBuffer::is_bound() const
+        {
+            return m_is_bound;
+        }
+
+        //-------------------------------------------------------------------------
+        uint32 FrameBuffer::get_id() const
+        {
+            return m_buffer_id;
+        }
+
+    } // namespace opengl
 }

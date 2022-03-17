@@ -76,6 +76,7 @@ namespace rex
         uint32 capacity() const;
 
         ref_ptr<FrameBuffer> get(FrameBufferDescription&& description, FrameBufferDepthAttachmentOption depthAttachmentOption);
+        ref_ptr<FrameBuffer> get_bound() const;
 
     protected:
         virtual ref_ptr<FrameBuffer> create_frame_buffer(FrameBufferDescription&& description, FrameBufferDepthAttachmentOption depthAttachmentOption) const = 0;

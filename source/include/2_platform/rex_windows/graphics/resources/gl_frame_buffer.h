@@ -35,6 +35,8 @@ namespace rex
             void release() override;
             void bind(IsRenderThread isRenderThread = IsRenderThread::NO) const override;
             void unbind(IsRenderThread isRenderThread = IsRenderThread::NO) const override;
+            bool is_bound() const override;
+            uint32 get_id() const override;
 
         private:
             void invalidate(ColorAttachmentDescriptions&& colorDescriptions, DepthAttachmentDescription&& depthDescription, rex::FrameBufferDepthAttachmentOption depthAttachmentOption = FrameBufferDepthAttachmentOption::NONE,
@@ -45,6 +47,8 @@ namespace rex
             int32 m_width;
             int32 m_height;
             uint32 m_buffer_id;
+
+            mutable bool m_is_bound;
 
             std::vector<ref_ptr<RenderTarget>> m_color_attachments;
             ref_ptr<RenderTarget> m_depth_attachment;

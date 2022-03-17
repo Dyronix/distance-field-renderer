@@ -82,4 +82,21 @@ namespace rex
 
         return shared_framebuffer;
     }
+
+    //-------------------------------------------------------------------------
+    rex::ref_ptr<rex::FrameBuffer> FrameBufferPool::get_bound() const
+    {
+        R_ASSERT_X(std::count_if(std::cbegin(m_framebuffer_pool), std::cend(m_framebuffer_pool), [](const auto& framebuffer) { return framebuffer->is_bound(); }) == 1, "Only one framebuffer can be active, did you forget to call ::endRenderPass somewhere?");
+
+        for (const ref_ptr<rex::FrameBuffer>& buffer : m_framebuffer_pool)
+        {
+            if (buffer->is_bound())
+            {
+                return buffer;
+            }
+        }
+
+        return nullptr;
+    }
+
 }
