@@ -66,22 +66,34 @@ namespace rex
             m_light_environment.point_lights.reserve(point_lights.size());
             for (auto entity : point_lights)
             {
+                if (m_light_environment.point_lights.find(static_cast<int32>(entity)) != std::cend(m_light_environment.point_lights))
+                {
+                    continue;
+                }
+
                 auto transform_comp = point_lights.get<TransformComponent>(entity);
                 auto pointlight_comp = point_lights.get<PointLightComponent>(entity);
 
                 PointLight light;
                 light.intensity = pointlight_comp.intensity;
-                light.min_attenuation = pointlight_comp.min_attenuation;
-                light.max_attenuation = pointlight_comp.max_attenuation;
+                light.constant = pointlight_comp.constant;
+                light.linear = pointlight_comp.linear;
+                light.quadratic = pointlight_comp.quadratic;
+                light.color = pointlight_comp.color;
                 light.position = transform_comp.transform.get_position();
 
-                m_light_environment.point_lights.push_back(light);
+                m_light_environment.point_lights.insert(std::make_pair(static_cast<int32>(entity), light));
             }
 
             auto dir_lights = m_register.group<DirectionalLightComponent>(entt::get<TransformComponent>);
             m_light_environment.directional_lights.reserve(dir_lights.size());
             for (auto entity : dir_lights)
             {
+                if (m_light_environment.directional_lights.find(static_cast<int32>(entity)) != std::cend(m_light_environment.directional_lights))
+                {
+                    continue;
+                }
+
                 auto transform_comp = dir_lights.get<TransformComponent>(entity);
                 auto dirlight_comp = dir_lights.get<DirectionalLightComponent>(entity);
 
@@ -94,7 +106,7 @@ namespace rex
                 light.intensity = dirlight_comp.intensity;
                 light.direction = -rex::normalize(rex::matrix3(transform_comp.transform.get_world()) * rex::vec3(1.0f));
 
-                m_light_environment.directional_lights.push_back(light);
+                m_light_environment.directional_lights.insert(std::make_pair(static_cast<int32>(entity), light));
             }
         }
 

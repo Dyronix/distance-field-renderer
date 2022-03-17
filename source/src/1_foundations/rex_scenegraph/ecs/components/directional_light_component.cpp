@@ -21,10 +21,33 @@ namespace rex
         {
         }
         //-------------------------------------------------------------------------
+        DirectionalLightComponent::DirectionalLightComponent(DirectionalLightComponent&& other) noexcept
+            : is_active(std::exchange(other.is_active, false))
+            , intensity(std::exchange(other.intensity, 0.0f))
+        {
+        }
+        //-------------------------------------------------------------------------
         DirectionalLightComponent::DirectionalLightComponent(bool inActive, float inIntensity)
             : is_active(inActive)
             , intensity(inIntensity)
         {
+        }
+
+        //-------------------------------------------------------------------------
+        rex::ecs::DirectionalLightComponent& DirectionalLightComponent::operator=(const DirectionalLightComponent& other)
+        {
+            this->is_active = other.is_active;
+            this->intensity = other.intensity;
+
+            return *this;
+        }
+        //-------------------------------------------------------------------------
+        rex::ecs::DirectionalLightComponent& DirectionalLightComponent::operator=(DirectionalLightComponent&& other) noexcept
+        {
+            this->is_active = std::exchange(other.is_active, false);
+            this->intensity = std::exchange(other.intensity, 0.0f);
+
+            return *this;
         }
 
         //-------------------------------------------------------------------------
@@ -37,5 +60,5 @@ namespace rex
         {
             return !(*this == other);
         }
-    }
-}
+    } // namespace ecs
+} // namespace rex

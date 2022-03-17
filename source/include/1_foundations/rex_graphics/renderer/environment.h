@@ -24,7 +24,7 @@ namespace rex
 
         operator bool() const;
 
-        std::vector<PointLight> point_lights;
-        std::vector<DirectionalLight> directional_lights;
+        std::unordered_map<int32, PointLight> point_lights;
+        std::unordered_map<int32, DirectionalLight> directional_lights;
     };
 }

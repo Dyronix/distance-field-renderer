@@ -1,5 +1,7 @@
 #pragma once
 
+#include "color.h"
+
 namespace rex
 {
     namespace ecs
@@ -8,15 +10,22 @@ namespace rex
         {
             PointLightComponent();
             PointLightComponent(const PointLightComponent& other);
-            PointLightComponent(float inIntensity, float inMinAttenuation, float inMaxAttenuation);
+            PointLightComponent(PointLightComponent&& other) noexcept;
+            PointLightComponent(float inIntensity, float inConstant, float inLinear, float inQuadratic, const ColorRGB& inColor);
+
+            PointLightComponent& operator=(const PointLightComponent& other);
+            PointLightComponent& operator=(PointLightComponent&& other) noexcept;
 
             bool operator==(const PointLightComponent& other) const;
             bool operator!=(const PointLightComponent& other) const;
 
             float intensity;
 
-            float min_attenuation;
-            float max_attenuation;
+            float constant;
+            float linear;
+            float quadratic;
+
+            ColorRGB color;
         };
     }
 }

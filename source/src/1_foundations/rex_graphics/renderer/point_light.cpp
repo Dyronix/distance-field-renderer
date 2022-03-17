@@ -10,8 +10,9 @@ namespace rex
     PointLight::PointLight()
         : position(0.0f)
         , intensity(1.0f)
-        , min_attenuation(1.0f)
-        , max_attenuation(10.0f)
+        , constant(1.0f)
+        , linear(0.7f)
+        , quadratic(1.8f)
         , color(rex::to_color3(colors::white))
     {
     }
@@ -19,17 +20,19 @@ namespace rex
     PointLight::PointLight(const PointLight& other)
         : position(other.position)
         , intensity(other.intensity)
-        , min_attenuation(other.min_attenuation)
-        , max_attenuation(other.max_attenuation)
+        , constant(other.constant)
+        , linear(other.linear)
+        , quadratic(other.quadratic)
         , color(other.color)
     {
     }
     //-------------------------------------------------------------------------
-    PointLight::PointLight(const rex::vec3& inPosition, float inIntensity, float inMinAttenuation, float inMaxAttenuation, const rex::ColorRGB& inColor)
+    PointLight::PointLight(const rex::vec3& inPosition, float inIntensity, float inConstant, float inLinear, float inQuadratic, const ColorRGB& inColor)
         : position(inPosition)
         , intensity(inIntensity)
-        , min_attenuation(inMinAttenuation)
-        , max_attenuation(inMaxAttenuation)
+        , constant(inConstant)
+        , linear(inLinear)
+        , quadratic(inQuadratic)
         , color(inColor)
     {
     }
@@ -37,7 +40,7 @@ namespace rex
     //-------------------------------------------------------------------------
     bool PointLight::operator==(const PointLight& other) const
     {
-        return rex::is_identical(position, other.position) && is_identical(intensity, other.intensity) && is_identical(min_attenuation, other.min_attenuation) && is_identical(max_attenuation, other.max_attenuation) && color == other.color;
+        return is_identical(intensity, other.intensity) && is_identical(constant, other.constant) && is_identical(linear, other.linear) && is_identical(quadratic, other.quadratic) && color == other.color;
     }
     //-------------------------------------------------------------------------
     bool PointLight::operator!=(const PointLight& other) const
