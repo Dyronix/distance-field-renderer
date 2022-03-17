@@ -35,6 +35,7 @@ target_include_directories(rex_scenegraph PUBLIC ${CMAKE_SOURCE_DIR}/source/incl
 target_include_directories(rex_scenegraph PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_math)
 target_include_directories(rex_scenegraph PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_graphics)
 target_include_directories(rex_scenegraph PUBLIC ${INCLUDE_ENTT})
+target_include_directories(rex_scenegraph PUBLIC ${INCLUDE_GSL})
 
 # Set target link libraries
 target_link_libraries(rex_scenegraph PUBLIC rex_diagnostics)

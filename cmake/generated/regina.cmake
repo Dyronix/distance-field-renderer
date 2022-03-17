@@ -36,6 +36,7 @@ target_include_directories(regina PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_fo
 target_include_directories(regina PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_scenegraph)
 target_include_directories(regina PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_windows)
 target_include_directories(regina PUBLIC ${INCLUDE_ASSIMP})
+target_include_directories(regina PUBLIC ${INCLUDE_STB})
 
 # Set the link libraries
 target_link_libraries(regina PUBLIC rex_core)
@@ -89,4 +90,12 @@ add_custom_command(
     POST_BUILD
     WORKING_DIRECTORY "${SCRIPTS_DIR}\\${LOWER_PLATFORM_TARGET}\\build-events"
     COMMAND PowerShell -File copy_sdl2_dll.ps1 ${CMAKE_SOURCE_DIR} ${BIN_DIR} ${EXTERNALS_DIR}
+)
+
+# Execute post build command for regina
+add_custom_command(
+    TARGET regina
+    POST_BUILD
+    WORKING_DIRECTORY "${SCRIPTS_DIR}\\${LOWER_PLATFORM_TARGET}\\build-events"
+    COMMAND PowerShell -File copy_content.ps1 ${CMAKE_SOURCE_DIR} ${BIN_DIR} ${CONTENT_DIR}
 )
