@@ -1,5 +1,7 @@
 #pragma once
 
+#include "point.h"
+
 namespace rex
 {
     namespace opengl
@@ -29,6 +31,7 @@ namespace rex
 
         void draw_elements(uint32 mode, size_t count, uint32 type, const void* indices);
         void draw_elements_base_vertex(uint32 mode, size_t count, uint32 type, const void* indices, int32 baseVertex);
+        void draw_arrays(uint32 mode, int32 first, size_t count);
 
         void get_integer_value(uint32 pname, int32* data);
         void get_float_value(uint32 pname, float* data);
@@ -41,9 +44,11 @@ namespace rex
         void delete_framebuffers(size_t count, const uint32* framebuffers);
         void generate_framebuffers(size_t count, uint32* framebuffers);
         void bind_framebuffer(uint32 target, int32 index);
+        void blit_framebuffer(int32 srcx, int32 srcy, int32 srcWidth, int32 srcHeight, int32 dstx, int32 dsty, int32 dstWidth, int32 dstHeight, uint32 mask, uint32 filter);
         void framebuffer_texture2D(uint32 target, uint32 attachment, uint32 textureTarget, uint32 texture, int32 level);
         void draw_buffer(uint32 buffer);
         void draw_buffers(size_t count, const uint32* buffers);
+        void get_framebuffer_integer_parameter(uint32 target, uint32 value, int32* data);
 
         void delete_buffers(size_t count, const uint32* buffers);
         void generate_buffers(size_t count, uint32* buffers);

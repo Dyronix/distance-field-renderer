@@ -332,6 +332,31 @@ namespace rex
             R_WARN("Unknown state, this list is incomplete maybe you need to add another element: {0}", disable);
             return std::to_string(disable);
         }
+        //-------------------------------------------------------------------------
+        std::string blit_framebuffer_mask(const uint32 mask)
+        {
+            switch (mask)
+            {
+                case GL_COLOR_BUFFER_BIT: return "Color Buffer Bit";
+                case GL_DEPTH_BUFFER_BIT: return "Depth Buffer Bit";
+                case GL_STENCIL_BUFFER_BIT: return "Stencil Buffer Bit";
+            }
+
+            R_WARN("Unknown mask, this list is incomplete maybe you need to add another element: {0}", mask);
+            return std::to_string(mask);
+        }
+        //-------------------------------------------------------------------------
+        std::string blit_framebuffer_filter(const uint32 filter)
+        {
+            switch (filter)
+            {
+                case GL_NEAREST: return "Nearest";
+                case GL_LINEAR: return "Linear";
+            }
+
+            R_WARN("Unknown filter, this list is incomplete maybe you need to add another element: {0}", filter);
+            return std::to_string(filter);
+        }
 
         //-------------------------------------------------------------------------
         void enable_vertex_attrib_array(uint32 index)
@@ -606,6 +631,21 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
+        void draw_arrays(uint32 mode, int32 first, size_t count)
+        {
+            R_PROFILE_FUNCTION();
+
+            GL_LOG("glDrawArrays");
+#if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
+            GL_LOG("\tmode: {0}", mode);
+            GL_LOG("\tfirst: {0}", first);
+            GL_LOG("\tcount: {0}", count);
+#endif
+
+            GL_CALL(glDrawArrays(mode, first, gsl::narrow<GLsizei>(count)));
+        }
+
+        //-------------------------------------------------------------------------
         void get_integer_value(uint32 pname, int32* data)
         {
             R_PROFILE_FUNCTION();
@@ -764,6 +804,30 @@ namespace rex
 
             GL_CALL(glBindFramebuffer(target, index));
         }
+
+        //-------------------------------------------------------------------------
+        void blit_framebuffer(int32 srcx, int32 srcy, int32 srcWidth, int32 srcHeight, int32 dstx, int32 dsty, int32 dstWidth, int32 dstHeight, uint32 mask, uint32 filter)
+        {
+            R_PROFILE_FUNCTION();
+
+            GL_LOG("glBlitFramebuffer");
+#if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
+            GL_LOG("\tsource x: {0}", srcx);
+            GL_LOG("\tsource y: {0}", srcy);
+            GL_LOG("\tsource width: {0}", srcWidth);
+            GL_LOG("\tsource height: {0}", srcHeight);
+
+            GL_LOG("\tdestination x: {0}", dstx);
+            GL_LOG("\tdestination y: {0}", dsty);
+            GL_LOG("\tdestination width: {0}", dstWidth);
+            GL_LOG("\tdestination height: {0}", dstHeight);
+            
+            GL_LOG("\tmask: {0}", blit_framebuffer_mask(mask));
+            GL_LOG("\tfilter: {0}", blit_framebuffer_filter(filter));
+#endif
+            GL_CALL(glBlitFramebuffer(srcx, srcy, srcWidth, srcHeight, dstx, dsty, dstWidth, dstHeight, mask, filter));
+        }
+
         //-------------------------------------------------------------------------
         void framebuffer_texture2D(uint32 target, uint32 attachment, uint32 textureTarget, uint32 texture, int32 level)
         {
@@ -805,6 +869,23 @@ namespace rex
 #endif
 
             GL_CALL(glDrawBuffers(gsl::narrow<GLsizei>(count), buffers));
+        }
+
+        //-------------------------------------------------------------------------
+        void get_framebuffer_integer_parameter(uint32 target, uint32 value, int32* data)
+        {
+            R_PROFILE_FUNCTION();
+
+            GL_LOG("glGetFramebufferParameteriv");
+#if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
+            GL_LOG("\ttarget: {0}", target);
+            GL_LOG("\tvalue: {0}", value);
+#endif
+            GL_CALL(glGetFramebufferParameteriv(target, value, data));
+
+#if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
+            GL_LOG("\tresult data: {0}", *data);
+#endif
         }
 
         //-------------------------------------------------------------------------
