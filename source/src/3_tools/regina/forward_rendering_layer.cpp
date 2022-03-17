@@ -313,6 +313,8 @@ namespace regina
     {
         m_camera_controller.on_update(info);
 
+        m_scene->update();
+
         m_scene_renderer->set_viewport_width(m_window->get_width());
         m_scene_renderer->set_viewport_height(m_window->get_height());
         m_scene_renderer->begin_scene();
@@ -424,7 +426,7 @@ namespace regina
             rex::ecs::Entity light = m_scene->create_entity(rex::create_sid(stream.str()));
 
             light.get_component<rex::ecs::TransformComponent>().transform.set_position(rex::vec3(x_pos, y_pos, z_pos));
-            light.add_component<rex::ecs::PointLightComponent>(1.0f, 100.0f, 100.0f, rex::ColorRGB(r_color, g_color, b_color));
+            light.add_component<rex::ecs::PointLightComponent>(1.0f, 1.0f, 0.7f, 1.8f, rex::ColorRGB(r_color, g_color, b_color));
         }
     }
 

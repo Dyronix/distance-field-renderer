@@ -68,7 +68,6 @@ namespace regina
         rex::ref_ptr<rex::Material> m_bunny_material;
 
         std::vector<rex::ecs::Entity> m_bunny_entities;
-        std::vector<rex::ecs::Entity> m_light_sources;
 
         const rex::CoreWindow* m_window;
     };

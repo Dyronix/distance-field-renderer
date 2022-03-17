@@ -337,6 +337,8 @@ namespace regina
     {
         m_camera_controller.on_update(info);
 
+        m_scene->update();
+
         m_scene_renderer->set_viewport_width(m_window->get_width());
         m_scene_renderer->set_viewport_height(m_window->get_height());
         m_scene_renderer->begin_scene();
@@ -405,28 +407,6 @@ namespace regina
         renderpasses.push_back(std::move(composite));
 
         m_scene_renderer = rex::make_ref<rex::SceneRenderer>(m_scene, std::move(renderpasses));
-
-        // Pass light sources to renderer.
-        rex::DeferredLightPass* light_pass = static_cast<rex::DeferredLightPass*>(m_scene_renderer->get_scene_render_pass(deferred_rendering::DEFERREDLIGHTPASS_NAME));
-        rex::DeferredLightVisualizationPass* light_visualization_pass = static_cast<rex::DeferredLightVisualizationPass*>(m_scene_renderer->get_scene_render_pass(deferred_rendering::DEFERREDLIGHTVISUALIZATIONPASS_NAME));
-
-        for (int32 i = 0; i < m_light_sources.size(); ++i)
-        {
-            rex::ecs::TransformComponent transform_component = m_light_sources[i].get_component<rex::ecs::TransformComponent>();
-            rex::ecs::PointLightComponent point_light_component = m_light_sources[i].get_component<rex::ecs::PointLightComponent>();
-
-            auto position = transform_component.transform.get_position();
-
-            auto intensity = point_light_component.intensity;
-            auto min_att = point_light_component.min_attenuation;
-            auto max_att = point_light_component.max_attenuation;
-            auto color = point_light_component.color;
-
-            rex::PointLight point_light(position, intensity, min_att, max_att, color);
-
-            light_pass->add_light(point_light);
-            light_visualization_pass->add_light(point_light);
-        }
     }
 
     //-------------------------------------------------------------------------
@@ -450,9 +430,7 @@ namespace regina
             rex::ecs::Entity light = m_scene->create_entity(rex::create_sid(stream.str()));
 
             light.get_component<rex::ecs::TransformComponent>().transform.set_position(rex::vec3(x_pos, y_pos, z_pos));
-            light.add_component<rex::ecs::PointLightComponent>(1.0f, 100.0f, 100.0f, rex::ColorRGB(r_color, g_color, b_color));
-
-            m_light_sources.push_back(light);
+            light.add_component<rex::ecs::PointLightComponent>(1.0f, 1.0f, 0.7f, 1.8f, rex::ColorRGB(r_color, g_color, b_color));
         }
     }
 
