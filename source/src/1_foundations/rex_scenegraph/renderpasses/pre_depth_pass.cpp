@@ -51,7 +51,7 @@ namespace rex
             predepth_framebuffer_desc.width = vp_width;
             predepth_framebuffer_desc.height = vp_height;
             predepth_framebuffer_desc.color_attachments.push_back(std::move(create_color_attachment_description(vp_width, vp_height, Texture::Format::RGBA_32_FLOAT)));
-            predepth_framebuffer_desc.depth_attachment = std::move(create_depth_attachment_description(vp_width, vp_height, Texture::Format::DEPTH_COMPONENT_32_FLOAT));
+            predepth_framebuffer_desc.depth_attachment = std::move(create_depth_attachment_description(vp_width, vp_height, Texture::Format::DEPTH_COMPONENT_24_INTEGER));
             predepth_framebuffer_desc.name = "PreDepth";
 
             framebuffer = ResourceFactory::create_frame_buffer(std::move(predepth_framebuffer_desc), FrameBufferDepthAttachmentOption::DEPTH_ONLY);

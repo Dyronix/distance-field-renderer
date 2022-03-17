@@ -155,7 +155,7 @@ namespace rex
             geometry_framebuffer_desc.width = vp_width;
             geometry_framebuffer_desc.height = vp_height;
             geometry_framebuffer_desc.color_attachments.push_back(std::move(create_color_attachment_description(vp_width, vp_height, Texture::Format::RGBA_32_FLOAT)));
-            geometry_framebuffer_desc.depth_attachment = std::move(create_depth_attachment_description(vp_width, vp_height, Texture::Format::DEPTH_COMPONENT_32_FLOAT));
+            geometry_framebuffer_desc.depth_attachment = std::move(create_depth_attachment_description(vp_width, vp_height, Texture::Format::DEPTH_COMPONENT_24_INTEGER));
             geometry_framebuffer_desc.name = "Geometry";
 
             framebuffer = ResourceFactory::create_frame_buffer(std::move(geometry_framebuffer_desc), FrameBufferDepthAttachmentOption::DEPTH_ONLY);
