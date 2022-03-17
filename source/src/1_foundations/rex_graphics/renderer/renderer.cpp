@@ -155,6 +155,12 @@ namespace rex
     }
 
     //-------------------------------------------------------------------------
+    void Renderer::copy_framebuffer_content(uint32 fromFrameBufferID, const RectI& fromRect, uint32 toFrameBufferID, const RectI& toRect, const FrameBufferCopyOption& copyOption, const FrameBufferFilterOption& filterOption)
+    {
+        g_renderer_api->copy_framebuffer_content(fromFrameBufferID, fromRect, toFrameBufferID, toRect, copyOption, filterOption);
+    }
+
+    //-------------------------------------------------------------------------
     void Renderer::submit_fullscreen_quad(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Material> material)
     {
         g_renderer_api->submit_fullscreen_quad(pipeline, uniformBufferSet, material);

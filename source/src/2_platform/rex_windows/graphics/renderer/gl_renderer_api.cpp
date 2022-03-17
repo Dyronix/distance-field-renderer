@@ -16,6 +16,8 @@
 #include "resources/index_buffer.h"
 #include "resources/material.h"
 #include "resources/shader_program.h"
+#include "resources/frame_buffer_pool.h"
+#include "resources/frame_buffer.h"
 
 #include "model.h"
 #include "triangle.h"
@@ -341,7 +343,10 @@ namespace rex
 
             model->get_vertex_buffer()->bind();
             pipeline->bind();
-            model->get_index_buffer()->bind();
+            if (model->get_index_buffer())
+            {
+                model->get_index_buffer()->bind();
+            }
 
             Renderer::submit([pipeline, uniformBufferSet, model, transform]
                              {
@@ -363,11 +368,21 @@ namespace rex
                                          opengl::disable(GL_DEPTH_TEST);
                                      }
 
-                                     opengl::draw_elements(to_gl_primitive_type(pipeline->get_primitive_type()), submesh.index_count, GL_UNSIGNED_INT, (void*)(sizeof(uint32_t) * submesh.base_index));
+                                     if (model->get_index_buffer())
+                                     {
+                                         opengl::draw_elements(to_gl_primitive_type(pipeline->get_primitive_type()), submesh.index_count, GL_UNSIGNED_INT, (void*)(sizeof(uint32_t) * submesh.base_index));
+                                     }
+                                     else
+                                     {
+                                         opengl::draw_arrays(to_gl_primitive_type(pipeline->get_primitive_type()), 0, submesh.vertex_count);
+                                     }
                                  }
                              });
 
-            model->get_index_buffer()->unbind();
+            if (model->get_index_buffer())
+            {
+                model->get_index_buffer()->unbind();
+            }
             pipeline->unbind();
             model->get_vertex_buffer()->unbind();
         }
@@ -381,7 +396,10 @@ namespace rex
 
             model->get_vertex_buffer()->bind();
             pipeline->bind();
-            model->get_index_buffer()->bind();
+            if (model->get_index_buffer())
+            {
+                model->get_index_buffer()->bind();
+            }
 
             Renderer::submit([pipeline, uniformBufferSet, model, transform, material]() mutable
                              {
@@ -401,13 +419,69 @@ namespace rex
                                          opengl::disable(GL_DEPTH_TEST);
                                      }
 
-                                     opengl::draw_elements(to_gl_primitive_type(pipeline->get_primitive_type()), submesh.index_count, GL_UNSIGNED_INT, (void*)(sizeof(uint32_t) * submesh.base_index));
+                                     if (model->get_index_buffer())
+                                     {
+                                        opengl::draw_elements(to_gl_primitive_type(pipeline->get_primitive_type()), submesh.index_count, GL_UNSIGNED_INT, (void*)(sizeof(uint32_t) * submesh.base_index));
+                                     }
+                                     else
+                                     {
+                                         opengl::draw_arrays(to_gl_primitive_type(pipeline->get_primitive_type()), 0, submesh.vertex_count);
+                                     }
                                  }
                              });
 
-            model->get_index_buffer()->unbind();
+            if (model->get_index_buffer())
+            {
+                model->get_index_buffer()->unbind();
+            }
             pipeline->unbind();
             model->get_vertex_buffer()->unbind();
+        }
+
+        //-------------------------------------------------------------------------
+        void RendererAPI::copy_framebuffer_content(uint32 fromFrameBufferID, const RectI& fromRect, uint32 toFrameBufferID, const RectI& toRect, const FrameBufferCopyOption& copyOption, const FrameBufferFilterOption& filterOption)
+        {
+            Renderer::submit([fromFrameBufferID, fromRect, toFrameBufferID, toRect, copyOption, filterOption]() 
+                {
+                    // Cache currently bounds framebuffer
+                    auto current_bound_framebuffer = FrameBufferPool::instance()->get_bound();
+
+                    opengl::bind_framebuffer(GL_READ_FRAMEBUFFER, fromFrameBufferID);
+                    opengl::bind_framebuffer(GL_DRAW_FRAMEBUFFER, toFrameBufferID);
+
+                    uint32 mask = 0;
+                    switch (copyOption)
+                    {
+                        case FrameBufferCopyOption::COLOR: mask = GL_COLOR_BUFFER_BIT; break;
+                        case FrameBufferCopyOption::DEPTH: mask = GL_DEPTH_BUFFER_BIT; break;
+                        case FrameBufferCopyOption::STENCIL: mask = GL_STENCIL_BUFFER_BIT; break;
+                    }
+
+                    uint32 filter = 0;
+                    switch (filterOption)
+                    {
+                        case FrameBufferFilterOption::LINEAR: filter = GL_LINEAR; break;
+                        case FrameBufferFilterOption::NEAREST: filter = GL_NEAREST; break;
+                    }
+
+#if REX_DEBUG
+                    if (copyOption == FrameBufferCopyOption::DEPTH || copyOption == FrameBufferCopyOption::STENCIL)
+                    {
+                        R_ASSERT_X(filterOption == FrameBufferFilterOption::NEAREST, "Invalid Operation, when blitting DEPTH or STENCIL, filter should be NEAREST");
+                    }
+#endif
+
+                    opengl::blit_framebuffer(fromRect.x, fromRect.y, fromRect.width, fromRect.height, toRect.x, toRect.y, toRect.width, toRect.height, mask, filter);
+                    
+                    if (current_bound_framebuffer == nullptr)
+                    {
+                        opengl::bind_framebuffer(GL_FRAMEBUFFER, 0);
+                    }
+                    else
+                    {
+                        current_bound_framebuffer->bind(IsRenderThread::YES);
+                    }
+                });
         }
 
         //-------------------------------------------------------------------------

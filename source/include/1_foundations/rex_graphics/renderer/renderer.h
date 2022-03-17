@@ -6,6 +6,8 @@
 #include "renderer/pipeline.h"
 #include "renderer/render_pass.h"
 
+#include "rect.h"
+
 #define ENABLE_RENDERER_LOGGING 0
 #if ENABLE_RENDERER_LOGGING
 #define RENDERER_INFO R_INFO
@@ -25,6 +27,9 @@ namespace rex
     class UniformBufferSet;
     class Texture;
     class TextureCube;
+
+    enum class FrameBufferCopyOption;
+    enum class FrameBufferFilterOption;
 
     class Renderer
     {
@@ -54,6 +59,8 @@ namespace rex
         static void render_quad(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Material> material, const rex::matrix4& transform);
         static void render_model(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Model> model, const rex::matrix4& transform);
         static void render_model_with_material(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Model> model, const rex::matrix4& transform, ref_ptr<Material> material);
+
+        static void copy_framebuffer_content(uint32 fromFrameBufferID, const RectI& fromRect, uint32 toFrameBufferID, const RectI& toRect, const FrameBufferCopyOption& copyOption, const FrameBufferFilterOption& filterOption);
 
         static void submit_fullscreen_quad(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Material> material);
         template <typename TFunction>
