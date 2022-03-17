@@ -255,34 +255,6 @@ namespace rex
                         layer->update(info);
                     }
                 }
-#ifdef IMGUI
-#ifndef __EMSCRIPTEN__
-                if (get_application_description().enable_imgui)
-                {
-                    Renderer::submit([]()
-                                     {
-                                         imguicontext::begin();
-                                     });
-
-                    auto& stack = m_layer_stack;
-                    Renderer::submit([&stack]()
-                                     {
-                                         for (const std::unique_ptr<Layer>& layer : stack)
-                                         {
-                                             if (layer->is_im_gui_enabled())
-                                             {
-                                                 layer->imgui_render();
-                                             }
-                                         }
-                                     });
-
-                    Renderer::submit([]()
-                                     {
-                                         imguicontext::end();
-                                     });
-                }
-#endif
-#endif
 
                 on_app_update(info);
 
