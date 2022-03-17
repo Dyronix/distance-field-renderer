@@ -12,7 +12,7 @@ namespace rex
         class EventQueue : public InstanceCounter<EventQueue>
         {
         public:
-            static const int EVENT_QUEUE_PUMP_COUNT = 16;
+            static const int EVENT_QUEUE_PUMP_COUNT = 256;
             static const int EVENT_QUEUE_CHANNELS = 256;
 
             EventQueue();
