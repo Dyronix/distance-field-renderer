@@ -130,7 +130,7 @@ namespace rex
 
         m_is_active = true;
 
-        auto group = m_active_scene->get_registry().group<ecs::TransformComponent, ecs::CameraComponent>();
+        auto group = m_active_scene->get_registry().view<ecs::TransformComponent, ecs::CameraComponent>();
         for (auto& entity : group)
         {
             auto& camera_comp = group.get<ecs::CameraComponent>(entity);
@@ -187,8 +187,6 @@ namespace rex
 
                                      buffer->set_data(&camera_data, sizeof(camera_data), 0u, IsRenderThread::YES);
                                  });
-
-                setup_lights();
 
                 for (const std::unique_ptr<SceneRenderPass>& scenerenderpass : m_renderpasses)
                 {
@@ -372,46 +370,6 @@ namespace rex
     }
 
     //-------------------------------------------------------------------------
-    void SceneRenderer::setup_lights()
-    {
-        const std::vector<PointLight>& point_lights = get_scene()->get_light_environment().point_lights;
-
-        UBPointLights& ub_point_lights = m_ub_point_lights;
-
-        ub_point_lights.count = uint32(point_lights.size());
-
-        std::memcpy(ub_point_lights.point_lights, point_lights.data(), sizeof(PointLight) * point_lights.size());
-
-        Renderer::submit([&ub_point_lights]()
-                         {
-                             auto buffer = UniformBufferSet::instance()->get(POINTLIGHTS_UNIFORM_BUFFER_NAME);
-
-                             R_ASSERT_X(buffer, "No known Point light uniform buffer");
-
-                             buffer->set_data(&ub_point_lights, sizeof(ub_point_lights), 0u, IsRenderThread::YES);
-                         });
-
-        R_TODO("Setup directional lights");
-
-        // const std::vector<DirectionalLight>& dir_lights = get_scene()->getLightEnvironment().directional_lights;
-        //
-        // UBDirectionalLights ub_dir_lights = m_ub_directional_lights;
-        //
-        // ub_dir_lights.count = uint32(dir_lights.size());
-        //
-        // std::memcpy(ub_dir_lights.dir_lights, dir_lights.data(), sizeof(DirectionalLight) * dir_lights.size());
-        //
-        // Renderer::submit([&ub_point_lights]()
-        //     {
-        //         auto buffer = UniformBufferSet::instance()->get(DIRECTIONALLIGHTS_UNIFORM_BUFFER_NAME);
-        //
-        //         R_ASSERT_X(buffer, "No known Directional light uniform buffer");
-        //
-        //         buffer->set_data(&ub_point_lights, sizeof(ub_point_lights), 0u, IsRenderThread::YES);
-        //     });
-    }
-
-    //-------------------------------------------------------------------------
     void SceneRenderer::setup_entities()
     {
         if (get_scene()->get_entity_count() == 0)
@@ -425,17 +383,16 @@ namespace rex
             auto& transform_comp = view.get<ecs::TransformComponent>(entity);
             auto& model_comp = view.get<ecs::ModelComponent>(entity);
             auto& material_comp = view.get<ecs::MaterialComponent>(entity);
+                       
+            for (auto& tuple : material_comp.materials)
+            {
+                int32 id;
+                ref_ptr<Material> material;
 
-            R_TODO("A material component should contain all materials");
+                std::tie(id, material) = tuple;
 
-            /*
-                for(auto& material : material_comp.materials)
-                {
-                    model_comp.model->setMaterial(material->getIndex(), material);
-                }
-            */
-
-            model_comp.model->set_material(0, material_comp.material);
+                model_comp.model->set_material(id, material);
+            }
 
             submit_model(model_comp.model, transform_comp.transform.get_world());
         }

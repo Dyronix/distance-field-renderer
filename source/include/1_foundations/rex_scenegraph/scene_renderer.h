@@ -77,7 +77,6 @@ namespace rex
         virtual void on_end_flush();
 
     private:
-        void setup_lights();
         void setup_entities();
 
         void flush();
