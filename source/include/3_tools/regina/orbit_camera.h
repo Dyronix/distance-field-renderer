@@ -171,6 +171,7 @@ namespace regina
 
         bool enabled;
     };
+
     struct OrbitCameraDescription
     {
         OrbitCameraDescription()

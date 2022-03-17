@@ -18,13 +18,122 @@ namespace regina
     }
 
     //-------------------------------------------------------------------------
+    FocusController::FocusController(const OrbitCamera& camera)
+        : m_focus_settings(camera.get_focus_settings())
+    {
+    }
+    //-------------------------------------------------------------------------
+    FocusController::~FocusController()
+    {
+    }
+
+    //-------------------------------------------------------------------------
+    rex::vec3 FocusController::calculate_focus_position(const rex::vec3& lookDirection)
+    {
+        rex::vec3 look_direction = rex::normalize(lookDirection);
+        rex::vec3 look_position = m_focus_settings.get_target() - (look_direction * m_focus_settings.get_distance());
+
+        return look_position;
+    }
+
+    //-------------------------------------------------------------------------
+    OrbitController::OrbitController(const rex::vec3& orbitAngles, const OrbitCamera& camera)
+        : m_orbit_angles(orbitAngles)
+        , m_orbit_settings(camera.get_orbit_settings())
+    {
+    }
+    //-------------------------------------------------------------------------
+    OrbitController::~OrbitController()
+    {
+    }
+
+    //-------------------------------------------------------------------------
+    void OrbitController::reset_orbit_angles(const rex::vec3& orbitAngles)
+    {
+        m_orbit_angles = orbitAngles;
+    }
+
+    //-------------------------------------------------------------------------
+    rex::quaternion OrbitController::calculate_look_rotation(const rex::vec2& rotationInput, const rex::quaternion& defaultRotation)
+    {
+        rex::vec3 delta = orbit(rotationInput, m_orbit_settings);
+
+        rex::quaternion look_rotation = rex::identity<rex::quaternion>();
+        if (rex::is_identical(delta, rex::vec3(0.0f, 0.0f, 0.0f)))
+        {
+            look_rotation = defaultRotation;
+        }
+        else
+        {
+            m_orbit_angles = m_orbit_angles + delta;
+            m_orbit_angles = constrain(m_orbit_angles, m_orbit_settings);
+
+            look_rotation = rex::quaternion(rex::vec3(m_orbit_angles.x, m_orbit_angles.y, m_orbit_angles.z));
+        }
+
+        return look_rotation;
+    }
+
+    //-------------------------------------------------------------------------
+    rex::vec3 OrbitController::orbit(const rex::vec2& rotationInput, const OrbitSettings& settings)
+    {
+        const float e = 0.001f;
+        if (rotationInput.x < -e || rotationInput.x > e || rotationInput.y < -e || rotationInput.y > e)
+        {
+            rex::vec2 orbit = settings.get_rotation_speed() * rex::World::get_delta_time().to_seconds() * rotationInput;
+
+            return rex::vec3(orbit, 0.0f);
+        }
+
+        return rex::vec3(0.0f, 0.0f, 0.0f);
+    }
+    //-------------------------------------------------------------------------
+    rex::vec3 OrbitController::constrain(const rex::vec3& orbitAngles, const OrbitSettings& settings)
+    {
+        rex::vec3 new_orbit_angles = orbitAngles;
+
+        if (new_orbit_angles.x > rex::pi<float>() / 2.0f)
+        {
+            new_orbit_angles.x -= rex::pi<float>();
+            new_orbit_angles.x = rex::clamp(new_orbit_angles.x, rex::deg2rad(settings.get_minimum_pitch_angle()), rex::deg2rad(settings.get_maximum_pitch_angle()));
+            new_orbit_angles.x += rex::pi<float>();
+        }
+        else if (new_orbit_angles.x < -(rex::pi<float>() / 2.0f))
+        {
+            new_orbit_angles.x += rex::pi<float>();
+            new_orbit_angles.x = rex::clamp(new_orbit_angles.x, rex::deg2rad(settings.get_minimum_pitch_angle()), rex::deg2rad(settings.get_maximum_pitch_angle()));
+            new_orbit_angles.x -= rex::pi<float>();
+        }
+        else
+        {
+            new_orbit_angles.x = rex::clamp(new_orbit_angles.x, rex::deg2rad(settings.get_minimum_pitch_angle()), rex::deg2rad(settings.get_maximum_pitch_angle()));
+        }
+
+        if (new_orbit_angles.y < -(rex::pi<float>() / 2.0f))
+        {
+            new_orbit_angles.y += rex::pi<float>() * 2;
+        }
+        else if (new_orbit_angles.y > (rex::pi<float>() / 2.0f))
+        {
+            new_orbit_angles.y -= rex::pi<float>() * 2;
+        }
+
+        new_orbit_angles.z = orbitAngles.z;
+
+        return new_orbit_angles;
+    }
+
+    //-------------------------------------------------------------------------
     OrbitCameraController::OrbitCameraController(const OrbitCameraDescription& desc)
         : m_orbit_camera(desc)
-        , m_focus_controller(desc.focus_settings)
-        , m_orbit_controller(get_orbit_angles_from_camera_rotation(desc.camera_settings.camera_rotation), desc.orbit_settings)
+        , m_focus_controller(nullptr)
+        , m_orbit_controller(nullptr)
         , m_vertical_mouse_movement(0.0f)
         , m_horizontal_mouse_movement(0.0f)
     {
+        m_focus_controller = std::make_unique<FocusController>(m_orbit_camera);
+        m_orbit_controller = std::make_unique<OrbitController>(get_orbit_angles_from_camera_rotation(desc.camera_settings.camera_rotation), m_orbit_camera);
+
         if (!desc.camera_settings.can_rotate_pitch && !desc.camera_settings.can_rotate_yaw && !desc.camera_settings.can_zoom)
         {
             R_WARN("Camera movement is disabled!");
@@ -51,8 +160,7 @@ namespace regina
     //-------------------------------------------------------------------------
     void OrbitCameraController::reset()
     {
-        m_focus_controller.reset(m_orbit_camera.get_focus_settings());
-        m_orbit_controller.reset(get_orbit_angles_from_camera_rotation(m_orbit_camera.get_initial_camera_rotation()), m_orbit_camera.get_orbit_settings());
+        m_orbit_controller->reset_orbit_angles(get_orbit_angles_from_camera_rotation(m_orbit_camera.get_initial_camera_rotation()));
 
         m_orbit_camera.reset();
 
@@ -78,14 +186,8 @@ namespace regina
     void OrbitCameraController::on_event(rex::events::Event& evt)
     {
         rex::events::EventDispatcher dispatcher(evt);
-        dispatcher.dispatch<rex::events::MouseScroll>([&](const rex::events::MouseScroll& scrollEvent)
-                                                      {
-                                                          return on_mouse_scrolled(scrollEvent);
-                                                      });
-        dispatcher.dispatch<rex::events::MouseMove>([&](const rex::events::MouseMove& moveEvent)
-                                                    {
-                                                        return on_mouse_moved(moveEvent);
-                                                    });
+        dispatcher.dispatch<rex::events::MouseScroll>([&](const rex::events::MouseScroll& scrollEvent) { return on_mouse_scrolled(scrollEvent); });
+        dispatcher.dispatch<rex::events::MouseMove>([&](const rex::events::MouseMove& moveEvent) { return on_mouse_moved(moveEvent); });
     }
 
     //-------------------------------------------------------------------------
@@ -259,11 +361,11 @@ namespace regina
             rex::vec2 rotation_input = rex::vec2(m_horizontal_mouse_movement, m_vertical_mouse_movement);
             rex::quaternion rotation_default = m_orbit_camera.get_camera_transform()->get_rotation();
 
-            rex::quaternion look_rotation = m_orbit_controller.calculate_look_rotation(rotation_input, rotation_default);
+            rex::quaternion look_rotation = m_orbit_controller->calculate_look_rotation(rotation_input, rotation_default);
 
             // Look position
             rex::vec3 look_direction = look_rotation * rex::world_forward<float>();
-            rex::vec3 look_position = m_focus_controller.calculate_focus_position(look_direction);
+            rex::vec3 look_position = m_focus_controller->calculate_focus_position(look_direction);
 
             m_orbit_camera.orbit(look_position, look_rotation);
         }
@@ -274,7 +376,7 @@ namespace regina
     {
         // Look position
         rex::vec3 look_direction = lookRotation * rex::world_forward<float>();
-        rex::vec3 look_position = m_focus_controller.calculate_focus_position(look_direction);
+        rex::vec3 look_position = m_focus_controller->calculate_focus_position(look_direction);
 
         m_orbit_camera.orbit(look_position, lookRotation);
     }
@@ -312,4 +414,4 @@ namespace regina
 
         return true;
     }
-}
+} // namespace regina
