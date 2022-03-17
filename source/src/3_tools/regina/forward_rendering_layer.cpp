@@ -20,10 +20,16 @@
 
 #include "resources/resource_factory.h"
 #include "resources/shader_library.h"
+#include "resources/texture_library.h"
 #include "resources/frame_buffer_pool.h"
 #include "resources/uniform_buffer_set.h"
+#include "resources/material.h"
 
 #include "mesh_factory.h"
+#include "model.h"
+
+#include "model_importer.h"
+#include "texture_importer.h"
 
 #include "scene_renderer.h"
 
@@ -45,6 +51,11 @@ namespace regina
 {
     namespace forward_rendering
     {
+        // Mesh settings
+        rex::vec3 MESH_POSITION = rex::vec3(0.0f);
+        rex::vec3 MESH_ROTATION = rex::radians(rex::vec3(0.0f));
+        rex::vec3 MESH_SCALE = {10.0, 10.0, 10.0};
+
         // Render pass settings
         const rex::StringID PREDEPTHPASS_NAME = "PreDepthPass"_sid;
         const rex::StringID FORWARDGEOMETRYPASS_NAME = "ForwardGeometryPass"_sid;
@@ -74,8 +85,8 @@ namespace regina
             float MIN_PITCH_ANGLE = -50.0f;
             float MAX_PITCH_ANGLE = 50.0f;
 
-            float MOVE_SENSITIVITY = 1.0f;
-            float SCROLL_SENSITIVITY = 2.0f;
+            float MOVE_SENSITIVITY = 2.0f;
+            float SCROLL_SENSITIVITY = 20.0f;
         } // namespace camera_settings
 
         namespace renderpass_settings
@@ -217,20 +228,38 @@ namespace regina
         //-------------------------------------------------------------------------
         void load_shaders()
         {
-            load_shader("blit"_sid, "1000"_sid, "assets\\blit.vertex"_sid, "assets\\blit.fragment"_sid);
-            load_shader("grid"_sid, "1000"_sid, "assets\\grid.vertex"_sid, "assets\\grid.fragment"_sid);
-            load_shader("predepth"_sid, "1000"_sid, "assets\\predepth.vertex"_sid, "assets\\predepth.fragment"_sid);
-            load_shader("skybox"_sid, "1000"_sid, "assets\\skybox.vertex"_sid, "assets\\skybox.fragment"_sid);
-            load_shader("pbr_static"_sid, "1000"_sid, "assets\\pbr_static.vertex"_sid, "assets\\pbr_static.fragment"_sid);
+            load_shader("blit"_sid, "1000"_sid, "content\\shaders\\blit.vertex"_sid, "content\\shaders\\blit.fragment"_sid);
+            load_shader("grid"_sid, "1000"_sid, "content\\shaders\\grid.vertex"_sid, "content\\shaders\\grid.fragment"_sid);
+            load_shader("predepth"_sid, "1000"_sid, "content\\shaders\\predepth.vertex"_sid, "content\\shaders\\predepth.fragment"_sid);
+            load_shader("skybox"_sid, "1000"_sid, "content\\shaders\\skybox.vertex"_sid, "content\\shaders\\skybox.fragment"_sid);
+            load_shader("pbr_static"_sid, "1000"_sid, "content\\shaders\\pbr_static.vertex"_sid, "content\\shaders\\pbr_static.fragment"_sid);
+        }
+        //-------------------------------------------------------------------------
+        void load_texture(const rex::StringID& name, const rex::StringID& path, const SRGB& srgb, const rex::Texture::Usage& usage)
+        {
+            auto texture = texture_importer::import(name, path, srgb, usage);
+
+            if (texture == nullptr)
+            {
+                R_WARN("{0} texture was not found on disk", name.to_string());
+                return;
+            }
+
+            rex::texture_library::add(texture);
+        }
+        //-------------------------------------------------------------------------
+        void load_textures()
+        {
+            load_texture("backpack_ao", "content\\textures\\backpack_ao.jpg", SRGB::NO, rex::Texture::Usage::AMBIENT_OCCLUSION);
+            load_texture("backpack_diffuse", "content\\textures\\backpack_diffuse.jpg", SRGB::NO, rex::Texture::Usage::DIFFUSE);
+            load_texture("backpack_normal", "content\\textures\\backpack_normal.png", SRGB::NO, rex::Texture::Usage::NORMAL);
+            load_texture("backpack_roughness", "content\\textures\\backpack_roughness.jpg", SRGB::NO, rex::Texture::Usage::ROUGHNESS);
+            load_texture("backpack_specular", "content\\textures\\backpack_specular.jpg", SRGB::NO, rex::Texture::Usage::SPECUALR);
         }
         //-------------------------------------------------------------------------
         void load_primitive_geometry()
         {
             rex::mesh_factory::load();
-        }
-        //-------------------------------------------------------------------------
-        void load_custom_geometry()
-        {
         }
     } // namespace forward_rendering
 
@@ -250,8 +279,11 @@ namespace regina
     void ForwardRenderingLayer::on_attach()
     {
         forward_rendering::load_shaders();
+        forward_rendering::load_textures();
         forward_rendering::load_primitive_geometry();
-        forward_rendering::load_custom_geometry();
+        
+        m_bunny = model_importer::import("content\\meshes\\bunny.obj"_sid);
+        m_unit_cube = rex::mesh_factory::get_unit_cube();
 
         setup_scene();
         setup_camera();
@@ -260,8 +292,12 @@ namespace regina
     //-------------------------------------------------------------------------
     void ForwardRenderingLayer::on_detach()
     {
-        rex::shader_library::clear();
+        m_bunny.reset();
+        m_unit_cube.reset();
+
         rex::mesh_factory::clear();
+        rex::texture_library::clear();
+        rex::shader_library::clear();
 
         rex::FrameBufferPool::instance()->clear();
         rex::UniformBufferSet::instance()->clear();
@@ -297,29 +333,34 @@ namespace regina
 
         m_scene = rex::ecs::Scene::create_empty("regina"_sid, viewport_width, viewport_height);
 
-        rex::ecs::Entity light_00 = m_scene->create_entity("light_00"_sid);
-        rex::ecs::Entity light_01 = m_scene->create_entity("light_01"_sid);
-        rex::ecs::Entity light_02 = m_scene->create_entity("light_02"_sid);
-        rex::ecs::Entity light_03 = m_scene->create_entity("light_03"_sid);
-        rex::ecs::Entity light_04 = m_scene->create_entity("light_04"_sid);
-        rex::ecs::Entity light_05 = m_scene->create_entity("light_05"_sid);
+        setup_lights();
 
-        light_00.get_component<rex::ecs::TransformComponent>().transform.set_position(rex::vec3(+20.0f, +130.0f, +35.0f));
-        light_00.add_component<rex::ecs::PointLightComponent>(1.0f, 100.0f, 100.0f);
-        light_01.get_component<rex::ecs::TransformComponent>().transform.set_position(rex::vec3(+50.0f, -20.0f, +20.0f));
-        light_01.add_component<rex::ecs::PointLightComponent>(1.0f, 1000.0f, 1000.0f);
-        light_02.get_component<rex::ecs::TransformComponent>().transform.set_position(rex::vec3(-50.0f, -80.0f, -50.0f));
-        light_02.add_component<rex::ecs::PointLightComponent>(1.0f, 1000.0f, 1000.0f);
-        light_03.get_component<rex::ecs::TransformComponent>().transform.set_position(rex::vec3(-130.0f, +60.0f, -100.0f));
-        light_03.add_component<rex::ecs::PointLightComponent>(1.0f, 800.0f, 800.0f);
-        light_04.get_component<rex::ecs::TransformComponent>().transform.set_position(rex::vec3(+100.0f, +60.0f, -150.0f));
-        light_04.add_component<rex::ecs::PointLightComponent>(1.0f, 5000.0f, 5000.0f);
-        light_05.get_component<rex::ecs::TransformComponent>().transform.set_position(rex::vec3(-100.0f, +60.0f, +150.0f));
-        light_05.add_component<rex::ecs::PointLightComponent>(1.0f, 5000.0f, 5000.0f);
+        // Create grey material
+        //
+        m_grey_material = rex::ResourceFactory::create_material(rex::shader_library::get("pbr_static"_sid), "Grey Material"_sid);
+        m_grey_material->set("u_albedo"_sid, rex::vec3(0.85f, 0.85f, 0.85f));
+        m_grey_material->set("u_ao"_sid, 1.0f);
+        m_grey_material->set("u_roughness"_sid, 0.85f);
+        m_grey_material->set("u_metallic"_sid, 0.05f);
 
-        rex::ecs::Entity dirlight = m_scene->create_entity("directional_light"_sid);
+        // Create bunny entity
+        //
+        rex::ecs::Entity bunny = m_scene->create_entity("bunny"_sid);
 
-        dirlight.add_component<rex::ecs::DirectionalLightComponent>();
+        bunny.add_component<rex::ecs::ModelComponent>(m_bunny);
+        bunny.add_component<rex::ecs::MaterialComponent>(m_grey_material);
+
+        rex::ecs::TransformComponent& bunny_transform_comp = bunny.get_component<rex::ecs::TransformComponent>();
+        bunny_transform_comp.transform.set_scale(forward_rendering::MESH_SCALE);
+
+        // Create cube entity
+        rex::ecs::Entity unit_cube = m_scene->create_entity("cube"_sid);
+
+        unit_cube.add_component<rex::ecs::ModelComponent>(m_unit_cube);
+        unit_cube.add_component<rex::ecs::MaterialComponent>(m_grey_material);
+
+        rex::ecs::TransformComponent& unit_cube_transform_comp = unit_cube.get_component<rex::ecs::TransformComponent>();
+        unit_cube_transform_comp.transform.set_position(rex::vec3(-1.0f, -1.0, -1.0));
     }
     //-------------------------------------------------------------------------
     void ForwardRenderingLayer::setup_camera()
@@ -358,6 +399,33 @@ namespace regina
         renderpasses.push_back(std::move(composite));
 
         m_scene_renderer = rex::make_ref<rex::SceneRenderer>(m_scene, std::move(renderpasses));
+    }
+
+    //-------------------------------------------------------------------------
+    void ForwardRenderingLayer::setup_lights()
+    {
+        const int32 NR_LIGHTS = 32;
+
+        srand(13); // seed random number generator
+        for (int32 i = 0; i < NR_LIGHTS; ++i)
+        {
+            std::stringstream stream;
+            stream << "light_";
+            stream << i;
+
+            float x_pos = static_cast<float>(((rand() % 100) / 100.0) * 6.0 - 3.0);
+            float y_pos = static_cast<float>(((rand() % 100) / 100.0) * 6.0 - 4.0);
+            float z_pos = static_cast<float>(((rand() % 100) / 100.0) * 6.0 - 3.0);
+
+            float r_color = static_cast<float>(((rand() % 100) / 200.0f) + 0.5); // between 0.5 and 1.)
+            float g_color = static_cast<float>(((rand() % 100) / 200.0f) + 0.5); // between 0.5 and 1.)
+            float b_color = static_cast<float>(((rand() % 100) / 200.0f) + 0.5); // between 0.5 and 1.)
+
+            rex::ecs::Entity light = m_scene->create_entity(rex::create_sid(stream.str()));
+
+            light.get_component<rex::ecs::TransformComponent>().transform.set_position(rex::vec3(x_pos, y_pos, z_pos));
+            light.add_component<rex::ecs::PointLightComponent>(1.0f, 100.0f, 100.0f, rex::ColorRGB(r_color, g_color, b_color));
+        }
     }
 
     //-------------------------------------------------------------------------

@@ -10,21 +10,23 @@
 
 namespace rex
 {
-    struct FrameInfo;
-
     class SceneRenderer;
     class SceneRenderPass;
+    class Model;
+    class Material;
+    class CoreWindow;
 
+    struct FrameInfo;
     struct PreDepthPassOptions;
     struct DeferredGeometryPassOptions;
     struct DeferredLightPassOptions;
+    struct DeferredLightVisualizationPassOptions;
     struct CompositePassOptions;
-
-    class CoreWindow;
 
     namespace ecs
     {
         class Scene;
+        class Entity;
     }
 } // namespace rex
 
@@ -47,9 +49,13 @@ namespace regina
         void setup_camera();
         void setup_scene_renderer();
 
+        void setup_lights();
+        void setup_bunnies();
+
         std::unique_ptr<rex::SceneRenderPass> create_pre_depth_pass(const rex::PreDepthPassOptions& options) const;
         std::unique_ptr<rex::SceneRenderPass> create_deferred_geometry_pass(const rex::DeferredGeometryPassOptions& options) const;
         std::unique_ptr<rex::SceneRenderPass> create_deferred_light_pass(const rex::DeferredLightPassOptions& options) const;
+        std::unique_ptr<rex::SceneRenderPass> create_deferred_light_visualization_pass(const rex::DeferredLightVisualizationPassOptions& options) const;
         std::unique_ptr<rex::SceneRenderPass> create_composite_pass(const rex::CompositePassOptions& options) const;
 
         rex::ecs::SceneCamera m_camera;
@@ -57,6 +63,12 @@ namespace regina
 
         rex::ref_ptr<rex::ecs::Scene> m_scene;
         rex::ref_ptr<rex::SceneRenderer> m_scene_renderer;
+
+        rex::ref_ptr<rex::Model> m_bunny;
+        rex::ref_ptr<rex::Material> m_bunny_material;
+
+        std::vector<rex::ecs::Entity> m_bunny_entities;
+        std::vector<rex::ecs::Entity> m_light_sources;
 
         const rex::CoreWindow* m_window;
     };
