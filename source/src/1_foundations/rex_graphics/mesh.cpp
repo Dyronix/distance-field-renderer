@@ -50,13 +50,21 @@ namespace rex
         , m_buffer_layout(make_buffer_layout())
     {
         m_vertex_buffer = create_vertex_buffer(vertices.data(), gsl::narrow<uint32>(vertices.size()), usage, m_buffer_layout);
-        m_index_buffer = create_index_buffer(indices.data(), gsl::narrow<uint32>(indices.size()), usage);
+
+        if (!indices.empty())
+        {
+            m_index_buffer = create_index_buffer(indices.data(), gsl::narrow<uint32>(indices.size()), usage);
+        }
     }
     //-------------------------------------------------------------------------
     rex::Mesh::~Mesh()
     {
         m_vertex_buffer->release();
-        m_index_buffer->release();
+
+        if (m_index_buffer)
+        {
+            m_index_buffer->release();
+        }
     }
 
     //-------------------------------------------------------------------------
@@ -86,7 +94,12 @@ namespace rex
     //-------------------------------------------------------------------------
     uint32 rex::Mesh::get_index_buffer_count() const
     {
-        return static_cast<uint32>(m_index_buffer->get_count());
+        if (m_index_buffer)
+        {
+            return static_cast<uint32>(m_index_buffer->get_count());
+        }
+
+        return 0;
     }
     //-------------------------------------------------------------------------
     uint32 rex::Mesh::get_vertex_buffer_count() const
