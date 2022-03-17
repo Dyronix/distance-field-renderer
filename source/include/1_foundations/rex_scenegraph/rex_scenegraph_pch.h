@@ -8,6 +8,8 @@
 #include <cstdlib>
 #include <iomanip>
 
+#include <gsl/narrow>
+
 #include "defines.h"
 #include "types.h"
 
