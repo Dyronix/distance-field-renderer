@@ -17,9 +17,28 @@ namespace rex
         {
         }
         //-------------------------------------------------------------------------
+        TagComponent::TagComponent(TagComponent&& other) noexcept
+            : tag(std::exchange(other.tag, {}))
+        {
+        }
+        //-------------------------------------------------------------------------
         TagComponent::TagComponent(const StringID& sid)
             : tag(sid)
         {
+        }
+
+        //-------------------------------------------------------------------------
+        rex::ecs::TagComponent& TagComponent::operator=(const TagComponent& other)
+        {
+            this->tag = other.tag;
+            return *this;
+        }
+
+        //-------------------------------------------------------------------------
+        rex::ecs::TagComponent& TagComponent::operator=(TagComponent&& other) noexcept
+        {
+            this->tag = std::exchange(other.tag, {});
+            return *this;
         }
 
         //-------------------------------------------------------------------------
@@ -54,5 +73,5 @@ namespace rex
         {
             return !(*this == other);
         }
-    }
-}
+    } // namespace ecs
+} // namespace rex

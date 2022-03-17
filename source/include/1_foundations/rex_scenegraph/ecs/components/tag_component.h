@@ -8,7 +8,11 @@ namespace rex
         {
             TagComponent();
             TagComponent(const TagComponent& other);
+            TagComponent(TagComponent&& other) noexcept;
             TagComponent(const StringID& sid);
+
+            TagComponent& operator=(const TagComponent& other);
+            TagComponent& operator=(TagComponent&& other) noexcept;
 
             operator StringID&();
             operator const StringID&() const;

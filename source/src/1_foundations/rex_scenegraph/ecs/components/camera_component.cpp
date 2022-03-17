@@ -19,10 +19,34 @@ namespace rex
         {
         }
         //-------------------------------------------------------------------------
+        CameraComponent::CameraComponent(CameraComponent&& other) noexcept
+            : camera(std::exchange(other.camera, {}))
+            , has_fixed_aspect_ratio(std::exchange(other.has_fixed_aspect_ratio, {}))
+        {
+        }
+        //-------------------------------------------------------------------------
         CameraComponent::CameraComponent(const SceneCamera& t, bool hasFixedAspectRatio)
             : camera(t)
             , has_fixed_aspect_ratio(hasFixedAspectRatio)
         {
+        }
+
+        //-------------------------------------------------------------------------
+        rex::ecs::CameraComponent& CameraComponent::operator=(const CameraComponent& other)
+        {
+            this->camera = other.camera;
+            this->has_fixed_aspect_ratio = other.has_fixed_aspect_ratio;
+
+            return *this;
+        }
+
+        //-------------------------------------------------------------------------
+        rex::ecs::CameraComponent& CameraComponent::operator=(CameraComponent&& other) noexcept
+        {
+            this->camera = std::exchange(other.camera, {});
+            this->has_fixed_aspect_ratio = std::exchange(other.has_fixed_aspect_ratio, false);
+
+            return *this;
         }
 
         //-------------------------------------------------------------------------
@@ -46,5 +70,5 @@ namespace rex
         {
             return !(*this == other);
         }
-    }
-}
+    } // namespace ecs
+} // namespace rex

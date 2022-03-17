@@ -19,9 +19,31 @@ namespace rex
         {
         }
         //-------------------------------------------------------------------------
+        ModelComponent::ModelComponent(ModelComponent&& other) noexcept
+            : model(std::exchange(other.model, {}))
+        {
+
+        }
+        //-------------------------------------------------------------------------
         ModelComponent::ModelComponent(const ref_ptr<Model>& inModel)
             : model(inModel)
         {
+        }
+
+        //-------------------------------------------------------------------------
+        rex::ecs::ModelComponent& ModelComponent::operator=(const ModelComponent& other)
+        {
+            this->model = other.model;
+
+            return *this;
+        }
+
+        //-------------------------------------------------------------------------
+        rex::ecs::ModelComponent& ModelComponent::operator=(ModelComponent&& other) noexcept
+        {
+            this->model = std::exchange(other.model, {});
+
+            return *this;
         }
 
         //-------------------------------------------------------------------------
@@ -45,5 +67,5 @@ namespace rex
         {
             return !(*this == other);
         }
-    }
-}
+    } // namespace ecs
+} // namespace rex

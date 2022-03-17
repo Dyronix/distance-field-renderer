@@ -10,7 +10,11 @@ namespace rex
         {
             ModelComponent();
             ModelComponent(const ModelComponent& other);
+            ModelComponent(ModelComponent&& other) noexcept;
             ModelComponent(const ref_ptr<Model>& inModel);
+
+            ModelComponent& operator=(const ModelComponent& other);
+            ModelComponent& operator=(ModelComponent&& other) noexcept;
 
             operator ref_ptr<Model>&();
             operator const ref_ptr<Model>&() const;

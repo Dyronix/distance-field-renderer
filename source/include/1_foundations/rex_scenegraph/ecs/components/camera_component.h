@@ -10,7 +10,11 @@ namespace rex
         {
             CameraComponent();
             CameraComponent(const CameraComponent& other);
+            CameraComponent(CameraComponent&& other) noexcept;
             CameraComponent(const SceneCamera& t, bool hasFixedAspectRatio = false);
+
+            CameraComponent& operator=(const CameraComponent& other);
+            CameraComponent& operator=(CameraComponent&& other) noexcept;
 
             operator SceneCamera&();
             operator const SceneCamera&() const;
