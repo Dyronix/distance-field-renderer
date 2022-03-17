@@ -53,6 +53,17 @@ namespace rex
             return color_data.data();
         }
 
+        //-------------------------------------------------------------------------
+        bool operator==(const Color3& other) const
+        {
+            return color_data == other.color_data;
+        }
+        //-------------------------------------------------------------------------
+        bool operator!=(const Color3& other) const
+        {
+            return !(*this == other);
+        }
+
         union
         {
 // Disabling this warning because it has to be nameless.
@@ -96,6 +107,17 @@ namespace rex
         const float* get_data() const
         {
             return color_data.data();
+        }
+
+        //-------------------------------------------------------------------------
+        bool operator==(const Color4& other) const
+        {
+            return color_data == other.color_data;
+        }
+        //-------------------------------------------------------------------------
+        bool operator!=(const Color4& other) const
+        {
+            return !(*this == other);
         }
 
         union
