@@ -10,6 +10,8 @@ namespace rex
     {
     public:
         Transform();
+        Transform(const Transform& other);
+        Transform(Transform&& other) noexcept;
         Transform(const rex::vec3& position);
         Transform(const rex::vec3& position, const rex::vec3& scale);
         Transform(const rex::vec3& position, const rex::vec3& scale, const rex::quaternion& rotation);
@@ -40,6 +42,9 @@ namespace rex
 
         bool operator==(const Transform& other) const;
         bool operator!=(const Transform& other) const;
+
+        Transform& operator=(const Transform& other);
+        Transform& operator=(Transform&& other);
 
     private:
         void update_direction_vectors();

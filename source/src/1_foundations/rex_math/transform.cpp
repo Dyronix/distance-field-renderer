@@ -4,6 +4,7 @@
 
 #include "common.h"
 #include "geometric.h"
+#include "quaternion_geometric.h"
 #include "matrix_transform.h"
 
 namespace rex
@@ -11,6 +12,28 @@ namespace rex
     //-------------------------------------------------------------------------
     Transform::Transform()
         : Transform::Transform({0.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f}, rex::identity<rex::quaternion>())
+    {
+    }
+    //-------------------------------------------------------------------------
+    Transform::Transform(const Transform& other)
+        : m_world(other.m_world)
+        , m_position(other.m_position)
+        , m_scale(other.m_scale)
+        , m_rotation(other.m_rotation)
+        , m_forward(other.m_forward)
+        , m_right(other.m_right)
+        , m_up(other.m_up)
+    {
+    }
+    //-------------------------------------------------------------------------
+    Transform::Transform(Transform&& other) noexcept
+        : m_world(std::exchange(other.m_world, {}))
+        , m_position(std::exchange(other.m_position, {}))
+        , m_scale(std::exchange(other.m_scale, {}))
+        , m_rotation(std::exchange(other.m_rotation, {}))
+        , m_forward(std::exchange(other.m_forward, {}))
+        , m_right(std::exchange(other.m_right, {}))
+        , m_up(std::exchange(other.m_up, {}))
     {
     }
     //-------------------------------------------------------------------------
@@ -119,7 +142,7 @@ namespace rex
     //-------------------------------------------------------------------------
     void Transform::rotate(const float angle, const rex::vec3& axis)
     {
-        m_rotation *= glm::angleAxis(angle, axis);
+        m_rotation *= rex::angle_axis(angle, axis);
 
         update_direction_vectors();
         update_matrices();
@@ -171,6 +194,33 @@ namespace rex
     {
         update_direction_vectors();
         update_matrices();
+    }
+
+    //-------------------------------------------------------------------------
+    rex::Transform& Transform::operator=(const Transform& other)
+    {
+        this->m_world = other.m_world;
+        this->m_position = other.m_position;
+        this->m_scale = other.m_scale;
+        this->m_rotation = other.m_rotation;
+        this->m_forward = other.m_forward;
+        this->m_right = other.m_right;
+        this->m_up = other.m_up;
+
+        return *this;
+    }
+    //-------------------------------------------------------------------------
+    rex::Transform& Transform::operator=(Transform&& other)
+    {
+        this->m_world = std::exchange(other.m_world, {});
+        this->m_position = std::exchange(other.m_position, {});
+        this->m_scale = std::exchange(other.m_scale, {});
+        this->m_rotation = std::exchange(other.m_rotation, {});
+        this->m_forward = std::exchange(other.m_forward, {});
+        this->m_right = std::exchange(other.m_right, {});
+        this->m_up = std::exchange(other.m_up, {});
+
+        return *this;
     }
 
     //-------------------------------------------------------------------------
