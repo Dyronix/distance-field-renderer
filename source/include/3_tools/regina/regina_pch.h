@@ -5,6 +5,7 @@
 #include <string>
 #include <optional>
 #include <memory>
+#include <sstream>
 
 #include <gsl/narrow>
 #include <gsl/pointers>
