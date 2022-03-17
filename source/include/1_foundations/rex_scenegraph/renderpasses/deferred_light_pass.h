@@ -12,6 +12,8 @@ namespace rex
     class SceneRenderer;
     class Texture;
 
+    struct PointLight;
+
     struct DeferredLightPassOptions
     {
         DeferredLightPassOptions()
