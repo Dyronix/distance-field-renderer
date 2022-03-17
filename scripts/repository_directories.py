@@ -7,7 +7,8 @@ import os
 ##-------------------------------------------------------------------------------
 ## A git directory is always named the following =>
 git_directory_name = '.git'
-externals_directory_name = "externals"
+external_directory_name = "external"
+content_directory_name = "content"
 
 ##------------------------------------------------------------------------------
 cached_git_directory = ""
@@ -52,9 +53,16 @@ def get_root_directory():
 ## Retrieve external directory
 def get_externals_directory():
     root_dir = get_root_directory()
-    externals_directory = __find_folder_in_current_or_above(externals_directory_name, root_dir)
+    external_directory = __find_folder_in_current_or_above(external_directory_name, root_dir)
 
-    return externals_directory
+    return external_directory
+##-------------------------------------------------------------------------------
+## Retrieve content directory
+def get_content_directory():
+    root_dir = get_root_directory()
+    content_directory = __find_folder_in_current_or_above(content_directory_name, root_dir)
+
+    return content_directory
 
 ##-------------------------------------------------------------------------------
 ## PRIVATE FUNCTIONS
