@@ -276,11 +276,7 @@ namespace regina
         //-------------------------------------------------------------------------
         void load_textures()
         {
-            load_texture("backpack_ao", "content\\textures\\backpack_ao.jpg", SRGB::NO, rex::Texture::Usage::AMBIENT_OCCLUSION);
-            load_texture("backpack_diffuse", "content\\textures\\backpack_diffuse.jpg", SRGB::NO, rex::Texture::Usage::DIFFUSE);
-            load_texture("backpack_normal", "content\\textures\\backpack_normal.png", SRGB::NO, rex::Texture::Usage::NORMAL);
-            load_texture("backpack_roughness", "content\\textures\\backpack_roughness.jpg", SRGB::NO, rex::Texture::Usage::ROUGHNESS);
-            load_texture("backpack_specular", "content\\textures\\backpack_specular.jpg", SRGB::NO, rex::Texture::Usage::SPECUALR);
+            // load_texture("diffuse", "content\\textures\\diffuse.png", SRGB::NO, rex::Texture::Usage::DIFFUSE);
         }
         //-------------------------------------------------------------------------
         void load_primitive_geometry()
@@ -291,7 +287,7 @@ namespace regina
 
     //-------------------------------------------------------------------------
     DeferredRenderingLayer::DeferredRenderingLayer(const rex::CoreWindow* window)
-        : Layer("regina_layer"_sid, 0, EnableImGUIRendering::NO)
+        : Layer("regina_layer"_sid, -1, EnableImGUIRendering::NO)
         , m_camera_controller(rex::win32::Input::instance(), R_MOUSE_BUTTON_LEFT, deferred_rendering::create_orbit_camera_description())
         , m_window(window)
     {
