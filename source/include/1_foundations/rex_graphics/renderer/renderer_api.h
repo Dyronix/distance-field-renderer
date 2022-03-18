@@ -22,6 +22,9 @@ namespace rex
         virtual void initialize() = 0;
         virtual void shutdown() = 0;
 
+        virtual const int32 get_max_combined_texture_image_units() const = 0;
+        virtual const int32 get_max_texture_size() const = 0;
+
         virtual void set_viewport(const rex::vec2& origin, const rex::vec2& size) = 0;
 
         virtual void begin_frame() = 0;

@@ -6,7 +6,6 @@
 namespace rex
 {
     std::unique_ptr<TextureResourceManagerAPI> g_texture_resource_manager = nullptr;
-    uint32 g_max_texture_count = 0;
 
     //-------------------------------------------------------------------------
     void TextureResourceManager::intialize(std::unique_ptr<TextureResourceManagerAPI> manager)
@@ -15,9 +14,15 @@ namespace rex
     }
 
     //-------------------------------------------------------------------------
-    uint32 TextureResourceManager::max_combined_texture_image_units()
+    const int32 TextureResourceManager::max_combined_texture_image_units()
     {
         return g_texture_resource_manager->get_max_activate_texture_count();
+    }
+
+    //-------------------------------------------------------------------------
+    const int32 TextureResourceManager::max_texture_size()
+    {
+        return g_texture_resource_manager->get_max_texture_size();
     }
 
     //-------------------------------------------------------------------------

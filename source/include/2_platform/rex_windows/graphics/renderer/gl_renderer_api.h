@@ -21,6 +21,9 @@ namespace rex
             void initialize() override;
             void shutdown() override;
 
+            const int32 get_max_combined_texture_image_units() const override;
+            const int32 get_max_texture_size() const override;
+
             void set_viewport(const rex::vec2& origin, const rex::vec2& size) override;
 
             void begin_frame() override;

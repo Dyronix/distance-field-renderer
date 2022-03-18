@@ -22,13 +22,16 @@ namespace rex
         //-------------------------------------------------------------------------
         using ActiveTextureVector = std::vector<ActiveTexture>;
 
-        uint32 g_max_texture_count = 0;
+        int32 g_max_texture_count = 0;
+        int32 g_max_texture_size = 0;
+
         ActiveTextureVector g_activated_textures = {};
 
         //-------------------------------------------------------------------------
-        TextureResourceManagerAPI::TextureResourceManagerAPI(uint32 maxTextureCount)
+        TextureResourceManagerAPI::TextureResourceManagerAPI(uint32 maxTextureCount, uint32 maxTextureSize)
         {
             g_max_texture_count = maxTextureCount;
+            g_max_texture_size = maxTextureSize;
         }
         //-------------------------------------------------------------------------
         TextureResourceManagerAPI::~TextureResourceManagerAPI()
@@ -37,12 +40,19 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        uint32 TextureResourceManagerAPI::get_activated_texture_count() const
+        const int32 TextureResourceManagerAPI::get_activated_texture_count() const
         {
-            return static_cast<uint32>(g_activated_textures.size());
+            return gsl::narrow<int32>(g_activated_textures.size());
         }
+
         //-------------------------------------------------------------------------
-        uint32 TextureResourceManagerAPI::get_max_activate_texture_count() const
+        const int32 TextureResourceManagerAPI::get_max_texture_size() const
+        {
+            return g_max_texture_size;
+        }
+
+        //-------------------------------------------------------------------------
+        const int32 TextureResourceManagerAPI::get_max_activate_texture_count() const
         {
             return g_max_texture_count;
         }

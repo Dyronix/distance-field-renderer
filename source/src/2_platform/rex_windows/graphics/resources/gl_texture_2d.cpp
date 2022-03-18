@@ -73,9 +73,9 @@ namespace rex
             , m_pixel_format(m_texel_format, m_format)
             , m_local_storage()
         {
-            if (width > GL_MAX_TEXTURE_SIZE || height > GL_MAX_TEXTURE_SIZE)
+            if (gsl::narrow<int32>(width) > Renderer::get_max_texture_size() || gsl::narrow<int32>(height) > Renderer::get_max_texture_size())
             {
-                R_ERROR("Exceeded max texture size: width: {0}, height: {1} => max: {2} ", width, height, GL_MAX_TEXTURE_SIZE);
+                R_ERROR("Exceeded max texture size: width: {0}, height: {1} => max: {2} ", width, height, Renderer::get_max_texture_size());
                 return;
             }
 
@@ -111,9 +111,9 @@ namespace rex
             , m_pixel_format(m_texel_format, m_format)
             , m_local_storage()
         {
-            if (width > GL_MAX_TEXTURE_SIZE || height > GL_MAX_TEXTURE_SIZE)
+            if (gsl::narrow<int32>(width) > Renderer::get_max_texture_size() || gsl::narrow<int32>(height) > Renderer::get_max_texture_size())
             {
-                R_ERROR("Exceeded max texture size: width: {0}, height: {1} => max: {2} ", width, height, GL_MAX_TEXTURE_SIZE);
+                R_ERROR("Exceeded max texture size: width: {0}, height: {1} => max: {2} ", width, height, Renderer::get_max_texture_size());
                 return;
             }
 
@@ -147,9 +147,9 @@ namespace rex
             , m_pixel_format(m_texel_format, m_format)
             , m_local_storage()
         {
-            if (desc.width > GL_MAX_TEXTURE_SIZE || desc.height > GL_MAX_TEXTURE_SIZE)
+            if (gsl::narrow<int32>(desc.width) > Renderer::get_max_texture_size() || gsl::narrow<int32>(desc.height) > Renderer::get_max_texture_size())
             {
-                R_ERROR("Exceeded max texture size: width: {0}, height: {1} => max: {2} ", desc.width, desc.height, GL_MAX_TEXTURE_SIZE);
+                R_ERROR("Exceeded max texture size: width: {0}, height: {1} => max: {2} ", desc.width, desc.height, Renderer::get_max_texture_size());
                 return;
             }
 

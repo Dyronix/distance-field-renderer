@@ -64,6 +64,18 @@ namespace rex
     }
 
     //-------------------------------------------------------------------------
+    const int32 Renderer::get_max_combined_texture_image_units()
+    {
+        return g_renderer_api->get_max_combined_texture_image_units();
+    }
+
+    //-------------------------------------------------------------------------
+    const int32 Renderer::get_max_texture_size()
+    {   
+        return g_renderer_api->get_max_texture_size();
+    }
+
+    //-------------------------------------------------------------------------
     const rex::ref_ptr<rex::Texture>& Renderer::get_white_texture()
     {
         return g_white_texture->get_texture();

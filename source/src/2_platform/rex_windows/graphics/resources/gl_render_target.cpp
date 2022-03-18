@@ -37,9 +37,9 @@ namespace rex
             , m_pixel_format(m_texel_format, m_format)
             , m_local_storage()
         {
-            if (desc.width > GL_MAX_TEXTURE_SIZE || desc.height > GL_MAX_TEXTURE_SIZE)
+            if (desc.width > Renderer::get_max_texture_size() || desc.height > Renderer::get_max_texture_size())
             {
-                R_ERROR("Exceeded max texture size: width: {0}, height: {1} => max: {2} ", desc.width, desc.height, GL_MAX_TEXTURE_SIZE);
+                R_ERROR("Exceeded max texture size: width: {0}, height: {1} => max: {2} ", desc.width, desc.height, Renderer::get_max_texture_size());
                 return;
             }
 

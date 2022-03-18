@@ -217,8 +217,10 @@ namespace rex
         {
             int32 max_texture_units = 0;
             opengl::get_integer_value(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &max_texture_units);
+            int32 max_texture_size = 0;
+            opengl::get_integer_value(GL_MAX_TEXTURE_SIZE, &max_texture_size);
 
-            TextureResourceManager::intialize(std::make_unique<opengl::TextureResourceManagerAPI>(max_texture_units));
+            TextureResourceManager::intialize(std::make_unique<opengl::TextureResourceManagerAPI>(max_texture_units, max_texture_size));
         }
         //-------------------------------------------------------------------------
         void destroy_texture_resource_manager()
@@ -255,6 +257,18 @@ namespace rex
             g_pipelines.clear();
 
             g_renderpasses.clear();
+        }
+
+        //-------------------------------------------------------------------------
+        const int32 RendererAPI::get_max_combined_texture_image_units() const
+        {
+            return TextureResourceManager::max_combined_texture_image_units();
+        }
+
+        //-------------------------------------------------------------------------
+        const int32 RendererAPI::get_max_texture_size() const
+        {
+            return TextureResourceManager::max_texture_size();
         }
 
         //-------------------------------------------------------------------------

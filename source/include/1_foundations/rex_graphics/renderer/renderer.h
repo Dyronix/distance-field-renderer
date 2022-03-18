@@ -42,6 +42,9 @@ namespace rex
         static void initialize(std::unique_ptr<RendererAPI> api);
         static void shutdown();
 
+        static const int32 get_max_combined_texture_image_units();
+        static const int32 get_max_texture_size();
+
         static const ref_ptr<Texture>& get_white_texture();
         static const ref_ptr<Texture>& get_black_texture();
         static const ref_ptr<TextureCube>& get_white_texture_cube();
