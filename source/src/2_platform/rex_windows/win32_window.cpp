@@ -32,8 +32,10 @@ namespace rex
         //-------------------------------------------------------------------------
         Window::Window(const WindowDescription& description)
             : m_sdl_window(nullptr)
-            , m_windowed_width(description.width)
-            , m_windowed_height(description.height)
+            , m_windowed_width(description.width != 0 ? description.width : 1280)
+            , m_windowed_height(description.height != 0 ? description.height : 720)
+            , m_fullscreen_width(0)
+            , m_fullscreen_height(0)
             , m_window_presentation(0)
             , m_keyboard_focus({Focus::Type::KEYBOARD, false})
             , m_mouse_focus({Focus::Type::MOUSE, false})
@@ -79,7 +81,7 @@ namespace rex
 
             if (description.fullscreen && description.display != nullptr)
             {
-                set_display_mode(description.display, description.display_mode_index);
+                set_fullscreen(description.display);
             }
         }
 
@@ -204,7 +206,7 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        bool Window::set_fullscreen(const Display* display)
+        bool Window::set_fullscreen(const Display* display, int32 displayModeIndex)
         {
             if (is_fullscreen())
             {
@@ -222,7 +224,7 @@ namespace rex
 
             if (display != nullptr)
             {
-                set_display_mode(display);
+                set_display_mode(display, displayModeIndex);
             }
 
             m_window_presentation &= ~window_presentation::WINDOWED;
@@ -234,23 +236,13 @@ namespace rex
         //-------------------------------------------------------------------------
         int32 Window::get_width() const
         {
-            int32 width = 0;
-            int32 height = 0;
-
-            SDL_GetWindowSize(m_sdl_window, &width, &height);
-
-            return width;
+            return is_fullscreen() ? m_fullscreen_width : m_windowed_width;
         }
 
         //-------------------------------------------------------------------------
         int32 Window::get_height() const
         {
-            int32 width = 0;
-            int32 height = 0;
-
-            SDL_GetWindowSize(m_sdl_window, &width, &height);
-
-            return height;
+            return is_fullscreen() ? m_fullscreen_height : m_windowed_height;
         }
 
         //-------------------------------------------------------------------------
@@ -292,21 +284,38 @@ namespace rex
                 {
                     R_WARN("Could not set given closest display mode, reverting to desktop display mode ...");
 
-                    if (SDL_GetDesktopDisplayMode(display->get_display_index(), &mode))
+                    SDL_DisplayMode desktop;
+
+                    if (SDL_GetDesktopDisplayMode(display->get_display_index(), &desktop))
                     {
                         R_ERROR("Could not retrieve desktop display mode for display with name: {0}", display->get_name());
                         return;
                     }
 
-                    if (SDL_SetWindowDisplayMode(m_sdl_window, &mode))
+                    if (SDL_SetWindowDisplayMode(m_sdl_window, &desktop))
                     {
                         R_ERROR("Could not set desktop display mode");
                         return;
                     }
+                    else
+                    {
+                        m_fullscreen_width = desktop.w;
+                        m_fullscreen_height = desktop.h;
+                    }
+                }
+                else
+                {
+                    m_fullscreen_width = closest.w;
+                    m_fullscreen_height = closest.h;
                 }
             }
-
-            R_INFO("DisplayMode mode set on display with name: {0}", display->get_name());
+            else
+            {
+                m_fullscreen_width = mode.w;
+                m_fullscreen_height = mode.h;
+            }
+            
+            R_INFO("DisplayMode ({0}, {1}) mode set on display with name: {2}", m_fullscreen_width, m_fullscreen_height, display->get_name());
         }
 
         //-------------------------------------------------------------------------

@@ -35,7 +35,7 @@ namespace rex
 
             bool set_title(const StringID& title) override;
             bool set_windowed() override;
-            bool set_fullscreen(const Display* display = nullptr) override;
+            bool set_fullscreen(const Display* display = nullptr, int32 displayModeIndex = 0) override;
 
             int32 get_width() const override;
             int32 get_height() const override;
@@ -48,6 +48,8 @@ namespace rex
 
             SDL_Window* m_sdl_window;
 
+            int32 m_fullscreen_width;
+            int32 m_fullscreen_height;
             int32 m_windowed_width;
             int32 m_windowed_height;
 

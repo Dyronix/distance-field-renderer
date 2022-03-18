@@ -62,7 +62,7 @@ namespace rex
 
         virtual bool set_title(const StringID& title) = 0;
         virtual bool set_windowed() = 0;
-        virtual bool set_fullscreen(const Display* display = nullptr) = 0;
+        virtual bool set_fullscreen(const Display* display = nullptr, int32 displayModeIndex = 0) = 0;
 
         virtual int32 get_width() const = 0;
         virtual int32 get_height() const = 0;
