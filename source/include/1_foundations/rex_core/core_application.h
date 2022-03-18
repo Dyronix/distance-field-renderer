@@ -17,6 +17,8 @@ namespace rex
     class CoreApplication
     {
     public:
+        static CoreApplication* get_instance();
+
         CoreApplication(const ApplicationDescription& description);
         virtual ~CoreApplication();
 

@@ -8,6 +8,12 @@ namespace rex
     CoreApplication* CoreApplication::s_instance = nullptr;
 
     //-------------------------------------------------------------------------
+    rex::CoreApplication* CoreApplication::get_instance()
+    {
+        return s_instance;
+    }
+
+    //-------------------------------------------------------------------------
     CoreApplication::CoreApplication(const ApplicationDescription& description)
         : m_description(description)
     {
