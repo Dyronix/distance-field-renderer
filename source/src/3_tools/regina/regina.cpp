@@ -5,6 +5,7 @@
 #include "regina.h"
 #include "forward_rendering_layer.h"
 #include "deferred_rendering_layer.h"
+#include "shortcut_layer.h"
 
 #include "application_arguments.h"
 
@@ -47,5 +48,6 @@ namespace regina
 
         //push_back_layer(std::make_unique<ForwardRenderingLayer>(window));
         push_back_layer(std::make_unique<DeferredRenderingLayer>(window));
+        push_back_layer(std::make_unique<ShortcutLayer>());
     }
 }
