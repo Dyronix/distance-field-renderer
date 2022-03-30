@@ -120,6 +120,7 @@ namespace rex
                 SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
                 SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 #endif
+                R_PROFILE_BEGIN_SESSION("Startup", "scribit-profile-startup.json");
 
                 create_display_manager();
                 create_layer_stack();
@@ -141,8 +142,14 @@ namespace rex
 
                 m_window->show();
 
+                R_PROFILE_END_SESSION();
+
+                R_PROFILE_BEGIN_SESSION("Runtime", "scribit-profile-runtime.json");
+
                 // Run the main application loop!
                 m_application_loop->exec();
+
+                R_PROFILE_END_SESSION();
 
                 return true;
             }
@@ -156,6 +163,8 @@ namespace rex
         //-------------------------------------------------------------------------
         bool Application::platform_shutdown()
         {
+            R_PROFILE_BEGIN_SESSION("Shutdown", "scribit-profile-shutdown.json");
+
             on_app_shutdown();
 
             m_layer_stack->clear();
@@ -173,6 +182,8 @@ namespace rex
 
             m_window.reset();
             m_display_manager.reset();
+
+            R_PROFILE_END_SESSION();
 
             SDL_Quit();
 
