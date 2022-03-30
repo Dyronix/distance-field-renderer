@@ -32,6 +32,11 @@ namespace rex
     //--------------------------------------------------------------------------------------------
     void Instrumentor::begin_session(const std::string& name, const std::string& filepath)
     {
+        if (!m_enabled)
+        {
+            return;
+        }
+
         std::lock_guard<std::mutex> lock(m_mutex);
         if (m_current_session)
         {
@@ -42,12 +47,13 @@ namespace rex
             if (rex::logging::has_logger(rex::logging::tags::ENGINE_LOGGER_NAME))
             {
                 // Edge case: begin_session() might be before Log::Init()
-                rex::logging::get_logger(rex::logging::tags::ENGINE_LOGGER_NAME).error("Instrumentor::begin_session('{0}') when session '{1}' already open.", name, m_current_session->name);
+                rex::logging::get_logger(rex::logging::tags::ENGINE_LOGGER_NAME).error("[INSTRUMENTOR] Instrumentor::begin_session('{0}') when session '{1}' already open.", name, m_current_session->name);
             }
 
             internal_end_session();
         }
 
+        rex::logging::get_logger(rex::logging::tags::ENGINE_LOGGER_NAME).info("[INSTRUMENTOR] Starting session: {0} @ {1}", name, filepath);
         m_output_stream.open(filepath);
         if (m_output_stream.is_open())
         {
@@ -58,12 +64,17 @@ namespace rex
         else if (rex::logging::has_logger(rex::logging::tags::ENGINE_LOGGER_NAME))
         {
             // Edge case: BeginSession() might be before Log::Init()
-            rex::logging::get_logger(rex::logging::tags::ENGINE_LOGGER_NAME).error("Instrumentor could not open results file '{0}'.", filepath);
+            rex::logging::get_logger(rex::logging::tags::ENGINE_LOGGER_NAME).error("[INSTRUMENTOR] Instrumentor could not open results file '{0}'.", filepath);
         }
     }
     //--------------------------------------------------------------------------------------------
     void Instrumentor::end_session()
     {
+        if (!m_enabled)
+        {
+            return;
+        }
+
         std::lock_guard<std::mutex> lock(m_mutex);
 
         internal_end_session();
@@ -72,6 +83,11 @@ namespace rex
     //--------------------------------------------------------------------------------------------
     void Instrumentor::write_profile(const ProfileResult& result)
     {
+        if (!m_enabled)
+        {
+            return;
+        }
+
         std::stringstream json;
 
         std::string name = result.name;
@@ -124,6 +140,9 @@ namespace rex
         {
             write_footer();
             m_output_stream.close();
+
+            rex::logging::get_logger(rex::logging::tags::ENGINE_LOGGER_NAME).info("[INSTRUMENTOR] Ending session {0}", m_current_session->name);
+
             delete m_current_session;
             m_current_session = nullptr;
         }
@@ -148,11 +167,14 @@ namespace rex
     //--------------------------------------------------------------------------------------------
     void InstrumentationTimer::stop()
     {
-        auto end_timepoint = std::chrono::steady_clock::now();
-        auto highres_start = FloatingPointMicroseconds{m_start_timepoint.time_since_epoch()};
-        auto elapsed_time = std::chrono::time_point_cast<std::chrono::microseconds>(end_timepoint).time_since_epoch() - std::chrono::time_point_cast<std::chrono::microseconds>(m_start_timepoint).time_since_epoch();
+        if (Instrumentor::get().is_enabled())
+        {
+            auto end_timepoint = std::chrono::steady_clock::now();
+            auto highres_start = FloatingPointMicroseconds{m_start_timepoint.time_since_epoch()};
+            auto elapsed_time = std::chrono::time_point_cast<std::chrono::microseconds>(end_timepoint).time_since_epoch() - std::chrono::time_point_cast<std::chrono::microseconds>(m_start_timepoint).time_since_epoch();
 
-        Instrumentor::get().write_profile({m_name, highres_start, elapsed_time, std::this_thread::get_id()});
+            Instrumentor::get().write_profile({m_name, highres_start, elapsed_time, std::this_thread::get_id()});
+        }
 
         m_stopped = true;
     }

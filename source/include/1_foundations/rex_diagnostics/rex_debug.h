@@ -88,7 +88,7 @@
 
 //-------------------------------------------------------------------------
 // Profiling
-#define REX_ENABLE_PROFILE 0
+#define REX_ENABLE_PROFILE 1
 #if REX_ENABLE_PROFILE
 
 // Resolve which function signature macro will be used. Note that this only
@@ -112,11 +112,7 @@
 #define R_FUNC_SIG "HZ_FUNC_SIG unknown!"
 #endif
 
-#define _INTERNAL_R_PROFILE_SCOPE_LINE2(name, line)                                                                                                                                                                                                      \
-    if (rex::Instrumentor::get().is_enabled())                                                                                                                                                                                                           \
-    {                                                                                                                                                                                                                                                    \
-        rex::InstrumentationTimer timer##line(name);                                                                                                                                                                                                     \
-    }
+#define _INTERNAL_R_PROFILE_SCOPE_LINE2(name, line) rex::InstrumentationTimer timer##line(name);
 #define _INTERNAL_R_PROFILE_SCOPE_LINE(name, line) _INTERNAL_R_PROFILE_SCOPE_LINE2(name, line)
 
 #define R_PROFILE_BEGIN_SESSION(name, filepath) rex::Instrumentor::get().begin_session(name, filepath)
