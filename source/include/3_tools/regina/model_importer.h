@@ -11,4 +11,4 @@ namespace regina
     {
         rex::ref_ptr<rex::Model> import(const rex::StringID& path);
     }
-}
+} // namespace regina
