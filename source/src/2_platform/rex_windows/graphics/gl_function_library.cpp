@@ -4,6 +4,7 @@
 #include "graphics/gl_error.h"
 #include "graphics/gl_api.h"
 
+#define ENABLE_GL_FUNCTION_PROFILE 0
 #define ENABLE_GL_FUNCTION_LOGGING 0
 #define ENABLE_GL_GET_ERROR_LOGGING 0
 #define ENABLE_GL_PARAMETER_LOGGING 1
@@ -12,6 +13,12 @@
 #define GL_LOG R_INFO
 #else
 #define GL_LOG(...) UNUSED_PARAM(__VA_ARGS__)
+#endif
+
+#if ENABLE_GL_FUNCTION_PROFILE
+    #define GL_FUNC_PROFILE R_PROFILE_FUNCTION
+#else
+    #define GL_FUNC_PROFILE void
 #endif
 
 namespace rex
@@ -361,7 +368,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void enable_vertex_attrib_array(uint32 index)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glEnableVertexAttribArray");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -373,7 +380,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void vertex_attrib_i_pointer(uint32 index, int32 size, uint32 type, size_t stride, const void* ptr)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glVertexAttribIPointer");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -389,7 +396,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void vertex_attrib_pointer(uint32 index, int32 size, uint32 type, bool normalized, size_t stride, const void* ptr)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glVertexAttribPointer");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -406,7 +413,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void delete_vertex_arrays(size_t count, const uint32* arrays)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glDeleteVertexArrays");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -419,7 +426,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void generate_vertex_arrays(size_t count, uint32* arrays)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glGenVertexArrays");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -432,7 +439,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void bind_vertex_array(uint32 arrayID)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glBindVertexArray");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -445,7 +452,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void viewport(int32 x, int32 y, int32 width, int32 height)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             R_ASSERT_X(width > 0 && width < (int32)std::numeric_limits<uint16>().max(), "Invalid width given for viewport resize");
             R_ASSERT_X(height > 0 && height < (int32)std::numeric_limits<uint16>().max(), "Invalid height given for viewport resize");
@@ -464,7 +471,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void clear_color(float red, float green, float blue, float alpha)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glClearColor");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -479,7 +486,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void clear_depth(double depth)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glClearDepth");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -491,7 +498,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void clear_depth_f(float depth)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glClearDepthf");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -503,7 +510,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void clear(uint32 bitfield)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glClear");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -516,7 +523,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void enable(uint32 value)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glEnable");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -539,7 +546,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void cull_face(uint32 mode)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glCullFace");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -551,7 +558,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void front_face(uint32 mode)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glFrontFace");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -563,7 +570,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void depth_func(uint32 fn)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glDepthFunc");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -575,7 +582,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void depth_mask(uint8 mode)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glDepthMask");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -587,7 +594,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void polygon_mode(uint32 face, uint32 mode)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glPolygonMode");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -601,7 +608,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void draw_elements(uint32 mode, size_t count, uint32 type, const void* indices)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glDrawElements");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -616,7 +623,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void draw_elements_base_vertex(uint32 mode, size_t count, uint32 type, const void* indices, int32 baseVertex)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glDrawElementsBaseVertex");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -633,7 +640,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void draw_arrays(uint32 mode, int32 first, size_t count)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glDrawArrays");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -648,7 +655,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void get_integer_value(uint32 pname, int32* data)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glGetIntegerv");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -663,7 +670,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void get_float_value(uint32 pname, float* data)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glGetFloatv");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -679,7 +686,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void get_double_value(uint32 pname, double* data)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glGetDoublev");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -695,7 +702,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void get_bool_value(uint32 pname, uint8* data)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glGetBooleanv");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -711,7 +718,7 @@ namespace rex
         //-------------------------------------------------------------------------
         const char* get_string_value(uint32 name)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glGetString");
 
@@ -728,7 +735,7 @@ namespace rex
         //-------------------------------------------------------------------------
         uint32 get_error()
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
 #if ENABLE_GL_FUNCTION_LOGGING && ENABLE_GL_GET_ERROR_LOGGING
             GL_LOG("glGetError");
@@ -748,7 +755,7 @@ namespace rex
         //-------------------------------------------------------------------------
         uint32 check_framebuffer_status(uint32 target)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glCheckFramebufferStatus");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -768,7 +775,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void delete_framebuffers(size_t count, const uint32* framebuffers)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glDeleteFramebuffers");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -781,7 +788,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void generate_framebuffers(size_t count, uint32* framebuffers)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glGenFramebuffers");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -794,7 +801,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void bind_framebuffer(uint32 target, int32 index)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glBindFramebuffer");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -808,7 +815,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void blit_framebuffer(int32 srcx, int32 srcy, int32 srcWidth, int32 srcHeight, int32 dstx, int32 dsty, int32 dstWidth, int32 dstHeight, uint32 mask, uint32 filter)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glBlitFramebuffer");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -831,7 +838,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void framebuffer_texture2D(uint32 target, uint32 attachment, uint32 textureTarget, uint32 texture, int32 level)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glFramebufferTexture2D");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -848,7 +855,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void draw_buffer(uint32 target)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glDrawBuffer");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -860,7 +867,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void draw_buffers(size_t count, const uint32* buffers)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glDrawBuffers");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -874,7 +881,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void get_framebuffer_integer_parameter(uint32 target, uint32 value, int32* data)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glGetFramebufferParameteriv");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -891,7 +898,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void delete_buffers(size_t count, const uint32* buffers)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glDeleteBuffers");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -904,7 +911,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void generate_buffers(size_t count, uint32* buffers)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glGenBuffers");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -917,7 +924,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void bind_buffer(uint32 target, uint32 index)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glBindBuffer");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -930,7 +937,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void buffer_data(uint32 target, uint32 size, const void* data, uint32 usage)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glBufferData");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -945,7 +952,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void bind_buffer_range(uint32 target, uint32 index, uint32 buffer, int64 offset, int64 size)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glBindBufferRange");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -961,7 +968,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void buffer_sub_data(uint32 target, int64 offset, int64 size, const void* data)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glBufferSubData");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -976,7 +983,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void get_buffer_integer_parameter(uint32 target, uint32 value, int32* data)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glGetBufferParameteriv");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -994,7 +1001,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void delete_textures(size_t count, const uint32* textures)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glDeleteTextures");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1007,7 +1014,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void generate_textures(size_t count, uint32* textures)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glGenTextures");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1020,7 +1027,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void activate_texture(uint32 texture)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glActiveTexture");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1032,7 +1039,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void bind_texture(uint32 target, uint32 texture)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glBindTexture");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1045,7 +1052,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void texture_image_2D(uint32 target, int32 level, int32 internalformat, size_t width, size_t height, int32 border, uint32 format, uint32 type, const void* data)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glTexImage2D");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1065,7 +1072,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void texture_image_3D(uint32 target, int32 level, int32 internalformat, size_t width, size_t height, size_t depth, int32 border, uint32 format, uint32 type, const void* data)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glTexImage3D");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1086,7 +1093,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void texture_sub_image_2D(uint32 target, int32 level, int32 xoffset, int32 yoffset, size_t width, size_t height, uint32 format, uint32 type, const void* data)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glTexSubImage2D");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1106,7 +1113,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void texture_sub_image_3D(uint32 target, int32 level, int32 xoffset, int32 yoffset, int32 zoffset, size_t width, size_t height, size_t depth, uint32 format, uint32 type, const void* data)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glTexSubImage3D");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1128,7 +1135,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void set_texture_integer_parameter(uint32 target, uint32 pname, int32 param)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glTexParameteri");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1142,7 +1149,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void set_texture_float_parameter(uint32 target, uint32 pname, float param)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glTexParameterf");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1157,7 +1164,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void delete_shader(uint32 shader)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glDeleteShader");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1169,7 +1176,7 @@ namespace rex
         //-------------------------------------------------------------------------
         uint32 create_shader(uint32 shaderType)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glCreateShader");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1189,7 +1196,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void shader_source(uint32 shader, size_t count, const int8** code, const int32* length)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glShaderSource");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1204,7 +1211,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void compile_shader(uint32 shader)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glCompileShader");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1217,7 +1224,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void get_shader_integer_value(uint32 shader, uint32 pname, int32* params)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glGetShaderiv");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1234,7 +1241,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void get_shader_info_log(uint32 shader, size_t maxLength, int32* length, int8* infoLog)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glGetShaderInfoLog");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1250,7 +1257,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void use_program(uint32 program)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glUseProgram");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1262,7 +1269,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void delete_program(uint32 program)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glDeleteProgram");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1274,7 +1281,7 @@ namespace rex
         //-------------------------------------------------------------------------
         uint32 create_program()
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glCreateProgram");
 
@@ -1291,7 +1298,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void attach_shader(uint32 program, uint32 shader)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glAttachShader");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1304,7 +1311,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void link_program(uint32 program)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glLinkProgram");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1316,7 +1323,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void detach_shader(uint32 program, uint32 shader)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glDetachShader");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1330,7 +1337,7 @@ namespace rex
         //-------------------------------------------------------------------------
         int32 get_uniform_location(uint32 program, const int8* name)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glGetUniformLocation");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1350,7 +1357,7 @@ namespace rex
         //-------------------------------------------------------------------------
         uint32 get_uniform_block_index(uint32 program, const int8* name)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glGetUniformBlockIndex");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1370,7 +1377,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void get_program_integer_value(uint32 program, uint32 pname, int32* params)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glGetProgramiv");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1387,7 +1394,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void get_program_info_log(uint32 program, size_t maxLength, int32* length, int8* infoLog)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glGetProgramInfoLog");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1402,7 +1409,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void get_active_uniform(uint32 program, uint32 index, size_t bufferSize, int32* length, int32* size, uint32* type, int8* name)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glGetActiveUniform");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1423,7 +1430,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void get_active_uniform_block_name(uint32 program, uint32 uniformBlockIndex, size_t bufferSize, int32* length, int8* uniformBlockName)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glGetActiveUniformBlockName");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1442,7 +1449,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void get_active_uniform_block_integer_value(uint32 program, uint32 uniformBlockIndex, uint32 pname, int32* params)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glGetActiveUniformBlockiv");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1460,7 +1467,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void get_active_attribute(uint32 program, uint32 index, size_t bufferSize, int32* length, int32* size, uint32* type, int8* name)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glGetActiveAttrib");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1482,7 +1489,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void uniform_block_binding(uint32 program, uint32 uniformBlockIndex, uint32 uniformBlockBinding)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glUniformBlockBinding");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1496,7 +1503,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void uniform_matrix_3fv(int32 location, size_t count, bool transpose, const float* value)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glUniformMatrix3fv");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1511,7 +1518,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void uniform_matrix_4fv(int32 location, size_t count, bool transpose, const float* value)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glUniformMatrix4fv");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1526,7 +1533,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void uniform_1f(int32 location, float value)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glUniform1f");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1539,7 +1546,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void uniform_2f(int32 location, float x, float y)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glUniform2f");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1553,7 +1560,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void uniform_3f(int32 location, float x, float y, float z)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glUniform3f");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1568,7 +1575,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void uniform_4f(int32 location, float x, float y, float z, float w)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glUniform4f");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1584,7 +1591,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void uniform_1fv(int32 location, size_t count, const float* value)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glUniform1fv");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1598,7 +1605,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void uniform_1i(int32 location, int32 value)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glUniform1i");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1611,7 +1618,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void uniform_2i(int32 location, int32 x, int32 y)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glUniform2i");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1625,7 +1632,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void uniform_3i(int32 location, int32 x, int32 y, int32 z)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glUniform3i");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1640,7 +1647,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void uniform_4i(int32 location, int32 x, int32 y, int32 z, int32 w)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glUniform4i");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
@@ -1656,7 +1663,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void uniform_1ui(int32 location, uint32 value)
         {
-            R_PROFILE_FUNCTION();
+            GL_FUNC_PROFILE();
 
             GL_LOG("glUniform1ui");
 #if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
