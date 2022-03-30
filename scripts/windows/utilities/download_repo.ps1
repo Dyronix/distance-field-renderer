@@ -25,7 +25,7 @@ Function download_repo
     # Check that we have the library
     if (!(Test-Path "$external_dir\$outputDirName"))
     {
-            try
+        try
         {
             Write-Host "Downloading library into external folder $outputDirName"
             $WebClient = New-Object System.Net.WebClient
