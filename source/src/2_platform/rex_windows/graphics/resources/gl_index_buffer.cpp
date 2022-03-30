@@ -15,8 +15,28 @@ namespace rex
             : m_count(count * TriangleIndices::INDICES_PER_TRIANGLE)
             , m_triangle_count(count)
             , m_buffer_id(0)
-            , m_indices(indices)
             , m_local_storate(memory::Blob::copy(indices, (sizeof(TriangleIndices) * count)))
+        {
+            RENDERER_INFO("Submitting - Creating Index Buffer");
+
+            ref_ptr<IndexBuffer> instance(this);
+            Renderer::submit([instance, usage]() mutable
+                             {
+                                 RENDERER_INFO("Executing - Creating Index Buffer");
+
+                                 opengl::generate_buffers(1, &instance->m_buffer_id);
+                                 opengl::bind_buffer(GL_ELEMENT_ARRAY_BUFFER, instance->m_buffer_id);
+                                 opengl::buffer_data(GL_ELEMENT_ARRAY_BUFFER, gsl::narrow<uint32>(instance->m_local_storate.get_size()), instance->m_local_storate.get_data_as<void>(),
+                                                     usage == BufferUsage::STATIC_DRAW ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
+                             });
+        }
+
+        //-------------------------------------------------------------------------
+        IndexBuffer::IndexBuffer(int32* indices, uint32 count, BufferUsage usage /*= BufferUsage::STATIC_DRAW*/)
+            : m_count(count)
+            , m_triangle_count(count / 3)
+            , m_buffer_id(0)
+            , m_local_storate(memory::Blob::copy(indices, (sizeof(int32) * count)))
         {
             RENDERER_INFO("Submitting - Creating Index Buffer");
 
@@ -82,18 +102,6 @@ namespace rex
                 opengl::delete_buffers(1, &m_buffer_id);
                 m_buffer_id = 0;
             }
-        }
-
-        //-------------------------------------------------------------------------
-        void* IndexBuffer::get_indices()
-        {
-            return m_indices;
-        }
-
-        //-------------------------------------------------------------------------
-        const void* IndexBuffer::get_indices() const
-        {
-            return m_indices;
         }
 
         //-------------------------------------------------------------------------

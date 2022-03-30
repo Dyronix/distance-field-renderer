@@ -16,15 +16,13 @@ namespace rex
         {
         public:
             IndexBuffer(TriangleIndices* indices, uint32 count, BufferUsage usage = BufferUsage::STATIC_DRAW);
+            IndexBuffer(int32* indices, uint32 count, BufferUsage usage = BufferUsage::STATIC_DRAW);
             ~IndexBuffer();
 
             void bind() const override;
             void unbind() const override;
 
             void release() override;
-
-            void* get_indices() override;
-            const void* get_indices() const override;
 
             uint32 get_count() override;
             const uint32 get_count() const override;
@@ -34,7 +32,6 @@ namespace rex
 
         private:
             uint32 m_buffer_id;
-            TriangleIndices* m_indices;
             uint32 m_count;
             uint32 m_triangle_count;
             memory::Blob m_local_storate;
