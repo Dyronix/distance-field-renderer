@@ -74,7 +74,7 @@ namespace regina
             float FIELD_OF_VIEW = 95.142f;
 
             rex::vec3 CAMERA_POSITION = {2.4f, 1.3f, 0.17f};
-            rex::vec3 CAMERA_FOCUS = {0.0f, 1.0f, 0.0f};
+            rex::vec3 CAMERA_FOCUS = {0.0f, 0.0f, 0.0f};
             rex::vec3 CAMERA_ROTATION = {3.0f, 1.5f, 0.0f};
 
             bool CAN_ROTATE_PITCH = true;
@@ -235,6 +235,8 @@ namespace regina
         //-------------------------------------------------------------------------
         void load_shader(const rex::StringID& name, const rex::StringID& queue, const rex::StringID& vertexCodePath, const rex::StringID& fragmentCodePath)
         {
+            R_PROFILE_FUNCTION();
+
             rex::ShaderProgramCreationInfo creation_info;
 
             creation_info.tag = name;
@@ -255,6 +257,8 @@ namespace regina
         //-------------------------------------------------------------------------
         void load_shaders()
         {
+            R_PROFILE_FUNCTION();
+
             load_shader("blit"_sid, "1000"_sid, "content\\shaders\\blit.vertex"_sid, "content\\shaders\\blit.fragment"_sid);
             load_shader("g_buffer"_sid, "1000"_sid, "content\\shaders\\g_buffer.vertex"_sid, "content\\shaders\\g_buffer.fragment"_sid);
             load_shader("deferred_shading_lighting"_sid, "1000"_sid, "content\\shaders\\deferred_shading_lighting.vertex"_sid, "content\\shaders\\deferred_shading_lighting.fragment"_sid);
@@ -263,6 +267,8 @@ namespace regina
         //-------------------------------------------------------------------------
         void load_texture(const rex::StringID& name, const rex::StringID& path, const SRGB& srgb, const rex::Texture::Usage& usage)
         {
+            R_PROFILE_FUNCTION();
+
             auto texture = texture_importer::import(name, path, srgb, usage);
 
             if (texture == nullptr)
@@ -276,11 +282,15 @@ namespace regina
         //-------------------------------------------------------------------------
         void load_textures()
         {
+            R_PROFILE_FUNCTION();
+
             // load_texture("diffuse", "content\\textures\\diffuse.png", SRGB::NO, rex::Texture::Usage::DIFFUSE);
         }
         //-------------------------------------------------------------------------
         void load_primitive_geometry()
         {
+            R_PROFILE_FUNCTION();
+
             rex::mesh_factory::load();
         }
     } // namespace deferred_rendering
@@ -300,6 +310,8 @@ namespace regina
     //-------------------------------------------------------------------------
     void DeferredRenderingLayer::on_attach()
     {
+        R_PROFILE_FUNCTION();
+
         deferred_rendering::load_shaders();
         deferred_rendering::load_textures();
         deferred_rendering::load_primitive_geometry();
@@ -313,6 +325,8 @@ namespace regina
     //-------------------------------------------------------------------------
     void DeferredRenderingLayer::on_detach()
     {
+        R_PROFILE_FUNCTION();
+
         m_bunny.reset();
 
         rex::mesh_factory::clear();
@@ -331,6 +345,8 @@ namespace regina
     //-------------------------------------------------------------------------
     void DeferredRenderingLayer::on_update(const rex::FrameInfo& info)
     {
+        R_PROFILE_FUNCTION();
+
         m_camera_controller.on_update(info);
 
         m_scene->update();
@@ -344,12 +360,16 @@ namespace regina
     //-------------------------------------------------------------------------
     void DeferredRenderingLayer::on_event(rex::events::Event& event)
     {
+        R_PROFILE_FUNCTION();
+
         m_camera_controller.on_event(event);
     }
 
     //-------------------------------------------------------------------------
     void DeferredRenderingLayer::setup_scene()
     {
+        R_PROFILE_FUNCTION();
+
         int32 viewport_width = m_window->get_width();
         int32 viewport_height = m_window->get_height();
 
@@ -367,6 +387,8 @@ namespace regina
     //-------------------------------------------------------------------------
     void DeferredRenderingLayer::setup_camera()
     {
+        R_PROFILE_FUNCTION();
+
         float viewport_width = (float)m_window->get_width();
         float viewport_height = (float)m_window->get_height();
 
@@ -390,6 +412,8 @@ namespace regina
     //-------------------------------------------------------------------------
     void DeferredRenderingLayer::setup_scene_renderer()
     {
+        R_PROFILE_FUNCTION();
+
         rex::SceneRenderPasses renderpasses;
 
         auto deferred_geometry = create_deferred_geometry_pass(deferred_rendering::create_deferred_geometry_pass_options());
@@ -408,6 +432,8 @@ namespace regina
     //-------------------------------------------------------------------------
     void DeferredRenderingLayer::setup_lights()
     {
+        R_PROFILE_FUNCTION();
+
         srand(13);  // seed random number generator
         for (int32 i = 0; i < 32; ++i)
         {
@@ -433,20 +459,24 @@ namespace regina
     //-------------------------------------------------------------------------
     void DeferredRenderingLayer::setup_bunnies()
     {
-        std::array<rex::vec3, 9> object_positions = 
+        R_PROFILE_FUNCTION();
+
+        const int32 MAX_OBJECTS = 9;
+
+        std::array<rex::vec3, MAX_OBJECTS> object_positions = 
         {
-            rex::vec3(-3.0, -0.5, -3.0),
-            rex::vec3(0.0, -0.5, -3.0),
-            rex::vec3(3.0, -0.5, -3.0),
-            rex::vec3(-3.0, -0.5, 0.0),
-            rex::vec3(0.0, -0.5, 0.0),
-            rex::vec3(3.0, -0.5, 0.0),
-            rex::vec3(-3.0, -0.5, 3.0),
-            rex::vec3(0.0, -0.5, 3.0),
-            rex::vec3(3.0, -0.5, 3.0)
+            rex::vec3(-3.0, -0.0, -3.0),
+            rex::vec3(0.0, -0.0, -3.0),
+            rex::vec3(3.0, -0.0, -3.0),
+            rex::vec3(-3.0, -0.0, 0.0),
+            rex::vec3(0.0, -0.0, 0.0),
+            rex::vec3(3.0, -0.0, 0.0),
+            rex::vec3(-3.0, -0.0, 3.0),
+            rex::vec3(0.0, -0.0, 3.0),
+            rex::vec3(3.0, -0.0, 3.0)
         };
 
-        for (int32 i = 0; i < 9; ++i)
+        for (int32 i = 0; i < MAX_OBJECTS; ++i)
         {
             rex::ecs::Entity bunny = m_scene->create_entity("bunny"_sid);
 
@@ -465,26 +495,36 @@ namespace regina
     //-------------------------------------------------------------------------
     std::unique_ptr<rex::SceneRenderPass> DeferredRenderingLayer::create_pre_depth_pass(const rex::PreDepthPassOptions& options) const
     {
+        R_PROFILE_FUNCTION();
+
         return std::make_unique<rex::PreDepthPass>(options, rex::CreateFrameBuffer::YES);
     }
     //-------------------------------------------------------------------------
     std::unique_ptr<rex::SceneRenderPass> DeferredRenderingLayer::create_deferred_geometry_pass(const rex::DeferredGeometryPassOptions& options) const
     {
+        R_PROFILE_FUNCTION();
+
         return std::make_unique<rex::DeferredGeometryPass>(options, rex::CreateFrameBuffer::YES);
     }
     //-------------------------------------------------------------------------
     std::unique_ptr<rex::SceneRenderPass> DeferredRenderingLayer::create_deferred_light_pass(const rex::DeferredLightPassOptions& options) const
     {
+        R_PROFILE_FUNCTION();
+
         return std::make_unique<rex::DeferredLightPass>(options, rex::CreateFrameBuffer::YES);
     }
     //-------------------------------------------------------------------------
     std::unique_ptr<rex::SceneRenderPass> DeferredRenderingLayer::create_deferred_light_visualization_pass(const rex::DeferredLightVisualizationPassOptions& options) const
     {
+        R_PROFILE_FUNCTION();
+
         return std::make_unique<rex::DeferredLightVisualizationPass>(options, rex::CreateFrameBuffer::YES);
     }
     //-------------------------------------------------------------------------
     std::unique_ptr<rex::SceneRenderPass> DeferredRenderingLayer::create_composite_pass(const rex::CompositePassOptions& options) const
     {
+        R_PROFILE_FUNCTION();
+
         return std::make_unique<rex::CompositePass>(options, rex::CreateFrameBuffer::NO);
     }
 } // namespace regina
