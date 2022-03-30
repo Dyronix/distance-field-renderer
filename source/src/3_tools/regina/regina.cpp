@@ -3,7 +3,6 @@
 #include "entry_point.h"
 
 #include "regina.h"
-#include "forward_rendering_layer.h"
 #include "deferred_rendering_layer.h"
 #include "shortcut_layer.h"
 
@@ -46,7 +45,6 @@ namespace regina
     {
         const rex::CoreWindow* window = get_window();
 
-        //push_back_layer(std::make_unique<ForwardRenderingLayer>(window));
         push_back_layer(std::make_unique<DeferredRenderingLayer>(window));
         push_back_layer(std::make_unique<ShortcutLayer>());
     }
