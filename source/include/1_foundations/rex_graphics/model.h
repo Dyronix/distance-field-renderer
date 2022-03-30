@@ -41,7 +41,8 @@ namespace rex
     class Model : public RefCountedObject
     {
     public:
-        Model(ModelCreationInfo& info);
+        Model(ModelCreationInfo&& info) noexcept;
+        Model(StaticMesh&& staticMesh) noexcept;
         ~Model();
 
         void set_material(uint32 index, const ref_ptr<Material>& material);

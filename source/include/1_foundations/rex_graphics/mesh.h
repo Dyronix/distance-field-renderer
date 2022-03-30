@@ -32,6 +32,7 @@ namespace rex
 
         static ref_ptr<rex::VertexBuffer> create_vertex_buffer(Vertex* vertices, uint32 count, BufferUsage usage, const BufferLayout& layout);
         static ref_ptr<rex::IndexBuffer> create_index_buffer(TriangleIndices* indices, uint32 count, BufferUsage usage);
+        static ref_ptr<rex::IndexBuffer> create_index_buffer(int32* indices, uint32 count, BufferUsage usage);
     };
 
     class Mesh : public IMesh
@@ -39,6 +40,7 @@ namespace rex
     public:
         Mesh();
         Mesh(std::vector<Vertex>& vertices, std::vector<TriangleIndices>& indices, BufferUsage usage);
+        Mesh(std::vector<Vertex>& vertices, std::vector<int32>& indices, BufferUsage usage);
         ~Mesh() override;
 
         void set_vertices(std::vector<Vertex>& vertices);
@@ -62,6 +64,7 @@ namespace rex
     public:
         StaticMesh();
         StaticMesh(std::vector<Vertex>& vertices, std::vector<TriangleIndices>& indices);
+        StaticMesh(std::vector<Vertex>& vertices, std::vector<int32>& indices);
         ~StaticMesh() override;
 
         BufferUsage get_usage() const override;

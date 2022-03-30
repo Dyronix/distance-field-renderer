@@ -34,6 +34,11 @@ namespace rex
     {
         return ResourceFactory::create_index_buffer(indices, count, usage);
     }
+    //-------------------------------------------------------------------------
+    ref_ptr<rex::IndexBuffer> IMesh::create_index_buffer(int32* indices, uint32 count, BufferUsage usage)
+    {
+        return ResourceFactory::create_index_buffer(indices, count, usage);
+    }
 
     // Mesh
     //-------------------------------------------------------------------------
@@ -56,6 +61,20 @@ namespace rex
             m_index_buffer = create_index_buffer(indices.data(), gsl::narrow<uint32>(indices.size()), usage);
         }
     }
+    //-------------------------------------------------------------------------
+    Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<int32>& indices, BufferUsage usage)
+        : m_vertex_buffer(nullptr)
+        , m_index_buffer(nullptr)
+        , m_buffer_layout(make_buffer_layout())
+    {
+        m_vertex_buffer = create_vertex_buffer(vertices.data(), gsl::narrow<uint32>(vertices.size()), usage, m_buffer_layout);
+
+        if (!indices.empty())
+        {
+            m_index_buffer = create_index_buffer(indices.data(), gsl::narrow<uint32>(indices.size()), usage);
+        }
+    }
+
     //-------------------------------------------------------------------------
     rex::Mesh::~Mesh()
     {
@@ -120,6 +139,12 @@ namespace rex
     }
     //-------------------------------------------------------------------------
     rex::StaticMesh::~StaticMesh()
+    {
+    }
+
+    //-------------------------------------------------------------------------
+    rex::StaticMesh::StaticMesh(std::vector<Vertex>& vertices, std::vector<int32>& indices)
+        : Mesh(vertices, indices, BufferUsage::STATIC_DRAW)
     {
     }
 

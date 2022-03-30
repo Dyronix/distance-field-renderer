@@ -9,7 +9,7 @@
 namespace rex
 {
     //-------------------------------------------------------------------------
-    Model::Model(ModelCreationInfo& info)
+    Model::Model(ModelCreationInfo&& info) noexcept
         : m_name(info.name)
         , m_mesh(info.vertices, info.indices)
         , m_transform(info.transform)
@@ -22,6 +22,22 @@ namespace rex
         , m_materials(std::move(info.materials))
     {
     }
+
+    //-------------------------------------------------------------------------
+    Model::Model(StaticMesh&& staticMesh) noexcept
+        : m_name("No Name"_sid)
+        , m_mesh(std::move(staticMesh))
+        , m_transform(rex::matrix4(1.0))
+        , m_inverse_transform(rex::inverse(rex::matrix4(1.0)))
+        , m_bounding_box({})
+        , m_submeshes({})
+        , m_diffuse_textures({})
+        , m_normal_textures({})
+        , m_roughness_textures({})
+        , m_materials({})
+    {
+    }
+
     //-------------------------------------------------------------------------
     Model::~Model()
     {
