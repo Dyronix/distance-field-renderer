@@ -255,7 +255,7 @@ namespace rex
             info.roughness_textures = {};
             info.materials = {};
 
-            g_unit_cube = make_ref<Model>(info);
+            g_unit_cube = make_ref<Model>(std::move(info));
         }
         //-------------------------------------------------------------------------
         void load_unit_sphere()
@@ -295,7 +295,7 @@ namespace rex
             info.roughness_textures = {};
             info.materials = {};
 
-            g_unit_sphere = make_ref<Model>(info);
+            g_unit_sphere = make_ref<Model>(std::move(info));
         }
         //-------------------------------------------------------------------------
         void load_unit_capsule()
@@ -336,7 +336,7 @@ namespace rex
             info.roughness_textures = {};
             info.materials = {};
 
-            g_unit_capsule = make_ref<Model>(info);
+            g_unit_capsule = make_ref<Model>(std::move(info));
         }
         //-------------------------------------------------------------------------
         void load_unit_quad()
@@ -376,7 +376,7 @@ namespace rex
             info.roughness_textures = {};
             info.materials = {};
 
-            g_unit_quad = make_ref<Model>(info);
+            g_unit_quad = make_ref<Model>(std::move(info));
         }
 
         //-------------------------------------------------------------------------
