@@ -55,6 +55,8 @@ namespace rex
         static ref_ptr<rex::VertexBuffer> create_vertex_buffer(void* vertices, uint32 size, uint32 count, BufferUsage usage);
         static ref_ptr<rex::IndexBuffer> create_index_buffer(TriangleIndices* indices, uint32 count);
         static ref_ptr<rex::IndexBuffer> create_index_buffer(TriangleIndices* indices, uint32 count, BufferUsage usage);
+        static ref_ptr<rex::IndexBuffer> create_index_buffer(int32* indices, uint32 count);
+        static ref_ptr<rex::IndexBuffer> create_index_buffer(int32* indices, uint32 count, BufferUsage usage);
 
         static ref_ptr<rex::Material> create_material(ref_ptr<ShaderProgram> shader);
         static ref_ptr<rex::Material> create_material(ref_ptr<ShaderProgram> shader, const StringID& name);

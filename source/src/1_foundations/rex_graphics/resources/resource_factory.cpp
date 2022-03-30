@@ -143,6 +143,18 @@ namespace rex
     }
 
     //-------------------------------------------------------------------------
+    rex::ref_ptr<rex::IndexBuffer> ResourceFactory::create_index_buffer(int32* indices, uint32 count)
+    {
+        return g_resources_api->create_index_buffer(indices, count);
+    }
+
+    //-------------------------------------------------------------------------
+    rex::ref_ptr<rex::IndexBuffer> ResourceFactory::create_index_buffer(int32* indices, uint32 count, BufferUsage usage)
+    {
+        return g_resources_api->create_index_buffer(indices, count, usage);
+    }
+
+    //-------------------------------------------------------------------------
     ref_ptr<rex::Material> ResourceFactory::create_material(ref_ptr<ShaderProgram> shader)
     {
         return g_resources_api->create_material(shader);

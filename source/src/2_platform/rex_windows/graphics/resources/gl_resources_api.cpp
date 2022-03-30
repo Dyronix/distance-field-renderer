@@ -142,6 +142,18 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
+        rex::ref_ptr<rex::IndexBuffer> ResourcesAPI::create_index_buffer(int32* indices, uint32 count) const
+        {
+            return ref_ptr<rex::IndexBuffer>(make_ref<opengl::IndexBuffer>(indices, count, BufferUsage::STATIC_DRAW));
+        }
+
+        //-------------------------------------------------------------------------
+        rex::ref_ptr<rex::IndexBuffer> ResourcesAPI::create_index_buffer(int32* indices, uint32 count, BufferUsage usage) const
+        {
+            return ref_ptr<rex::IndexBuffer>(make_ref<opengl::IndexBuffer>(indices, count, usage));
+        }
+
+        //-------------------------------------------------------------------------
         ref_ptr<rex::Material> ResourcesAPI::create_material(ref_ptr<rex::ShaderProgram> shader) const
         {
             return create_material(shader, ESID::SID_None);
