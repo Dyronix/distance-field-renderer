@@ -171,7 +171,7 @@ namespace regina
         }
 
         //-------------------------------------------------------------------------
-        rex::ref_ptr<rex::Model> import(const rex::StringID& path)
+        rex::ref_ptr<rex::Model> import(const rex::StringID& path, const rex::StringID& name)
         {
             rex::FileMemory imported_mesh_blob = rex::read_from_disk(path.to_string(), rex::ReadBinary::YES, rex::NullTerminate::YES);
 
@@ -200,7 +200,7 @@ namespace regina
 
             rex::ModelCreationInfo model_creation_info;
 
-            model_creation_info.name = "No Name"_sid;
+            model_creation_info.name = name;
             model_creation_info.transform = rex::matrix4(1.0f);
             model_creation_info.inverse_transform = rex::inverse(rex::matrix4(1.0f));
             model_creation_info.bounding_box.minimum = {FLT_MAX, FLT_MAX, FLT_MAX};
@@ -237,7 +237,7 @@ namespace regina
                 submesh.material_index = 0;
                 submesh.vertex_count = gsl::narrow<int32>(meshdata.vertices.size());
                 submesh.index_count = gsl::narrow<int32>(meshdata.indices.size());
-                submesh.mesh_name = "No Name"_sid;
+                submesh.mesh_name = name;
 
                 vertex_count += submesh.vertex_count;
                 index_count += submesh.index_count;
@@ -250,6 +250,7 @@ namespace regina
                 model_creation_info.submeshes.push_back(submesh);
             }
 
+            MESH_PROCESSOR_INFO("[Model] Mesh name: {0}", model_creation_info.name.to_string());
             MESH_PROCESSOR_INFO("[Model] Processing mesh: \"{0}\" - finish", path.to_string());
 
             return rex::make_ref<rex::Model>(std::move(model_creation_info));
