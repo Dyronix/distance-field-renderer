@@ -18,7 +18,7 @@ namespace rex
     {
         DeferredLightPassOptions()
             : pass_name(ESID::SID_None)
-            , shader_name("blit"_sid)
+            , shader_name("deferred_shading_lighting"_sid)
             , g_position_buffer(ESID::SID_None)
             , g_normal_buffer(ESID::SID_None)
             , g_albedo_spec_buffer(ESID::SID_None)
