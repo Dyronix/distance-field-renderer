@@ -50,7 +50,7 @@ namespace regina
         void setup_scene_renderer();
 
         void setup_lights();
-        void setup_bunnies();
+        void setup_geometry();
 
         std::unique_ptr<rex::SceneRenderPass> create_pre_depth_pass(const rex::PreDepthPassOptions& options) const;
         std::unique_ptr<rex::SceneRenderPass> create_deferred_geometry_pass(const rex::DeferredGeometryPassOptions& options) const;
@@ -64,7 +64,6 @@ namespace regina
         rex::ref_ptr<rex::ecs::Scene> m_scene;
         rex::ref_ptr<rex::SceneRenderer> m_scene_renderer;
 
-        rex::ref_ptr<rex::Model> m_bunny;
         rex::ref_ptr<rex::Material> m_bunny_material;
 
         std::vector<rex::ecs::Entity> m_bunny_entities;

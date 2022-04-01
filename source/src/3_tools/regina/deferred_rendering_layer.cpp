@@ -30,6 +30,8 @@
 #include "renderer/renderer.h"
 
 #include "mesh_factory.h"
+
+#include "model_library.h"
 #include "model.h"
 
 #include "model_importer.h"
@@ -57,7 +59,48 @@ namespace regina
     namespace deferred_rendering
     {
         // Mesh settings
-        rex::vec3 MESH_SCALE = {10.0, 10.0, 10.0};
+        enum class MeshType
+        {
+            BUNNY,
+            CUBE,
+            CYLINDER,
+            MONKEY,
+            SPHERE,
+            TORUS,
+            DRAGON,
+            TIGER,
+        };
+
+        using MeshNameMap = std::unordered_map<MeshType, rex::StringID>;
+        using MeshScaleMap = std::unordered_map<MeshType, rex::vec3>;
+
+        using MeshLattice = rex::YesNoEnum;
+
+        MeshType MESH_TYPE = MeshType::DRAGON;
+        MeshLattice MESH_LATTICE = MeshLattice::YES;
+
+        MeshNameMap MESH_NAME_MAP =
+        {
+            { MeshType::BUNNY,      "Bunny"_sid },
+            { MeshType::CUBE,       "Cube"_sid },
+            { MeshType::CYLINDER,   "Cylinder"_sid },
+            { MeshType::MONKEY,     "Monkey"_sid },
+            { MeshType::SPHERE,     "Sphere"_sid },
+            { MeshType::TORUS,      "Torus"_sid },
+            { MeshType::DRAGON,     "Dragon"_sid },
+            { MeshType::TIGER,      "Tiger"_sid },
+        };
+        MeshScaleMap MESH_SCALE_MAP
+        {
+            { MeshType::BUNNY,      {10.0, 10.0, 10.0}},
+            { MeshType::CUBE,       {0.5, 0.5, 0.5}},
+            { MeshType::CYLINDER,   {0.5, 0.5, 0.5}},
+            { MeshType::MONKEY,     {0.5, 0.5, 0.5} },
+            { MeshType::SPHERE,     {0.5, 0.5, 0.5} },
+            { MeshType::TORUS,      {0.5, 0.5, 0.5} },
+            { MeshType::DRAGON,     {0.02, 0.02, 0.02} },
+            { MeshType::TIGER,      {1.5, 1.5, 1.5} },
+        };
 
         // Render pass settings
         const rex::StringID PREDEPTHPASS_NAME = "PreDepthPass"_sid;
@@ -91,7 +134,7 @@ namespace regina
             float MAX_PITCH_ANGLE = 50.0f;
 
             float MOVE_SENSITIVITY = 2.0f;
-            float SCROLL_SENSITIVITY = 2.0f;
+            float SCROLL_SENSITIVITY = 5.0f;
         } // namespace camera_settings
 
         namespace renderpass_settings
@@ -293,6 +336,40 @@ namespace regina
 
             rex::mesh_factory::load();
         }
+        //-------------------------------------------------------------------------
+        void load_custom_geometry()
+        {
+            R_PROFILE_FUNCTION(); 
+
+            if (MESH_LATTICE)
+            {
+                switch (MESH_TYPE)
+                {
+                    case MeshType::BUNNY: rex::model_library::add(model_importer::import("content\\meshes\\bunny_lattice.obj"_sid, MESH_NAME_MAP[MeshType::BUNNY])); break;
+                    case MeshType::CUBE: rex::model_library::add(model_importer::import("content\\meshes\\cube_lattice.obj"_sid, MESH_NAME_MAP[MeshType::CUBE])); break;
+                    case MeshType::CYLINDER: rex::model_library::add(model_importer::import("content\\meshes\\cylinder_lattice.obj"_sid, MESH_NAME_MAP[MeshType::CYLINDER])); break;
+                    case MeshType::MONKEY: rex::model_library::add(model_importer::import("content\\meshes\\monkey_lattice.obj"_sid, MESH_NAME_MAP[MeshType::MONKEY])); break;
+                    case MeshType::SPHERE: rex::model_library::add(model_importer::import("content\\meshes\\sphere_lattice.obj"_sid, MESH_NAME_MAP[MeshType::SPHERE])); break;
+                    case MeshType::TORUS: rex::model_library::add(model_importer::import("content\\meshes\\torus_lattice.obj"_sid, MESH_NAME_MAP[MeshType::TORUS])); break;
+                    case MeshType::DRAGON: rex::model_library::add(model_importer::import("content\\meshes\\dragon_lattice.obj"_sid, MESH_NAME_MAP[MeshType::DRAGON])); break;
+                    case MeshType::TIGER: rex::model_library::add(model_importer::import("content\\meshes\\tiger_lattice.obj"_sid, MESH_NAME_MAP[MeshType::TIGER])); break;
+                }
+            }
+            else
+            {
+                switch (MESH_TYPE)
+                {
+                    case MeshType::BUNNY: rex::model_library::add(model_importer::import("content\\meshes\\bunny.obj"_sid, MESH_NAME_MAP[MeshType::BUNNY])); break;
+                    case MeshType::CUBE: rex::model_library::add(model_importer::import("content\\meshes\\cube.obj"_sid, MESH_NAME_MAP[MeshType::CUBE])); break;
+                    case MeshType::CYLINDER: rex::model_library::add(model_importer::import("content\\meshes\\cylinder.obj"_sid, MESH_NAME_MAP[MeshType::CYLINDER])); break;
+                    case MeshType::MONKEY: rex::model_library::add(model_importer::import("content\\meshes\\monkey.obj"_sid, MESH_NAME_MAP[MeshType::MONKEY])); break;
+                    case MeshType::SPHERE: rex::model_library::add(model_importer::import("content\\meshes\\sphere.obj"_sid, MESH_NAME_MAP[MeshType::SPHERE])); break;
+                    case MeshType::TORUS: rex::model_library::add(model_importer::import("content\\meshes\\torus.obj"_sid, MESH_NAME_MAP[MeshType::TORUS])); break;
+                    case MeshType::DRAGON: rex::model_library::add(model_importer::import("content\\meshes\\dragon.obj"_sid, MESH_NAME_MAP[MeshType::DRAGON])); break;
+                    case MeshType::TIGER: rex::model_library::add(model_importer::import("content\\meshes\\tiger.obj"_sid, MESH_NAME_MAP[MeshType::TIGER])); break;
+                }
+            }
+        }
     } // namespace deferred_rendering
 
     //-------------------------------------------------------------------------
@@ -315,8 +392,7 @@ namespace regina
         deferred_rendering::load_shaders();
         deferred_rendering::load_textures();
         deferred_rendering::load_primitive_geometry();
-        
-        m_bunny = model_importer::import("content\\meshes\\bunny.obj"_sid);
+        deferred_rendering::load_custom_geometry();
 
         setup_scene();
         setup_camera();
@@ -327,8 +403,7 @@ namespace regina
     {
         R_PROFILE_FUNCTION();
 
-        m_bunny.reset();
-
+        rex::model_library::clear();
         rex::mesh_factory::clear();
         rex::texture_library::clear();
         rex::shader_library::clear();
@@ -382,7 +457,7 @@ namespace regina
         m_bunny_material->set_texture2d("u_Texture_Specular", rex::Renderer::get_black_texture());
 
         setup_lights();
-        setup_bunnies();
+        setup_geometry();
     }
     //-------------------------------------------------------------------------
     void DeferredRenderingLayer::setup_camera()
@@ -457,7 +532,7 @@ namespace regina
     }
 
     //-------------------------------------------------------------------------
-    void DeferredRenderingLayer::setup_bunnies()
+    void DeferredRenderingLayer::setup_geometry()
     {
         R_PROFILE_FUNCTION();
 
@@ -476,19 +551,29 @@ namespace regina
             rex::vec3(3.0, -0.0, 3.0)
         };
 
+        auto mesh_type = deferred_rendering::MESH_TYPE;
+        auto mesh_name = deferred_rendering::MESH_NAME_MAP[mesh_type];
+        auto mesh_scale = deferred_rendering::MESH_SCALE_MAP[mesh_type];
+
+        rex::ref_ptr<rex::Model> model = rex::model_library::get(mesh_name);
+        if (model == nullptr)
+        {
+            return;
+        }
+
         for (int32 i = 0; i < MAX_OBJECTS; ++i)
         {
-            rex::ecs::Entity bunny = m_scene->create_entity("bunny"_sid);
+            rex::ecs::Entity entity = m_scene->create_entity(mesh_name);
 
-            bunny.add_component<rex::ecs::ModelComponent>(m_bunny);
-            bunny.add_component<rex::ecs::MaterialComponent>(m_bunny_material);
+            entity.add_component<rex::ecs::ModelComponent>(model);
+            entity.add_component<rex::ecs::MaterialComponent>(m_bunny_material);
 
-            rex::ecs::TransformComponent& transform_comp = bunny.get_component<rex::ecs::TransformComponent>();
+            rex::ecs::TransformComponent& transform_comp = entity.get_component<rex::ecs::TransformComponent>();
 
             transform_comp.transform.set_position(object_positions[i]);
-            transform_comp.transform.set_scale(deferred_rendering::MESH_SCALE);
+            transform_comp.transform.set_scale(mesh_scale);
 
-            m_bunny_entities.push_back(bunny);
+            m_bunny_entities.push_back(entity);
         }
     }
 
