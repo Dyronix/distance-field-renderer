@@ -12,7 +12,6 @@ namespace rex
 {
     class SceneRenderer;
     class SceneRenderPass;
-    class Model;
     class Material;
     class CoreWindow;
 
