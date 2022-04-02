@@ -41,7 +41,6 @@
 # add_precompiled_header(myproj src/myproj.pch.h src/myproj.pch.cpp)
 #
 macro(add_precompiled_header TARGET_NAME PCH_TARGET PCH_SOURCE_TARGET)
-    message(STATUS "Precompiled header generation")
     if(MSVC)
         get_filename_component(PCH_DIRECTORY ${PCH_TARGET} DIRECTORY)
         target_include_directories(${TARGET_NAME} PRIVATE ${PCH_DIRECTORY}) # fixes occasional IntelliSense glitches
@@ -74,11 +73,9 @@ macro(add_precompiled_header TARGET_NAME PCH_TARGET PCH_SOURCE_TARGET)
                 endif()
             endif()
         endforeach()
-        if(SOURCE_FILE_FOUND)
-            message(STATUS "\tSuccess")
-        else()
+        if(NOT SOURCE_FILE_FOUND)
             message(FATAL_ERROR "\tA source file for ${PCH_TARGET} was not found. Required for MSVC builds.")
-        endif(SOURCE_FILE_FOUND)
+        endif()
     elseif(CMAKE_GENERATOR STREQUAL Xcode)
         set_target_properties(
             ${TARGET_NAME}
