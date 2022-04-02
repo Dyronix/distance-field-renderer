@@ -33,8 +33,6 @@ namespace rex
     }
 
     const StringID CAMERA_UNIFORM_BUFFER_NAME = "Camera"_sid;
-    const StringID POINTLIGHTS_UNIFORM_BUFFER_NAME = "PointLightData"_sid;
-    const StringID DIRECTIONALLIGHTS_UNIFORM_BUFFER_NAME = "DirectionalLightData"_sid;
 
     //-------------------------------------------------------------------------
     SceneRenderer::SceneRenderer(ref_ptr<ecs::Scene> scene, SceneRenderPasses&& renderPasses)
