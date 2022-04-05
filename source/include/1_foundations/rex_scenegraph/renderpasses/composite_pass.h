@@ -12,6 +12,9 @@ namespace rex
     class SceneRenderer;
     class Texture;
 
+    using ApplyToneMapping = YesNoEnum;
+    using ApplyGammaCorrection = YesNoEnum;
+
     struct CompositePassOptions
     {
         CompositePassOptions()
@@ -19,6 +22,8 @@ namespace rex
             , shader_name("blit"_sid)
             , color_buffer(ESID::SID_None)
             , gamma_correction(2.2f)
+            , apply_tone_mapping(ApplyToneMapping::YES)
+            , apply_gamma_correction(ApplyGammaCorrection::YES)
         {
         }
 
@@ -28,6 +33,9 @@ namespace rex
         SceneRenderPassID color_buffer;
 
         float gamma_correction;
+
+        ApplyGammaCorrection apply_gamma_correction;
+        ApplyToneMapping apply_tone_mapping;
     };
 
     class CompositePass : public SceneRenderPass
@@ -37,6 +45,9 @@ namespace rex
         ~CompositePass() override;
 
         void set_gamma(float gamma);
+
+        void set_apply_gamma_correction(ApplyGammaCorrection apply);
+        void set_apply_tone_mapping(ApplyToneMapping apply);
 
         void begin(const ecs::SceneCamera& camera, const Transform& cameraTransform) override;
         void render() override;
