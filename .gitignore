@@ -48,3 +48,7 @@ external/stb-windows/
 scripts/__pycache__/
 
 .editorconfig
+
+scribit-profile-runtime.json
+scribit-profile-shutdown.json
+scribit-profile-startup.json
