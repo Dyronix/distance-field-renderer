@@ -47,8 +47,7 @@
 #include "input/mouse/win32_mouse_codes.h"
 #include "input/win32_input.h"
 
-#include "graphics/resources/gl_shader.h"
-#include "graphics/resources/gl_shader_program.h"
+#include "resources/shader_program.h"
 
 #include "file_import.h"
 #include "file_memory.h"
