@@ -55,8 +55,8 @@ namespace rex
                 case Texture::Format::RG_32_INTEGER: return GL_RG32I;
                 case Texture::Format::RG_32_UNSIGNED_INTEGER: return GL_RG32UI;
                 case Texture::Format::RG_32_FLOAT: return GL_RG32F;
-                case Texture::Format::RGB_8: return GL_RGB8;
 
+                case Texture::Format::RGB_8: return GL_RGB8;
                 case Texture::Format::RGB_8_INTEGER: return GL_RGB8I;
                 case Texture::Format::RGB_8_UNSIGNED_INTEGER: return GL_RGB8UI;
 

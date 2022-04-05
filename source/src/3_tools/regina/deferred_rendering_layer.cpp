@@ -102,7 +102,6 @@ namespace regina
         };
 
         // Render pass settings
-        const rex::StringID PREDEPTHPASS_NAME = "PreDepthPass"_sid;
         const rex::StringID DEFERREDGEOMETRYPASS_NAME = "DeferredGeometryPass"_sid;
         const rex::StringID DEFERREDLIGHTPASS_NAME = "DeferredLightPass"_sid;
         const rex::StringID DEFERREDLIGHTVISUALIZATIONPASS_NAME = "DeferredLightVisualizationPass"_sid;
@@ -144,19 +143,6 @@ namespace regina
             float GAMMA_CORRECTION = 2.0f;
         } // namespace renderpass_settings
 
-        //-------------------------------------------------------------------------
-        rex::PreDepthPassOptions create_pre_depth_pass_options()
-        {
-            rex::PreDepthPassOptions options;
-
-            options.pass_name = deferred_rendering::PREDEPTHPASS_NAME;
-            options.shader_name = "predepth"_sid;
-            options.near_plane = deferred_rendering::camera_settings::NEAR_PLANE;
-            options.far_plane = deferred_rendering::camera_settings::FAR_PLANE;
-            options.backface_culling = deferred_rendering::renderpass_settings::BACKFACE_CULLING;
-
-            return options;
-        }
         //-------------------------------------------------------------------------
         rex::DeferredGeometryPassOptions create_deferred_geometry_pass_options()
         {
