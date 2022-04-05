@@ -17,11 +17,11 @@ namespace rex
         // First argument is our working directory
         R_TODO("Capture the working directory when parsing application arguments");
         
-        R_INFO("[Application Argument] idx: 0, value: {0}", inArgv[0]);
+        R_INFO("[APPLICATION ARGUMENT] idx: 0, value: {0}", inArgv[0]);
 
         for (int i = 1; i < inArgc; ++i)
         {
-            R_INFO("[Application Argument] idx: {0}, value: {1}", i, inArgv[i]);
+            R_INFO("[APPLICATION ARGUMENT] idx: {0}, value: {1}", i, inArgv[i]);
 
             ApplicationArgument argument = application_argument_parser::parse(inArgv[i]);
 

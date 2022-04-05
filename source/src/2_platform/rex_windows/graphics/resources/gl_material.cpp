@@ -166,7 +166,7 @@ namespace rex
                                 break;
                             }
 
-                            R_TRACE("[Material: {0}] Binding texture 2D with name {1} to slot {2}", material_name.to_string(), resource_name.to_string(), resource_register);
+                            R_TRACE("[MATERIAL: {0}] Binding texture 2D with name {1} to slot {2}", material_name.to_string(), resource_name.to_string(), resource_register);
 
                             material_shader->set_uniform(resource_name, resource_register, rt);
                             TextureResourceManager::activate_texture(ref_ptr<Texture>(textures[resource_register]), resource_register, rt);
@@ -180,7 +180,7 @@ namespace rex
                                 break;
                             }
 
-                            R_TRACE("[Material: {0}] Binding texture 3D with name {1} to slot {2}", material_name.to_string(), resource_name.to_string(), resource_register);
+                            R_TRACE("[MATERIAL: {0}] Binding texture 3D with name {1} to slot {2}", material_name.to_string(), resource_name.to_string(), resource_register);
 
                             material_shader->set_uniform(resource_name, resource_register, rt);
                             TextureResourceManager::activate_texture(ref_ptr<Texture>(textures[resource_register]), resource_register, rt);
@@ -194,7 +194,7 @@ namespace rex
                                 break;
                             }
 
-                            R_TRACE("[Material: {0}] Binding texture CUBE with name {1} to slot {2}", material_name.to_string(), resource_name.to_string(), resource_register);
+                            R_TRACE("[MATERIAL: {0}] Binding texture CUBE with name {1} to slot {2}", material_name.to_string(), resource_name.to_string(), resource_register);
 
                             material_shader->set_uniform(resource_name, resource_register, rt);
                             TextureResourceManager::activate_texture(ref_ptr<Texture>(texture_cubes[resource_register]), resource_register, rt);
@@ -255,7 +255,7 @@ namespace rex
                 const auto& decl = find_uniform_declaration(name);
                 if (!decl.is_valid())
                 {
-                    R_WARN("[Material: {0}] Could not find uniform with name: {1}", material_name.to_string(), name.to_string());
+                    R_WARN("[MATERIAL: {0}] Could not find uniform with name: {1}", material_name.to_string(), name.to_string());
                     return;
                 }
 
@@ -278,13 +278,13 @@ namespace rex
                 const auto& decl = find_resource_declaration(name);
                 if (!decl.is_valid())
                 {
-                    R_WARN("[Material: {0}] Cannot find resource with name: {1}", material_name.to_string(), name.to_string());
+                    R_WARN("[MATERIAL: {0}] Cannot find resource with name: {1}", material_name.to_string(), name.to_string());
                     return;
                 }
 
                 const int32 texture_register = (int32)decl.get_register();
 
-                R_TRACE("[Material: {0}] Caching texture register of texture \"{1}\" with value: {2}", material_name.to_string(), name.to_string(), texture_register);
+                R_TRACE("[MATERIAL: {0}] Caching texture register of texture \"{1}\" with value: {2}", material_name.to_string(), name.to_string(), texture_register);
 
                 textures[texture_register] = texture;
             }
@@ -294,13 +294,13 @@ namespace rex
                 const auto& decl = find_resource_declaration(name);
                 if (!decl.is_valid())
                 {
-                    R_WARN("[Material: {0}] Cannot find resource with name: {1}", material_name.to_string(), name.to_string());
+                    R_WARN("[MATERIAL: {0}] Cannot find resource with name: {1}", material_name.to_string(), name.to_string());
                     return;
                 }
 
                 const int32 texture_register = (int32)decl.get_register();
 
-                R_TRACE("[Material: {0}] Caching texture register of texture \"{1}\" with value: {2}", material_name.to_string(), name.to_string(), texture_register);
+                R_TRACE("[MATERIAL: {0}] Caching texture register of texture \"{1}\" with value: {2}", material_name.to_string(), name.to_string(), texture_register);
 
                 texture_cubes[texture_register] = texture;
             }
@@ -320,7 +320,7 @@ namespace rex
                 const auto& decl = find_resource_declaration(name);
                 if (decl.is_valid())
                 {
-                    R_WARN("[Material: {0}] Cannot find resource with name: {1}", material_name.to_string(), name.to_string());
+                    R_WARN("[MATERIAL: {0}] Cannot find resource with name: {1}", material_name.to_string(), name.to_string());
                     return nullptr;
                 }
 
@@ -336,7 +336,7 @@ namespace rex
                 const auto& decl = find_resource_declaration(name);
                 if (decl.is_valid())
                 {
-                    R_WARN("[Material: {0}] Cannot find resource with name: {1}", material_name.to_string(), name.to_string());
+                    R_WARN("[MATERIAL: {0}] Cannot find resource with name: {1}", material_name.to_string(), name.to_string());
                     return nullptr;
                 }
 

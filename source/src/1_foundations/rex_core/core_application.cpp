@@ -17,7 +17,7 @@ namespace rex
     CoreApplication::CoreApplication(const ApplicationDescription& description)
         : m_description(description)
     {
-        R_INFO("Creating application: {0}", description.name);
+        R_INFO("[APPLICATION] Creating application: {0}", description.name);
 
         R_ASSERT_X(CoreApplication::s_instance == nullptr, "There can only be one application at the time");
         CoreApplication::s_instance = this;
@@ -26,7 +26,7 @@ namespace rex
     //-------------------------------------------------------------------------
     CoreApplication::~CoreApplication()
     {
-        R_INFO("Destroying application");
+        R_INFO("[APPLICATION] Destroying application");
     }
 
     //-------------------------------------------------------------------------

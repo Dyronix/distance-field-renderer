@@ -107,7 +107,7 @@ namespace rex
 
             if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) == 0)
             {
-                R_INFO("Successfully initialized SDL!");
+                R_INFO("[APPLICATION] Successfully initialized SDL!");
 
 #if REX_API_OPENGL
                 SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
@@ -290,7 +290,7 @@ namespace rex
 
             m_application_loop->stop();
 
-            R_INFO("Mark application for destruction.");
+            R_INFO("[APPLICATION] Mark application for destruction.");
         }
 
         //-------------------------------------------------------------------------
@@ -299,7 +299,7 @@ namespace rex
             m_display_manager = std::make_unique<DisplayManager>();
             m_display_manager->set_active(g_main_display, g_main_display_mode);
 
-            R_INFO("Display manager initialized with {0} display(s).", m_display_manager->display_count());
+            R_INFO("[APPLICATION] Display manager initialized with {0} display(s).", m_display_manager->display_count());
         }
 
         //-------------------------------------------------------------------------
@@ -342,7 +342,7 @@ namespace rex
 
             SDL_VERSION(&g_sdl_system_info.version);
 
-            R_INFO("Window ({0}, {1}) intialized.", m_window->get_width(), m_window->get_height());
+            R_INFO("[APPLICATION] Window ({0}, {1}) intialized.", m_window->get_width(), m_window->get_height());
             R_INFO("\tusing subsystem: {0}", sdl::convert_to_sdl_subsystem_string(m_window->get_sdl_window(), &g_sdl_system_info).to_string());
         }
         //-------------------------------------------------------------------------
@@ -364,7 +364,7 @@ namespace rex
 
             m_application_loop = std::make_unique<ApplicationLoop>(fn, display_mode->get_refresh_rate());
 
-            R_INFO("Application loop ({0} hz) initialized.", display_mode->get_refresh_rate());
+            R_INFO("[APPLICATION] Application loop ({0} hz) initialized.", display_mode->get_refresh_rate());
         }
 
         //-------------------------------------------------------------------------
@@ -373,7 +373,7 @@ namespace rex
             m_context = std::make_unique<opengl::Context>(m_window->get_sdl_window());
             m_context->make_current();
 
-            R_INFO("OpenGL Context initialized.");
+            R_INFO("[GRAPHICS] OpenGL Context initialized.");
             R_INFO("\tversion: {0}", m_context->get_version());
             R_INFO("\trenderer: {0}", m_context->get_renderer());
             R_INFO("\tvendor: {0}", m_context->get_vendor());

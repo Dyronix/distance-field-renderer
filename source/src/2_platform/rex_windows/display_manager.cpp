@@ -19,7 +19,7 @@ namespace rex
             return;
         }
 
-        R_INFO("Number of available video displays: {0}", available_video_displays);
+        R_INFO("[APPLICATION] Number of available video displays: {0}", available_video_displays);
 
         for (int32 i = 0; i < available_video_displays; ++i)
         {
