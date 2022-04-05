@@ -75,8 +75,8 @@ namespace regina
 
         using MeshLattice = rex::YesNoEnum;
 
-        MeshType MESH_TYPE = MeshType::DRAGON;
-        MeshLattice MESH_LATTICE = MeshLattice::YES;
+        MeshType MESH_TYPE = MeshType::TIGER;
+        MeshLattice MESH_LATTICE = MeshLattice::NO;
 
         MeshNameMap MESH_NAME_MAP =
         {
