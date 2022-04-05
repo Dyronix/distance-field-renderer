@@ -54,3 +54,4 @@
 
 #include "algorithms/clamp.h"
 #include "algorithms/identical.h"
+#include "algorithms/remap.h"
