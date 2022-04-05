@@ -104,6 +104,7 @@ namespace rex
             rex::matrix4 inverse_view_projection;
             rex::matrix4 projection;
             rex::matrix4 view;
+            rex::matrix4 world;
         } m_ub_camera;
 
         struct UBDirectionalLights

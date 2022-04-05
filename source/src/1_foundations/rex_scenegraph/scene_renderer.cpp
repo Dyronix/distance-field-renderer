@@ -166,6 +166,7 @@ namespace rex
 
                 rex::matrix4 projection = active_camera.get_projection_matrix();
                 rex::matrix4 view = rex::look_at(active_camera_transform.get_position(), active_camera_transform.get_position() + active_camera_transform.get_forward(), rex::world_up<float>());
+                rex::matrix4 world = rex::inverse(view);
 
                 rex::matrix4 view_projection = projection * view;
                 rex::matrix4 inverse_view_projection = rex::inverse(view_projection);
@@ -176,6 +177,7 @@ namespace rex
                 camera_data.inverse_view_projection = inverse_view_projection;
                 camera_data.projection = projection;
                 camera_data.view = view;
+                camera_data.world = world;
 
                 Renderer::submit([camera_data]()
                                  {
