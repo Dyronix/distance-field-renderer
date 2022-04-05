@@ -256,6 +256,18 @@ namespace rex
                     release();
                 }
 
+#if REX_DEBUG
+                if ((depthAttachmentOption == FrameBufferDepthAttachmentOption::DEPTH_ONLY || depthAttachmentOption == FrameBufferDepthAttachmentOption::DEPTH_STENCIL) && !is_valid_texture_2d_description(depthDescription))
+                {
+                    R_ERROR("Framebuffer Depth Attachment Option is specified with DEPTH but no Depth Attachment was created");
+                }
+
+                if ((depthAttachmentOption != FrameBufferDepthAttachmentOption::DEPTH_ONLY && depthAttachmentOption != FrameBufferDepthAttachmentOption::DEPTH_STENCIL) && is_valid_texture_2d_description(depthDescription))
+                {
+                    R_ERROR("Framebuffer Depth Attachment was created but Framebuffer Depth Attachment Option was not specified with DEPTH");
+                }
+#endif
+
                 opengl::generate_framebuffers(1, &m_buffer_id);
                 opengl::bind_framebuffer(GL_FRAMEBUFFER, m_buffer_id);
 
