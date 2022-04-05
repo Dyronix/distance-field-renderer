@@ -15,7 +15,7 @@
 #include "renderpasses/composite_pass.h"
 #include "renderpasses/deferred_light_pass.h"
 #include "renderpasses/deferred_light_visualization_pass.h"
-#include "renderpasses/distance_evaluation_pass.h"
+#include "renderpasses/heatmap_distance_evaluation_pass.h"
 #include "renderpasses/pre_depth_pass.h"
 
 #include "resources/frame_buffer_pool.h"
@@ -29,6 +29,8 @@
 
 #include "volume_importer.h"
 #include "volume_library.h"
+
+#include "texture_importer.h"
 
 #include "mesh_factory.h"
 
@@ -131,10 +133,7 @@ namespace regina
         }
 
         // Render pass settings
-        const rex::StringID PREDEPTHPASS_NAME = "PreDepthPass"_sid;
         const rex::StringID DISTANCEEVALUATIONSPASS_NAME = "DistanceEvaluationsPass"_sid;
-        const rex::StringID DEFERREDLIGHTPASS_NAME = "DeferredLightPass"_sid;
-        const rex::StringID DEFERREDLIGHTVISUALIZATIONPASS_NAME = "DeferredLightVisualizationPass"_sid;
         const rex::StringID COMPOSITEPASS_NAME = "CompositePass"_sid;
 
         namespace camera_settings
@@ -193,19 +192,6 @@ namespace regina
         }
 
         //-------------------------------------------------------------------------
-        rex::PreDepthPassOptions create_pre_depth_pass_options()
-        {
-            rex::PreDepthPassOptions options;
-
-            options.pass_name = heatmap_rendering::PREDEPTHPASS_NAME;
-            options.shader_name = "predepth"_sid;
-            options.near_plane = heatmap_rendering::camera_settings::NEAR_PLANE;
-            options.far_plane = heatmap_rendering::camera_settings::FAR_PLANE;
-            options.backface_culling = heatmap_rendering::renderpass_settings::BACKFACE_CULLING;
-
-            return options;
-        }
-        //-------------------------------------------------------------------------
         rex::DistanceEvaluationsPassOptions create_distance_evaluation_pass_options()
         {
             rex::DistanceEvaluationsPassOptions options;
@@ -245,7 +231,8 @@ namespace regina
             options.pass_name = heatmap_rendering::COMPOSITEPASS_NAME;
             options.shader_name = "blit"_sid;
             options.color_buffer = heatmap_rendering::DISTANCEEVALUATIONSPASS_NAME;
-            options.gamma_correction = heatmap_rendering::renderpass_settings::GAMMA_CORRECTION;
+            options.apply_gamma_correction = rex::ApplyGammaCorrection::NO;
+            options.apply_tone_mapping = rex::ApplyToneMapping::NO;
 
             return options;
         }
@@ -346,9 +333,31 @@ namespace regina
             R_PROFILE_FUNCTION();
 
             load_shader("blit"_sid, "1000"_sid, "content\\shaders\\blit.vertex"_sid, "content\\shaders\\blit.fragment"_sid);
-            load_shader("g_buffer_distance_field"_sid, "1000"_sid, "content\\shaders\\g_buffer_distance_field.vertex"_sid, "content\\shaders\\g_buffer_distance_field.fragment"_sid);
-            load_shader("deferred_shading_lighting"_sid, "1000"_sid, "content\\shaders\\deferred_shading_lighting.vertex"_sid, "content\\shaders\\deferred_shading_lighting.fragment"_sid);
-            load_shader("deferred_shading_lighting_visualization"_sid, "1000"_sid, "content\\shaders\\deferred_shading_lighting_visualization.vertex"_sid, "content\\shaders\\deferred_shading_lighting_visualization.fragment"_sid);
+            load_shader("heatmap"_sid, "1000"_sid, "content\\shaders\\heatmap.vertex"_sid, "content\\shaders\\heatmap.fragment"_sid);
+        }
+        //-------------------------------------------------------------------------
+        void load_texture(const rex::StringID& name, const rex::StringID& path, const SRGB& srgb, const rex::Texture::Usage& usage)
+        {
+            R_PROFILE_FUNCTION();
+
+            auto texture = texture_importer::import(name, path, srgb, usage);
+
+            if (texture == nullptr)
+            {
+                R_WARN("{0} texture was not found on disk", name.to_string());
+                return;
+            }
+
+            rex::texture_library::add(texture);
+
+            R_INFO("[TEXTURE] Import completed: {0}", name.to_string());
+        }
+        //-------------------------------------------------------------------------
+        void load_textures()
+        {
+            R_PROFILE_FUNCTION();
+
+            load_texture("color_ramp", "content\\textures\\color_ramp.png", SRGB::NO, rex::Texture::Usage::UNSPECIFIED);
         }
         //-------------------------------------------------------------------------
         void load_primitive_geometry()
@@ -407,6 +416,7 @@ namespace regina
         R_PROFILE_FUNCTION();
 
         heatmap_rendering::load_volumes();
+        heatmap_rendering::load_textures();
         heatmap_rendering::load_shaders();
         heatmap_rendering::load_primitive_geometry();
 
@@ -421,6 +431,7 @@ namespace regina
 
         rex::mesh_factory::clear();
         rex::shader_library::clear();
+        rex::texture_library::clear();
 
         volume_library::clear();
 
@@ -674,7 +685,7 @@ namespace regina
     {
         R_PROFILE_FUNCTION();
 
-        return std::make_unique<rex::DistanceEvaluationPass>(options, rex::CreateFrameBuffer::YES);
+        return std::make_unique<rex::HeatMapDistanceEvaluationPass>("color_ramp"_sid, options, rex::CreateFrameBuffer::YES);
     }
     //-------------------------------------------------------------------------
     std::unique_ptr<rex::SceneRenderPass> HeatMapRenderingLayer::create_composite_pass(const rex::CompositePassOptions& options) const
