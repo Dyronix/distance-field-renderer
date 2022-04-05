@@ -27,9 +27,9 @@ namespace rex
             , m_id(0)
             , m_sampler_id(0)
             , m_usage(Texture::Usage::UNSPECIFIED)
-            , m_wrap_r(Texture::Wrap::Type::CLAMP)
-            , m_wrap_s(Texture::Wrap::Type::CLAMP)
-            , m_wrap_t(Texture::Wrap::Type::CLAMP)
+            , m_wrap_r(Texture::Wrap::Type::CLAMP_TO_EDGE)
+            , m_wrap_s(Texture::Wrap::Type::CLAMP_TO_EDGE)
+            , m_wrap_t(Texture::Wrap::Type::CLAMP_TO_EDGE)
             , m_min_filter(Texture::Filter::Type::LINEAR)
             , m_mag_filter(Texture::Filter::Type::LINEAR)
             , m_format(Texture::Format::UNKNOWN)
@@ -69,9 +69,9 @@ namespace rex
             , m_id(0)
             , m_sampler_id(0)
             , m_usage(Texture::Usage::UNSPECIFIED)
-            , m_wrap_r(Texture::Wrap::Type::CLAMP)
-            , m_wrap_s(Texture::Wrap::Type::CLAMP)
-            , m_wrap_t(Texture::Wrap::Type::CLAMP)
+            , m_wrap_r(Texture::Wrap::Type::CLAMP_TO_EDGE)
+            , m_wrap_s(Texture::Wrap::Type::CLAMP_TO_EDGE)
+            , m_wrap_t(Texture::Wrap::Type::CLAMP_TO_EDGE)
             , m_min_filter(Texture::Filter::Type::LINEAR)
             , m_mag_filter(Texture::Filter::Type::LINEAR)
             , m_format(Texture::Format::UNKNOWN)
@@ -109,9 +109,9 @@ namespace rex
             , m_id(0)
             , m_sampler_id(0)
             , m_usage(Texture::Usage::UNSPECIFIED)
-            , m_wrap_r(Texture::Wrap::Type::CLAMP)
-            , m_wrap_s(Texture::Wrap::Type::CLAMP)
-            , m_wrap_t(Texture::Wrap::Type::CLAMP)
+            , m_wrap_r(Texture::Wrap::Type::CLAMP_TO_EDGE)
+            , m_wrap_s(Texture::Wrap::Type::CLAMP_TO_EDGE)
+            , m_wrap_t(Texture::Wrap::Type::CLAMP_TO_EDGE)
             , m_min_filter(Texture::Filter::Type::LINEAR)
             , m_mag_filter(Texture::Filter::Type::LINEAR)
             , m_format(Texture::Format::UNKNOWN)
@@ -147,9 +147,9 @@ namespace rex
             , m_id(0)
             , m_sampler_id(0)
             , m_usage(Texture::Usage::UNSPECIFIED)
-            , m_wrap_r(Texture::Wrap::Type::CLAMP)
-            , m_wrap_s(Texture::Wrap::Type::CLAMP)
-            , m_wrap_t(Texture::Wrap::Type::CLAMP)
+            , m_wrap_r(Texture::Wrap::Type::CLAMP_TO_EDGE)
+            , m_wrap_s(Texture::Wrap::Type::CLAMP_TO_EDGE)
+            , m_wrap_t(Texture::Wrap::Type::CLAMP_TO_EDGE)
             , m_min_filter(Texture::Filter::Type::LINEAR)
             , m_mag_filter(Texture::Filter::Type::LINEAR)
             , m_format(Texture::Format::UNKNOWN)
@@ -420,6 +420,24 @@ namespace rex
                                  opengl::bind_texture(GL_TEXTURE_CUBE_MAP, 0);
                              });
         }
+
+        //-------------------------------------------------------------------------
+        void TextureCube::set_wrap_border_color(const ColorRGBA& inColor)
+        {
+            R_ASSERT(m_wrap_s == Texture::Wrap::Type::CLAMP_TO_BORDER || m_wrap_t == Texture::Wrap::Type::CLAMP_TO_BORDER || m_wrap_r == Texture::Wrap::Type::CLAMP_TO_BORDER);
+
+            ref_ptr<TextureCube> instance(this);
+            Renderer::submit(
+                [instance, color = inColor]() mutable
+                {
+                    opengl::bind_texture(GL_TEXTURE_CUBE_MAP, instance->m_id);
+
+                    opengl::set_texture_float_array_parameter(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_BORDER_COLOR, color.get_data());
+
+                    opengl::bind_texture(GL_TEXTURE_CUBE_MAP, 0);
+                });
+        }
+
         //-------------------------------------------------------------------------
         void TextureCube::set_filter(const Texture::Filter& textureFilter)
         {
@@ -500,7 +518,11 @@ namespace rex
         //-------------------------------------------------------------------------
         void TextureCube::assign_wrap(const Wrap& wrap)
         {
-            int32 type = wrap.type == Texture::Wrap::Type::CLAMP ? GL_CLAMP_TO_EDGE : GL_REPEAT;
+            int32 type = wrap.type == Texture::Wrap::Type::CLAMP_TO_EDGE 
+                ? GL_CLAMP_TO_EDGE 
+                : wrap.type == Texture::Wrap::Type::CLAMP_TO_BORDER
+                    ? GL_CLAMP_TO_BORDER 
+                    : GL_REPEAT;
 
             switch (wrap.coordinate)
             {
@@ -517,6 +539,16 @@ namespace rex
                     m_wrap_t = wrap.type;
                     break;
             }
+        }
+
+        //-------------------------------------------------------------------------
+        void TextureCube::assign_wrap_color(const ColorRGBA& inColor)
+        {
+            R_ASSERT(m_wrap_s == Texture::Wrap::Type::CLAMP_TO_BORDER || m_wrap_t == Texture::Wrap::Type::CLAMP_TO_BORDER || m_wrap_r == Texture::Wrap::Type::CLAMP_TO_BORDER);
+
+            ColorRGBA color = inColor;
+
+            opengl::set_texture_float_array_parameter(GL_TEXTURE_3D, GL_TEXTURE_BORDER_COLOR, color.get_data());
         }
 
         //-------------------------------------------------------------------------

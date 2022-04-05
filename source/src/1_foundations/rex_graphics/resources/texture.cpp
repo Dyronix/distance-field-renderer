@@ -14,7 +14,7 @@ namespace rex
     };
 
     const std::vector<rex::Texture::Wrap> g_default_3D_texture_wrap = {
-        {rex::Texture::Wrap::Coordinate::WRAP_R, rex::Texture::Wrap::Type::CLAMP}, {rex::Texture::Wrap::Coordinate::WRAP_S, rex::Texture::Wrap::Type::CLAMP}, {rex::Texture::Wrap::Coordinate::WRAP_T, rex::Texture::Wrap::Type::CLAMP},
+        {rex::Texture::Wrap::Coordinate::WRAP_R, rex::Texture::Wrap::Type::CLAMP_TO_EDGE}, {rex::Texture::Wrap::Coordinate::WRAP_S, rex::Texture::Wrap::Type::CLAMP_TO_EDGE}, {rex::Texture::Wrap::Coordinate::WRAP_T, rex::Texture::Wrap::Type::CLAMP_TO_EDGE},
     };
 
     const std::vector<rex::Texture::Filter> g_default_texture_filter = {

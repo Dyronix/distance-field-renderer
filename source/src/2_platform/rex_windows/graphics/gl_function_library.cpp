@@ -1162,6 +1162,21 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
+        void set_texture_float_array_parameter(uint32 target, uint32 pname, float* param)
+        {
+            GL_FUNC_PROFILE();
+
+            GL_LOG("glTexParameterf");
+#if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
+            GL_LOG("\ttarget: {0}", texture_target_to_string(target));
+            GL_LOG("\tpname: {0}", pname);
+            GL_LOG("\tparam: {0}", fmt::ptr(param));
+#endif
+
+            GL_CALL(glTexParameterfv(target, pname, param));
+        }
+
+        //-------------------------------------------------------------------------
         void delete_shader(uint32 shader)
         {
             GL_FUNC_PROFILE();

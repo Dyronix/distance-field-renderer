@@ -28,8 +28,8 @@ namespace rex
             , m_id(0)
             , m_sampler_id(0)
             , m_usage(Texture::Usage::UNSPECIFIED)
-            , m_wrap_s(Texture::Wrap::Type::CLAMP)
-            , m_wrap_t(Texture::Wrap::Type::CLAMP)
+            , m_wrap_s(Texture::Wrap::Type::CLAMP_TO_EDGE)
+            , m_wrap_t(Texture::Wrap::Type::CLAMP_TO_EDGE)
             , m_min_filter(Texture::Filter::Type::LINEAR)
             , m_mag_filter(Texture::Filter::Type::LINEAR)
             , m_format(Texture::Format::UNKNOWN)
@@ -115,17 +115,17 @@ namespace rex
 
             if (desc.wraps.size() == 0)
             {
-                for (int8 i = 0; i < desc.wraps.size(); ++i)
-                {
-                    set_wrap(desc.wraps[i]);
-                }
-            }
-            else
-            {
                 auto wraps = default_texture_2D_wrapping();
                 for (auto& w : wraps)
                 {
                     set_wrap(w);
+                }
+            }
+            else
+            {
+                for (int8 i = 0; i < desc.wraps.size(); ++i)
+                {
+                    set_wrap(desc.wraps[i]);
                 }
             }
 
@@ -239,6 +239,21 @@ namespace rex
 
             opengl::bind_texture(GL_TEXTURE_2D, 0);
         }
+
+        //-------------------------------------------------------------------------
+        void RenderTarget::set_wrap_border_color(const ColorRGBA& inColor)
+        {
+            R_ASSERT(m_wrap_s == Texture::Wrap::Type::CLAMP_TO_BORDER || m_wrap_t == Texture::Wrap::Type::CLAMP_TO_BORDER);
+
+            ColorRGBA color = inColor;
+
+            opengl::bind_texture(GL_TEXTURE_2D, m_id);
+
+            opengl::set_texture_float_array_parameter(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, color.get_data());
+
+            opengl::bind_texture(GL_TEXTURE_2D, 0);
+        }
+
         //-------------------------------------------------------------------------
         void RenderTarget::set_filter(const Texture::Filter& textureFilter)
         {
@@ -315,7 +330,11 @@ namespace rex
         //-------------------------------------------------------------------------
         void RenderTarget::assign_wrap(const Wrap& wrap)
         {
-            int32 type = wrap.type == Texture::Wrap::Type::CLAMP ? GL_CLAMP_TO_EDGE : GL_REPEAT;
+            int32 type = wrap.type == Texture::Wrap::Type::CLAMP_TO_EDGE 
+                ? GL_CLAMP_TO_EDGE 
+                : wrap.type == Texture::Wrap::Type::CLAMP_TO_BORDER
+                    ? GL_CLAMP_TO_BORDER 
+                    : GL_REPEAT;
 
             switch (wrap.coordinate)
             {
@@ -331,7 +350,18 @@ namespace rex
                     break;
             }
         }
-    }
+
+        //-------------------------------------------------------------------------
+        void RenderTarget::assign_wrap_color(const ColorRGBA& inColor)
+        {
+            R_ASSERT(m_wrap_s == Texture::Wrap::Type::CLAMP_TO_BORDER || m_wrap_t == Texture::Wrap::Type::CLAMP_TO_BORDER);
+
+            ColorRGBA color = inColor;
+
+            opengl::set_texture_float_array_parameter(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, color.get_data());
+        }
+
+    } // namespace opengl
 }
 
 #undef CHANNELS_RGBA

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "color.h"
 #include "blob.h"
 
 #include "resources/api_resource.h"
@@ -57,7 +58,8 @@ namespace rex
 
             enum class Type
             {
-                CLAMP,
+                CLAMP_TO_BORDER,
+                CLAMP_TO_EDGE,
                 REPEAT
             };
 
@@ -199,6 +201,7 @@ namespace rex
 
         virtual void set_data(Texture::Data&& textureData) = 0;
         virtual void set_wrap(const Wrap& textureWrap) = 0;
+        virtual void set_wrap_border_color(const ColorRGBA& color) = 0;
         virtual void set_filter(const Filter& textureFilter) = 0;
         virtual void set_format(const Texel& texelFormat, const Format& textureFormat) = 0;
 

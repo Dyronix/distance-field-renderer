@@ -44,6 +44,7 @@ namespace rex
 
             void set_data(Texture::Data&& textureData) override;
             void set_wrap(const Texture::Wrap& textureWrap) override;
+            void set_wrap_border_color(const ColorRGBA& color) override;
             void set_filter(const Texture::Filter& textureFilter) override;
             void set_format(const Texel& texelFormat, const Texture::Format& textureFormat) override;
 
@@ -53,6 +54,7 @@ namespace rex
         private:
             void assign_filter(const Filter& filter);
             void assign_wrap(const Wrap& wrap);
+            void assign_wrap_color(const ColorRGBA& color);
 
             StringID m_name;
 
