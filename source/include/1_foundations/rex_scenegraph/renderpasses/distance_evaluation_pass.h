@@ -2,6 +2,8 @@
 
 #include "scene_render_pass.h"
 
+#include "renderpasses/distance_evaluation_pass_options.h"
+
 namespace rex
 {
     namespace ecs
@@ -11,36 +13,6 @@ namespace rex
 
     class SceneRenderer;
 
-    struct SphereTracerOptions
-    {
-        SphereTracerOptions()
-            : max_iterations(100)
-            , max_march_distance(1000.0f)
-            , min_surface_distance(0.1f)
-        {
-        }
-
-        int32 max_iterations;
-        
-        float max_march_distance;
-        float min_surface_distance;
-    };
-
-    struct SDFSceneOptions
-    {
-        SDFSceneOptions()
-            : scene_size(100.0f, 100.0f, 100.0f)
-            , scene_center(0.0f, 0.0f, 0.0f)
-            , scene_data(nullptr)
-        {
-        }
-
-        rex::vec3 scene_size;
-        rex::vec3 scene_center;
-
-        ref_ptr<Texture> scene_data;
-    };
-    
     struct DistanceEvaluationsPassOptions
     {
         DistanceEvaluationsPassOptions()
@@ -52,8 +24,8 @@ namespace rex
         StringID pass_name;
         StringID shader_name;
 
-        SphereTracerOptions sphere_tracer_options;
-        SDFSceneOptions sdf_scene_options;
+        sdf::SphereTracerOptions sphere_tracer_options;
+        sdf::SceneOptions sdf_scene_options;
     };
 
     class DistanceEvaluationPass : public SceneRenderPass
@@ -66,9 +38,22 @@ namespace rex
         void render() override;
         void end() override;
 
+        void set_sphere_tracer_options(const sdf::SphereTracerOptions& sphereTracerOptions);
+        void set_sdf_scene_options(const sdf::SceneOptions& sdfSceneOptions);
+
+        const sdf::SphereTracerOptions& get_sphere_tracer_options() const;
+        const sdf::SceneOptions& get_sdf_scene_options() const;
+
     protected:
         void on_initialize(const ref_ptr<SceneRenderer>& renderer) override;
         void on_shutdown() override;
+
+        void upload_sphere_tracer_options(const sdf::SphereTracerOptions& sphereTracerOptions);
+        void upload_sdf_scene_options(const sdf::SceneOptions& sdfSceneOptions);
+
+        const DistanceEvaluationsPassOptions& get_options();
+
+        bool should_create_frame_buffer() const;
 
     private:
         DistanceEvaluationsPassOptions m_options;

@@ -1,6 +1,7 @@
 #include "rex_scenegraph_pch.h"
 
 #include "renderpasses/distance_evaluation_pass.h"
+#include "renderpasses/distance_evaluation_pass_helpers.h"
 
 #include "scene_renderer.h"
 
@@ -21,30 +22,6 @@
 
 namespace rex
 {
-    //-------------------------------------------------------------------------
-    rex::matrix4 generate_frustrum_matrix(const rex::AspectRatio::Ratio& aspectRatio, const rex::FieldOfView& fov)
-    {
-        rex::matrix4 frustum_corners = rex::identity<rex::matrix4>();
-
-        float fov_v_half = fov.get_vertical().to_rad() * 0.5f;
-        float tan_fov = std::tan(fov_v_half);
-
-        rex::vec3 to_right = rex::world_right<float>() * tan_fov * aspectRatio.get();
-        rex::vec3 to_top = rex::world_up<float>() * tan_fov;
-
-        rex::vec3 top_left = (-rex::world_forward<float>() - to_right + to_top);
-        rex::vec3 top_right = (-rex::world_forward<float>() + to_right + to_top);
-        rex::vec3 bottom_right = (-rex::world_forward<float>() + to_right - to_top);
-        rex::vec3 bottom_left = (-rex::world_forward<float>() - to_right - to_top);
-
-        frustum_corners = rex::column(frustum_corners, 0, rex::vec4(top_left, 0.0f));
-        frustum_corners = rex::column(frustum_corners, 1, rex::vec4(top_right, 0.0f));
-        frustum_corners = rex::column(frustum_corners, 2, rex::vec4(bottom_right, 0.0f));
-        frustum_corners = rex::column(frustum_corners, 3, rex::vec4(bottom_left, 0.0f));
-
-        return frustum_corners;
-    }
-
     //-------------------------------------------------------------------------
     DistanceEvaluationPass::DistanceEvaluationPass(const DistanceEvaluationsPassOptions& options, CreateFrameBuffer create_frame_buffer)
         : SceneRenderPass(options.pass_name)
@@ -78,7 +55,7 @@ namespace rex
             sdf_framebuffer_desc.depth_attachment = std::move(create_depth_attachment_description(vp_width, vp_height, Texture::Format::DEPTH_COMPONENT_24_INTEGER));
             sdf_framebuffer_desc.name = "SDF";
 
-            framebuffer = ResourceFactory::create_frame_buffer(std::move(sdf_framebuffer_desc), FrameBufferDepthAttachmentOption::NONE);
+            framebuffer = ResourceFactory::create_frame_buffer(std::move(sdf_framebuffer_desc), FrameBufferDepthAttachmentOption::DEPTH_ONLY);
         }
 
         RenderPassDescription sdf_renderpass_desc;
@@ -99,21 +76,10 @@ namespace rex
         sdf_pipeline_desc.name = "SDF";
 
         create_pipeline(sdf_pipeline_desc);
+        create_material(sdf_pipeline_desc.shader, "SDF");
 
-        auto material = create_material(sdf_pipeline_desc.shader, "SDF");
-
-        // Setup SDF environment
-        // Sphere Tracer
-        material->set("u_max_iterations", m_options.sphere_tracer_options.max_iterations);
-        material->set("u_max_march_distance", m_options.sphere_tracer_options.max_march_distance);
-        material->set("u_min_surface_distance", m_options.sphere_tracer_options.min_surface_distance);
-        // Scene
-        material->set("u_scene_size", m_options.sdf_scene_options.scene_size);
-        material->set("u_scene_center", m_options.sdf_scene_options.scene_center);
-
-        R_ASSERT_X(m_options.sdf_scene_options.scene_data != nullptr, "No scene data was given to the \"Distance Evaluation Pass\"");
-
-        material->set_texture3d("u_scene_data", m_options.sdf_scene_options.scene_data);
+        upload_sphere_tracer_options(m_options.sphere_tracer_options);
+        upload_sdf_scene_options(m_options.sdf_scene_options);
     }
 
     //-------------------------------------------------------------------------
@@ -125,12 +91,10 @@ namespace rex
     //-------------------------------------------------------------------------
     void DistanceEvaluationPass::begin(const ecs::SceneCamera& camera, const Transform& cameraTransform)
     {
-        rex::matrix4 view = rex::look_at(cameraTransform.get_position(), cameraTransform.get_position() + cameraTransform.get_forward(), rex::world_up<float>());
-        rex::matrix4 frustrum = generate_frustrum_matrix(camera.get_aspect_ratio(), camera.get_perspective_field_of_view());
+        rex::matrix4 frustrum = sdf::generate_frustrum_matrix(camera.get_aspect_ratio(), camera.get_perspective_field_of_view());
 
         auto material = get_material();
 
-        material->set("u_camera_world", rex::inverse(view));
         material->set("u_camera_frustrum", frustrum);
         material->set("u_camera_position", cameraTransform.get_position());
     }
@@ -147,5 +111,88 @@ namespace rex
     void DistanceEvaluationPass::end()
     {
         // Nothing to implement
+    }
+
+    //-------------------------------------------------------------------------
+    void DistanceEvaluationPass::set_sphere_tracer_options(const sdf::SphereTracerOptions& sphereTracerOptions)
+    {
+        m_options.sphere_tracer_options = sphereTracerOptions;
+        upload_sphere_tracer_options(m_options.sphere_tracer_options);
+    }
+
+    //-------------------------------------------------------------------------
+    void DistanceEvaluationPass::set_sdf_scene_options(const sdf::SceneOptions& sdfSceneOptions)
+    {
+        m_options.sdf_scene_options = sdfSceneOptions;
+        upload_sdf_scene_options(m_options.sdf_scene_options);
+    }
+
+    //-------------------------------------------------------------------------
+    const rex::sdf::SphereTracerOptions& DistanceEvaluationPass::get_sphere_tracer_options() const
+    {
+        return m_options.sphere_tracer_options;
+    }
+
+    //-------------------------------------------------------------------------
+    const rex::sdf::SceneOptions& DistanceEvaluationPass::get_sdf_scene_options() const
+    {
+        return m_options.sdf_scene_options;
+    }
+
+    //-------------------------------------------------------------------------
+    void DistanceEvaluationPass::upload_sphere_tracer_options(const sdf::SphereTracerOptions& sphereTracerOptions)
+    {
+        auto material = get_material();
+
+        // Sphere Tracer
+        R_ASSERT_X(sphereTracerOptions.max_iterations != 0, "No sphere tracer max iterations was given to the \"Distance Evaluation Pass\"");
+        R_ASSERT_X(sphereTracerOptions.max_march_distance != 0.0f, "No sphere tracer max march distance was given to the \"Distance Evaluation Pass\"");
+        R_ASSERT_X(sphereTracerOptions.min_surface_distance != 0.0f, "No sphere tracer min surface distance was given to the \"Distance Evaluation Pass\"");
+
+        material->set("u_max_iterations", sphereTracerOptions.max_iterations);
+        material->set("u_max_march_distance", sphereTracerOptions.max_march_distance);
+        material->set("u_min_surface_distance", sphereTracerOptions.min_surface_distance);
+    }
+    //-------------------------------------------------------------------------
+    void DistanceEvaluationPass::upload_sdf_scene_options(const sdf::SceneOptions& sdfSceneOptions)
+    {
+        auto material = get_material();
+
+        // Scene
+        // Scene Scale can be equal to 1.0
+        // Scene Offsetset can be equal to 0.0
+        R_ASSERT_X(sdfSceneOptions.scene_size != vec3(0.0f, 0.0f, 0.0f), "No scene size was given to the \"Distance Evaluation Pass\"");
+        // Scene Center can be located at vec3(0.0f, 0.0f, 0.0f).
+
+        material->set("u_scene_scale", sdfSceneOptions.scene_scale);
+        material->set("u_scene_offset", sdfSceneOptions.scene_offset);
+        material->set("u_scene_size", sdfSceneOptions.scene_size);
+        material->set("u_scene_center", sdfSceneOptions.scene_center);
+
+        R_ASSERT_X(sdfSceneOptions.scene_voxel_grid_min_bounds != vec3(0.0f, 0.0f, 0.0f), "No scene minimum bounds was given to the \"Distance Evaluation Pass\"");
+        R_ASSERT_X(sdfSceneOptions.scene_voxel_grid_max_bounds != vec3(0.0f, 0.0f, 0.0f), "No scene maximum bounds was given to the \"Distance Evaluation Pass\"");
+        R_ASSERT_X(sdfSceneOptions.scene_voxel_grid_size != vec3(0.0f, 0.0f, 0.0f), "No scene voxel grid was given to the \"Distance Evaluation Pass\"");
+        R_ASSERT_X(sdfSceneOptions.scene_voxel_grid_cell_size != vec3(0.0f, 0.0f, 0.0f), "No scene voxel grid cell size was given to the \"Distance Evaluation Pass\"");
+
+        material->set("u_scene_voxel_grid_min_bounds", sdfSceneOptions.scene_voxel_grid_min_bounds);
+        material->set("u_scene_voxel_grid_max_bounds", sdfSceneOptions.scene_voxel_grid_max_bounds);
+        material->set("u_scene_voxel_grid_size", sdfSceneOptions.scene_voxel_grid_size);
+        material->set("u_scene_voxel_grid_cell_size", sdfSceneOptions.scene_voxel_grid_cell_size);
+
+        R_ASSERT_X(sdfSceneOptions.scene_data != nullptr, "No scene data was given to the \"Distance Evaluation Pass\"");
+
+        material->set_texture3d("u_scene_data", sdfSceneOptions.scene_data);
+    }
+
+    //-------------------------------------------------------------------------
+    const rex::DistanceEvaluationsPassOptions& DistanceEvaluationPass::get_options()
+    {
+        return m_options;
+    }
+
+    //-------------------------------------------------------------------------
+    bool DistanceEvaluationPass::should_create_frame_buffer() const
+    {
+        return m_create_framebuffer;
     }
 }
