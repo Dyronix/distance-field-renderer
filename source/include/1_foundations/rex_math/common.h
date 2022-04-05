@@ -18,6 +18,20 @@ namespace rex
 
     //-------------------------------------------------------------------------
     template <typename T, vector_qualifier Q = vector_qualifier::packed_highp>
+    float max_coeff(const glm::vec<3, T, Q>& v)
+    {
+        return std::max(v.x, std::max(v.y, v.z));
+    }
+
+    //-------------------------------------------------------------------------
+    template <typename T, vector_qualifier Q = vector_qualifier::packed_highp>
+    float min_coeff(const glm::vec<3, T, Q>& v)
+    {
+        return std::min(v.x, std::min(v.y, v.z));
+    }
+
+    //-------------------------------------------------------------------------
+    template <typename T, vector_qualifier Q = vector_qualifier::packed_highp>
     glm::vec<3, T, Q> world_up()
     {
         return glm::vec<3, T, Q>(T(0.0), T(1.0), T(0.0));
