@@ -35,11 +35,11 @@ namespace rex
 
 namespace regina
 {
-    class DistanceFieldRenderingLayer : public rex::Layer
+    class HeatMapRenderingLayer : public rex::Layer
     {
     public:
-        DistanceFieldRenderingLayer(const rex::CoreWindow* window);
-        ~DistanceFieldRenderingLayer() override;
+        HeatMapRenderingLayer(const rex::CoreWindow* window);
+        ~HeatMapRenderingLayer() override;
 
         void on_attach() override;
         void on_detach() override;
@@ -62,8 +62,6 @@ namespace regina
         void setup_lights();
 
         std::unique_ptr<rex::SceneRenderPass> create_distance_evaluation_pass(const rex::DistanceEvaluationsPassOptions& options) const;
-        std::unique_ptr<rex::SceneRenderPass> create_deferred_light_pass(const rex::DeferredLightPassOptions& options) const;
-        std::unique_ptr<rex::SceneRenderPass> create_deferred_light_visualization_pass(const rex::DeferredLightVisualizationPassOptions& options) const;
         std::unique_ptr<rex::SceneRenderPass> create_composite_pass(const rex::CompositePassOptions& options) const;
 
         rex::ecs::SceneCamera m_camera;

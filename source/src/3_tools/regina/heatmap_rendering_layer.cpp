@@ -1,6 +1,6 @@
 #include "regina_pch.h"
 
-#include "distance_field_rendering_layer.h" 
+#include "heatmap_rendering_layer.h"
 
 #include "ecs/components/camera_component.h"
 #include "ecs/components/directional_light_component.h"
@@ -13,9 +13,9 @@
 #include "renderpasses/blur_pass.h"
 #include "renderpasses/clear_pass.h"
 #include "renderpasses/composite_pass.h"
-#include "renderpasses/distance_evaluation_pass.h"
 #include "renderpasses/deferred_light_pass.h"
 #include "renderpasses/deferred_light_visualization_pass.h"
+#include "renderpasses/distance_evaluation_pass.h"
 #include "renderpasses/pre_depth_pass.h"
 
 #include "resources/frame_buffer_pool.h"
@@ -34,8 +34,8 @@
 
 #include "scene_renderer.h"
 
-#include "core_window.h"
 #include "core_application.h"
+#include "core_window.h"
 
 #include "event_dispatcher.h"
 
@@ -57,7 +57,7 @@
 namespace regina
 {
     // Render pass settings
-    namespace distance_field_rendering
+    namespace heatmap_rendering
     {
         // Mesh settings
         enum class VolumeType
@@ -172,7 +172,7 @@ namespace regina
             bool SHOW_GRID = true;
 
             float GAMMA_CORRECTION = 2.0f;
-            
+
             int32 MAX_SPHERE_TRACER_ITERATIONS = 150;
             float MAX_MARCH_DISTANCE = 100.0f;
             float MIN_SURFACE_DISTANCE = 0.01f;
@@ -197,11 +197,11 @@ namespace regina
         {
             rex::PreDepthPassOptions options;
 
-            options.pass_name = distance_field_rendering::PREDEPTHPASS_NAME;
+            options.pass_name = heatmap_rendering::PREDEPTHPASS_NAME;
             options.shader_name = "predepth"_sid;
-            options.near_plane = distance_field_rendering::camera_settings::NEAR_PLANE;
-            options.far_plane = distance_field_rendering::camera_settings::FAR_PLANE;
-            options.backface_culling = distance_field_rendering::renderpass_settings::BACKFACE_CULLING;
+            options.near_plane = heatmap_rendering::camera_settings::NEAR_PLANE;
+            options.far_plane = heatmap_rendering::camera_settings::FAR_PLANE;
+            options.backface_culling = heatmap_rendering::renderpass_settings::BACKFACE_CULLING;
 
             return options;
         }
@@ -210,8 +210,8 @@ namespace regina
         {
             rex::DistanceEvaluationsPassOptions options;
 
-            options.pass_name = distance_field_rendering::DISTANCEEVALUATIONSPASS_NAME;
-            options.shader_name = "g_buffer_distance_field"_sid;
+            options.pass_name = heatmap_rendering::DISTANCEEVALUATIONSPASS_NAME;
+            options.shader_name = "heatmap"_sid;
 
             options.sphere_tracer_options.max_iterations = renderpass_settings::MAX_SPHERE_TRACER_ITERATIONS;
             options.sphere_tracer_options.max_march_distance = renderpass_settings::MAX_MARCH_DISTANCE;
@@ -238,39 +238,14 @@ namespace regina
             return options;
         }
         //-------------------------------------------------------------------------
-        rex::DeferredLightPassOptions create_deferred_light_pass_options()
-        {
-            rex::DeferredLightPassOptions options;
-
-            options.pass_name = distance_field_rendering::DEFERREDLIGHTPASS_NAME;
-            options.shader_name = "deferred_shading_lighting"_sid;
-            options.g_position_buffer = {distance_field_rendering::DISTANCEEVALUATIONSPASS_NAME, 0};
-            options.g_normal_buffer = {distance_field_rendering::DISTANCEEVALUATIONSPASS_NAME, 1};
-            options.g_albedo_spec_buffer = {distance_field_rendering::DISTANCEEVALUATIONSPASS_NAME, 2};
-
-            return options;
-        }
-        //-------------------------------------------------------------------------
-        rex::DeferredLightVisualizationPassOptions create_deferred_light_visualization_pass_options()
-        {
-            rex::DeferredLightVisualizationPassOptions options;
-
-            options.pass_name = distance_field_rendering::DEFERREDLIGHTVISUALIZATIONPASS_NAME;
-            options.color_pass_name = distance_field_rendering::DEFERREDLIGHTPASS_NAME;
-            options.depth_pass_name = distance_field_rendering::DISTANCEEVALUATIONSPASS_NAME;
-            options.shader_name = "deferred_shading_lighting_visualization"_sid;
-
-            return options;
-        }
-        //-------------------------------------------------------------------------
         rex::CompositePassOptions create_composite_pass_options()
         {
             rex::CompositePassOptions options;
 
-            options.pass_name = distance_field_rendering::COMPOSITEPASS_NAME;
+            options.pass_name = heatmap_rendering::COMPOSITEPASS_NAME;
             options.shader_name = "blit"_sid;
-            options.color_buffer = distance_field_rendering::DEFERREDLIGHTVISUALIZATIONPASS_NAME;
-            options.gamma_correction = distance_field_rendering::renderpass_settings::GAMMA_CORRECTION;
+            options.color_buffer = heatmap_rendering::DISTANCEEVALUATIONSPASS_NAME;
+            options.gamma_correction = heatmap_rendering::renderpass_settings::GAMMA_CORRECTION;
 
             return options;
         }
@@ -314,14 +289,14 @@ namespace regina
             OrbitCameraDescription description;
 
             // Camera
-            rex::vec3 camera_pos = distance_field_rendering::camera_settings::CAMERA_POSITION;
-            rex::quaternion camera_rot = rex::quaternion(distance_field_rendering::camera_settings::CAMERA_ROTATION);
+            rex::vec3 camera_pos = heatmap_rendering::camera_settings::CAMERA_POSITION;
+            rex::quaternion camera_rot = rex::quaternion(heatmap_rendering::camera_settings::CAMERA_ROTATION);
 
-            bool can_rotate_pitch = distance_field_rendering::camera_settings::CAN_ROTATE_PITCH;
-            bool can_rotate_yaw = distance_field_rendering::camera_settings::CAN_ROTATE_YAW;
-            bool can_zoom = distance_field_rendering::camera_settings::CAN_ZOOM;
+            bool can_rotate_pitch = heatmap_rendering::camera_settings::CAN_ROTATE_PITCH;
+            bool can_rotate_yaw = heatmap_rendering::camera_settings::CAN_ROTATE_YAW;
+            bool can_zoom = heatmap_rendering::camera_settings::CAN_ZOOM;
 
-            bool initial_enabled = distance_field_rendering::camera_settings::IS_ENABLED;
+            bool initial_enabled = heatmap_rendering::camera_settings::IS_ENABLED;
 
             description.camera_settings.camera_position = camera_pos;
             description.camera_settings.camera_rotation = camera_rot;
@@ -331,14 +306,14 @@ namespace regina
             description.camera_settings.enabled = initial_enabled;
 
             // Focus
-            description.focus_settings = create_focus_settings(distance_field_rendering::camera_settings::CAMERA_FOCUS, distance_field_rendering::camera_settings::MIN_FOCUS_DISTANCE, distance_field_rendering::camera_settings::MAX_FOCUS_DISTANCE,
-                                                               distance_field_rendering::camera_settings::FOCUS_DISTANCE);
+            description.focus_settings = create_focus_settings(heatmap_rendering::camera_settings::CAMERA_FOCUS, heatmap_rendering::camera_settings::MIN_FOCUS_DISTANCE, heatmap_rendering::camera_settings::MAX_FOCUS_DISTANCE,
+                                                               heatmap_rendering::camera_settings::FOCUS_DISTANCE);
 
             // Orbit
-            description.orbit_settings = create_orbit_settings(distance_field_rendering::camera_settings::ROTATION_SPEED, distance_field_rendering::camera_settings::MIN_PITCH_ANGLE, distance_field_rendering::camera_settings::MAX_PITCH_ANGLE);
+            description.orbit_settings = create_orbit_settings(heatmap_rendering::camera_settings::ROTATION_SPEED, heatmap_rendering::camera_settings::MIN_PITCH_ANGLE, heatmap_rendering::camera_settings::MAX_PITCH_ANGLE);
 
             // Mouse
-            description.mouse_settings = create_mouse_settings(distance_field_rendering::camera_settings::MOVE_SENSITIVITY, distance_field_rendering::camera_settings::SCROLL_SENSITIVITY);
+            description.mouse_settings = create_mouse_settings(heatmap_rendering::camera_settings::MOVE_SENSITIVITY, heatmap_rendering::camera_settings::SCROLL_SENSITIVITY);
 
             return description;
         }
@@ -389,7 +364,7 @@ namespace regina
 
             Volume volume = volume_importer::import(name, volumeMetaPath, volumeDataPath);
 
-            if(volume.get_volume_data().get_size() == 0)
+            if (volume.get_volume_data().get_size() == 0)
             {
                 R_ERROR("[VOLUME] Volume with name: {0}, was not imported correctly", volume.get_name());
             }
@@ -404,47 +379,47 @@ namespace regina
             R_PROFILE_FUNCTION();
 
             load_volume(get_volume_name_map()[VolumeType::BUNNY], "content\\volumes\\bunny.sdf.meta"_sid, "content\\volumes\\bunny.sdf"_sid);
-            //load_volume(get_volume_name_map()[VolumeType::CUBE], "content\\volumes\\cube.sdf.meta"_sid, "content\\volumes\\cube.sdf"_sid);
+            // load_volume(get_volume_name_map()[VolumeType::CUBE], "content\\volumes\\cube.sdf.meta"_sid, "content\\volumes\\cube.sdf"_sid);
             load_volume(get_volume_name_map()[VolumeType::CYLINDER], "content\\volumes\\cylinder.sdf.meta"_sid, "content\\volumes\\cylinder.sdf"_sid);
-            //load_volume(get_volume_name_map()[VolumeType::DRAGON], "content\\volumes\\dragon.sdf.meta"_sid, "content\\volumes\\dragon.sdf"_sid);
-            //load_volume(get_volume_name_map()[VolumeType::MONKEY], "content\\volumes\\monkey.sdf.meta"_sid, "content\\volumes\\monkey.sdf"_sid);
-            //load_volume(get_volume_name_map()[VolumeType::SPHERE], "content\\volumes\\sphere.sdf.meta"_sid, "content\\volumes\\sphere.sdf"_sid);
+            // load_volume(get_volume_name_map()[VolumeType::DRAGON], "content\\volumes\\dragon.sdf.meta"_sid, "content\\volumes\\dragon.sdf"_sid);
+            // load_volume(get_volume_name_map()[VolumeType::MONKEY], "content\\volumes\\monkey.sdf.meta"_sid, "content\\volumes\\monkey.sdf"_sid);
+            // load_volume(get_volume_name_map()[VolumeType::SPHERE], "content\\volumes\\sphere.sdf.meta"_sid, "content\\volumes\\sphere.sdf"_sid);
             load_volume(get_volume_name_map()[VolumeType::TIGER], "content\\volumes\\tiger.sdf.meta"_sid, "content\\volumes\\tiger.sdf"_sid);
             load_volume(get_volume_name_map()[VolumeType::TORUS], "content\\volumes\\torus.sdf.meta"_sid, "content\\volumes\\torus.sdf"_sid);
         }
-    } // namespace distance_field_rendering
+    } // namespace heatmap_rendering
 
     //-------------------------------------------------------------------------
-    DistanceFieldRenderingLayer::DistanceFieldRenderingLayer(const rex::CoreWindow* window)
+    HeatMapRenderingLayer::HeatMapRenderingLayer(const rex::CoreWindow* window)
         : Layer("regina_layer"_sid, -1, EnableImGUIRendering::NO)
-        , m_camera_controller(rex::win32::Input::instance(), R_MOUSE_BUTTON_LEFT, distance_field_rendering::create_orbit_camera_description())
+        , m_camera_controller(rex::win32::Input::instance(), R_MOUSE_BUTTON_LEFT, heatmap_rendering::create_orbit_camera_description())
         , m_window(window)
     {
     }
     //-------------------------------------------------------------------------
-    DistanceFieldRenderingLayer::~DistanceFieldRenderingLayer()
+    HeatMapRenderingLayer::~HeatMapRenderingLayer()
     {
     }
 
     //-------------------------------------------------------------------------
-    void DistanceFieldRenderingLayer::on_attach()
+    void HeatMapRenderingLayer::on_attach()
     {
         R_PROFILE_FUNCTION();
 
-        distance_field_rendering::load_volumes();
-        distance_field_rendering::load_shaders();
-        distance_field_rendering::load_primitive_geometry();
+        heatmap_rendering::load_volumes();
+        heatmap_rendering::load_shaders();
+        heatmap_rendering::load_primitive_geometry();
 
         setup_scene();
         setup_camera();
         setup_scene_renderer();
     }
     //-------------------------------------------------------------------------
-    void DistanceFieldRenderingLayer::on_detach()
+    void HeatMapRenderingLayer::on_detach()
     {
         R_PROFILE_FUNCTION();
 
-        rex::mesh_factory::clear(); 
+        rex::mesh_factory::clear();
         rex::shader_library::clear();
 
         volume_library::clear();
@@ -459,7 +434,7 @@ namespace regina
     }
 
     //-------------------------------------------------------------------------
-    void DistanceFieldRenderingLayer::on_update(const rex::FrameInfo& info)
+    void HeatMapRenderingLayer::on_update(const rex::FrameInfo& info)
     {
         R_PROFILE_FUNCTION();
 
@@ -474,7 +449,7 @@ namespace regina
     }
 
     //-------------------------------------------------------------------------
-    void DistanceFieldRenderingLayer::on_event(rex::events::Event& event)
+    void HeatMapRenderingLayer::on_event(rex::events::Event& event)
     {
         R_PROFILE_FUNCTION();
 
@@ -486,7 +461,7 @@ namespace regina
     }
 
     //-------------------------------------------------------------------------
-    bool DistanceFieldRenderingLayer::on_key_pressed(const rex::events::KeyPressed& keyPressEvent)
+    bool HeatMapRenderingLayer::on_key_pressed(const rex::events::KeyPressed& keyPressEvent)
     {
         switch (keyPressEvent.get_key())
         {
@@ -499,9 +474,9 @@ namespace regina
     }
 
     //-------------------------------------------------------------------------
-    void DistanceFieldRenderingLayer::decrement_sdf_scale()
+    void HeatMapRenderingLayer::decrement_sdf_scale()
     {
-        rex::SceneRenderPass* render_pass = m_scene_renderer->get_scene_render_pass(distance_field_rendering::DISTANCEEVALUATIONSPASS_NAME);
+        rex::SceneRenderPass* render_pass = m_scene_renderer->get_scene_render_pass(heatmap_rendering::DISTANCEEVALUATIONSPASS_NAME);
         if (render_pass == nullptr)
         {
             return;
@@ -519,12 +494,12 @@ namespace regina
         }
 
         {
-            const Volume& volume = volume_library::get_volume(distance_field_rendering::get_volume_name_map()[distance_field_rendering::VOLUME_TYPE]);
+            const Volume& volume = volume_library::get_volume(heatmap_rendering::get_volume_name_map()[heatmap_rendering::VOLUME_TYPE]);
 
-            scene_size = distance_field_rendering::calculate_scene_size(volume);
+            scene_size = heatmap_rendering::calculate_scene_size(volume);
             scene_size = scene_size * scene_scale;
         }
-        
+
         sdf_scene_options.scene_scale = scene_scale;
         sdf_scene_options.scene_size = scene_size;
 
@@ -533,9 +508,9 @@ namespace regina
         distance_eval->set_sdf_scene_options(sdf_scene_options);
     }
     //-------------------------------------------------------------------------
-    void DistanceFieldRenderingLayer::decrement_sdf_offset()
+    void HeatMapRenderingLayer::decrement_sdf_offset()
     {
-        rex::SceneRenderPass* render_pass = m_scene_renderer->get_scene_render_pass(distance_field_rendering::DISTANCEEVALUATIONSPASS_NAME);
+        rex::SceneRenderPass* render_pass = m_scene_renderer->get_scene_render_pass(heatmap_rendering::DISTANCEEVALUATIONSPASS_NAME);
         if (render_pass == nullptr)
         {
             return;
@@ -557,9 +532,9 @@ namespace regina
     }
 
     //-------------------------------------------------------------------------
-    void DistanceFieldRenderingLayer::increment_sdf_scale()
+    void HeatMapRenderingLayer::increment_sdf_scale()
     {
-        rex::SceneRenderPass* render_pass = m_scene_renderer->get_scene_render_pass(distance_field_rendering::DISTANCEEVALUATIONSPASS_NAME);
+        rex::SceneRenderPass* render_pass = m_scene_renderer->get_scene_render_pass(heatmap_rendering::DISTANCEEVALUATIONSPASS_NAME);
         if (render_pass == nullptr)
         {
             return;
@@ -577,9 +552,9 @@ namespace regina
         }
 
         {
-            const Volume& volume = volume_library::get_volume(distance_field_rendering::get_volume_name_map()[distance_field_rendering::VOLUME_TYPE]);
+            const Volume& volume = volume_library::get_volume(heatmap_rendering::get_volume_name_map()[heatmap_rendering::VOLUME_TYPE]);
 
-            scene_size = distance_field_rendering::calculate_scene_size(volume);
+            scene_size = heatmap_rendering::calculate_scene_size(volume);
             scene_size = scene_size * scene_scale;
         }
 
@@ -591,9 +566,9 @@ namespace regina
         distance_eval->set_sdf_scene_options(sdf_scene_options);
     }
     //-------------------------------------------------------------------------
-    void DistanceFieldRenderingLayer::increment_sdf_offset()
+    void HeatMapRenderingLayer::increment_sdf_offset()
     {
-        rex::SceneRenderPass* render_pass = m_scene_renderer->get_scene_render_pass(distance_field_rendering::DISTANCEEVALUATIONSPASS_NAME);
+        rex::SceneRenderPass* render_pass = m_scene_renderer->get_scene_render_pass(heatmap_rendering::DISTANCEEVALUATIONSPASS_NAME);
         if (render_pass == nullptr)
         {
             return;
@@ -615,7 +590,7 @@ namespace regina
     }
 
     //-------------------------------------------------------------------------
-    void DistanceFieldRenderingLayer::setup_scene()
+    void HeatMapRenderingLayer::setup_scene()
     {
         R_PROFILE_FUNCTION();
 
@@ -627,7 +602,7 @@ namespace regina
         setup_lights();
     }
     //-------------------------------------------------------------------------
-    void DistanceFieldRenderingLayer::setup_camera()
+    void HeatMapRenderingLayer::setup_camera()
     {
         R_PROFILE_FUNCTION();
 
@@ -636,9 +611,9 @@ namespace regina
 
         rex::AspectRatio aspect_ratio = rex::AspectRatio(viewport_width, viewport_height);
 
-        float near_plane = distance_field_rendering::camera_settings::NEAR_PLANE;
-        float far_plane = distance_field_rendering::camera_settings::FAR_PLANE;
-        float fov = distance_field_rendering::camera_settings::FIELD_OF_VIEW;
+        float near_plane = heatmap_rendering::camera_settings::NEAR_PLANE;
+        float far_plane = heatmap_rendering::camera_settings::FAR_PLANE;
+        float fov = heatmap_rendering::camera_settings::FIELD_OF_VIEW;
 
         m_camera.set_perspective(rex::FieldOfView(rex::DegAngle(fov), aspect_ratio.get_ratio()), rex::ClippingPlanes(near_plane, far_plane));
         m_camera.activate();
@@ -652,27 +627,23 @@ namespace regina
         m_camera_controller.set_camera_transform(&transform_component.transform);
     }
     //-------------------------------------------------------------------------
-    void DistanceFieldRenderingLayer::setup_scene_renderer()
+    void HeatMapRenderingLayer::setup_scene_renderer()
     {
         R_PROFILE_FUNCTION();
 
         rex::SceneRenderPasses renderpasses;
 
-        auto distance_eval = create_distance_evaluation_pass(distance_field_rendering::create_distance_evaluation_pass_options());
-        auto deferred_light = create_deferred_light_pass(distance_field_rendering::create_deferred_light_pass_options());
-        auto deferred_light_visualization = create_deferred_light_visualization_pass(distance_field_rendering::create_deferred_light_visualization_pass_options());
-        auto composite = create_composite_pass(distance_field_rendering::create_composite_pass_options());
+        auto distance_eval = create_distance_evaluation_pass(heatmap_rendering::create_distance_evaluation_pass_options());
+        auto composite = create_composite_pass(heatmap_rendering::create_composite_pass_options());
 
         renderpasses.push_back(std::move(distance_eval));
-        renderpasses.push_back(std::move(deferred_light));
-        renderpasses.push_back(std::move(deferred_light_visualization));
         renderpasses.push_back(std::move(composite));
 
         m_scene_renderer = rex::make_ref<rex::SceneRenderer>(m_scene, std::move(renderpasses));
     }
 
     //-------------------------------------------------------------------------
-    void DistanceFieldRenderingLayer::setup_lights()
+    void HeatMapRenderingLayer::setup_lights()
     {
         R_PROFILE_FUNCTION();
 
@@ -699,28 +670,14 @@ namespace regina
     }
 
     //-------------------------------------------------------------------------
-    std::unique_ptr<rex::SceneRenderPass> DistanceFieldRenderingLayer::create_distance_evaluation_pass(const rex::DistanceEvaluationsPassOptions& options) const
+    std::unique_ptr<rex::SceneRenderPass> HeatMapRenderingLayer::create_distance_evaluation_pass(const rex::DistanceEvaluationsPassOptions& options) const
     {
         R_PROFILE_FUNCTION();
 
         return std::make_unique<rex::DistanceEvaluationPass>(options, rex::CreateFrameBuffer::YES);
     }
     //-------------------------------------------------------------------------
-    std::unique_ptr<rex::SceneRenderPass> DistanceFieldRenderingLayer::create_deferred_light_pass(const rex::DeferredLightPassOptions& options) const
-    {
-        R_PROFILE_FUNCTION();
-
-        return std::make_unique<rex::DeferredLightPass>(options, rex::CreateFrameBuffer::YES);
-    }
-    //-------------------------------------------------------------------------
-    std::unique_ptr<rex::SceneRenderPass> DistanceFieldRenderingLayer::create_deferred_light_visualization_pass(const rex::DeferredLightVisualizationPassOptions& options) const
-    {
-        R_PROFILE_FUNCTION();
-
-        return std::make_unique<rex::DeferredLightVisualizationPass>(options, rex::CreateFrameBuffer::YES);
-    }
-    //-------------------------------------------------------------------------
-    std::unique_ptr<rex::SceneRenderPass> DistanceFieldRenderingLayer::create_composite_pass(const rex::CompositePassOptions& options) const
+    std::unique_ptr<rex::SceneRenderPass> HeatMapRenderingLayer::create_composite_pass(const rex::CompositePassOptions& options) const
     {
         R_PROFILE_FUNCTION();
 
