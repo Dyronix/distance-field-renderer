@@ -391,7 +391,9 @@ namespace regina
 
             if(volume.get_volume_data().get_size() == 0)
             {
-                R_ERROR("[VOLUME] Volume with name: {0}, was not imported correctly", volume.get_name());
+                R_ERROR("[VOLUME] Volume with name: {0}, was not imported correctly", volume.get_name().to_string());
+                R_ERROR("[VOLUME] Import failed: {0}", volume.get_name().to_string());
+                return;
             }
 
             volume_library::add(std::move(volume));
