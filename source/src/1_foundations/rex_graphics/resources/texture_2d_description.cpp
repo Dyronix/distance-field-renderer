@@ -119,6 +119,18 @@ namespace rex
     }
 
     //-------------------------------------------------------------------------
+    bool is_valid_texture_2d_description(const Texture2DDescription& description)
+    {
+        return description.name != ESID::SID_None
+            && description.width != 0
+            && description.height != 0
+            && description.texel_format != Texel::Format::UNKNOWN
+            && description.format != Texture::Format::UNKNOWN
+            && !description.wraps.empty()
+            && !description.filters.empty();
+    }
+
+    //-------------------------------------------------------------------------
     Texture2DDescription create_depth_attachment_description(uint32 width, uint32 height, Texture::Format textureFormat)
     {
         Texture2DDescription desc;

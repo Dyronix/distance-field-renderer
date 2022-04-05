@@ -59,4 +59,17 @@ namespace rex
 
         return *this;
     }
+
+    //-------------------------------------------------------------------------
+    bool is_valid_texture_3d_description(const Texture3DDescription& description)
+    {
+        return description.name != ESID::SID_None
+            && description.width != 0
+            && description.height != 0
+            && description.depth != 0
+            && description.texel_format != Texel::Format::UNKNOWN
+            && description.format != Texture::Format::UNKNOWN
+            && !description.wraps.empty()
+            && !description.filters.empty();
+    }
 }

@@ -29,6 +29,8 @@ namespace rex
         Texture::Data data;
     };
 
+    bool is_valid_texture_2d_description(const Texture2DDescription& description);
+
     Texture2DDescription create_depth_attachment_description(uint32 width, uint32 height, Texture::Format textureFormat);
     Texture2DDescription create_color_attachment_description(uint32 width, uint32 height, Texture::Format textureFormat);
 }

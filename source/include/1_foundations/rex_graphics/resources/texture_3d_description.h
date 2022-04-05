@@ -29,4 +29,6 @@ namespace rex
 
         Texture::Data data;
     };
+
+    bool is_valid_texture_3d_description(const Texture3DDescription& description);
 }
