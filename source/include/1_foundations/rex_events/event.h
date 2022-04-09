@@ -8,21 +8,21 @@ namespace rex
 {
     namespace events
     {
-#define EVENT_CLASS_TYPE(type)                                                                                                                                                                                                                           \
-    static size_t get_static_type()                                                                                                                                                                                                                      \
-    {                                                                                                                                                                                                                                                    \
-        return typeid(type).hash_code();                                                                                                                                                                                                                 \
-    }                                                                                                                                                                                                                                                    \
-    size_t get_type() const override                                                                                                                                                                                                                     \
-    {                                                                                                                                                                                                                                                    \
-        return get_static_type();                                                                                                                                                                                                                        \
-    }
+    #define EVENT_CLASS_TYPE(type)                                  \
+        static size_t get_static_type()                             \
+        {                                                           \
+            return typeid(type).hash_code();                        \
+        }                                                           \
+        size_t get_type() const override                            \
+        {                                                           \
+            return get_static_type();                               \
+        }
 
-#define EVENT_CLASS_CATEGORY(category)                                                                                                                                                                                                                   \
-    rex::events::EventCategory get_category() const override                                                                                                                                                                                             \
-    {                                                                                                                                                                                                                                                    \
-        return category;                                                                                                                                                                                                                                 \
-    }
+    #define EVENT_CLASS_CATEGORY(category)                          \
+        rex::events::EventCategory get_category() const override    \
+        {                                                           \
+            return category;                                        \
+        }
 
         class BaseEvent
         {
