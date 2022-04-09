@@ -175,7 +175,7 @@ namespace rex
         R_ASSERT_X(sdfSceneOptions.scene_voxel_grid_cell_size != vec3(0.0f, 0.0f, 0.0f), "No scene voxel grid cell size was given to the \"Distance Evaluation Pass\"");
 
         material->set("u_scene_voxel_grid_min_bounds", sdfSceneOptions.scene_voxel_grid_min_bounds);
-        material->set("u_scene_voxel_grid_max_bounds", sdfSceneOptions.scene_voxel_grid_max_bounds);
+        // material->set("u_scene_voxel_grid_max_bounds", sdfSceneOptions.scene_voxel_grid_max_bounds);
         material->set("u_scene_voxel_grid_size", sdfSceneOptions.scene_voxel_grid_size);
         material->set("u_scene_voxel_grid_cell_size", sdfSceneOptions.scene_voxel_grid_cell_size);
 
