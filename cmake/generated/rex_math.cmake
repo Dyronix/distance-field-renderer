@@ -31,10 +31,12 @@ add_definitions(-D${UPPER_LIB_NAME}_LIB)
 target_include_directories(rex_math PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_math)                
 target_include_directories(rex_math PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_diagnostics)                
 target_include_directories(rex_math PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_utilities)                
+target_include_directories(rex_math PUBLIC ${CMAKE_SOURCE_DIR}/source/include/1_foundations/rex_std)                
 target_include_directories(rex_math PUBLIC ${INCLUDE_GLM})          
 
 target_link_libraries(rex_math PUBLIC rex_diagnostics)
 target_link_libraries(rex_math PUBLIC rex_utilities)
+target_link_libraries(rex_math PUBLIC rex_std)
 
                                                                                                                              
 # Set project properties                                                                                                       
