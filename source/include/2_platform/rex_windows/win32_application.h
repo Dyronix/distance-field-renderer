@@ -47,13 +47,14 @@ namespace rex
             void quit() override;
 
         protected:
-            void push_back_layer(std::unique_ptr<Layer> layer);
+            Layer* push_back_layer(std::unique_ptr<Layer> layer);
 
             bool platform_initialize() override;
             bool platform_shutdown() override;
 
             virtual void on_app_initialize();
             virtual void on_app_update(const FrameInfo& info);
+            virtual void on_app_event(events::Event& event);
             virtual void on_app_shutdown();
 
         private:

@@ -87,9 +87,13 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        void Application::push_back_layer(std::unique_ptr<Layer> layer)
+        Layer* Application::push_back_layer(std::unique_ptr<Layer> layer)
         {
+            Layer* raw_ptr = layer.get();
+
             m_layer_stack->push(std::move(layer));
+
+            return raw_ptr;
         }
 
         //-------------------------------------------------------------------------
@@ -120,7 +124,12 @@ namespace rex
                 SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
                 SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 #endif
-                R_PROFILE_BEGIN_SESSION("Startup", "scribit-profile-startup.json");
+                std::stringstream startup_stream;
+                startup_stream << "scribit-profile-startup-";
+                startup_stream << get_application_description().profile_id.to_string();
+                startup_stream << ".json";
+
+                R_PROFILE_BEGIN_SESSION("Startup", startup_stream.str());
 
                 create_display_manager();
                 create_layer_stack();
@@ -144,7 +153,12 @@ namespace rex
 
                 R_PROFILE_END_SESSION();
 
-                R_PROFILE_BEGIN_SESSION("Runtime", "scribit-profile-runtime.json");
+                std::stringstream runtime_stream;
+                runtime_stream << "scribit-profile-runtime-";
+                runtime_stream << get_application_description().profile_id.to_string();
+                runtime_stream << ".json";
+
+                R_PROFILE_BEGIN_SESSION("Runtime", runtime_stream.str());
 
                 // Run the main application loop!
                 m_application_loop->exec();
@@ -163,7 +177,12 @@ namespace rex
         //-------------------------------------------------------------------------
         bool Application::platform_shutdown()
         {
-            R_PROFILE_BEGIN_SESSION("Shutdown", "scribit-profile-shutdown.json");
+            std::stringstream shutdown_stream;
+            shutdown_stream << "scribit-profile-shutdown-";
+            shutdown_stream << get_application_description().profile_id.to_string();
+            shutdown_stream << ".json";
+
+            R_PROFILE_BEGIN_SESSION("Shutdown", shutdown_stream.str());
 
             on_app_shutdown();
 
@@ -203,6 +222,12 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
+        void Application::on_app_event(events::Event& /*event*/)
+        {
+            // Implement in derived class
+        }
+
+        //-------------------------------------------------------------------------
         void Application::on_app_shutdown()
         {
             // Implement in derived class
@@ -222,6 +247,8 @@ namespace rex
                           {
                               layer->handle_event(event);
                           });
+
+            on_app_event(event);
 
             events::EventDispatcher dispatcher(event);
             dispatcher.dispatch<events::WindowClose>([&](const events::WindowClose& closeEvent)
@@ -327,7 +354,12 @@ namespace rex
 
             WindowDescription window_description;
 
-            window_description.title = get_application_description().name;
+            char* app_name;
+            size_t app_name_size;
+
+            get_application_description().name.to_string(&app_name, app_name_size);
+
+            window_description.title = app_name;
             window_description.width = get_application_description().window_width;
             window_description.height = get_application_description().window_height;
             window_description.fullscreen = get_application_description().fullscreen;
@@ -420,7 +452,7 @@ namespace rex
         {
             std::stringstream stream;
 
-            stream << get_application_description().name;
+            stream << get_application_description().name.to_string();
             stream << " - FPS: ";
             stream << fps.get();
 
