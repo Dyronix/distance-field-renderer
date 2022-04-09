@@ -68,6 +68,16 @@ namespace regina
             TORUS,
             DRAGON,
             TIGER,
+            
+            CROSS_CUBE_RIBS,
+            CROSS,
+            CUBE_RIBS,
+            DOUBLE_TETRA_OCTA_RIBS,
+            DOUBLE_TETRA_RIBS,
+            FKA,
+            OCTAHEDRON_RIB,
+            OECHS,
+            TETRAHEDRON_RIBS
         };
 
         using MeshNameMap = std::unordered_map<MeshType, rex::StringID>;
@@ -75,19 +85,28 @@ namespace regina
 
         using MeshLattice = rex::YesNoEnum;
 
-        MeshType MESH_TYPE = MeshType::TIGER;
-        MeshLattice MESH_LATTICE = MeshLattice::NO;
+        DeferredRenderingLayerDescription LAYER_DESCRIPTION;
 
         MeshNameMap MESH_NAME_MAP =
         {
-            { MeshType::BUNNY,      "Bunny"_sid },
-            { MeshType::CUBE,       "Cube"_sid },
-            { MeshType::CYLINDER,   "Cylinder"_sid },
-            { MeshType::MONKEY,     "Monkey"_sid },
-            { MeshType::SPHERE,     "Sphere"_sid },
-            { MeshType::TORUS,      "Torus"_sid },
-            { MeshType::DRAGON,     "Dragon"_sid },
-            { MeshType::TIGER,      "Tiger"_sid },
+            { MeshType::BUNNY,      "bunny"_sid },
+            { MeshType::CUBE,       "cube"_sid },
+            { MeshType::CYLINDER,   "cylinder"_sid },
+            { MeshType::MONKEY,     "monkey"_sid },
+            { MeshType::SPHERE,     "sphere"_sid },
+            { MeshType::TORUS,      "torus"_sid },
+            { MeshType::DRAGON,     "dragon"_sid },
+            { MeshType::TIGER,      "tiger"_sid },
+            
+            { MeshType::CROSS_CUBE_RIBS,        "cross_cube_ribs"_sid},
+            { MeshType::CROSS,                  "cross"_sid },
+            { MeshType::CUBE_RIBS,              "cube_ribs"_sid },
+            { MeshType::DOUBLE_TETRA_OCTA_RIBS, "double_tetra_octa_ribs"_sid },
+            { MeshType::DOUBLE_TETRA_RIBS,      "double_tetra_ribs"_sid },
+            { MeshType::FKA,                    "fka"_sid},
+            { MeshType::OCTAHEDRON_RIB,         "octahedron_rib"_sid},
+            { MeshType::OECHS,                  "oechs"_sid},
+            { MeshType::TETRAHEDRON_RIBS,       "tetraheron_ribs"_sid},
         };
         MeshScaleMap MESH_SCALE_MAP
         {
@@ -99,9 +118,22 @@ namespace regina
             { MeshType::TORUS,      {0.5, 0.5, 0.5} },
             { MeshType::DRAGON,     {0.02, 0.02, 0.02} },
             { MeshType::TIGER,      {1.5, 1.5, 1.5} },
+
+            { MeshType::CROSS_CUBE_RIBS,        {0.5, 0.5, 0.5}},
+            { MeshType::CROSS,                  {0.5, 0.5, 0.5}},
+            { MeshType::CUBE_RIBS,              {0.5, 0.5, 0.5}},
+            { MeshType::DOUBLE_TETRA_OCTA_RIBS, {0.5, 0.5, 0.5}},
+            { MeshType::DOUBLE_TETRA_RIBS,      {0.5, 0.5, 0.5}},
+            { MeshType::FKA,                    {0.5, 0.5, 0.5}},
+            { MeshType::OCTAHEDRON_RIB,         {0.5, 0.5, 0.5}},
+            { MeshType::OECHS,                  {0.5, 0.5, 0.5}},
+            { MeshType::TETRAHEDRON_RIBS,       {0.5, 0.5, 0.5}},
         };
 
         // Render pass settings
+        int32 MIN_NR_LIGHTS = 1;
+        int32 MAX_NR_LIGHTS = 32;
+
         const rex::StringID DEFERREDGEOMETRYPASS_NAME = "DeferredGeometryPass"_sid;
         const rex::StringID DEFERREDLIGHTPASS_NAME = "DeferredLightPass"_sid;
         const rex::StringID DEFERREDLIGHTVISUALIZATIONPASS_NAME = "DeferredLightVisualizationPass"_sid;
@@ -146,6 +178,8 @@ namespace regina
         //-------------------------------------------------------------------------
         rex::DeferredGeometryPassOptions create_deferred_geometry_pass_options()
         {
+            R_PROFILE_FUNCTION();
+
             rex::DeferredGeometryPassOptions options;
 
             options.pass_name = deferred_rendering::DEFERREDGEOMETRYPASS_NAME;
@@ -157,6 +191,8 @@ namespace regina
         //-------------------------------------------------------------------------
         rex::DeferredLightPassOptions create_deferred_light_pass_options()
         {
+            R_PROFILE_FUNCTION();
+
             rex::DeferredLightPassOptions options;
 
             options.pass_name = deferred_rendering::DEFERREDLIGHTPASS_NAME;
@@ -170,6 +206,8 @@ namespace regina
         //-------------------------------------------------------------------------
         rex::DeferredLightVisualizationPassOptions create_deferred_light_visualization_pass_options()
         {
+            R_PROFILE_FUNCTION();
+
             rex::DeferredLightVisualizationPassOptions options;
 
             options.pass_name = deferred_rendering::DEFERREDLIGHTVISUALIZATIONPASS_NAME;
@@ -182,6 +220,8 @@ namespace regina
         //-------------------------------------------------------------------------
         rex::CompositePassOptions create_composite_pass_options()
         {
+            R_PROFILE_FUNCTION();
+
             rex::CompositePassOptions options;
 
             options.pass_name = deferred_rendering::COMPOSITEPASS_NAME;
@@ -195,6 +235,8 @@ namespace regina
         //-------------------------------------------------------------------------
         regina::FocusSettings create_focus_settings(const rex::vec3& target, const float minFocusDistance, float maxFocusDistance, float focusDistance)
         {
+            R_PROFILE_FUNCTION();
+
             regina::FocusSettings settings;
 
             settings.set_target(target);
@@ -207,6 +249,8 @@ namespace regina
         //-------------------------------------------------------------------------
         OrbitSettings create_orbit_settings(const float rotationSpeed, const float minPitchAngle, const float maxPitchAngle)
         {
+            R_PROFILE_FUNCTION();
+
             OrbitSettings settings;
 
             settings.set_rotation_speed(rotationSpeed);
@@ -218,6 +262,8 @@ namespace regina
         //-------------------------------------------------------------------------
         MouseSettings create_mouse_settings(const float moveSensitivity, const float scrollSensitivity)
         {
+            R_PROFILE_FUNCTION();
+
             MouseSettings settings;
 
             settings.mouse_movement_sensitivity = moveSensitivity;
@@ -228,6 +274,8 @@ namespace regina
         //-------------------------------------------------------------------------
         OrbitCameraDescription create_orbit_camera_description()
         {
+            R_PROFILE_FUNCTION();
+
             OrbitCameraDescription description;
 
             // Camera
@@ -293,28 +341,6 @@ namespace regina
             load_shader("deferred_shading_lighting_visualization"_sid, "1000"_sid, "content\\shaders\\deferred_shading_lighting_visualization.vertex"_sid, "content\\shaders\\deferred_shading_lighting_visualization.fragment"_sid);
         }
         //-------------------------------------------------------------------------
-        void load_texture(const rex::StringID& name, const rex::StringID& path, const SRGB& srgb, const rex::Texture::Usage& usage)
-        {
-            R_PROFILE_FUNCTION();
-
-            auto texture = texture_importer::import(name, path, srgb, usage);
-
-            if (texture == nullptr)
-            {
-                R_WARN("{0} texture was not found on disk", name.to_string());
-                return;
-            }
-
-            rex::texture_library::add(texture);
-        }
-        //-------------------------------------------------------------------------
-        void load_textures()
-        {
-            R_PROFILE_FUNCTION();
-
-            // load_texture("diffuse", "content\\textures\\diffuse.png", SRGB::NO, rex::Texture::Usage::DIFFUSE);
-        }
-        //-------------------------------------------------------------------------
         void load_primitive_geometry()
         {
             R_PROFILE_FUNCTION();
@@ -322,47 +348,51 @@ namespace regina
             rex::mesh_factory::load();
         }
         //-------------------------------------------------------------------------
+        void load_custom_geometry(const rex::StringID& sourceLocation, MeshType meshType, bool lattified, int32 resolution)
+        {
+            static std::unordered_map<int32, rex::StringID> resolutions{{0, "90"}, {1, "300"}, {2, "600"}, {3, "900"}};
+
+            rex::StringID source_location = sourceLocation.is_none() ? rex::create_sid("content\\meshes\\") : sourceLocation;
+
+            std::stringstream mesh_stream;
+
+            mesh_stream << source_location.to_string();
+            mesh_stream << "\\";
+            mesh_stream << MESH_NAME_MAP[meshType];
+            if (lattified)
+            {
+                mesh_stream << "_lattice";
+            }
+            if (resolution != -1)
+            {
+                mesh_stream << "_";
+                mesh_stream << resolutions[resolution];
+            }
+
+            std::stringstream mesh_path;
+            mesh_path << mesh_stream.str();
+            mesh_path << ".obj";
+
+            R_INFO("[Model] Mesh Path: {0}", mesh_path.str());
+
+            rex::model_library::add(model_importer::import(rex::create_sid(mesh_path.str()), MESH_NAME_MAP[meshType]));
+        }
+        //-------------------------------------------------------------------------
         void load_custom_geometry()
         {
             R_PROFILE_FUNCTION(); 
 
-            if (MESH_LATTICE)
-            {
-                switch (MESH_TYPE)
-                {
-                    case MeshType::BUNNY: rex::model_library::add(model_importer::import("content\\meshes\\bunny_lattice.obj"_sid, MESH_NAME_MAP[MeshType::BUNNY])); break;
-                    case MeshType::CUBE: rex::model_library::add(model_importer::import("content\\meshes\\cube_lattice.obj"_sid, MESH_NAME_MAP[MeshType::CUBE])); break;
-                    case MeshType::CYLINDER: rex::model_library::add(model_importer::import("content\\meshes\\cylinder_lattice.obj"_sid, MESH_NAME_MAP[MeshType::CYLINDER])); break;
-                    case MeshType::MONKEY: rex::model_library::add(model_importer::import("content\\meshes\\monkey_lattice.obj"_sid, MESH_NAME_MAP[MeshType::MONKEY])); break;
-                    case MeshType::SPHERE: rex::model_library::add(model_importer::import("content\\meshes\\sphere_lattice.obj"_sid, MESH_NAME_MAP[MeshType::SPHERE])); break;
-                    case MeshType::TORUS: rex::model_library::add(model_importer::import("content\\meshes\\torus_lattice.obj"_sid, MESH_NAME_MAP[MeshType::TORUS])); break;
-                    case MeshType::DRAGON: rex::model_library::add(model_importer::import("content\\meshes\\dragon_lattice.obj"_sid, MESH_NAME_MAP[MeshType::DRAGON])); break;
-                    case MeshType::TIGER: rex::model_library::add(model_importer::import("content\\meshes\\tiger_lattice.obj"_sid, MESH_NAME_MAP[MeshType::TIGER])); break;
-                }
-            }
-            else
-            {
-                switch (MESH_TYPE)
-                {
-                    case MeshType::BUNNY: rex::model_library::add(model_importer::import("content\\meshes\\bunny.obj"_sid, MESH_NAME_MAP[MeshType::BUNNY])); break;
-                    case MeshType::CUBE: rex::model_library::add(model_importer::import("content\\meshes\\cube.obj"_sid, MESH_NAME_MAP[MeshType::CUBE])); break;
-                    case MeshType::CYLINDER: rex::model_library::add(model_importer::import("content\\meshes\\cylinder.obj"_sid, MESH_NAME_MAP[MeshType::CYLINDER])); break;
-                    case MeshType::MONKEY: rex::model_library::add(model_importer::import("content\\meshes\\monkey.obj"_sid, MESH_NAME_MAP[MeshType::MONKEY])); break;
-                    case MeshType::SPHERE: rex::model_library::add(model_importer::import("content\\meshes\\sphere.obj"_sid, MESH_NAME_MAP[MeshType::SPHERE])); break;
-                    case MeshType::TORUS: rex::model_library::add(model_importer::import("content\\meshes\\torus.obj"_sid, MESH_NAME_MAP[MeshType::TORUS])); break;
-                    case MeshType::DRAGON: rex::model_library::add(model_importer::import("content\\meshes\\dragon.obj"_sid, MESH_NAME_MAP[MeshType::DRAGON])); break;
-                    case MeshType::TIGER: rex::model_library::add(model_importer::import("content\\meshes\\tiger.obj"_sid, MESH_NAME_MAP[MeshType::TIGER])); break;
-                }
-            }
+            load_custom_geometry(LAYER_DESCRIPTION.source_content_location, (MeshType)LAYER_DESCRIPTION.mesh_type, LAYER_DESCRIPTION.use_lattice, LAYER_DESCRIPTION.resolution);
         }
     } // namespace deferred_rendering
 
     //-------------------------------------------------------------------------
-    DeferredRenderingLayer::DeferredRenderingLayer(const rex::CoreWindow* window)
+    DeferredRenderingLayer::DeferredRenderingLayer(const rex::CoreWindow* window, const DeferredRenderingLayerDescription& description)
         : Layer("regina_layer"_sid, -1, EnableImGUIRendering::NO)
         , m_camera_controller(rex::win32::Input::instance(), R_MOUSE_BUTTON_LEFT, deferred_rendering::create_orbit_camera_description())
         , m_window(window)
     {
+        deferred_rendering::LAYER_DESCRIPTION = description;
     }
     //-------------------------------------------------------------------------
     DeferredRenderingLayer::~DeferredRenderingLayer()
@@ -375,7 +405,6 @@ namespace regina
         R_PROFILE_FUNCTION();
 
         deferred_rendering::load_shaders();
-        deferred_rendering::load_textures();
         deferred_rendering::load_primitive_geometry();
         deferred_rendering::load_custom_geometry();
 
@@ -390,7 +419,6 @@ namespace regina
 
         rex::model_library::clear();
         rex::mesh_factory::clear();
-        rex::texture_library::clear();
         rex::shader_library::clear();
 
         rex::FrameBufferPool::instance()->clear();
@@ -494,8 +522,10 @@ namespace regina
     {
         R_PROFILE_FUNCTION();
 
+        int32 nr_lights = std::clamp(deferred_rendering::LAYER_DESCRIPTION.nr_lights, deferred_rendering::MIN_NR_LIGHTS, deferred_rendering::MAX_NR_LIGHTS);
+
         srand(13);  // seed random number generator
-        for (int32 i = 0; i < 32; ++i)
+        for (int32 i = 0; i < nr_lights; ++i)
         {
             std::stringstream stream;
             stream << "light_";
@@ -521,22 +551,29 @@ namespace regina
     {
         R_PROFILE_FUNCTION();
 
-        const int32 MAX_OBJECTS = 9;
+        //const int32 MAX_OBJECTS = 9;
+
+        //std::array<rex::vec3, MAX_OBJECTS> object_positions = 
+        //{
+        //    rex::vec3(-3.0, -0.0, -3.0),
+        //    rex::vec3(0.0, -0.0, -3.0),
+        //    rex::vec3(3.0, -0.0, -3.0),
+        //    rex::vec3(-3.0, -0.0, 0.0),
+        //    rex::vec3(0.0, -0.0, 0.0),
+        //    rex::vec3(3.0, -0.0, 0.0),
+        //    rex::vec3(-3.0, -0.0, 3.0),
+        //    rex::vec3(0.0, -0.0, 3.0),
+        //    rex::vec3(3.0, -0.0, 3.0)
+        //};
+
+        const int32 MAX_OBJECTS = 1;
 
         std::array<rex::vec3, MAX_OBJECTS> object_positions = 
         {
-            rex::vec3(-3.0, -0.0, -3.0),
-            rex::vec3(0.0, -0.0, -3.0),
-            rex::vec3(3.0, -0.0, -3.0),
-            rex::vec3(-3.0, -0.0, 0.0),
-            rex::vec3(0.0, -0.0, 0.0),
-            rex::vec3(3.0, -0.0, 0.0),
-            rex::vec3(-3.0, -0.0, 3.0),
-            rex::vec3(0.0, -0.0, 3.0),
-            rex::vec3(3.0, -0.0, 3.0)
+            rex::vec3(0.0, -0.0, 0.0)
         };
 
-        auto mesh_type = deferred_rendering::MESH_TYPE;
+        auto mesh_type = (deferred_rendering::MeshType)deferred_rendering::LAYER_DESCRIPTION.mesh_type;
         auto mesh_name = deferred_rendering::MESH_NAME_MAP[mesh_type];
         auto mesh_scale = deferred_rendering::MESH_SCALE_MAP[mesh_type];
 

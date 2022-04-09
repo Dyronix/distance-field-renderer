@@ -31,10 +31,21 @@ namespace rex
 
 namespace regina
 {
+    struct DeferredRenderingLayerDescription
+    {
+        rex::StringID source_content_location;
+
+        int32 mesh_type;
+        int32 nr_lights;
+        int32 resolution;
+
+        bool use_lattice;
+    };
+
     class DeferredRenderingLayer : public rex::Layer
     {
     public:
-        DeferredRenderingLayer(const rex::CoreWindow* window);
+        DeferredRenderingLayer(const rex::CoreWindow* window, const DeferredRenderingLayerDescription& description);
         ~DeferredRenderingLayer() override;
 
         void on_attach() override;
