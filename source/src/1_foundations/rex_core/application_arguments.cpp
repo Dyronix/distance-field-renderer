@@ -25,6 +25,11 @@ namespace rex
 
             ApplicationArgument argument = application_argument_parser::parse(inArgv[i]);
 
+            if (argument.key.empty() || argument.value.empty())
+            {
+                continue;
+            }
+
             m_arguments.insert(std::make_pair(create_sid(argument.key), create_sid(argument.value)));
         }
     }

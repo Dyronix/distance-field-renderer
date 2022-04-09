@@ -11,6 +11,12 @@ namespace rex
         //-------------------------------------------------------------------------
         ApplicationArgument parse(const std::string& input)
         {
+            auto it = input.find('=');
+            if (it == std::string::npos)
+            {
+                return {};
+            }
+
             // Split on '='
             auto result = string_operations::split(input, "=");
 
