@@ -133,8 +133,8 @@ namespace rex
     {
     }
     //-------------------------------------------------------------------------
-    rex::StaticMesh::StaticMesh(std::vector<Vertex>& vertices, std::vector<TriangleIndices>& indices)
-        : Mesh(vertices, indices, BufferUsage::STATIC_DRAW)
+    rex::StaticMesh::StaticMesh(std::vector<Vertex>& vertices, std::vector<TriangleIndices>& triangles)
+        : Mesh(vertices, triangles, BufferUsage::STATIC_DRAW)
     {
     }
     //-------------------------------------------------------------------------
@@ -161,7 +161,12 @@ namespace rex
     {
     }
     //-------------------------------------------------------------------------
-    rex::DynamicMesh::DynamicMesh(std::vector<Vertex>& vertices, std::vector<TriangleIndices>& indices)
+    rex::DynamicMesh::DynamicMesh(std::vector<Vertex>& vertices, std::vector<TriangleIndices>& triangles)
+        : Mesh(vertices, triangles, BufferUsage::DYNAMIC_DRAW)
+    {
+    }
+    //-------------------------------------------------------------------------
+    DynamicMesh::DynamicMesh(std::vector<Vertex>& vertices, std::vector<int32>& indices)
         : Mesh(vertices, indices, BufferUsage::DYNAMIC_DRAW)
     {
     }

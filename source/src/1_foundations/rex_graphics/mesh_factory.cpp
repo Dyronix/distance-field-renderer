@@ -232,7 +232,7 @@ namespace rex
 
             info.name = "Unit Cube"_sid;
             info.vertices = package.vertices;
-            info.indices = package.indices;
+            info.triangles = package.indices;
             info.transform = rex::matrix4(1.0f);
             info.inverse_transform = rex::inverse(info.transform);
             info.bounding_box = aabb;
@@ -272,7 +272,7 @@ namespace rex
 
             info.name = "Unit Sphere"_sid;
             info.vertices = package.vertices;
-            info.indices = package.indices;
+            info.triangles = package.indices;
             info.transform = rex::matrix4(1.0f);
             info.inverse_transform = rex::inverse(info.transform);
             info.bounding_box = aabb;
@@ -313,7 +313,7 @@ namespace rex
 
             info.name = "Unit Capsule"_sid;
             info.vertices = package.vertices;
-            info.indices = package.indices;
+            info.triangles = package.indices;
             info.transform = rex::matrix4(1.0f);
             info.inverse_transform = rex::inverse(info.transform);
             info.bounding_box = aabb;
@@ -353,7 +353,7 @@ namespace rex
 
             info.name = "Unit Quad"_sid;
             info.vertices = package.vertices;
-            info.indices = package.indices;
+            info.triangles = package.indices;
             info.transform = rex::matrix4(1.0f);
             info.inverse_transform = rex::inverse(info.transform);
             info.bounding_box = aabb;

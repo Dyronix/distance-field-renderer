@@ -11,7 +11,6 @@ namespace rex
     //-------------------------------------------------------------------------
     Model::Model(ModelCreationInfo&& info) noexcept
         : m_name(info.name)
-        , m_mesh(info.vertices, info.indices)
         , m_transform(info.transform)
         , m_inverse_transform(info.inverse_transform)
         , m_bounding_box(info.bounding_box)
@@ -21,6 +20,16 @@ namespace rex
         , m_roughness_textures(info.roughness_textures)
         , m_materials(std::move(info.materials))
     {
+        R_ASSERT(!info.vertices.empty() || !info.indices.empty());
+
+        if (!info.indices.empty())
+        {
+            m_mesh = StaticMesh(info.vertices, info.indices);
+        }
+        else if (!info.triangles.empty())
+        {
+            m_mesh = StaticMesh(info.vertices, info.triangles);
+        }
     }
 
     //-------------------------------------------------------------------------

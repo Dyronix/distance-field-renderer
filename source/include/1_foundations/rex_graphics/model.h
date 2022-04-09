@@ -22,7 +22,8 @@ namespace rex
         StringID name;
 
         std::vector<Vertex> vertices;
-        std::vector<TriangleIndices> indices;
+        std::vector<int32> indices;
+        std::vector<TriangleIndices> triangles;
 
         rex::matrix4 transform;
         rex::matrix4 inverse_transform;

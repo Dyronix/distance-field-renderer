@@ -75,6 +75,7 @@ namespace rex
     public:
         DynamicMesh();
         DynamicMesh(std::vector<Vertex>& vertices, std::vector<TriangleIndices>& indices);
+        DynamicMesh(std::vector<Vertex>& vertices, std::vector<int32>& indices);
         ~DynamicMesh() override;
 
         BufferUsage get_usage() const override;

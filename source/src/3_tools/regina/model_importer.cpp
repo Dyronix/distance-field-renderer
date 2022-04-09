@@ -186,7 +186,7 @@ namespace regina
 
             Assimp::Importer importer;
 
-            const aiScene* scene = importer.ReadFileFromMemory(imported_mesh_blob.get_data_as<const void>(), imported_mesh_blob.get_size(), aiProcessPreset_TargetRealtime_Quality);
+            const aiScene* scene = importer.ReadFileFromMemory(imported_mesh_blob.get_data_as<const void>(), imported_mesh_blob.get_size(), aiProcessPreset_TargetRealtime_Fast);
             if (!scene || !scene->HasMeshes())
             {
                 MESH_PROCESSOR_ERROR("Failed to process mesh file: {0}", path.to_string());
@@ -216,6 +216,7 @@ namespace regina
             for (const MeshData& meshdata : meshes)
             {
                 model_creation_info.vertices.insert(std::begin(model_creation_info.vertices), std::begin(meshdata.vertices), std::end(meshdata.vertices));
+                model_creation_info.indices.insert(std::begin(model_creation_info.indices), std::begin(meshdata.indices), std::end(meshdata.indices));
 
                 for (int32 i = 0; i < gsl::narrow<int32>(meshdata.indices.size()); i += 3)
                 {
@@ -226,7 +227,7 @@ namespace regina
                         meshdata.indices[i + 2]
                     };
 
-                    model_creation_info.indices.push_back(triangle);
+                    model_creation_info.triangles.push_back(triangle);
                 }
 
                 rex::Submesh submesh;
