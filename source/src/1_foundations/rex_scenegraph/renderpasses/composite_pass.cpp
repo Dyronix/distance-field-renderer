@@ -34,19 +34,34 @@ namespace rex
     //-------------------------------------------------------------------------
     void CompositePass::set_gamma(float gamma)
     {
-        get_material()->set("u_GammaCorrection", gamma);
+        if(m_options.apply_gamma_correction)
+        {
+            m_options.gamma_correction = gamma;
+
+            get_material()->set("u_GammaCorrection", gamma);
+        }
     }
 
     //-------------------------------------------------------------------------
     void CompositePass::set_apply_gamma_correction(ApplyGammaCorrection apply)
     {
+        m_options.apply_gamma_correction = apply;
+
         get_material()->set("u_ApplyGammaCorrection", apply);
     }
 
     //-------------------------------------------------------------------------
     void CompositePass::set_apply_tone_mapping(ApplyToneMapping apply)
     {
+        m_options.apply_tone_mapping = apply;
+
         get_material()->set("u_ApplyToneMapping", apply);
+    }
+
+    //-------------------------------------------------------------------------
+    void CompositePass::set_color_buffer(const SceneRenderPassID& renderPassID)
+    {
+        m_options.color_buffer = renderPassID;
     }
 
     //-------------------------------------------------------------------------

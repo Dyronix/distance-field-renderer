@@ -49,6 +49,8 @@ namespace rex
         void set_apply_gamma_correction(ApplyGammaCorrection apply);
         void set_apply_tone_mapping(ApplyToneMapping apply);
 
+        void set_color_buffer(const SceneRenderPassID& renderPassID);
+
         void begin(const ecs::SceneCamera& camera, const Transform& cameraTransform) override;
         void render() override;
         void end() override;
