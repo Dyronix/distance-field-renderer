@@ -62,6 +62,7 @@ namespace regina
     private:
         bool on_key_pressed(const rex::events::KeyPressed& keyPressEvent);
 
+        void animate_camera(const rex::FrameInfo& info);
         void read_framebuffer();
 
         void setup_scene();

@@ -580,6 +580,8 @@ namespace regina
     {
         R_PROFILE_FUNCTION();
 
+        animate_camera(info);
+
         m_camera_controller.on_update(info);
 
         m_scene->update();
@@ -633,6 +635,19 @@ namespace regina
             }
             default: return false;
         }
+    }
+
+    //-------------------------------------------------------------------------
+    void DistanceFieldRenderingLayer::animate_camera(const rex::FrameInfo& info)
+    {
+        float focus_distance_speed = 0.5f;
+        float current_focus_distance = m_camera_controller.get_focus_distance();
+
+        current_focus_distance += focus_distance_speed * info.delta_time.to_seconds();
+
+        m_camera_controller.set_focus_distance(current_focus_distance);
+
+        m_camera_controller.orbit(rex::vec2(-0.01f, 0.3f));
     }
 
     //-------------------------------------------------------------------------
