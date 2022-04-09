@@ -173,6 +173,12 @@ namespace rex
     }
 
     //-------------------------------------------------------------------------
+    void Renderer::read_framebuffer_content(const RectI& rect, const Texture::Format& textureFormat, const Texel::Format& texelFormat)
+    {
+        g_renderer_api->read_framebuffer_content(rect, textureFormat, texelFormat);
+    }
+
+    //-------------------------------------------------------------------------
     void Renderer::submit_fullscreen_quad(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Material> material)
     {
         g_renderer_api->submit_fullscreen_quad(pipeline, uniformBufferSet, material);

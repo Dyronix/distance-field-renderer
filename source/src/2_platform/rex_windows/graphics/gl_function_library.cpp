@@ -469,6 +469,27 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
+        void read_pixels(int32 x, int32 y, int32 width, int32 height, uint32 format, uint32 type, void* data)
+        {
+            GL_FUNC_PROFILE();
+
+            R_ASSERT_X(width > 0 && width < (int32)std::numeric_limits<uint16>().max(), "Invalid width given for viewport resize");
+            R_ASSERT_X(height > 0 && height < (int32)std::numeric_limits<uint16>().max(), "Invalid height given for viewport resize");
+
+            GL_LOG("glReadPixels");
+#if ENABLE_GL_PARAMETER_LOGGING && ENABLE_GL_FUNCTION_LOGGING
+            GL_LOG("\tx: {0}", x);
+            GL_LOG("\ty: {0}", y);
+            GL_LOG("\twidth: {0}", width);
+            GL_LOG("\theight: {0}", height);
+            GL_LOG("\tformat: {0}", format_to_string(format));
+            GL_LOG("\ttype: {0}", pixeltype_to_string(type));
+#endif
+
+            GL_CALL(glReadPixels(x, y, width, height, format, type, data));
+        }
+
+        //-------------------------------------------------------------------------
         void clear_color(float red, float green, float blue, float alpha)
         {
             GL_FUNC_PROFILE();

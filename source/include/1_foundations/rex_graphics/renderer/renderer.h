@@ -64,6 +64,7 @@ namespace rex
         static void render_model_with_material(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Model> model, const rex::matrix4& transform, ref_ptr<Material> material);
 
         static void copy_framebuffer_content(uint32 fromFrameBufferID, const RectI& fromRect, uint32 toFrameBufferID, const RectI& toRect, const FrameBufferCopyOption& copyOption, const FrameBufferFilterOption& filterOption);
+        static void read_framebuffer_content(const RectI& rect, const Texture::Format& textureFormat, const Texel::Format& texelFormat);
 
         static void submit_fullscreen_quad(ref_ptr<Pipeline> pipeline, UniformBufferSet* uniformBufferSet, ref_ptr<Material> material);
         template <typename TFunction>

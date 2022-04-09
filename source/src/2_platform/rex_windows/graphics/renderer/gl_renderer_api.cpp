@@ -5,6 +5,7 @@
 #include "graphics/renderer/gl_render_pipeline.h"
 
 #include "graphics/resources/gl_texture_resource_manager.h"
+#include "graphics/resources/gl_texture_util.h"
 
 #include "renderer/types/primitive_type.h"
 #include "renderer/renderer.h"
@@ -496,6 +497,24 @@ namespace rex
                         current_bound_framebuffer->bind(IsRenderThread::YES);
                     }
                 });
+        }
+
+        //-------------------------------------------------------------------------
+        void RendererAPI::read_framebuffer_content(const RectI& rect, const Texture::Format& textureFormat, const Texel::Format& texelFormat)
+        {
+            Renderer::submit([rect, textureFormat, texelFormat]() 
+            {
+                //auto pixel = Pixel(texelFormat, textureFormat);
+                //auto format = to_opengl_texelformat(texelFormat);
+                //auto type = to_opengl_pixeltype(pixel.get_type());
+
+                //uint8_t* data = new uint8_t[rect.width * rect.height * 4];
+
+                //opengl::read_pixels(rect.x, rect.y, rect.width, rect.height, format, type, data);
+
+                R_TODO("Not implemented ...");
+
+            });
         }
 
         //-------------------------------------------------------------------------

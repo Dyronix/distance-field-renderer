@@ -14,6 +14,7 @@ namespace rex
         void bind_vertex_array(uint32 arrayID);
 
         void viewport(int32 x, int32 y, int32 width, int32 height);
+        void read_pixels(int32 x, int32 y, int32 width, int32 height, uint32 format, uint32 type, void* data);
 
         void clear_color(float red, float green, float blue, float alpha);
         void clear_depth(double depth);
