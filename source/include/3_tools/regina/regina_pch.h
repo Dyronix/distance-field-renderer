@@ -17,6 +17,10 @@
 
 #include "rex_debug.h"
 
+#include "frameinfo/deltatime.h"
+#include "frameinfo/fps.h"
+#include "frameinfo/frameinfo.h"
+
 #include "memory/ref_counted_object.h"
 #include "memory/ref_ptr_utilities.h"
 #include "memory/ref_ptr.h"
