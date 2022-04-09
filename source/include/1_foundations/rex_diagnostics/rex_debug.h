@@ -1,11 +1,57 @@
 #pragma once
 
-#if defined REX_DEBUG
-
 //-------------------------------------------------------------------------
 // Includes
 #include "profiling/instrumentor.h"
 
+//-------------------------------------------------------------------------
+// Profiling
+#define REX_ENABLE_PROFILE 1
+#if REX_ENABLE_PROFILE
+
+// Resolve which function signature macro will be used. Note that this only
+// is resolved when the (pre)compiler starts, so the syntax highlighting
+// could mark the wrong one in your editor!
+#if defined(__GNUC__) || (defined(__MWERKR__) && (__MWERKR__ >= 0x3000)) || (defined(__ICC) && (__ICC >= 600)) || defined(__ghs__)
+#define R_FUNC_SIG __PRETTY_FUNCTION__
+#elif defined(__DMC__) && (__DMC__ >= 0x810)
+#define R_FUNC_SIG __PRETTY_FUNCTION__
+#elif (defined(__FUNCSIG__) || (_MSC_VER))
+#define R_FUNC_SIG __FUNCSIG__
+#elif (defined(__INTEL_COMPILER) && (__INTEL_COMPILER >= 600)) || (defined(__IBMCPP__) && (__IBMCPP__ >= 500))
+#define R_FUNC_SIG __FUNCTION__
+#elif defined(__BORLANDC__) && (__BORLANDC__ >= 0x550)
+#define R_FUNC_SIG __FUNC__
+#elif defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901)
+#define R_FUNC_SIG __func__
+#elif defined(__cplusplus) && (__cplusplus >= 201103)
+#define R_FUNC_SIG __func__
+#else
+#define R_FUNC_SIG "HZ_FUNC_SIG unknown!"
+#endif
+
+#define _INTERNAL_R_PROFILE_SCOPE_LINE2(name, line) rex::InstrumentationTimer timer##line(name);
+#define _INTERNAL_R_PROFILE_SCOPE_LINE(name, line) _INTERNAL_R_PROFILE_SCOPE_LINE2(name, line)
+
+#define R_PROFILE_BEGIN_SESSION(name, filepath) rex::Instrumentor::get().begin_session(name, filepath)
+#define R_PROFILE_END_SESSION() rex::Instrumentor::get().end_session()
+#define R_PROFILE_SCOPE(name) _INTERNAL_R_PROFILE_SCOPE_LINE(name, __LINE__)
+#define R_PROFILE_FUNCTION() R_PROFILE_SCOPE(R_FUNC_SIG)
+#define R_PROFILE_ENABLE() rex::Instrumentor::get().enable()
+#define R_PROFILE_DISABLE() rex::Instrumentor::get().disable()
+#else
+#define R_PROFILE_BEGIN_SESSION(name, filepath)
+#define R_PROFILE_END_SESSION()
+#define R_PROFILE_SCOPE(name)
+#define R_PROFILE_FUNCTION()
+#define R_PROFILE_ENABLE()
+#define R_PROFILE_DISABLE()
+#endif
+
+#if defined REX_DEBUG
+
+//-------------------------------------------------------------------------
+// Includes
 #include "logging/logger.h"
 #include "logging/loglevel.h"
 
@@ -178,12 +224,5 @@
 
 #define R_INITIALIZE_LOGGER()
 #define R_SHUTDOWN_LOGGER()
-
-#define R_PROFILE_BEGIN_SESSION(name, filepath)
-#define R_PROFILE_END_SESSION()
-#define R_PROFILE_SCOPE(name)
-#define R_PROFILE_FUNCTION()
-#define R_PROFILE_ENABLE()
-#define R_PROFILE_DISABLE()
 
 #endif
