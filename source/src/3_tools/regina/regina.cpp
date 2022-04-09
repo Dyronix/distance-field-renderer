@@ -47,7 +47,7 @@ rex::CoreApplication* rex::create_application(const ApplicationArguments& argume
 
     s_deferred_description.mesh_type = !mesh_type.is_none() ? std::stoi(mesh_type.to_string()) : 0;
     s_deferred_description.nr_lights = !nr_lights.is_none() ? std::stoi(nr_lights.to_string()) : 32;
-    s_deferred_description.resolution = !resolution.is_none() ? std::stoi(resolution.to_string()) : false;
+    s_deferred_description.resolution = !resolution.is_none() ? std::stoi(resolution.to_string()) : -1;
     s_deferred_description.use_lattice = !lattice.is_none() ? std::stoi(lattice.to_string()) : false;
     s_deferred_description.source_content_location = !source_location.is_none() ? source_location : ESID::SID_None;
 
@@ -55,7 +55,7 @@ rex::CoreApplication* rex::create_application(const ApplicationArguments& argume
     s_distance_description.nr_lights = !nr_lights.is_none() ? std::stoi(nr_lights.to_string()) : 32;
     s_distance_description.volume_type = !mesh_type.is_none() ? std::stoi(mesh_type.to_string()) : 0;
     s_distance_description.use_heatmap = !heatmap.is_none() ? std::stoi(heatmap.to_string()) : false;
-    s_distance_description.resolution = !resolution.is_none() ? std::stoi(resolution.to_string()) : false;
+    s_distance_description.resolution = !resolution.is_none() ? std::stoi(resolution.to_string()) : -1;
     s_distance_description.use_lattice = !lattice.is_none() ? std::stoi(lattice.to_string()) : false;
     s_distance_description.source_content_location = !source_location.is_none() ? source_location : ESID::SID_None;
 
