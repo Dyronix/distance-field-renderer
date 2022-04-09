@@ -6,7 +6,8 @@ namespace rex
 
     struct ApplicationDescription
     {
-        const char* name;
+        StringID name;
+        StringID profile_id;
 
         int32 window_width;
         int32 window_height;
