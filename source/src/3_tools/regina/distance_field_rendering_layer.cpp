@@ -612,6 +612,8 @@ namespace regina
 
         switch (keyPressEvent.get_key())
         {
+            case R_KEY_F2: read_framebuffer(); return true;
+
             case R_KEY_W: increment_sdf_scale(); return true;
             case R_KEY_A: increment_sdf_offset(); return true;
             case R_KEY_S: decrement_sdf_scale(); return true;
@@ -631,6 +633,15 @@ namespace regina
             }
             default: return false;
         }
+    }
+
+    //-------------------------------------------------------------------------
+    void DistanceFieldRenderingLayer::read_framebuffer()
+    {
+        uint32 vp_width = m_sdf_renderer->get_viewport_width();
+        uint32 vp_height = m_sdf_renderer->get_viewport_height();
+
+        rex::Renderer::read_framebuffer_content(rex::RectI(0, 0, vp_width, vp_height), rex::Texture::Format::RGBA_32_FLOAT, rex::Texel::Format::RGBA);
     }
 
     //-------------------------------------------------------------------------

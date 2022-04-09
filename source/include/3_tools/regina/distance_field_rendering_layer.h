@@ -63,6 +63,8 @@ namespace regina
     private:
         bool on_key_pressed(const rex::events::KeyPressed& keyPressEvent);
 
+        void read_framebuffer();
+
         void decrement_sdf_scale();
         void decrement_sdf_offset();
         void increment_sdf_scale();

@@ -44,6 +44,10 @@
 #include "aspect_ratio.h"
 #include "field_of_view.h"
 
+#include "event_dispatcher.h"
+
+#include "input/key_pressed.h"
+#include "input/keyboard/win32_key_codes.h"
 #include "input/mouse/win32_mouse_codes.h"
 #include "input/win32_input.h"
 
@@ -451,6 +455,32 @@ namespace regina
         R_PROFILE_FUNCTION();
 
         m_camera_controller.on_event(event);
+
+        rex::events::EventDispatcher dispatcher(event);
+
+        dispatcher.dispatch<rex::events::KeyPressed>([&](rex::events::KeyPressed& pressedEvt) { return on_key_pressed(pressedEvt); });
+    }
+
+    //-------------------------------------------------------------------------
+    bool DeferredRenderingLayer::on_key_pressed(const rex::events::KeyPressed& keyPressEvent)
+    {
+        R_PROFILE_FUNCTION();
+
+        switch (keyPressEvent.get_key())
+        {
+            case R_KEY_F2: read_framebuffer(); return true;
+
+            default: return false;
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    void DeferredRenderingLayer::read_framebuffer()
+    {
+        uint32 vp_width = m_scene_renderer->get_viewport_width();
+        uint32 vp_height = m_scene_renderer->get_viewport_height();
+
+        rex::Renderer::read_framebuffer_content(rex::RectI(0, 0, vp_width, vp_height), rex::Texture::Format::RGBA_32_FLOAT, rex::Texel::Format::RGBA);
     }
 
     //-------------------------------------------------------------------------

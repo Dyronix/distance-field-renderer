@@ -22,6 +22,11 @@ namespace rex
     struct DeferredLightVisualizationPassOptions;
     struct CompositePassOptions;
 
+    namespace events
+    {
+        class KeyPressed;
+    } // namespace events
+
     namespace ecs
     {
         class Scene;
@@ -55,6 +60,10 @@ namespace regina
         void on_event(rex::events::Event& event) override;
 
     private:
+        bool on_key_pressed(const rex::events::KeyPressed& keyPressEvent);
+
+        void read_framebuffer();
+
         void setup_scene();
         void setup_camera();
         void setup_scene_renderer();
