@@ -347,6 +347,18 @@ namespace regina
     }
 
     //-------------------------------------------------------------------------
+    rex::Transform* OrbitCameraController::get_camera_transform()
+    {
+        return m_orbit_camera.get_camera_transform();
+    }
+
+    //-------------------------------------------------------------------------
+    const rex::Transform* OrbitCameraController::get_camera_transform() const
+    {
+        return m_orbit_camera.get_camera_transform();
+    }
+
+    //-------------------------------------------------------------------------
     bool OrbitCameraController::is_enabled() const
     {
         return m_orbit_camera.is_enabled();
@@ -355,20 +367,7 @@ namespace regina
     //-------------------------------------------------------------------------
     void OrbitCameraController::orbit()
     {
-        if (m_orbit_camera.get_camera_transform() != nullptr)
-        {
-            // Look rotation
-            rex::vec2 rotation_input = rex::vec2(m_horizontal_mouse_movement, m_vertical_mouse_movement);
-            rex::quaternion rotation_default = m_orbit_camera.get_camera_transform()->get_rotation();
-
-            rex::quaternion look_rotation = m_orbit_controller->calculate_look_rotation(rotation_input, rotation_default);
-
-            // Look position
-            rex::vec3 look_direction = look_rotation * rex::world_forward<float>();
-            rex::vec3 look_position = m_focus_controller->calculate_focus_position(look_direction);
-
-            m_orbit_camera.orbit(look_position, look_rotation);
-        }
+        orbit(rex::vec2(m_horizontal_mouse_movement, m_vertical_mouse_movement));
     }
 
     //-------------------------------------------------------------------------
@@ -379,6 +378,25 @@ namespace regina
         rex::vec3 look_position = m_focus_controller->calculate_focus_position(look_direction);
 
         m_orbit_camera.orbit(look_position, lookRotation);
+    }
+
+    //-------------------------------------------------------------------------
+    void OrbitCameraController::orbit(const glm::vec2& orbitDelta)
+    {
+        if (m_orbit_camera.get_camera_transform() != nullptr)
+        {
+            // Look rotation
+            rex::vec2 rotation_input = orbitDelta;
+            rex::quaternion rotation_default = m_orbit_camera.get_camera_transform()->get_rotation();
+
+            rex::quaternion look_rotation = m_orbit_controller->calculate_look_rotation(rotation_input, rotation_default);
+
+            // Look position
+            rex::vec3 look_direction = look_rotation * rex::world_forward<float>();
+            rex::vec3 look_position = m_focus_controller->calculate_focus_position(look_direction);
+
+            m_orbit_camera.orbit(look_position, look_rotation);
+        }
     }
 
     //-------------------------------------------------------------------------

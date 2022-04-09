@@ -61,6 +61,7 @@ namespace regina
         void disable();
 
         void reset();
+        void orbit(const glm::vec2& orbitDelta);
 
         void on_update(const rex::FrameInfo& info);
         void on_event(rex::events::Event& evt);
@@ -92,6 +93,9 @@ namespace regina
 
         rex::Camera* get_camera();
         const rex::Camera* get_camera() const;
+
+        rex::Transform* get_camera_transform();
+        const rex::Transform* get_camera_transform() const;
 
         bool is_enabled() const;
 
