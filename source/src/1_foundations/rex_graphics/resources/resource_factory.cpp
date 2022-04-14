@@ -21,11 +21,15 @@ namespace rex
     //-------------------------------------------------------------------------
     void ResourceFactory::initialize(std::unique_ptr<ResourcesAPI> api)
     {
+        R_PROFILE_FUNCTION();
+
         g_resources_api = std::move(api);
     }
     //-------------------------------------------------------------------------
     void ResourceFactory::shutdown()
     {
+        R_PROFILE_FUNCTION();
+
         g_resources_api.reset();
     }
 

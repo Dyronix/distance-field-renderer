@@ -37,6 +37,17 @@ namespace regina
 {
     struct DistanceFieldRenderingLayerDescription
     {
+        DistanceFieldRenderingLayerDescription()
+            : source_content_location(rex::ESID::SID_None)
+            , volume_type(0)
+            , max_iterations(200)
+            , nr_lights(32)
+            , resolution(-1)
+            , use_lattice(false)
+            , use_heatmap(false)
+        {
+        }
+
         rex::StringID source_content_location;
 
         int32 volume_type;
@@ -46,6 +57,7 @@ namespace regina
 
         bool use_lattice;
         bool use_heatmap;
+        bool animate;
     };
 
     class DistanceFieldRenderingLayer : public rex::Layer
@@ -65,6 +77,7 @@ namespace regina
 
         void animate_camera(const rex::FrameInfo& info);
         void read_framebuffer();
+        void toggle_camera_animation();
 
         void decrement_sdf_scale();
         void decrement_sdf_offset();
@@ -73,6 +86,9 @@ namespace regina
 
         void switch_to_heatmap();
         void switch_to_sdf();
+
+        void next_volume();
+        void previous_volume();
 
         void setup_scene();
         void setup_camera();

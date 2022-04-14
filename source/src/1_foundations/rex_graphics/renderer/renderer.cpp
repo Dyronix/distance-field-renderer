@@ -29,6 +29,8 @@ namespace rex
     //-------------------------------------------------------------------------
     void Renderer::initialize(std::unique_ptr<RendererAPI> api)
     {
+        R_PROFILE_FUNCTION();
+
         g_renderer_command_queue = std::make_unique<RendererCommandQueue>();
 
         g_renderer_api = std::move(api);
@@ -49,6 +51,8 @@ namespace rex
     //-------------------------------------------------------------------------
     void Renderer::shutdown()
     {
+        R_PROFILE_FUNCTION();
+
         g_white_texture_cube->release();
         g_black_texture_cube->release();
 
@@ -99,17 +103,23 @@ namespace rex
     //-------------------------------------------------------------------------
     void Renderer::set_viewport(const rex::vec2& origin, const rex::vec2& size)
     {
+        R_PROFILE_FUNCTION();
+
         g_renderer_api->set_viewport(origin, size);
     }
 
     //-------------------------------------------------------------------------
     void Renderer::begin_frame()
     {
+        R_PROFILE_FUNCTION();
+
         g_renderer_api->begin_frame();
     }
     //-------------------------------------------------------------------------
     void Renderer::begin_render_pass(ref_ptr<Pipeline> pipeline, ExplicitClear explicitClear)
     {
+        R_PROFILE_FUNCTION();
+
         g_active_render_pass_name = pipeline->get_render_pass()->get_debug_name();
 
         RENDERER_INFO("Renderer::begin_render_pass: {0}", g_active_render_pass_name.to_string());
@@ -119,11 +129,15 @@ namespace rex
     //-------------------------------------------------------------------------
     void Renderer::end_frame()
     {
+        R_PROFILE_FUNCTION();
+
         g_renderer_api->end_frame();
     }
     //-------------------------------------------------------------------------
     void Renderer::end_render_pass()
     {
+        R_PROFILE_FUNCTION();
+
         g_renderer_api->end_render_pass();
         RENDERER_INFO("Renderer::endRenderPass: {0}", g_active_render_pass_name.to_string());
 
@@ -133,6 +147,8 @@ namespace rex
     //-------------------------------------------------------------------------
     void Renderer::wait_and_render()
     {
+        R_PROFILE_FUNCTION();
+
         RENDERER_INFO("----------------------------------------------------------------------------------");
         RENDERER_INFO("Renderer::waitAndRender - start");
 

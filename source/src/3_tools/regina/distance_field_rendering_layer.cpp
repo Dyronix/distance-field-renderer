@@ -85,10 +85,14 @@ namespace regina
             TETRAHEDRON_RIBS
         };
 
+        using VolumeTypes = std::vector<VolumeType>;
         using VolumeNameMap = std::unordered_map<VolumeType, rex::StringID>;
         using VolumeLattice = rex::YesNoEnum;
 
         DistanceFieldRenderingLayerDescription LAYER_DESCRIPTION;
+
+        VolumeTypes LOADED_VOLUME_TYPES = {};
+        int32 ACTIVE_VOLUME_TYPE_INDEX = 0;
 
         //-------------------------------------------------------------------------
         VolumeNameMap& get_volume_name_map()
@@ -171,6 +175,21 @@ namespace regina
 
             return MAP;
         }
+        //-------------------------------------------------------------------------
+        VolumeType get_active_volume_type()
+        {
+            VolumeType active_volume_type;
+            if (!LAYER_DESCRIPTION.source_content_location.is_none())
+            {
+                active_volume_type = (VolumeType)LAYER_DESCRIPTION.volume_type;
+            }
+            else
+            {
+                active_volume_type = LOADED_VOLUME_TYPES[ACTIVE_VOLUME_TYPE_INDEX];
+            }
+
+            return active_volume_type;
+        }
 
         // Render pass settings
         int32 MIN_NR_LIGHTS = 1;
@@ -224,11 +243,11 @@ namespace regina
         } // namespace renderpass_settings
 
         //-------------------------------------------------------------------------
-        rex::vec3 calculate_scene_size(const Volume& volume)
+        rex::vec3 calculate_scene_size(const rex::AABB& voxelGridBounds)
         {
             R_PROFILE_FUNCTION();
 
-            rex::vec3 voxel_grid_size = volume.get_voxel_grid_bounds().maximum - volume.get_voxel_grid_bounds().minimum;
+            rex::vec3 voxel_grid_size = voxelGridBounds.maximum - voxelGridBounds.minimum;
 
             float longest_edge = rex::max_coeff(voxel_grid_size);
 
@@ -253,15 +272,17 @@ namespace regina
             options.sphere_tracer_options.max_march_distance = renderpass_settings::MAX_MARCH_DISTANCE;
             options.sphere_tracer_options.min_surface_distance = renderpass_settings::MIN_SURFACE_DISTANCE;
 
-            const Volume& volume = volume_library::get_volume(get_volume_name_map()[(VolumeType)LAYER_DESCRIPTION.volume_type]);
-            const VolumeMeta& volume_meta = volume.get_volume_meta();
+            VolumeType active_volume_type = get_active_volume_type();
 
-            const float scene_scale = get_volume_scale_map()[(VolumeType)LAYER_DESCRIPTION.volume_type];
-            const float scene_offset = get_volume_offset_map()[(VolumeType)LAYER_DESCRIPTION.volume_type];
+            const Volume& volume = volume_library::get_volume(get_volume_name_map()[active_volume_type]);
+            const VolumeMeta& volume_meta = volume.get_volume_meta();
+          
+            const float scene_scale = get_volume_scale_map()[active_volume_type];
+            const float scene_offset = get_volume_offset_map()[active_volume_type];
 
             options.sdf_scene_options.scene_scale = scene_scale;
             options.sdf_scene_options.scene_offset = scene_offset - renderpass_settings::MIN_SURFACE_DISTANCE;
-            options.sdf_scene_options.scene_size = calculate_scene_size(volume) * 0.5f;
+            options.sdf_scene_options.scene_size = calculate_scene_size(volume.get_voxel_grid_bounds()) * 0.5f;
             options.sdf_scene_options.scene_center = rex::vec3(0.0f, 0.0f, 0.0f);
 
             options.sdf_scene_options.scene_voxel_grid_min_bounds = volume_meta.voxel_grid_bounds.minimum;
@@ -269,7 +290,7 @@ namespace regina
             options.sdf_scene_options.scene_voxel_grid_size = volume_meta.voxel_grid_size;
             options.sdf_scene_options.scene_voxel_grid_cell_size = volume_meta.voxel_grid_cell_size;
 
-            options.sdf_scene_options.scene_data = volume_library::get_volume_data(get_volume_name_map()[(VolumeType)LAYER_DESCRIPTION.volume_type]);
+            options.sdf_scene_options.scene_data = volume_library::get_volume_data(get_volume_name_map()[active_volume_type]);
 
             return options;
         }
@@ -460,7 +481,7 @@ namespace regina
             rex::mesh_factory::load();
         }
         //-------------------------------------------------------------------------
-        void load_volume(const rex::StringID& name, const rex::StringID& volumeMetaPath, const rex::StringID& volumeDataPath)
+        bool load_volume(const rex::StringID& name, const rex::StringID& volumeMetaPath, const rex::StringID& volumeDataPath)
         {
             R_PROFILE_FUNCTION();
 
@@ -470,16 +491,20 @@ namespace regina
             {
                 R_ERROR("[VOLUME] Volume with name: {0}, was not imported correctly", volume.get_name().to_string());
                 R_ERROR("[VOLUME] Import failed: {0}", volume.get_name().to_string());
-                return;
+                return false;
             }
 
             volume_library::add(std::move(volume));
 
             R_INFO("[VOLUME] Import completed: {0}", name.to_string());
+
+            return true;
         }
         //-------------------------------------------------------------------------
-        void load_volume(const rex::StringID& sourceLocation, VolumeType volumeType, bool lattified, int32 resolution)
+        bool load_volume(const rex::StringID& sourceLocation, VolumeType volumeType, bool lattified, int32 resolution)
         {
+            R_PROFILE_FUNCTION();
+
             static std::unordered_map<int32, rex::StringID> resolutions{{0, "90"}, {1, "300"}, {2, "600"}, {3, "900"}};
 
             rex::StringID source_location = sourceLocation.is_none() ? rex::create_sid("content\\volumes\\") : sourceLocation;
@@ -510,14 +535,33 @@ namespace regina
             R_INFO("[VOLUME] Volume Meta Path: {0}", volume_meta_path.str());
             R_INFO("[VOLUME] Volume Path: {0}", volume_path.str());
 
-            load_volume(get_volume_name_map()[volumeType], rex::create_sid(volume_meta_path.str()), rex::create_sid(volume_path.str()));
+            return load_volume(get_volume_name_map()[volumeType], rex::create_sid(volume_meta_path.str()), rex::create_sid(volume_path.str()));
         }
         //-------------------------------------------------------------------------
-        void load_volumes()
+        std::vector<VolumeType> load_volumes()
         {
             R_PROFILE_FUNCTION();
 
-            load_volume(LAYER_DESCRIPTION.source_content_location, (VolumeType)LAYER_DESCRIPTION.volume_type, LAYER_DESCRIPTION.use_lattice, LAYER_DESCRIPTION.resolution);
+            std::vector<VolumeType> loaded_volume_types;
+
+            if (!LAYER_DESCRIPTION.source_content_location.is_none())
+            {
+                if (load_volume(LAYER_DESCRIPTION.source_content_location, (VolumeType)LAYER_DESCRIPTION.volume_type, LAYER_DESCRIPTION.use_lattice, LAYER_DESCRIPTION.resolution)) { loaded_volume_types.push_back((VolumeType)LAYER_DESCRIPTION.volume_type); }
+            }
+            else
+            {
+                if (load_volume("content\\volumes\\lattice_samples", VolumeType::CROSS_CUBE_RIBS, false, -1))           { loaded_volume_types.push_back(VolumeType::CROSS_CUBE_RIBS); }
+                if (load_volume("content\\volumes\\lattice_samples", VolumeType::CROSS, false, -1))                     { loaded_volume_types.push_back(VolumeType::CROSS); }
+                if (load_volume("content\\volumes\\lattice_samples", VolumeType::CUBE_RIBS, false, -1))                 { loaded_volume_types.push_back(VolumeType::CUBE_RIBS); }
+                if (load_volume("content\\volumes\\lattice_samples", VolumeType::DOUBLE_TETRA_OCTA_RIBS, false, -1))    { loaded_volume_types.push_back(VolumeType::DOUBLE_TETRA_OCTA_RIBS); }
+                if (load_volume("content\\volumes\\lattice_samples", VolumeType::DOUBLE_TETRA_RIBS, false, -1))         { loaded_volume_types.push_back(VolumeType::DOUBLE_TETRA_RIBS); }
+                if (load_volume("content\\volumes\\lattice_samples", VolumeType::FKA, false, -1))                       { loaded_volume_types.push_back(VolumeType::FKA); }
+                if (load_volume("content\\volumes\\lattice_samples", VolumeType::OCTAHEDRON_RIB, false, -1))            { loaded_volume_types.push_back(VolumeType::OCTAHEDRON_RIB); }
+                if (load_volume("content\\volumes\\lattice_samples", VolumeType::OECHS, false, -1))                     { loaded_volume_types.push_back(VolumeType::OECHS); }
+                if (load_volume("content\\volumes\\lattice_samples", VolumeType::TETRAHEDRON_RIBS, false, -1))          { loaded_volume_types.push_back(VolumeType::TETRAHEDRON_RIBS); }
+            }
+
+            return loaded_volume_types;
         }
     } // namespace distance_field_rendering
 
@@ -528,11 +572,14 @@ namespace regina
         , m_window(window)
         , m_active_renderer(nullptr)
     {
+        R_PROFILE_FUNCTION();
+
         distance_field_rendering::LAYER_DESCRIPTION = description;
     }
     //-------------------------------------------------------------------------
     DistanceFieldRenderingLayer::~DistanceFieldRenderingLayer()
     {
+        R_PROFILE_FUNCTION();
     }
 
     //-------------------------------------------------------------------------
@@ -540,7 +587,9 @@ namespace regina
     {
         R_PROFILE_FUNCTION();
 
-        distance_field_rendering::load_volumes();
+        distance_field_rendering::LOADED_VOLUME_TYPES = distance_field_rendering::load_volumes();
+        distance_field_rendering::ACTIVE_VOLUME_TYPE_INDEX = 0;
+
         distance_field_rendering::load_textures();
         distance_field_rendering::load_shaders();
         distance_field_rendering::load_primitive_geometry();
@@ -580,7 +629,10 @@ namespace regina
     {
         R_PROFILE_FUNCTION();
 
-        animate_camera(info);
+        if (distance_field_rendering::LAYER_DESCRIPTION.animate)
+        {
+            animate_camera(info);
+        }        
 
         m_camera_controller.on_update(info);
 
@@ -615,6 +667,10 @@ namespace regina
         switch (keyPressEvent.get_key())
         {
             case R_KEY_F2: read_framebuffer(); return true;
+            case R_KEY_F3: toggle_camera_animation(); return true;
+
+            case R_KEY_LEFT: previous_volume(); return true;
+            case R_KEY_RIGHT: next_volume(); return true;
 
             case R_KEY_W: increment_sdf_scale(); return true;
             case R_KEY_A: increment_sdf_offset(); return true;
@@ -640,6 +696,8 @@ namespace regina
     //-------------------------------------------------------------------------
     void DistanceFieldRenderingLayer::animate_camera(const rex::FrameInfo& info)
     {
+        R_PROFILE_FUNCTION();
+
         float focus_distance_speed = 0.5f;
         float current_focus_distance = m_camera_controller.get_focus_distance();
 
@@ -653,10 +711,20 @@ namespace regina
     //-------------------------------------------------------------------------
     void DistanceFieldRenderingLayer::read_framebuffer()
     {
+        R_PROFILE_FUNCTION();
+
         uint32 vp_width = m_sdf_renderer->get_viewport_width();
         uint32 vp_height = m_sdf_renderer->get_viewport_height();
 
         rex::Renderer::read_framebuffer_content(rex::RectI(0, 0, vp_width, vp_height), rex::Texture::Format::RGBA_32_FLOAT, rex::Texel::Format::RGBA);
+    }
+
+    //-------------------------------------------------------------------------
+    void DistanceFieldRenderingLayer::toggle_camera_animation()
+    {
+        R_PROFILE_FUNCTION();
+
+        distance_field_rendering::LAYER_DESCRIPTION.animate = !distance_field_rendering::LAYER_DESCRIPTION.animate;
     }
 
     //-------------------------------------------------------------------------
@@ -687,9 +755,11 @@ namespace regina
         }
 
         {
-            const Volume& volume = volume_library::get_volume(distance_field_rendering::get_volume_name_map()[(distance_field_rendering::VolumeType)distance_field_rendering::LAYER_DESCRIPTION.volume_type]);
+            distance_field_rendering::VolumeType active_volume_type = distance_field_rendering::get_active_volume_type();
 
-            scene_size = distance_field_rendering::calculate_scene_size(volume);
+            const Volume& volume = volume_library::get_volume(distance_field_rendering::get_volume_name_map()[active_volume_type]);
+
+            scene_size = distance_field_rendering::calculate_scene_size(volume.get_voxel_grid_bounds());
             scene_size = scene_size * scene_scale;
         }
         
@@ -759,9 +829,11 @@ namespace regina
         }
 
         {
-            const Volume& volume = volume_library::get_volume(distance_field_rendering::get_volume_name_map()[(distance_field_rendering::VolumeType)distance_field_rendering::LAYER_DESCRIPTION.volume_type]);
+            distance_field_rendering::VolumeType active_volume_type = distance_field_rendering::get_active_volume_type();
 
-            scene_size = distance_field_rendering::calculate_scene_size(volume);
+            const Volume& volume = volume_library::get_volume(distance_field_rendering::get_volume_name_map()[active_volume_type]);
+
+            scene_size = distance_field_rendering::calculate_scene_size(volume.get_voxel_grid_bounds());
             scene_size = scene_size * scene_scale;
         }
 
@@ -817,6 +889,71 @@ namespace regina
         R_PROFILE_FUNCTION();
 
         m_active_renderer = m_sdf_renderer.get();
+    }
+
+    //-------------------------------------------------------------------------
+    void DistanceFieldRenderingLayer::next_volume()
+    {
+        R_PROFILE_FUNCTION();
+
+        if (m_active_renderer == nullptr)
+        {
+            return;
+        }
+
+        rex::SceneRenderPass* render_pass = m_active_renderer->get_scene_render_pass(distance_field_rendering::DISTANCEEVALUATIONSPASS_NAME);
+        if (render_pass == nullptr)
+        {
+            return;
+        }
+
+        rex::DistanceEvaluationPass* distance_eval = static_cast<rex::DistanceEvaluationPass*>(render_pass);
+        rex::sdf::SceneOptions sdf_scene_options = distance_eval->get_sdf_scene_options();
+
+        int32 loaded_volume_type_count = (int32)distance_field_rendering::LOADED_VOLUME_TYPES.size();
+
+        distance_field_rendering::ACTIVE_VOLUME_TYPE_INDEX = (distance_field_rendering::ACTIVE_VOLUME_TYPE_INDEX + 1) % loaded_volume_type_count;
+
+        auto& volume_name_map = distance_field_rendering::get_volume_name_map();
+        auto& volume_name = volume_name_map[distance_field_rendering::LOADED_VOLUME_TYPES[distance_field_rendering::ACTIVE_VOLUME_TYPE_INDEX]];
+
+        R_INFO("Active Volume: {0}", volume_name.to_string());
+    }
+
+    //-------------------------------------------------------------------------
+    void DistanceFieldRenderingLayer::previous_volume()
+    {
+        R_PROFILE_FUNCTION();
+
+        if (m_active_renderer == nullptr)
+        {
+            return;
+        }
+
+        rex::SceneRenderPass* render_pass = m_active_renderer->get_scene_render_pass(distance_field_rendering::DISTANCEEVALUATIONSPASS_NAME);
+        if (render_pass == nullptr)
+        {
+            return;
+        }
+
+        // Increment volume index
+        int32 loaded_volume_type_count = (int32)distance_field_rendering::LOADED_VOLUME_TYPES.size();
+
+        distance_field_rendering::ACTIVE_VOLUME_TYPE_INDEX = distance_field_rendering::ACTIVE_VOLUME_TYPE_INDEX - 1;
+        if (distance_field_rendering::ACTIVE_VOLUME_TYPE_INDEX < 0)
+        {
+            distance_field_rendering::ACTIVE_VOLUME_TYPE_INDEX = loaded_volume_type_count - 1;
+        }
+
+        auto& volume_name_map = distance_field_rendering::get_volume_name_map();
+        auto& volume_name = volume_name_map[distance_field_rendering::LOADED_VOLUME_TYPES[distance_field_rendering::ACTIVE_VOLUME_TYPE_INDEX]];
+
+        R_INFO("Active Volume: {0}", volume_name.to_string());
+
+        rex::DistanceEvaluationPass* distance_eval = static_cast<rex::DistanceEvaluationPass*>(render_pass);
+        rex::sdf::SceneOptions sdf_scene_options = distance_eval->get_sdf_scene_options();
+
+        sdf_scene_options.scene_data = volume_library::get_volume_data(volume_name);
     }
 
     //-------------------------------------------------------------------------
