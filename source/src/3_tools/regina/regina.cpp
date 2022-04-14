@@ -27,6 +27,7 @@ rex::CoreApplication* rex::create_application(const ApplicationArguments& argume
     rex::StringID fullscreen = arguments.get_argument_value("fullscreen");
     rex::StringID app_name = arguments.get_argument_value("name");
     rex::StringID profile_id = arguments.get_argument_value("profile");
+    rex::StringID animate_scene = arguments.get_argument_value("animate");
 
     rex::StringID deferred = arguments.get_argument_value("deferred");
     rex::StringID mesh_type = arguments.get_argument_value("meshtype");
@@ -50,6 +51,7 @@ rex::CoreApplication* rex::create_application(const ApplicationArguments& argume
     s_deferred_description.resolution = !resolution.is_none() ? std::stoi(resolution.to_string()) : -1;
     s_deferred_description.use_lattice = !lattice.is_none() ? std::stoi(lattice.to_string()) : false;
     s_deferred_description.source_content_location = !source_location.is_none() ? source_location : ESID::SID_None;
+    s_deferred_description.animate = !animate_scene.is_none() ? std::stoi(animate_scene.to_string()) : false;
 
     s_distance_description.max_iterations = !max_iterations.is_none() ? std::stoi(max_iterations.to_string()) : 150;
     s_distance_description.nr_lights = !nr_lights.is_none() ? std::stoi(nr_lights.to_string()) : 32;
@@ -58,6 +60,7 @@ rex::CoreApplication* rex::create_application(const ApplicationArguments& argume
     s_distance_description.resolution = !resolution.is_none() ? std::stoi(resolution.to_string()) : -1;
     s_distance_description.use_lattice = !lattice.is_none() ? std::stoi(lattice.to_string()) : false;
     s_distance_description.source_content_location = !source_location.is_none() ? source_location : ESID::SID_None;
+    s_distance_description.animate = !animate_scene.is_none() ? std::stoi(animate_scene.to_string()) : false;
 
     s_deferred = !deferred.is_none() ? std::stoi(deferred.to_string()) : 0;
 

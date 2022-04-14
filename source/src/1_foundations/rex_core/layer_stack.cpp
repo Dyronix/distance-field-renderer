@@ -10,6 +10,8 @@ namespace rex
     //-------------------------------------------------------------------------
     LayerStack::LayerStack(int32 initialSize)
     {
+        R_PROFILE_FUNCTION();
+
         int32 size = initialSize == -1 ? INITIAL_LAYERSTACK_CAPACITY : initialSize;
 
         R_ASSERT_X(size >= 0, "Layerstack size cannot be negative!");
@@ -19,6 +21,8 @@ namespace rex
     //-------------------------------------------------------------------------
     LayerStack::~LayerStack()
     {
+        R_PROFILE_FUNCTION();
+
         R_ASSERT_X(m_layers.size() == 0, "Layer stack was not cleared!");
 
         clear();
@@ -89,6 +93,8 @@ namespace rex
     //-------------------------------------------------------------------------
     void LayerStack::push(std::unique_ptr<Layer> layer)
     {
+        R_PROFILE_FUNCTION();
+
         layer->attach();
         m_layers.push_back(std::move(layer));
 
@@ -101,6 +107,8 @@ namespace rex
     //-------------------------------------------------------------------------
     void LayerStack::remove_layer(const StringID& layer)
     {
+        R_PROFILE_FUNCTION();
+
         auto it = std::find_if(std::cbegin(m_layers), std::cend(m_layers), [& layername = layer](const std::unique_ptr<Layer>& layer)
                                {
                                    return layername == layer->get_name();
@@ -115,6 +123,8 @@ namespace rex
     //-------------------------------------------------------------------------
     void LayerStack::remove_layer(Layer* layer)
     {
+        R_PROFILE_FUNCTION();
+
         auto it = std::find_if(std::cbegin(m_layers), std::cend(m_layers), [layer](const std::unique_ptr<Layer>& l)
                                {
                                    return layer == l.get();
@@ -130,6 +140,8 @@ namespace rex
     //-------------------------------------------------------------------------
     void LayerStack::clear()
     {
+        R_PROFILE_FUNCTION();
+
         for (auto& l : m_layers)
         {
             l->detach();
