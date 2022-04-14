@@ -84,12 +84,16 @@ namespace regina
             TETRAHEDRON_RIBS
         };
 
+        using MeshTypes = std::vector<MeshType>;
         using MeshNameMap = std::unordered_map<MeshType, rex::StringID>;
         using MeshScaleMap = std::unordered_map<MeshType, rex::vec3>;
 
         using MeshLattice = rex::YesNoEnum;
 
         DeferredRenderingLayerDescription LAYER_DESCRIPTION;
+
+        MeshTypes LOADED_MESH_TYPES = {};
+        int32 ACTIVE_MESH_TYPE_INDEX = 0;
 
         MeshNameMap MESH_NAME_MAP =
         {
@@ -133,6 +137,22 @@ namespace regina
             { MeshType::OECHS,                  {0.5, 0.5, 0.5}},
             { MeshType::TETRAHEDRON_RIBS,       {0.5, 0.5, 0.5}},
         };
+
+        //-------------------------------------------------------------------------
+        MeshType get_active_mesh_type()
+        {
+            MeshType active_volume_type;
+            if (!LAYER_DESCRIPTION.source_content_location.is_none())
+            {
+                active_volume_type = (MeshType)LAYER_DESCRIPTION.mesh_type;
+            }
+            else
+            {
+                active_volume_type = LOADED_MESH_TYPES[ACTIVE_MESH_TYPE_INDEX];
+            }
+
+            return active_volume_type;
+        }
 
         // Render pass settings
         int32 MIN_NR_LIGHTS = 1;
@@ -352,8 +372,10 @@ namespace regina
             rex::mesh_factory::load();
         }
         //-------------------------------------------------------------------------
-        void load_custom_geometry(const rex::StringID& sourceLocation, MeshType meshType, bool lattified, int32 resolution)
+        bool load_custom_geometry(const rex::StringID& sourceLocation, MeshType meshType, bool lattified, int32 resolution)
         {
+            R_PROFILE_FUNCTION();
+
             static std::unordered_map<int32, rex::StringID> resolutions{{0, "90"}, {1, "300"}, {2, "600"}, {3, "900"}};
 
             rex::StringID source_location = sourceLocation.is_none() ? rex::create_sid("content\\meshes\\") : sourceLocation;
@@ -379,14 +401,33 @@ namespace regina
 
             R_INFO("[Model] Mesh Path: {0}", mesh_path.str());
 
-            rex::model_library::add(model_importer::import(rex::create_sid(mesh_path.str()), MESH_NAME_MAP[meshType]));
+            return rex::model_library::add(model_importer::import(rex::create_sid(mesh_path.str()), MESH_NAME_MAP[meshType]));
         }
         //-------------------------------------------------------------------------
-        void load_custom_geometry()
+        std::vector<MeshType> load_custom_geometry()
         {
             R_PROFILE_FUNCTION(); 
 
-            load_custom_geometry(LAYER_DESCRIPTION.source_content_location, (MeshType)LAYER_DESCRIPTION.mesh_type, LAYER_DESCRIPTION.use_lattice, LAYER_DESCRIPTION.resolution);
+            std::vector<MeshType> loaded_mesh_types;
+
+            if (!LAYER_DESCRIPTION.source_content_location.is_none())
+            {
+                load_custom_geometry(LAYER_DESCRIPTION.source_content_location, (MeshType)LAYER_DESCRIPTION.mesh_type, LAYER_DESCRIPTION.use_lattice, LAYER_DESCRIPTION.resolution);
+            }
+            else
+            {
+                if (load_custom_geometry("content\\meshes\\lattice_samples", MeshType::CROSS_CUBE_RIBS, false, -1))           { loaded_mesh_types.push_back(MeshType::CROSS_CUBE_RIBS); }
+                if (load_custom_geometry("content\\meshes\\lattice_samples", MeshType::CROSS, false, -1))                     { loaded_mesh_types.push_back(MeshType::CROSS); }
+                if (load_custom_geometry("content\\meshes\\lattice_samples", MeshType::CUBE_RIBS, false, -1))                 { loaded_mesh_types.push_back(MeshType::CUBE_RIBS); }
+                if (load_custom_geometry("content\\meshes\\lattice_samples", MeshType::DOUBLE_TETRA_OCTA_RIBS, false, -1))    { loaded_mesh_types.push_back(MeshType::DOUBLE_TETRA_OCTA_RIBS); }
+                if (load_custom_geometry("content\\meshes\\lattice_samples", MeshType::DOUBLE_TETRA_RIBS, false, -1))         { loaded_mesh_types.push_back(MeshType::DOUBLE_TETRA_RIBS); }
+                if (load_custom_geometry("content\\meshes\\lattice_samples", MeshType::FKA, false, -1))                       { loaded_mesh_types.push_back(MeshType::FKA); }
+                if (load_custom_geometry("content\\meshes\\lattice_samples", MeshType::OCTAHEDRON_RIB, false, -1))            { loaded_mesh_types.push_back(MeshType::OCTAHEDRON_RIB); }
+                if (load_custom_geometry("content\\meshes\\lattice_samples", MeshType::OECHS, false, -1))                     { loaded_mesh_types.push_back(MeshType::OECHS); }
+                if (load_custom_geometry("content\\meshes\\lattice_samples", MeshType::TETRAHEDRON_RIBS, false, -1))          { loaded_mesh_types.push_back(MeshType::TETRAHEDRON_RIBS); }
+            }
+
+            return loaded_mesh_types;
         }
     } // namespace deferred_rendering
 
@@ -396,11 +437,14 @@ namespace regina
         , m_camera_controller(rex::win32::Input::instance(), R_MOUSE_BUTTON_LEFT, deferred_rendering::create_orbit_camera_description())
         , m_window(window)
     {
+        R_PROFILE_FUNCTION();
+
         deferred_rendering::LAYER_DESCRIPTION = description;
     }
     //-------------------------------------------------------------------------
     DeferredRenderingLayer::~DeferredRenderingLayer()
     {
+        R_PROFILE_FUNCTION();
     }
 
     //-------------------------------------------------------------------------
@@ -410,7 +454,9 @@ namespace regina
 
         deferred_rendering::load_shaders();
         deferred_rendering::load_primitive_geometry();
-        deferred_rendering::load_custom_geometry();
+
+        deferred_rendering::LOADED_MESH_TYPES = deferred_rendering::load_custom_geometry();
+        deferred_rendering::ACTIVE_MESH_TYPE_INDEX = 0;
 
         setup_scene();
         setup_camera();
@@ -439,7 +485,10 @@ namespace regina
     {
         R_PROFILE_FUNCTION();
 
-        animate_camera(info);
+        if (deferred_rendering::LAYER_DESCRIPTION.animate)
+        {
+            animate_camera(info);
+        }
 
         m_camera_controller.on_update(info);
 
@@ -471,6 +520,10 @@ namespace regina
         switch (keyPressEvent.get_key())
         {
             case R_KEY_F2: read_framebuffer(); return true;
+            case R_KEY_F3: toggle_camera_animation(); return true;
+
+            case R_KEY_LEFT: previous_mesh(); return true;
+            case R_KEY_RIGHT: next_mesh(); return true;
 
             default: return false;
         }
@@ -479,6 +532,8 @@ namespace regina
     //-------------------------------------------------------------------------
     void DeferredRenderingLayer::animate_camera(const rex::FrameInfo& info)
     {
+        R_PROFILE_FUNCTION();
+
         float focus_distance_speed = 0.5f;
         float current_focus_distance = m_camera_controller.get_focus_distance();
         
@@ -492,10 +547,54 @@ namespace regina
     //-------------------------------------------------------------------------
     void DeferredRenderingLayer::read_framebuffer()
     {
+        R_PROFILE_FUNCTION();
+
         uint32 vp_width = m_scene_renderer->get_viewport_width();
         uint32 vp_height = m_scene_renderer->get_viewport_height();
 
         rex::Renderer::read_framebuffer_content(rex::RectI(0, 0, vp_width, vp_height), rex::Texture::Format::RGBA_32_FLOAT, rex::Texel::Format::RGBA);
+    }
+
+    //-------------------------------------------------------------------------
+    void DeferredRenderingLayer::toggle_camera_animation()
+    {
+        R_PROFILE_FUNCTION();
+
+        deferred_rendering::LAYER_DESCRIPTION.animate = !deferred_rendering::LAYER_DESCRIPTION.animate;
+    }
+
+    //-------------------------------------------------------------------------
+    void DeferredRenderingLayer::next_mesh()
+    {
+        R_PROFILE_FUNCTION();
+
+        int32 loaded_volume_type_count = (int32)deferred_rendering::LOADED_MESH_TYPES.size();
+
+        deferred_rendering::ACTIVE_MESH_TYPE_INDEX = (deferred_rendering::ACTIVE_MESH_TYPE_INDEX + 1) % loaded_volume_type_count;
+
+        auto& volume_name_map = deferred_rendering::MESH_NAME_MAP;
+        auto& volume_name = volume_name_map[deferred_rendering::LOADED_MESH_TYPES[deferred_rendering::ACTIVE_MESH_TYPE_INDEX]];
+
+        R_INFO("Active Volume: {0}", volume_name.to_string());
+    }
+
+    //-------------------------------------------------------------------------
+    void DeferredRenderingLayer::previous_mesh()
+    {
+        R_PROFILE_FUNCTION();
+
+        int32 loaded_volume_type_count = (int32)deferred_rendering::LOADED_MESH_TYPES.size();
+
+        deferred_rendering::ACTIVE_MESH_TYPE_INDEX = deferred_rendering::ACTIVE_MESH_TYPE_INDEX - 1;
+        if (deferred_rendering::ACTIVE_MESH_TYPE_INDEX < 0)
+        {
+            deferred_rendering::ACTIVE_MESH_TYPE_INDEX = loaded_volume_type_count - 1;
+        }
+
+        auto& volume_name_map = deferred_rendering::MESH_NAME_MAP;
+        auto& volume_name = volume_name_map[deferred_rendering::LOADED_MESH_TYPES[deferred_rendering::ACTIVE_MESH_TYPE_INDEX]];
+
+        R_INFO("Active Volume: {0}", volume_name.to_string());
     }
 
     //-------------------------------------------------------------------------

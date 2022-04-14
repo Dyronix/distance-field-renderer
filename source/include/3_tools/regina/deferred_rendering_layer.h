@@ -45,6 +45,7 @@ namespace regina
         int32 resolution;
 
         bool use_lattice;
+        bool animate;
     };
 
     class DeferredRenderingLayer : public rex::Layer
@@ -64,6 +65,10 @@ namespace regina
 
         void animate_camera(const rex::FrameInfo& info);
         void read_framebuffer();
+        void toggle_camera_animation();
+
+        void next_mesh();
+        void previous_mesh();
 
         void setup_scene();
         void setup_camera();
