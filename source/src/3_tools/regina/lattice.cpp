@@ -73,11 +73,25 @@ namespace regina
     {
         return m_lattice_meta.lattice_grid_size;
     }
+
     //-------------------------------------------------------------------------
-    const rex::AABB& Lattice::get_lattice_grid_bounds() const
+    const rex::vec3& Lattice::get_voxel_grid_cell_size() const
     {
-        return m_lattice_meta.lattice_grid_bounds;
+        return m_lattice_meta.voxel_grid_cell_size;
     }
+
+    //-------------------------------------------------------------------------
+    const rex::vec3& Lattice::get_voxel_grid_size() const
+    {
+        return m_lattice_meta.voxel_grid_cell_size;
+    }
+
+    //-------------------------------------------------------------------------
+    const rex::AABB& Lattice::get_voxel_grid_bounds() const
+    {
+        return m_lattice_meta.voxel_grid_bounds;
+    }
+
     //-------------------------------------------------------------------------
     const LatticeMeta& Lattice::get_lattice_meta() const
     {

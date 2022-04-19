@@ -22,7 +22,9 @@ namespace regina
         float get_lattice_strud_thickness() const;
         const rex::vec3& get_lattice_grid_cell_size() const;
         const rex::vec3& get_lattice_grid_size() const;
-        const rex::AABB& get_lattice_grid_bounds() const;
+        const rex::vec3& get_voxel_grid_cell_size() const;
+        const rex::vec3& get_voxel_grid_size() const;
+        const rex::AABB& get_voxel_grid_bounds() const;
 
         const LatticeMeta& get_lattice_meta() const;
         const rex::memory::Blob& get_lattice_data() const;
