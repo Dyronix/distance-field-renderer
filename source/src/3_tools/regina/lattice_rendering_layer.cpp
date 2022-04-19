@@ -30,6 +30,9 @@
 #include "lattice_importer.h"
 #include "lattice_library.h"
 
+#include "volume_importer.h"
+#include "volume_library.h"
+
 #include "texture_importer.h"
 
 #include "mesh_factory.h"
@@ -83,9 +86,16 @@ namespace regina
         //-------------------------------------------------------------------------
         VolumeNameMap& get_volume_name_map()
         {
-            static VolumeNameMap VOLUME_NAME_MAP = {
-                {VolumeType::BUNNY, "Bunny"_sid},   {VolumeType::CUBE, "Cube"_sid},   {VolumeType::CYLINDER, "Cylinder"_sid}, {VolumeType::MONKEY, "Monkey"_sid},
-                {VolumeType::SPHERE, "Sphere"_sid}, {VolumeType::TORUS, "Torus"_sid}, {VolumeType::DRAGON, "Dragon"_sid},     {VolumeType::TIGER, "Tiger"_sid},
+            static VolumeNameMap VOLUME_NAME_MAP =
+            {
+                { VolumeType::BUNNY,      "Bunny"_sid },
+                { VolumeType::CUBE,       "Cube"_sid },
+                { VolumeType::CYLINDER,   "Cylinder"_sid },
+                { VolumeType::MONKEY,     "Monkey"_sid },
+                { VolumeType::SPHERE,     "Sphere"_sid },
+                { VolumeType::TORUS,      "Torus"_sid },
+                { VolumeType::DRAGON,     "Dragon"_sid },
+                { VolumeType::TIGER,      "Tiger"_sid },
             };
 
             return VOLUME_NAME_MAP;
@@ -93,8 +103,16 @@ namespace regina
         //-------------------------------------------------------------------------
         std::unordered_map<VolumeType, float>& get_volume_scale_map()
         {
-            static std::unordered_map<VolumeType, float> MAP{
-                {VolumeType::BUNNY, 1.0f}, {VolumeType::CUBE, 1.0f}, {VolumeType::CYLINDER, 1.0f}, {VolumeType::MONKEY, 1.0f}, {VolumeType::SPHERE, 1.0f}, {VolumeType::TORUS, 1.0f}, {VolumeType::DRAGON, 1.0f}, {VolumeType::TIGER, 1.0f},
+            static std::unordered_map<VolumeType, float> MAP
+            {
+                { VolumeType::BUNNY,      1.0f},
+                { VolumeType::CUBE,       1.0f},
+                { VolumeType::CYLINDER,   1.0f},
+                { VolumeType::MONKEY,     1.0f},
+                { VolumeType::SPHERE,     1.0f},
+                { VolumeType::TORUS,      1.0f},
+                { VolumeType::DRAGON,     1.0f},
+                { VolumeType::TIGER,      1.0f},
             };
 
             return MAP;
@@ -102,9 +120,16 @@ namespace regina
         //-------------------------------------------------------------------------
         std::unordered_map<VolumeType, float>& get_volume_offset_map()
         {
-            static std::unordered_map<VolumeType, float> MAP{
-                {VolumeType::BUNNY, -0.001f},  {VolumeType::CUBE, -0.001f},  {VolumeType::CYLINDER, -0.001f}, {VolumeType::MONKEY, -0.001f},
-                {VolumeType::SPHERE, -0.001f}, {VolumeType::TORUS, -0.001f}, {VolumeType::DRAGON, -0.001f},   {VolumeType::TIGER, -0.001f},
+            static std::unordered_map<VolumeType, float> MAP
+            {
+                { VolumeType::BUNNY,      -0.001f},
+                { VolumeType::CUBE,       -0.001f},
+                { VolumeType::CYLINDER,   -0.001f},
+                { VolumeType::MONKEY,     -0.001f},
+                { VolumeType::SPHERE,     -0.001f},
+                { VolumeType::TORUS,      -0.001f},
+                { VolumeType::DRAGON,     -0.001f},
+                { VolumeType::TIGER,      -0.001f},
             };
 
             return MAP;
@@ -158,13 +183,13 @@ namespace regina
         //-------------------------------------------------------------------------
         rex::vec3 calculate_scene_size(const Lattice& lattice)
         {
-            rex::vec3 lattice_grid_size = lattice.get_lattice_grid_bounds().maximum - lattice.get_voxel_grid_bounds().minimum;
+            rex::vec3 lattice_grid_size = lattice.get_voxel_grid_bounds().maximum - lattice.get_voxel_grid_bounds().minimum;
 
-            float longest_edge = rex::max_coeff(voxel_grid_size);
+            float longest_edge = rex::max_coeff(lattice_grid_size);
 
-            float x_width = rex::remap(voxel_grid_size.x, 0.0f, 0.0f, longest_edge, 1.0f);
-            float y_width = rex::remap(voxel_grid_size.y, 0.0f, 0.0f, longest_edge, 1.0f);
-            float z_width = rex::remap(voxel_grid_size.z, 0.0f, 0.0f, longest_edge, 1.0f);
+            float x_width = rex::remap(lattice_grid_size.x, 0.0f, 0.0f, longest_edge, 1.0f);
+            float y_width = rex::remap(lattice_grid_size.y, 0.0f, 0.0f, longest_edge, 1.0f);
+            float z_width = rex::remap(lattice_grid_size.z, 0.0f, 0.0f, longest_edge, 1.0f);
 
             return rex::vec3(x_width, y_width, z_width);
         }
@@ -181,23 +206,23 @@ namespace regina
             options.sphere_tracer_options.max_march_distance = renderpass_settings::MAX_MARCH_DISTANCE;
             options.sphere_tracer_options.min_surface_distance = renderpass_settings::MIN_SURFACE_DISTANCE;
 
-            const Volume& volume = volume_library::get_volume(get_volume_name_map()[VOLUME_TYPE]);
-            const VolumeMeta& volume_meta = volume.get_volume_meta();
+            const Lattice& lattice = lattice_library::get_lattice(get_volume_name_map()[VOLUME_TYPE]);
+            const LatticeMeta& lattice_meta = lattice.get_lattice_meta();
 
             const float scene_scale = get_volume_scale_map()[VOLUME_TYPE];
             const float scene_offset = get_volume_offset_map()[VOLUME_TYPE];
 
             options.sdf_scene_options.scene_scale = scene_scale;
             options.sdf_scene_options.scene_offset = scene_offset - renderpass_settings::MIN_SURFACE_DISTANCE;
-            options.sdf_scene_options.scene_size = calculate_scene_size(volume) * 0.5f;
+            options.sdf_scene_options.scene_size = calculate_scene_size(lattice) * 0.5f;
             options.sdf_scene_options.scene_center = rex::vec3(0.0f, 0.0f, 0.0f);
 
-            options.sdf_scene_options.scene_voxel_grid_min_bounds = volume_meta.voxel_grid_bounds.minimum;
-            options.sdf_scene_options.scene_voxel_grid_max_bounds = volume_meta.voxel_grid_bounds.maximum;
-            options.sdf_scene_options.scene_voxel_grid_size = volume_meta.voxel_grid_size;
-            options.sdf_scene_options.scene_voxel_grid_cell_size = volume_meta.voxel_grid_cell_size;
+            options.sdf_scene_options.scene_voxel_grid_min_bounds = lattice_meta.voxel_grid_bounds.minimum;
+            options.sdf_scene_options.scene_voxel_grid_max_bounds = lattice_meta.voxel_grid_bounds.maximum;
+            options.sdf_scene_options.scene_voxel_grid_size = lattice_meta.voxel_grid_size;
+            options.sdf_scene_options.scene_voxel_grid_cell_size = lattice_meta.voxel_grid_cell_size;
 
-            options.sdf_scene_options.scene_data = volume_library::get_volume_data(get_volume_name_map()[VOLUME_TYPE]);
+            options.sdf_scene_options.scene_data = lattice_library::get_lattice_data(get_volume_name_map()[VOLUME_TYPE]);
 
             return options;
         }
@@ -205,7 +230,17 @@ namespace regina
         //-------------------------------------------------------------------------
         rex::LatticeOptions create_lattice_options()
         {
+            const Lattice& lattice = lattice_library::get_lattice(get_volume_name_map()[VOLUME_TYPE]);
+            const LatticeMeta& lattice_meta = lattice.get_lattice_meta();
+
             rex::LatticeOptions options;
+
+            options.lattice_strud_thickness = lattice_meta.lattice_strud_thickness;
+            options.lattice_grid_size = lattice_meta.lattice_grid_size;
+            options.lattice_grid_cell_size = lattice_meta.lattice_grid_cell_size;
+            options.lattice_grid_min_bounds = lattice_meta.voxel_grid_bounds.minimum;
+            options.lattice_grid_max_bounds = lattice_meta.voxel_grid_bounds.maximum;
+            options.lattice_data_name = get_volume_name_map()[VOLUME_TYPE];
 
             return options;
         }
@@ -340,14 +375,31 @@ namespace regina
             R_INFO("[TEXTURE] Import completed: {0}", name.to_string());
         }
         //-------------------------------------------------------------------------
-        void load_lattice()
+        void load_lattice(const rex::StringID& name, const rex::StringID& latticeMetaPath, const rex::StringID& latticeDataPath)
         {
             R_PROFILE_FUNCTION();
+
+            Lattice lattice = lattice_importer::import(name, latticeMetaPath, latticeDataPath);
+
+            if (lattice.get_lattice_data().get_size() == 0)
+            {
+                R_ERROR("[LATTICE] Lattice with name: {0}, was not imported correctly", lattice.get_name());
+                return;
+            }
+
+            lattice_library::add(std::move(lattice));
+
+            R_INFO("[LATTICE] Import completed: {0}", name.to_string());
         }
         //-------------------------------------------------------------------------
         void load_lattices()
         {
             R_PROFILE_FUNCTION();
+            
+            load_lattice(get_volume_name_map()[VolumeType::BUNNY], "content\\lattices\\bunny.lattice.meta"_sid, "content\\lattices\\bunny.lattice"_sid);
+            load_lattice(get_volume_name_map()[VolumeType::CYLINDER], "content\\lattices\\cylinder.lattice.meta"_sid, "content\\lattices\\cylinder.lattice"_sid);
+            load_lattice(get_volume_name_map()[VolumeType::TIGER], "content\\lattices\\tiger.lattice.meta"_sid, "content\\lattices\\tiger.lattice"_sid);
+            load_lattice(get_volume_name_map()[VolumeType::TORUS], "content\\lattices\\torus.lattice.meta"_sid, "content\\lattices\\torus.lattice"_sid);
         }
         //-------------------------------------------------------------------------
         void load_primitive_geometry()
@@ -366,6 +418,7 @@ namespace regina
             if (volume.get_volume_data().get_size() == 0)
             {
                 R_ERROR("[VOLUME] Volume with name: {0}, was not imported correctly", volume.get_name());
+                return;
             }
 
             volume_library::add(std::move(volume));
