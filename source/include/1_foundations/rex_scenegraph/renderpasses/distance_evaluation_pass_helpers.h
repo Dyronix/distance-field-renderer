@@ -2,8 +2,11 @@
 
 namespace rex
 {
+    class AspectRatio;
+    class FieldOfView;
+
     namespace sdf
     {
-        rex::matrix4 generate_frustrum_matrix(const rex::AspectRatio::Ratio& aspectRatio, const rex::FieldOfView& fov);
+        rex::matrix4 generate_frustrum_matrix(const rex::AspectRatio& aspectRatio, const rex::FieldOfView& fov);
     }
 }

@@ -14,7 +14,7 @@ namespace rex
         void set_viewport_size(int32 width, int32 height);
 
         const rex::matrix4& get_projection_matrix() const;
-        const AspectRatio::Ratio get_aspect_ratio() const;
+        const AspectRatio get_aspect_ratio() const;
 
         bool operator==(const Camera& other) const;
         bool operator!=(const Camera& other) const;

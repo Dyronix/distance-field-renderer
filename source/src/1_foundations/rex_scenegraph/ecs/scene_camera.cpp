@@ -69,7 +69,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void SceneCamera::set_perspective_vertical_fov(const DegAngle& angle)
         {
-            m_perspective_fov = FieldOfView(angle, get_aspect_ratio());
+            m_perspective_fov = FieldOfView(angle, get_aspect_ratio().get_ratio());
             recalculate_projection();
         }
 
@@ -167,7 +167,7 @@ namespace rex
         {
             if (m_projection_type == ProjectionType::PERSPECTIVE)
             {
-                float aspect = get_aspect_ratio().get();
+                float aspect = get_aspect_ratio().get_ratio().get();
                 float near_plane = m_perspective_clip.near_plane;
                 float far_plane = m_perspective_clip.far_plane;
 
@@ -177,7 +177,7 @@ namespace rex
             }
             else
             {
-                float aspect = get_aspect_ratio().get();
+                float aspect = get_aspect_ratio().get_ratio().get();
                 float near_plane = m_ortho_clip.near_plane;
                 float far_plane = m_ortho_clip.far_plane;
 

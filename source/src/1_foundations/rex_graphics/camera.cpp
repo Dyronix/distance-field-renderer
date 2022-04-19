@@ -39,9 +39,9 @@ namespace rex
     }
 
     //-------------------------------------------------------------------------
-    const rex::AspectRatio::Ratio Camera::get_aspect_ratio() const
+    const rex::AspectRatio Camera::get_aspect_ratio() const
     {
-        return m_aspect_ratio.get_ratio();
+        return m_aspect_ratio;
     }
 
     //-------------------------------------------------------------------------

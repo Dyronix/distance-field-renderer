@@ -10,14 +10,14 @@ namespace rex
     namespace sdf
     {
         //-------------------------------------------------------------------------
-        rex::matrix4 generate_frustrum_matrix(const rex::AspectRatio::Ratio& aspectRatio, const rex::FieldOfView& fov)
+        rex::matrix4 generate_frustrum_matrix(const rex::AspectRatio& aspectRatio, const rex::FieldOfView& fov)
         {
             rex::matrix4 frustum_corners = rex::identity<rex::matrix4>();
 
             float fov_v_half = fov.get_vertical().to_rad() * 0.5f;
             float tan_fov = std::tan(fov_v_half);
 
-            rex::vec3 to_right = rex::world_right<float>() * tan_fov * aspectRatio.get();
+            rex::vec3 to_right = rex::world_right<float>() * tan_fov * aspectRatio.get_ratio().get();
             rex::vec3 to_top = rex::world_up<float>() * tan_fov;
 
             rex::vec3 top_left = (-rex::world_forward<float>() - to_right + to_top);
