@@ -1,6 +1,7 @@
 #pragma once
 
 #include "token_parser.h"
+#include "volume_meta.h"
 
 namespace regina
 {  
