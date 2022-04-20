@@ -80,6 +80,7 @@ namespace rex
                 R_PROFILE_FUNCTION();
 
                 int32 swap_interval = gsl::narrow<int32>(interval);
+                swap_interval = 0;
                 if (SDL_GL_SetSwapInterval(swap_interval) == -1)
                 {
                     R_ERROR("Swap interval not supported");
