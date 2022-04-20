@@ -5,6 +5,7 @@
 #include "regina.h"
 #include "deferred_rendering_layer.h"
 #include "distance_field_rendering_layer.h"
+#include "lattice_rendering_layer.h"
 #include "shortcut_layer.h"
 
 #include "application_arguments.h"
@@ -92,7 +93,8 @@ namespace regina
 
         if (!s_deferred)
         {
-            m_distance_field_layer = push_back_layer(std::make_unique<DistanceFieldRenderingLayer>(window, s_distance_description));
+            //m_distance_field_layer = push_back_layer(std::make_unique<DistanceFieldRenderingLayer>(window, s_distance_description));
+            m_distance_field_layer = push_back_layer(std::make_unique<LatticeRenderingLayer>(window));
         }
         else
         {
@@ -108,10 +110,9 @@ namespace regina
     {
         ++frame_counter;
 
-        if (frame_counter > 500)
-        {
-            quit();
-        }
+        //if (frame_counter > 500)
+        //{
+        //    quit();
+        //}
     }
-
 }
