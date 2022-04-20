@@ -10,15 +10,15 @@ namespace rex
         std::unordered_map<StringID, ref_ptr<Texture>> g_textures;
 
         //-------------------------------------------------------------------------
-        bool add(const ref_ptr<rex::Texture>& program)
+        bool add(const ref_ptr<rex::Texture>& texture)
         {
-            auto it = g_textures.find(program->get_name());
+            auto it = g_textures.find(texture->get_name());
             if (it != std::cend(g_textures))
             {
                 return false;
             }
 
-            g_textures.insert(std::make_pair(program->get_name(), program));
+            g_textures.insert(std::make_pair(texture->get_name(), texture));
             return true;
         }
         //-------------------------------------------------------------------------
@@ -34,9 +34,9 @@ namespace rex
         }
 
         //-------------------------------------------------------------------------
-        ref_ptr<rex::Texture> get(const StringID& programName)
+        ref_ptr<rex::Texture> get(const StringID& latticeName)
         {
-            auto it = g_textures.find(programName);
+            auto it = g_textures.find(latticeName);
 
             return it != std::cend(g_textures) ? it->second : nullptr;
         }
