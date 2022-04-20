@@ -16,15 +16,17 @@
 #include "resources/texture_library.h"
 #include "resources/uniform_buffer_set.h"
 
+#include "lattice_library.h"
+
 #include "ecs/scene.h"
 #include "ecs/scene_camera.h"
 
 #include "renderer/point_light.h"
 
-namespace rex
+namespace regina
 {
     //-------------------------------------------------------------------------
-    LatticeDistanceEvaluationPass::LatticeDistanceEvaluationPass(const LatticeOptions& latticeOptions, const DistanceEvaluationsPassOptions& options, CreateFrameBuffer create_frame_buffer)
+    LatticeDistanceEvaluationPass::LatticeDistanceEvaluationPass(const LatticeOptions& latticeOptions, const rex::DistanceEvaluationsPassOptions& options, rex::CreateFrameBuffer create_frame_buffer)
         : DistanceEvaluationPass(options, create_frame_buffer)
         , m_lattice_options(latticeOptions)
     {
@@ -36,40 +38,40 @@ namespace rex
     }
 
     //-------------------------------------------------------------------------
-    void LatticeDistanceEvaluationPass::on_initialize(const ref_ptr<SceneRenderer>& renderer)
+    void LatticeDistanceEvaluationPass::on_initialize(const rex::ref_ptr<rex::SceneRenderer>& renderer)
     {
-        ref_ptr<FrameBuffer> framebuffer = nullptr;
+        rex::ref_ptr<rex::FrameBuffer> framebuffer = nullptr;
 
         if (should_create_frame_buffer())
         {
             uint32 vp_width = renderer->get_viewport_width();
             uint32 vp_height = renderer->get_viewport_height();
 
-            FrameBufferDescription sdf_framebuffer_desc;
+            rex::FrameBufferDescription sdf_framebuffer_desc;
 
             sdf_framebuffer_desc.width = vp_width;
             sdf_framebuffer_desc.height = vp_height;
-            sdf_framebuffer_desc.color_attachments.push_back(std::move(create_color_attachment_description(vp_width, vp_height, Texture::Format::RGBA_32_FLOAT)));
+            sdf_framebuffer_desc.color_attachments.push_back(std::move(rex::create_color_attachment_description(vp_width, vp_height, rex::Texture::Format::RGBA_32_FLOAT)));
             sdf_framebuffer_desc.name = "Lattice SDF";
 
-            framebuffer = ResourceFactory::create_frame_buffer(std::move(sdf_framebuffer_desc), FrameBufferDepthAttachmentOption::NONE);
+            framebuffer = rex::ResourceFactory::create_frame_buffer(std::move(sdf_framebuffer_desc), rex::FrameBufferDepthAttachmentOption::NONE);
         }
 
-        RenderPassDescription sdf_renderpass_desc;
+        rex::RenderPassDescription sdf_renderpass_desc;
 
         sdf_renderpass_desc.framebuffer = framebuffer;
         sdf_renderpass_desc.clear_color = {0.15f, 0.15f, 0.15f, 1.0f};
         sdf_renderpass_desc.clear_depth = 1.0f;
-        sdf_renderpass_desc.clear_flags = COLOR_ONLY;
+        sdf_renderpass_desc.clear_flags = rex::COLOR_ONLY;
         sdf_renderpass_desc.name = "Lattice SDF";
 
-        PipelineDescription sdf_pipeline_desc;
+        rex::PipelineDescription sdf_pipeline_desc;
 
-        sdf_pipeline_desc.shader = shader_library::get(get_options().shader_name);
-        sdf_pipeline_desc.layout = {{DataType::VEC3, "a_Position"}, {DataType::VEC2, "a_TexCoord"}};
-        sdf_pipeline_desc.renderpass = Renderer::create_render_pass(sdf_renderpass_desc);
-        sdf_pipeline_desc.depth_test_state = {DepthTestEnabled::NO};
-        sdf_pipeline_desc.facecull_state = {FaceCullingEnabled::NO};
+        sdf_pipeline_desc.shader = rex::shader_library::get(get_options().shader_name);
+        sdf_pipeline_desc.layout = {{rex::DataType::VEC3, "a_Position"}, {rex::DataType::VEC2, "a_TexCoord"}};
+        sdf_pipeline_desc.renderpass = rex::Renderer::create_render_pass(sdf_renderpass_desc);
+        sdf_pipeline_desc.depth_test_state = {rex::DepthTestEnabled::NO};
+        sdf_pipeline_desc.facecull_state = {rex::FaceCullingEnabled::NO};
         sdf_pipeline_desc.name = "Lattice SDF";
 
         create_pipeline(sdf_pipeline_desc);
@@ -78,7 +80,7 @@ namespace rex
         upload_sphere_tracer_options(get_options().sphere_tracer_options);
         upload_sdf_scene_options(get_options().sdf_scene_options);
 
-        update_lattice_grid(m_lattice_grid_name);
+        upload_lattice_options(m_lattice_options);
     }
 
     //-------------------------------------------------------------------------
@@ -92,7 +94,7 @@ namespace rex
     {
         auto material = get_material();
 
-        auto texture = texture_library::get(latticeOptions.lattice_data_name);
+        auto texture = lattice_library::get_lattice_data(latticeOptions.lattice_data_name);
 
         if (texture == nullptr)
         {
@@ -104,7 +106,7 @@ namespace rex
 
         material->set("u_lattice_strud_thickness", latticeOptions.lattice_strud_thickness);
         material->set("u_lattice_grid_min_bounds", latticeOptions.lattice_grid_min_bounds);
-        material->set("u_lattice_grid_max_bounds", latticeOptions.lattice_grid_max_bounds);
+        //material->set("u_lattice_grid_max_bounds", latticeOptions.lattice_grid_max_bounds);
         material->set("u_lattice_grid_size", latticeOptions.lattice_grid_size);
         material->set("u_lattice_grid_cell_size", latticeOptions.lattice_grid_cell_size);
 

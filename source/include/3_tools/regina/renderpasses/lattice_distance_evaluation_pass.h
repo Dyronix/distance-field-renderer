@@ -11,7 +11,10 @@ namespace rex
     }
 
     class SceneRenderer;
+}
 
+namespace regina
+{
     struct LatticeOptions
     {
         LatticeOptions()
@@ -20,7 +23,7 @@ namespace rex
             , lattice_grid_max_bounds(0.5f, 0.5f, 0.5f)
             , lattice_grid_size(1.0f, 1.0f, 1.0f)
             , lattice_grid_cell_size(0.1f, 0.1f, 0.1f)
-            , lattice_data_name(ESID::SID_None)
+            , lattice_data_name(rex::ESID::SID_None)
         {}
 
         float lattice_strud_thickness;
@@ -30,17 +33,17 @@ namespace rex
         rex::vec3 lattice_grid_size;
         rex::vec3 lattice_grid_cell_size;
 
-        StringID lattice_data_name;
+        rex::StringID lattice_data_name;
     };
 
-    class LatticeDistanceEvaluationPass : public DistanceEvaluationPass
+    class LatticeDistanceEvaluationPass : public rex::DistanceEvaluationPass
     {
     public:
-        LatticeDistanceEvaluationPass(const LatticeOptions& latticeOptions, const DistanceEvaluationsPassOptions& options, CreateFrameBuffer create_frame_buffer = CreateFrameBuffer::YES);
+        LatticeDistanceEvaluationPass(const LatticeOptions& latticeOptions, const rex::DistanceEvaluationsPassOptions& options, rex::CreateFrameBuffer create_frame_buffer = rex::CreateFrameBuffer::YES);
         ~LatticeDistanceEvaluationPass() override;
 
     protected:
-        void on_initialize(const ref_ptr<SceneRenderer>& renderer) override;
+        void on_initialize(const rex::ref_ptr<rex::SceneRenderer>& renderer) override;
         void on_shutdown() override;
 
     private:
