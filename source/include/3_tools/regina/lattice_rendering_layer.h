@@ -20,8 +20,7 @@ namespace rex
     struct DeferredLightPassOptions;
     struct DeferredLightVisualizationPassOptions;
     struct CompositePassOptions;
-    struct LatticeOptions;
-
+    
     namespace events
     {
         class KeyPressed;
@@ -36,6 +35,8 @@ namespace rex
 
 namespace regina
 {
+    struct LatticeOptions;
+
     class LatticeRenderingLayer : public rex::Layer
     {
     public:
@@ -62,7 +63,7 @@ namespace regina
 
         void setup_lights();
 
-        std::unique_ptr<rex::SceneRenderPass> create_distance_evaluation_pass(const rex::LatticeOptions& latticeOptions, const rex::DistanceEvaluationsPassOptions& options) const;
+        std::unique_ptr<rex::SceneRenderPass> create_distance_evaluation_pass(const LatticeOptions& latticeOptions, const rex::DistanceEvaluationsPassOptions& options) const;
         std::unique_ptr<rex::SceneRenderPass> create_composite_pass(const rex::CompositePassOptions& options) const;
 
         rex::ecs::SceneCamera m_camera;

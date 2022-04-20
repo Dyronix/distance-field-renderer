@@ -200,7 +200,7 @@ namespace regina
             rex::DistanceEvaluationsPassOptions options;
 
             options.pass_name = lattice_rendering::DISTANCEEVALUATIONSPASS_NAME;
-            options.shader_name = "heatmap"_sid;
+            options.shader_name = "lattice"_sid;
 
             options.sphere_tracer_options.max_iterations = renderpass_settings::MAX_SPHERE_TRACER_ITERATIONS;
             options.sphere_tracer_options.max_march_distance = renderpass_settings::MAX_MARCH_DISTANCE;
@@ -222,18 +222,18 @@ namespace regina
             options.sdf_scene_options.scene_voxel_grid_size = lattice_meta.voxel_grid_size;
             options.sdf_scene_options.scene_voxel_grid_cell_size = lattice_meta.voxel_grid_cell_size;
 
-            options.sdf_scene_options.scene_data = lattice_library::get_lattice_data(get_volume_name_map()[VOLUME_TYPE]);
+            options.sdf_scene_options.scene_data = volume_library::get_volume_data(get_volume_name_map()[VOLUME_TYPE]);
 
             return options;
         }
 
         //-------------------------------------------------------------------------
-        rex::LatticeOptions create_lattice_options()
+        LatticeOptions create_lattice_options()
         {
             const Lattice& lattice = lattice_library::get_lattice(get_volume_name_map()[VOLUME_TYPE]);
             const LatticeMeta& lattice_meta = lattice.get_lattice_meta();
 
-            rex::LatticeOptions options;
+            LatticeOptions options;
 
             options.lattice_strud_thickness = lattice_meta.lattice_strud_thickness;
             options.lattice_grid_size = lattice_meta.lattice_grid_size;
@@ -383,7 +383,7 @@ namespace regina
 
             if (lattice.get_lattice_data().get_size() == 0)
             {
-                R_ERROR("[LATTICE] Lattice with name: {0}, was not imported correctly", lattice.get_name());
+                R_ERROR("[LATTICE] Lattice with name: {0}, was not imported correctly", lattice.get_name().to_string());
                 return;
             }
 
@@ -397,7 +397,6 @@ namespace regina
             R_PROFILE_FUNCTION();
             
             load_lattice(get_volume_name_map()[VolumeType::BUNNY], "content\\lattices\\bunny.lattice.meta"_sid, "content\\lattices\\bunny.lattice"_sid);
-            load_lattice(get_volume_name_map()[VolumeType::CYLINDER], "content\\lattices\\cylinder.lattice.meta"_sid, "content\\lattices\\cylinder.lattice"_sid);
             load_lattice(get_volume_name_map()[VolumeType::TIGER], "content\\lattices\\tiger.lattice.meta"_sid, "content\\lattices\\tiger.lattice"_sid);
             load_lattice(get_volume_name_map()[VolumeType::TORUS], "content\\lattices\\torus.lattice.meta"_sid, "content\\lattices\\torus.lattice"_sid);
         }
@@ -417,7 +416,7 @@ namespace regina
 
             if (volume.get_volume_data().get_size() == 0)
             {
-                R_ERROR("[VOLUME] Volume with name: {0}, was not imported correctly", volume.get_name());
+                R_ERROR("[VOLUME] Volume with name: {0}, was not imported correctly", volume.get_name().to_string());
                 return;
             }
 
@@ -430,10 +429,9 @@ namespace regina
         {
             R_PROFILE_FUNCTION();
 
-            load_volume(get_volume_name_map()[VolumeType::BUNNY], "content\\volumes\\bunny.sdf.meta"_sid, "content\\volumes\\bunny.sdf"_sid);
-            load_volume(get_volume_name_map()[VolumeType::CYLINDER], "content\\volumes\\cylinder.sdf.meta"_sid, "content\\volumes\\cylinder.sdf"_sid);
-            load_volume(get_volume_name_map()[VolumeType::TIGER], "content\\volumes\\tiger.sdf.meta"_sid, "content\\volumes\\tiger.sdf"_sid);
-            load_volume(get_volume_name_map()[VolumeType::TORUS], "content\\volumes\\torus.sdf.meta"_sid, "content\\volumes\\torus.sdf"_sid);
+            load_volume(get_volume_name_map()[VolumeType::BUNNY], "content\\volumes\\default\\bunny.sdf.meta"_sid, "content\\volumes\\default\\bunny.sdf"_sid);
+            load_volume(get_volume_name_map()[VolumeType::TIGER], "content\\volumes\\default\\tiger.sdf.meta"_sid, "content\\volumes\\default\\tiger.sdf"_sid);
+            load_volume(get_volume_name_map()[VolumeType::TORUS], "content\\volumes\\default\\torus.sdf.meta"_sid, "content\\volumes\\default\\torus.sdf"_sid);
         }
     } // namespace lattice_rendering
 
@@ -511,7 +509,7 @@ namespace regina
     }
 
     //-------------------------------------------------------------------------
-    bool LatticeRenderingLayer::on_key_pressed(const rex::events::KeyPressed& keyPressEvent)
+    bool LatticeRenderingLayer::on_key_pressed(const rex::events::KeyPressed& /*keyPressEvent*/)
     {
         return false;
     }
@@ -597,11 +595,11 @@ namespace regina
     }
 
     //-------------------------------------------------------------------------
-    std::unique_ptr<rex::SceneRenderPass> LatticeRenderingLayer::create_distance_evaluation_pass(const rex::LatticeOptions& latticeOptions, const rex::DistanceEvaluationsPassOptions& options) const
+    std::unique_ptr<rex::SceneRenderPass> LatticeRenderingLayer::create_distance_evaluation_pass(const LatticeOptions& latticeOptions, const rex::DistanceEvaluationsPassOptions& options) const
     {
         R_PROFILE_FUNCTION();
 
-        return std::make_unique<rex::LatticeDistanceEvaluationPass>(latticeOptions, options, rex::CreateFrameBuffer::YES);
+        return std::make_unique<LatticeDistanceEvaluationPass>(latticeOptions, options, rex::CreateFrameBuffer::YES);
     }
     //-------------------------------------------------------------------------
     std::unique_ptr<rex::SceneRenderPass> LatticeRenderingLayer::create_composite_pass(const rex::CompositePassOptions& options) const
