@@ -9,7 +9,7 @@ Write-Host "Current working directory: $cwd"
 
 Write-Host "Running script for Windows desktop"
 
-Import-Module "$cwd\scripts\windows\utilities\download_repo.ps1"
+Import-Module "$cwd\scripts\windows\utilities\download_archive.ps1"
 
 if (!(Test-Path "$external_dir"))
 {	
@@ -20,14 +20,14 @@ if (!(Test-Path "$external_dir"))
 
 Write-Host "External directory: $external_dir"
 
-download_repo $external_dir "sdl-windows" "SDL2-2.0.20" "https://www.libsdl.org/release/SDL2-devel-2.0.20-VC.zip"
-download_repo $external_dir "spdlog-windows" "spdlog-1.x" "https://github.com/gabime/spdlog/archive/refs/heads/v1.x.zip"
-download_repo $external_dir "gsl-windows" "GSL-main" "https://github.com/microsoft/GSL/archive/refs/heads/main.zip"
-download_repo $external_dir "crc-windows" "CRCpp-master" "https://github.com/d-bahr/CRCpp/archive/refs/heads/master.zip"
-download_repo $external_dir "glm-windows" "glm-master" "https://github.com/g-truc/glm/archive/refs/heads/master.zip"
-download_repo $external_dir "entt-windows" "entt-master" "https://github.com/skypjack/entt/archive/refs/heads/master.zip"
-download_repo $external_dir "stb-windows" "stb-master" "https://github.com/nothings/stb/archive/refs/heads/master.zip"
-download_repo $external_dir "assimp-windows" "rex-assimp-master" "https://github.com/Dyronix/rex-assimp/archive/refs/heads/master.zip"
+download_archive $external_dir "sdl-windows" "SDL2-2.0.20" "https://www.libsdl.org/release/SDL2-devel-2.0.20-VC.zip"
+download_archive $external_dir "spdlog-windows" "spdlog-1.x" "https://github.com/gabime/spdlog/archive/refs/heads/v1.x.zip"
+download_archive $external_dir "gsl-windows" "GSL-main" "https://github.com/microsoft/GSL/archive/refs/heads/main.zip"
+download_archive $external_dir "crc-windows" "CRCpp-master" "https://github.com/d-bahr/CRCpp/archive/refs/heads/master.zip"
+download_archive $external_dir "glm-windows" "glm-master" "https://github.com/g-truc/glm/archive/refs/heads/master.zip"
+download_archive $external_dir "entt-windows" "entt-master" "https://github.com/skypjack/entt/archive/refs/heads/master.zip"
+download_archive $external_dir "stb-windows" "stb-master" "https://github.com/nothings/stb/archive/refs/heads/master.zip"
+download_archive $external_dir "assimp-windows" "rex-assimp-master" "https://github.com/Dyronix/rex-assimp/archive/refs/heads/master.zip"
 
 try
 {

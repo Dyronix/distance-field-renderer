@@ -3,15 +3,15 @@ $ErrorActionPreference = "Stop"
 
 $cwd = Get-Location
 
-Write-Host "Loading windows/msvc/download_repo.ps1" -ForegroundColor Green
+Write-Host "Loading windows/utilities/download_archive.ps1" -ForegroundColor Green
 Write-Host "Current working directory: $cwd"
 
-Function download_repo
+Function download_archive
 {
     Param
     (
         [String]
-        $externalDir,
+        $outputDir,
         [String]
         $outputDirName,
         [String]
@@ -20,16 +20,16 @@ Function download_repo
         $repositoryURL
     )
 
-    Write-Host "Testing path: $external_dir\$outputDirName"
+    Write-Host "Testing path: $outputDir\$outputDirName"
 
     # Check that we have the library
-    if (!(Test-Path "$external_dir\$outputDirName"))
+    if (!(Test-Path "$outputDir\$outputDirName"))
     {
         try
         {
-            Write-Host "Downloading library into external folder $outputDirName"
+            Write-Host "Downloading library into folder $outputDirName"
             $WebClient = New-Object System.Net.WebClient
-            $WebClient.DownloadFile("$repositoryURL", "$externalDir\github-repository.zip")
+            $WebClient.DownloadFile("$repositoryURL", "$outputDir\archive.zip")
         }
         catch
         {
@@ -41,11 +41,11 @@ Function download_repo
 
         try
         {
-            Write-Host "Unzipping library into external\$outputDirName ..."
+            Write-Host "Unzipping library into $outputDir\$outputDirName ..."
             
-            Expand-Archive "$externalDir\github-repository.zip" "$externalDir\."
-            Rename-Item -Path "$externalDir\$outputArchiveName" -NewName "$outputDirName"
-            Remove-Item -Path "$externalDir\github-repository.zip"
+            Expand-Archive "$outputDir\archive.zip" "$outputDir\."
+            Rename-Item -Path "$outputDir\$outputArchiveName" -NewName "$outputDirName"
+            Remove-Item -Path "$outputDir\archive.zip"
         }
         catch
         {
