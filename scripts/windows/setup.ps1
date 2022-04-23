@@ -31,7 +31,7 @@ download_archive $external_dir "stb-windows" "stb-master" "https://github.com/no
 download_archive $external_dir "assimp-windows" "rex-assimp-master" "https://github.com/Dyronix/rex-assimp/archive/refs/heads/master.zip"
 
 # download sample assets
-download_archive $content_dir "sample-windows" "distance-field-renderer-assets" "https://drive.google.com/uc?export=download&id=139kpyQ-s8FkdHwBTI6GRZhymEdGGss1t"
+download_archive $content_dir "sample-windows" "distance-field-renderer-assets" "https://drive.google.com/uc?export=download&id=1u-xiPziikWfI-c6AhI7wyeElh6CU41hr"
 
 try
 {
