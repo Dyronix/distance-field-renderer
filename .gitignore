@@ -52,3 +52,5 @@ scripts/__pycache__/
 scribit-profile-runtime.json
 scribit-profile-shutdown.json
 scribit-profile-startup.json
+
+content/
