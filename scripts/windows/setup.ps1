@@ -3,6 +3,7 @@ $ErrorActionPreference = "Stop"
 
 $cwd = Get-Location
 $external_dir = "$cwd\external"
+$content_dir = "$cwd\content"
 
 Write-Host "Executing windows\setup.ps1" -ForegroundColor Green
 Write-Host "Current working directory: $cwd"
@@ -28,6 +29,9 @@ download_archive $external_dir "glm-windows" "glm-master" "https://github.com/g-
 download_archive $external_dir "entt-windows" "entt-master" "https://github.com/skypjack/entt/archive/refs/heads/master.zip"
 download_archive $external_dir "stb-windows" "stb-master" "https://github.com/nothings/stb/archive/refs/heads/master.zip"
 download_archive $external_dir "assimp-windows" "rex-assimp-master" "https://github.com/Dyronix/rex-assimp/archive/refs/heads/master.zip"
+
+# download sample assets
+download_archive $content_dir "sample-windows" "distance-field-renderer-assets" "https://drive.google.com/uc?export=download&id=139kpyQ-s8FkdHwBTI6GRZhymEdGGss1t"
 
 try
 {
