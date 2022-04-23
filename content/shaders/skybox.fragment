@@ -1,0 +1,18 @@
+#version 330
+#extension GL_ARB_separate_shader_objects : enable
+precision highp int;
+precision highp float;
+precision highp sampler3D;
+
+out vec4 finalColor;
+
+uniform samplerCube u_Texture;
+
+in vec3 v_Position;
+
+// ----------------------------------------------------------------------------
+//
+void main()
+{
+	finalColor = texture(u_Texture, v_Position);
+}

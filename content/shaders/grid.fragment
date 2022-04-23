@@ -1,0 +1,33 @@
+#version 330
+#extension GL_ARB_separate_shader_objects : enable
+precision highp int;
+precision highp float;
+precision highp sampler3D;
+
+out vec4 color;
+
+uniform float u_GridScale;
+uniform float u_GridSize;
+
+in vec3 v_Normal;
+in vec3 v_Tangent;
+in vec3 v_Binormal;
+in vec2 v_TexCoord;
+
+// ----------------------------------------
+//
+float grid(vec2 st, float res)
+{
+	vec2 grid = fract(st);
+	return step(res, grid.x) * step(res, grid.y);
+}
+
+// ----------------------------------------
+//
+void main()
+{
+	float x = grid(v_TexCoord * u_GridScale, u_GridSize);
+	color = vec4(vec3(0.2), 0.5) * (1.0 - x);
+	if (color.a == 0.0)
+		discard;
+}

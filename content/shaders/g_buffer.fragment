@@ -1,0 +1,32 @@
+#version 330
+#extension GL_ARB_separate_shader_objects : enable
+precision highp int;
+precision highp float;
+precision highp sampler3D;
+
+in vec3 v_Position;
+in vec3 v_Normal;
+in vec3 v_Tangent;
+in vec3 v_Binormal;
+in vec2 v_TexCoord;
+
+out vec3 g_Position;
+out vec3 g_Normal;
+out vec4 g_Albedo_Spec;
+
+uniform sampler2D u_Texture_Diffuse;
+uniform sampler2D u_Texture_Specular;
+
+// ----------------------------------------------------------------------------
+//
+void main()
+{
+    // store the fragment position vector in the first gbuffer texture
+    g_Position = v_Position;
+    // also store the per-fragment normals into the gbuffer
+    g_Normal = normalize(v_Normal);
+    // and the diffuse per-fragment color
+    g_Albedo_Spec.rgb = texture(u_Texture_Diffuse, v_TexCoord).rgb;
+    // store specular intensity in gAlbedoSpec's alpha component
+    g_Albedo_Spec.a = texture(u_Texture_Specular, v_TexCoord).r;
+}

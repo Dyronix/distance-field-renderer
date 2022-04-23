@@ -1,0 +1,44 @@
+#version 330
+#extension GL_ARB_separate_shader_objects : enable
+precision highp int;
+precision highp float;
+precision highp sampler3D;
+
+in vec3 a_Position;
+in vec3 a_Normal;
+in vec3 a_Tangent;
+in vec3 a_Binormal;
+in vec2 a_TexCoord;
+
+layout (std140) uniform Camera
+{
+	mat4 u_ViewProjectionMatrix;
+	mat4 u_InverseViewProjection;
+	mat4 u_ProjectionMatrix;
+	mat4 u_ViewMatrix;
+    mat4 u_WorldMatrix;
+};
+
+uniform mat4 u_Transform;
+
+out vec3 v_Position;
+out vec3 v_Normal;
+out vec3 v_Tangent;
+out vec3 v_Binormal;
+out vec2 v_TexCoord;
+
+// ----------------------------------------------------------------------------
+//
+void main()
+{
+    vec4 world_position = u_Transform * vec4(a_Position, 1.0);
+    mat3 normal_matrix = transpose(inverse(mat3(u_Transform)));
+
+    v_Position = world_position.xyz;
+    v_TexCoord = a_TexCoord;
+    v_Normal = normal_matrix * a_Normal;   
+    v_Tangent = mat3(u_Transform) * a_Tangent;   
+    v_Binormal = mat3(u_Transform) * a_Binormal;   
+
+    gl_Position =  u_ViewProjectionMatrix * vec4(v_Position, 1.0);
+}

@@ -1,0 +1,764 @@
+#version 330
+#extension GL_ARB_separate_shader_objects : enable
+precision highp int;
+precision highp float;
+precision highp sampler3D;
+
+#define HIT_NOTHING             0
+#define HIT_MAX_MARCH_DISTANCE  1
+#define HIT_SURFACE             2
+
+#define UNITCELL_EMPTY                              0
+#define UNITCELL_CROSS                              1
+#define UNITCELL_DOUBLE_TETRAHEDRON_FRAME           2
+#define UNITCELL_DOUBLE_TETRAHEDRON_OCTA_FRAME      3
+
+// ------------------- varying uniforms ---------------------
+//
+//  v_texcoord                      : vec2      - interpolated texture coodinate of the vertex
+//  v_world_ray                     : vec4      - ray shot by this fragment, used to determine the "depth" of our distance function
+//  v_camera_world                  : mat4      - world matrix of the camera
+//  v_camera_view                   : mat4      - view matrix of the camera
+//  v_camera_projection             : mat4      - projection matrix of the camera
+//
+
+in vec2             v_texcoord;
+in vec4             v_world_ray;
+in mat4             v_camera_world;     
+in mat4             v_camera_view;
+in mat4             v_camera_projection;
+
+// ---------------- sphere tracer uniforms ------------------
+//
+//  Returns our depth value in a linear format.
+//
+//  u_max_iterations                : int      - maximum raymarching iterations
+//  u_max_march_distance            : float    - maximum marching distance
+//  u_min_surface_distance          : float    - minimum distance to the surface untill "collision"
+//
+
+uniform int 	    u_max_iterations;			            
+uniform float 	    u_max_march_distance;
+uniform float 	    u_min_surface_distance;                    
+
+// ------------------- camera uniforms ----------------------
+//
+//  u_camera_position               : vec2      - location of the camera in 3D space
+//  u_near_plane                    : float     - near plane of the camera
+//  u_far_plane                     : float     - far plane of the camera
+//
+
+uniform vec3	    u_camera_position;
+uniform float       u_near_plane;
+uniform float       u_far_plane;
+
+// ------------------- scene uniforms -----------------------
+//
+//  u_scene_scale                   : float     - size of the to visualize distance field
+//  u_scene_offset                  : float     - expansion of the rendered surface
+//  u_scene_size                    : vec4      - bounds where the scene should be rendered
+//  u_scene_center                  : mat4      - center of the scene bounds
+//  u_scene_voxel_grid_min_bounds   : vec3      - location of scene bounds minimum
+//  u_scene_voxel_grid_max_bounds   : vec3      - location of scene bounds maximum
+//  u_scene_voxel_grid_size         : vec3      - diagonal of the scene bounds ( max - min )
+//  u_scene_voxel_grid_cell_size    : vec3      - cell size of each voxel within the voxel grid
+//  u_scene_data                    : sampler3D - scene data that needs to be visualized
+//
+
+uniform float       u_scene_scale;
+uniform float       u_scene_offset;
+uniform vec3	    u_scene_size;
+uniform vec3 	    u_scene_center;
+uniform vec3        u_scene_voxel_grid_min_bounds;
+uniform vec3        u_scene_voxel_grid_max_bounds;
+uniform vec3        u_scene_voxel_grid_size;
+uniform vec3        u_scene_voxel_grid_cell_size;
+uniform sampler3D   u_scene_data;
+
+// ------------------- lattice uniforms -----------------------
+//
+//  u_lattice_strud_thickness   : float     - strud thickness of the lattice
+//  u_lattice_grid_min_bounds   : vec3      - location of lattice bounds minimum
+//  u_lattice_grid_max_bounds   : vec3      - location of lattice bounds maximum
+//  u_lattice_grid_size         : vec3      - diagonal of the lattice bounds ( max - min )
+//  u_lattice_grid_cell_size    : vec3      - cell size of each unit cell within the lattice grid
+//  u_lattice_data              : sampler3D - data of each unit cell
+//
+
+uniform float       u_lattice_strud_thickness;
+uniform vec3        u_lattice_grid_min_bounds;
+uniform vec3        u_lattice_grid_max_bounds;
+uniform vec3        u_lattice_grid_size;
+uniform vec3        u_lattice_grid_cell_size;
+uniform sampler3D   u_lattice_data;
+
+// ------------- rotate ---------------------
+//
+// Represents an implementation for rotating vectors 
+//
+//	Rotate a vector around the X-axis
+//
+//	@param angle 		: float		- angle to rotate around on the X-axis
+//	@param coordinate 	: vec3		- the vector we want to rotate
+//
+
+vec3 rotateX(float angle, vec3 coordinate)
+{
+	float pi = 3.14159265358979323846264338327950288419716939937510;
+	float angle_rad = angle / 180.0 * pi;
+
+    vec3 c1 = vec3(1.0, 0.0, 0.0);
+	vec3 c2 = vec3(0.0, cos(angle_rad), -sin(angle_rad));
+	vec3 c3 = vec3(0.0, sin(angle_rad), cos(angle_rad));
+
+    mat3 mat_rot;
+
+	mat_rot[0] = c1;
+	mat_rot[1] = c2;
+	mat_rot[2] = c3;
+
+	return mat_rot * coordinate;
+}
+
+// ------------- rotate ---------------------
+//
+//	Rotate a vector around the Y-axis
+//
+//	@param angle 		: float		- angle to rotate around on the Y-axis
+//	@param coordinate 	: vec3		- the vector we want to rotate
+//
+
+vec3 rotateY(float angle, vec3 coordinate)
+{
+	float pi = 3.14159265358979323846264338327950288419716939937510;
+	float angle_rad = angle / 180.0 * pi;
+
+    vec3 c1 = vec3(cos(angle_rad), 0.0, sin(angle_rad));
+	vec3 c2 = vec3(0.0, 1.0, 0.0);
+	vec3 c3 = vec3(-sin(angle_rad), 0.0, cos(angle_rad));
+
+    mat3 mat_rot;
+
+	mat_rot[0] = c1;
+	mat_rot[1] = c2;
+	mat_rot[2] = c3;
+
+	return mat_rot * coordinate;
+}
+
+// ------------- rotate ---------------------
+//
+//	Rotate a vector around the Z-axis
+//
+//	@param angle 		: float		- angle to rotate around on the Z-axis
+//	@param coordinate 	: vec3		- the vector we want to rotate
+//
+
+vec3 rotateZ(float angle, vec3 coordinate)
+{
+	float pi = 3.14159265358979323846264338327950288419716939937510;
+	float angle_rad = angle / 180.0 * pi;
+
+    vec3 c1 = vec3(cos(angle_rad), -1.0 * sin(angle_rad), 0.0);
+	vec3 c2 = vec3(sin(angle_rad), cos(angle_rad), 0.0);
+	vec3 c3 = vec3(0.0, 0.0, 1.0);
+
+    mat3 mat_rot;
+
+	mat_rot[0] = c1;
+	mat_rot[1] = c2;
+	mat_rot[2] = c3;
+
+	return mat_rot * coordinate;
+}
+
+// ------------- mean ---------------------
+//
+// Represents an implementation for calculating the mean of vectors 
+// 
+// Calculate the mean of a vec2
+//
+//	@param v 			: vec2		- value to be used to calculate the mean
+//
+
+float mean(vec2 v)
+{
+	return (v.x + v.y) / 2.0;
+}
+
+// ------------- mean ---------------------
+// 
+// Calculate the mean of a vec3
+//
+//	@param v 			: vec3		- value to be used to calculate the mean
+//
+
+float mean(vec3 v)
+{
+	return (v.x + v.y + v.z) / 3.0;
+}
+
+// ------------- mean ---------------------
+// 
+// Calculate the mean of a vec4
+//
+//	@param v 			: vec4		- value to be used to calculate the mean
+//
+
+float mean(vec4 v)
+{
+	return (v.x + v.y + v.z + v.w) / 4.0;
+}
+
+// ---------------- linearize depth -------------------------
+//
+//  Returns our depth value in a linear format.
+//
+//  @param depth        : float     - the given depth value to linearize
+//  @param near         : float     - the near plane value
+//  @param far          : float     - the far plane value
+//
+
+float make_depth_linear(float depth, float near, float far) 
+{
+    float z = depth * 2.0 - 1.0; // back to NDC 
+    
+    return (2.0 * near * far) / (far + near - z * (far - near));  
+}
+
+// ----------------- union operation ------------------------- 
+//
+// Implementation of an unified boolean operation between 2 sdf results
+//
+// @param d1    : float     - the first distance of the sdf result we need to compare
+// @param d2    : float     - the second distance of the sdf result we need to compare
+//
+
+float op_union(float d1, float d2)
+{
+    return min(d1, d2);
+}
+
+// ----------------- subtraction operation ------------------ 
+//
+// Implementation of a subtractive boolean operation between 2 sdf results
+//
+// @param d1    : float     - the first distance of the sdf result we need to compare
+// @param d2    : float     - the second distance of the sdf result we need to compare
+//
+
+float op_subtract(float d1, float d2)
+{
+    return max(-d1, d2);
+}
+
+// ----------------- intersection operation ------------------ 
+//
+// Implementation of an intersection boolean operation between 2 sdf results
+//
+// @param d1    : float     - the first distance of the sdf result we need to compare
+// @param d2    : float     - the second distance of the sdf result we need to compare
+//
+
+float op_intersect(float d1, float d2)
+{
+    return max(d1, d2);
+}
+
+// ------------- finite repetition --------------------- 
+//
+// Create multiple copies of an object
+//
+// @param position              : vec3
+// @param repetition period     : vec3
+// @param limit_min             : vec3
+// @param limit_max             : vec3
+//
+
+vec3 op_tesselate(vec3 position, vec3 repetition, vec3 bounds_min, vec3 unit_cell_size)
+{
+    vec3 index_in_lattice_grid = floor((position - bounds_min) / unit_cell_size);
+         index_in_lattice_grid = max( min(index_in_lattice_grid, repetition - vec3(1.0)), vec3(0.0));
+
+    vec3 position_in_unit_cell = (position - bounds_min) - (index_in_lattice_grid * unit_cell_size);
+
+    return position_in_unit_cell / unit_cell_size;
+}
+
+// ----------------- sd cube ------------------------- 
+//
+// Implementation of an exact SDF of a cube
+//
+// @param position  : vec3         - location of the cube in 3D space. 
+// @param size      : vec3         - size of the cube.
+//
+
+float sd_cube(vec3 position, vec3 size)
+{
+    vec3 q = abs(position) - size;
+    return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0);
+}
+
+// ----------------- sd cube ------------------------- 
+//
+// Implementation of an exact SDF of a cube
+//
+// @param position  : vec3         - location of the cube in 3D space. 
+// @param size      : vec3         - size of the cube.
+// @param center    : vec3         - center of the cube.
+//
+
+float sd_cube( vec3 p, vec3 size, vec3 center ) 
+{
+    vec3 q = abs(p - center) - size;
+    return length(max(q,0.0)) + min(max(q.x, max(q.y, q.z)),0.0);
+}
+
+// ----------------- sd line segment  ------------------------- 
+//
+// Implementation of an exact SDF of a cube
+//
+// @param position  : vec3         - location of the line segment in 3D space. 
+// @param start     : vec3         - start of the line segment.
+// @param end       : vec3         - end of the line segment.
+//
+
+float sd_line_segment(vec3 position, vec3 start, vec3 end)
+{
+	vec3 base_1 = start;
+	vec3 dir_1 = end - start;
+
+	float dist = length(cross(base_1 - position, dir_1)) / length(dir_1);
+
+	vec3 connection_pos_end = position - end;
+
+	float product_end = dot(dir_1, connection_pos_end);
+	if(product_end > 0.0)
+	{
+		dist = length(position - end);
+	}
+
+	vec3 connection_pos_start = position - start;
+
+	float product_start = dot(dir_1, connection_pos_start);
+	if(product_start < 0.0)
+	{
+		dist = length(position - start);
+	}
+
+	return dist;
+}
+
+// ----------------- lattice empty ------------------------- 
+//
+
+float sd_lattice_empty()
+{
+	return 1e8;
+}
+
+// ----------------- lattice cross ------------------------- 
+//
+
+float sd_lattice_cross(vec3 position, float beamWidth)
+{
+	vec3 center_unit = vec3(0.5, 0.5, 0.5);
+	vec3 coord_translated = position - center_unit;
+	vec3 coord_translated_q1 = abs(coord_translated);
+	
+	vec3 start_point = vec3(0.0);
+	vec3 end_point = vec3(0.5);
+	
+	float dist = sd_line_segment(coord_translated_q1, start_point, end_point);
+
+	return dist - beamWidth;
+}
+
+// ----------------- lattice tetrahedron -------------------
+//
+
+float sd_lattice_tetrahedron(vec3 position, float beamWidth)
+{
+	//horizontal edge 1 starts in (0,0,0) and goes to (1,1,0)
+	//horizontal edge 2 starts in (1,0,1) and goes to (0,1,1)
+	//upstanding edge 1 starts in (0,0,0) and goes to (1,0,1)
+	//upstanding edge 2 starts in (0,0,0) and goes to (0,1,1)
+	//upstanding edge 3 starts in (1,1,0) and goes to (1,0,1)
+	//upstanding edge 4 starts in (1,1,0) and goes to (0,1,1)
+
+	vec3 startpoint_1 = vec3(0.0, 0.0, 0.0);
+	vec3 startpoint_2 = vec3(1.0, 0.0, 1.0);
+	vec3 startpoint_3 = vec3(0.0, 0.0, 0.0);
+	vec3 startpoint_4 = vec3(0.0, 0.0, 0.0);
+	vec3 startpoint_5 = vec3(1.0, 1.0, 0.0);
+	vec3 startpoint_6 = vec3(1.0, 1.0, 0.0);
+
+	vec3 endpoint_1 = vec3(1.0,1.0,0.0);
+	vec3 endpoint_2 = vec3(0.0,1.0,1.0);
+	vec3 endpoint_3 = vec3(1.0,0.0,1.0);
+	vec3 endpoint_4 = vec3(0.0,1.0,1.0);
+	vec3 endpoint_5 = vec3(1.0,0.0,1.0);
+	vec3 endpoint_6 = vec3(0.0,1.0,1.0);
+
+	float dist_he1 = sd_line_segment(position, startpoint_1, endpoint_1);
+	float dist_he2 = sd_line_segment(position, startpoint_2, endpoint_2);
+	float dist_ue1 = sd_line_segment(position, startpoint_3, endpoint_3);
+	float dist_ue2 = sd_line_segment(position, startpoint_4, endpoint_4);
+	float dist_ue3 = sd_line_segment(position, startpoint_5, endpoint_5);
+	float dist_ue4 = sd_line_segment(position, startpoint_6, endpoint_6);
+
+	float dist_he = min(dist_he1, dist_he2);
+	float dist_ue = min(dist_ue1, min(dist_ue2, min(dist_ue3, dist_ue4)));
+
+	float dist = min(dist_he, dist_ue);
+
+	return dist - beamWidth;
+}
+
+// ----------------- lattice octahedron --------------------
+//
+
+float sd_lattice_octahedron(vec3 position, float beamWidth)
+{
+	//horizontal edge 1 starts in (0.5,0,0) and goes to (0,0.5,0)
+	//upstanding edge 1 starts in (0.5,0,0) and goes to (0,0,0.5)
+	//upstanding edge 2 starts in (0.0,0.5,0) and goes to (0,0,0.5)
+
+	vec3 center_unit = vec3(0.5);
+	vec3 coord_translated = position - center_unit;
+	vec3 coord_translated_q1 = abs(coord_translated);
+
+	vec3 startpoint_1 = vec3(0.5 - beamWidth, 0.0, 0.0);
+	vec3 startpoint_2 = vec3(0.5 - beamWidth, 0.0, 0.0);
+	vec3 startpoint_3 = vec3(0.0, 0.5 - beamWidth, 0.0);
+	
+	vec3 endpoint_1 = vec3(0.0, 0.5 - beamWidth, 0.0);
+	vec3 endpoint_2 = vec3(0.0, 0.0, 0.5 - beamWidth);
+	vec3 endpoint_3 = vec3(0.0, 0.0, 0.5 - beamWidth);
+
+	float dist_he1 = sd_line_segment(coord_translated_q1, startpoint_1, endpoint_1);
+	float dist_ue1 = sd_line_segment(coord_translated_q1, startpoint_2, endpoint_2);
+	float dist_ue2 = sd_line_segment(coord_translated_q1, startpoint_3, endpoint_3);
+
+	float dist = min(dist_he1, min(dist_ue1, dist_ue2));
+
+	return dist - beamWidth;
+}
+
+// ----------------- double tetrahedron frame ---------------
+//
+
+float sd_lattice_double_tetrahedron_frame(vec3 position, float beamWidth)
+{
+	vec3 center = vec3(0.5);
+
+	return min( sd_lattice_tetrahedron(position, beamWidth), sd_lattice_tetrahedron(rotateZ(90.0, position - center) + center, beamWidth));
+}
+
+// ----------------- double tetrahedron octa frame ----------
+//
+
+float sd_lattice_double_tetrahedron_octa_frame(vec3 position, float beamWidth)
+{
+	return min( sd_lattice_double_tetrahedron_frame(position, beamWidth), sd_lattice_octahedron(position, beamWidth) );
+}
+
+// ----------------- sd lattice ------------------------- 
+//
+// Implementation of an exact SDF of a lattice
+//
+// @param position  : vec3         - location of the lattice in 3D space. 
+// @param beamWidth : float        - beam width of the lattice
+// @param type  	: int          - unit cell type
+//
+
+float sd_lattice(vec3 position, int type)
+{
+    switch(type)
+    {
+        case UNITCELL_EMPTY: return sd_lattice_empty();
+        case UNITCELL_CROSS: return sd_lattice_cross(position, u_lattice_strud_thickness);
+        case UNITCELL_DOUBLE_TETRAHEDRON_FRAME: return sd_lattice_double_tetrahedron_frame(position, u_lattice_strud_thickness);
+        case UNITCELL_DOUBLE_TETRAHEDRON_OCTA_FRAME: return sd_lattice_double_tetrahedron_octa_frame(position, u_lattice_strud_thickness);
+    }
+
+	return sd_lattice_empty();
+}
+
+// ---------------- map lattice ------------------
+//
+// Map the lattice structure
+//
+// @param position      : vec3      - current marching position
+//
+float map_lattice(vec3 position)
+{
+    // -------------------------------------------------------------------------------------------------------------          
+    //      Unit Cell Information
+    //      Extract unit cell information from 3D texture
+    vec3    index_in_lattice_grid = floor((position - u_lattice_grid_min_bounds) / u_lattice_grid_cell_size);
+            index_in_lattice_grid = max( min(index_in_lattice_grid, u_lattice_grid_size - vec3(1.0)), vec3(0.0));
+
+    vec4    info = texture(u_lattice_data, (index_in_lattice_grid / u_lattice_grid_size));
+    int     type = int(info.r);
+
+    //      Calculate our distance function towards a lattice unit cell
+    float   local_distance          = sd_lattice(position, type);
+            local_distance          = local_distance * mean(u_lattice_grid_cell_size);
+
+    return  local_distance;
+}
+
+// ---------------- map outershape ------------------
+//
+// Map the outershape
+//
+// @param position      : vec3      - current marching position
+//
+
+float map_outershape(vec3 position)
+{
+    // Sample the outer shape
+    vec3    index_in_voxel_grid     = (position - u_scene_voxel_grid_min_bounds) / u_scene_voxel_grid_cell_size;
+            index_in_voxel_grid     = max( min(index_in_voxel_grid, u_scene_voxel_grid_size - vec3(1.0)), vec3(0.0));
+         
+    vec4    outer_shape_sample      = texture(u_scene_data, (index_in_voxel_grid / u_scene_voxel_grid_size));
+
+    //      Specify our distance value
+    float   local_distance          = outer_shape_sample.r;
+
+    return  local_distance;
+}
+
+// ---------------- map distance field ------------------
+//
+// Map the given distance field
+//
+// @param position      : vec3      - current marching position
+//
+
+float map_distance_field(vec3 position)
+{
+    if(sd_cube(position, u_scene_size, u_scene_center) < u_max_march_distance)
+    {
+        // -------------------------------------------------------------------------------------------------------------          
+        //      Calculate distance value towards the lattice
+
+        vec3    tesselation             = op_tesselate(lattice_position, u_lattice_grid_size, u_lattice_grid_min_bounds, u_lattice_grid_cell_size);
+        float   lattice_distance        = map_lattice(tesselation);
+
+        // -------------------------------------------------------------------------------------------------------------          
+        //      Calculate distance value towards the outershape
+
+        float   shape_distance          = (map_outershape(position / u_scene_scale) * u_scene_scale) - u_scene_offset;
+
+        // -------------------------------------------------------------------------------------------------------------          
+        //      Store final distance
+
+        float   final_distance;
+
+                final_distance          = op_intersect(lattice_distance, shape_distance);
+
+        //      We don't want to render outside our scene bounds so be subtract a box from our entire solution
+        return  final_distance;
+    }
+
+    return u_max_march_distance;
+}
+
+// ---------------- calculate normal ------------------
+//
+// Calculate the normal vector of a certain surface
+//
+// @param position      : vec3      - position on the surface we would like the normal from
+//
+
+vec3 calculate_normal(vec3 position)
+{
+    float eps = 0.002;
+
+    const vec3 x_axis = vec3(1.0,-1.0,-1.0);
+    const vec3 y_axis = vec3(-1.0, 1.0,-1.0);
+    const vec3 z_axis = vec3(-1.0,-1.0, 1.0);
+
+    const vec3 all_axes = vec3(1.0, 1.0, 1.0);
+   
+    vec3 normal = normalize( x_axis   * map_distance_field( position + x_axis    * u_scene_voxel_grid_cell_size.x ) +
+                             y_axis   * map_distance_field( position + y_axis    * u_scene_voxel_grid_cell_size.y ) +
+                             z_axis   * map_distance_field( position + z_axis    * u_scene_voxel_grid_cell_size.z ) +
+                             all_axes * map_distance_field( position + all_axes  * u_scene_voxel_grid_cell_size.x ) );
+
+    if(isnan(normal.x)||isnan(normal.y)||isnan(normal.z))
+    {
+        return normalize(vec3(0.0, 0.0, 0.0));
+    }
+
+    return normal;   
+}
+
+// ----------------- raymarching result ---------------------
+//
+//  distance_travelled          : float     - distance travelled over the ray
+//  hit                         : int       - hit type
+//
+
+struct RaymarchResult
+{
+    float   distance_travelled;
+    int     hit;
+};
+
+// ------------- raymarching algorithm ----------------
+// 
+// Returns the distance to a specific entiy.
+// Using a sphere tracing algorihm because we will only render implicit surfaces ( a surface in euclidean space defined by an equation => F(x,y,z) ).
+//
+// @param rayOrigin     : vec3      - the starting location of our marching algorithm
+// @param rayDirection  : vec3      - the direction we will march towards
+//
+
+RaymarchResult raymarch(vec3 rayOrigin, vec3 rayDirection)
+{
+    RaymarchResult result;
+
+    result.distance_travelled = 0.0;
+    result.hit = HIT_NOTHING;
+
+    for(int i = 0; i < u_max_iterations; ++i)
+    {
+        if(result.distance_travelled > u_max_march_distance)
+        {
+            result.hit = HIT_MAX_MARCH_DISTANCE;
+            break;
+        }
+
+        // Travel forward along the ray
+        vec3 next_step_position = rayOrigin + (result.distance_travelled * rayDirection);
+
+        // Calculate the distance to the scene from the new position
+        float distance_towards_scene = map_distance_field(next_step_position);
+
+        // When we are "very" close to the scene, break out of this loop
+        if(distance_towards_scene <= u_min_surface_distance)
+        {      
+            float travelled_distance = result.distance_travelled + distance_towards_scene;     
+            if(travelled_distance >= 0.0)
+            {        
+                result.distance_travelled = travelled_distance;
+            }
+            
+            result.hit = HIT_SURFACE;
+            break;
+        }
+
+        // Accumelate the travelled distance
+        result.distance_travelled += distance_towards_scene;
+    }
+
+    return result;
+}
+
+// ----------------- render result ---------------------
+//
+//  normal                          : vec3   - normal of the surface
+//  normalized_distance             : float  - normalized distance ( distance_to_surface / max_march_distance )
+//
+
+struct RenderResult
+{
+    vec3    normal;
+    vec2    travelled_distance;
+};
+
+// --------------------- render  ----------------------
+//
+// Returns the output color for the current fragment
+//
+// @param rayOrigin         : vec3      - the starting location of our marching algorithm
+// @param rayDirection      : vec3      - the direction we will march towards
+//
+
+RenderResult render(vec3 rayOrigin, vec3 rayDirection)
+{
+	RaymarchResult march_result = raymarch(rayOrigin, rayDirection);
+
+    // We did not hit anything 
+    //  or we hit actual geometry 
+    //  or we hit max marching distance
+    if(march_result.hit == HIT_NOTHING || march_result.hit == HIT_MAX_MARCH_DISTANCE)
+    {
+        discard;
+
+        // This path should actually not get hit but you never know ...     
+        // "Discard" is hardware dependant so we will keep this here for safety reasons
+        RenderResult render_result;
+
+        render_result.normal = vec3(0.0);
+        render_result.travelled_distance = vec2(min(march_result.distance_travelled, u_max_march_distance), march_result.hit);
+
+        return render_result;
+    }
+
+    // We hit the surface of a shape
+    // Return travelled distance
+    if(march_result.hit == HIT_SURFACE)
+    {
+        vec3 position = rayOrigin + (rayDirection * march_result.distance_travelled);
+        vec3 normal = calculate_normal(position);
+
+        RenderResult render_result;
+
+        render_result.normal = normal;
+        render_result.travelled_distance = vec2(min(march_result.distance_travelled, u_max_march_distance), march_result.hit);
+
+        return render_result;
+    }
+
+    // This path should actually not get hit but you never know ... 
+    RenderResult render_result;
+
+    render_result.normal = vec3(0.0);
+    render_result.travelled_distance = vec2(u_max_march_distance, float(HIT_NOTHING));
+
+    return render_result;
+}
+
+// --------------------- main -------------------------
+//
+// Each fragment will perform execute the raymarching algorihm to specify its output color.
+// In this implementation the ray origin is equal to the given camera position,
+//      the ray direction is calculated using the orientation and directional vectors ( foward, right and up ) of the camera.
+//
+// The overall procedure for intersection performed in main() is:
+// 
+//  -   Move the ray origin forward using the raymarching algorihm
+//  -   Test for a collision with the scene
+//  -   Return the surface position, normal and any material properties when a hit occured
+//
+
+out vec3 g_Position;
+out vec3 g_Normal;
+out vec4 g_Albedo_Spec;
+
+void main(void) 
+{
+    // setup 
+    vec3 ray_origin = u_camera_position;
+    vec3 ray_direction = normalize(v_world_ray.xyz);
+
+    // execution
+    RenderResult render_result;
+
+    render_result = render(ray_origin, ray_direction);
+
+    // g-buffer
+    g_Position = ray_origin + (ray_direction * render_result.travelled_distance.x);
+    g_Normal = render_result.normal;
+    g_Albedo_Spec = vec4(1.0, 1.0, 1.0, 0.0);
+
+    // depth   
+    vec4 ndc = v_camera_projection * v_camera_view * vec4(g_Position, 1f);
+	float depth = (ndc.z / ndc.w) * .5f + .5f;
+
+	gl_FragDepth = depth;
+}
