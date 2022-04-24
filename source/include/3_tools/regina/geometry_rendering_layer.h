@@ -38,11 +38,19 @@ namespace regina
 {
     struct GeometryRenderingLayerDescription
     {
+        GeometryRenderingLayerDescription()
+            : source_content_location(rex::ESID::SID_None)
+            , mesh_type(0)
+            , nr_lights(32)
+            , use_lattice(false)
+            , animate(false)
+        {
+        }
+
         rex::StringID source_content_location;
 
         int32 mesh_type;
         int32 nr_lights;
-        int32 resolution;
 
         bool use_lattice;
         bool animate;
@@ -67,9 +75,6 @@ namespace regina
         void read_framebuffer();
         void toggle_camera_animation();
 
-        void next_mesh();
-        void previous_mesh();
-
         void setup_scene();
         void setup_camera();
         void setup_scene_renderer();
@@ -77,7 +82,6 @@ namespace regina
         void setup_lights();
         void setup_geometry();
 
-        std::unique_ptr<rex::SceneRenderPass> create_pre_depth_pass(const rex::PreDepthPassOptions& options) const;
         std::unique_ptr<rex::SceneRenderPass> create_deferred_geometry_pass(const rex::DeferredGeometryPassOptions& options) const;
         std::unique_ptr<rex::SceneRenderPass> create_deferred_light_pass(const rex::DeferredLightPassOptions& options) const;
         std::unique_ptr<rex::SceneRenderPass> create_deferred_light_visualization_pass(const rex::DeferredLightVisualizationPassOptions& options) const;
@@ -89,9 +93,9 @@ namespace regina
         rex::ref_ptr<rex::ecs::Scene> m_scene;
         rex::ref_ptr<rex::SceneRenderer> m_scene_renderer;
 
-        rex::ref_ptr<rex::Material> m_bunny_material;
+        rex::ref_ptr<rex::Material> m_material;
 
-        std::vector<rex::ecs::Entity> m_bunny_entities;
+        std::vector<rex::ecs::Entity> m_entities;
 
         const rex::CoreWindow* m_window;
     };

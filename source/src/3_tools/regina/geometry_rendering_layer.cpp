@@ -18,7 +18,6 @@
 #include "renderpasses/deferred_light_visualization_pass.h"
 #include "renderpasses/deferred_geometry_pass.h"
 #include "renderpasses/deferred_light_pass.h"
-#include "renderpasses/pre_depth_pass.h"
 
 #include "resources/resource_factory.h"
 #include "resources/shader_library.h"
@@ -59,7 +58,7 @@
 namespace regina
 {
     // Render pass settings
-    namespace deferred_rendering
+    namespace geometry_rendering
     {
         // Mesh settings
         enum class MeshType
@@ -91,9 +90,6 @@ namespace regina
         using MeshLattice = rex::YesNoEnum;
 
         GeometryRenderingLayerDescription LAYER_DESCRIPTION;
-
-        MeshTypes LOADED_MESH_TYPES = {};
-        int32 ACTIVE_MESH_TYPE_INDEX = 0;
 
         MeshNameMap MESH_NAME_MAP =
         {
@@ -141,17 +137,7 @@ namespace regina
         //-------------------------------------------------------------------------
         MeshType get_active_mesh_type()
         {
-            MeshType active_volume_type;
-            if (!LAYER_DESCRIPTION.source_content_location.is_none())
-            {
-                active_volume_type = (MeshType)LAYER_DESCRIPTION.mesh_type;
-            }
-            else
-            {
-                active_volume_type = LOADED_MESH_TYPES[ACTIVE_MESH_TYPE_INDEX];
-            }
-
-            return active_volume_type;
+            return (MeshType)LAYER_DESCRIPTION.mesh_type;
         }
 
         // Render pass settings
@@ -206,8 +192,8 @@ namespace regina
 
             rex::DeferredGeometryPassOptions options;
 
-            options.pass_name = deferred_rendering::DEFERREDGEOMETRYPASS_NAME;
-            options.backface_culling = deferred_rendering::renderpass_settings::BACKFACE_CULLING;
+            options.pass_name = geometry_rendering::DEFERREDGEOMETRYPASS_NAME;
+            options.backface_culling = geometry_rendering::renderpass_settings::BACKFACE_CULLING;
             options.geometry_shader_name = "g_buffer"_sid;
 
             return options;
@@ -219,11 +205,11 @@ namespace regina
 
             rex::DeferredLightPassOptions options;
 
-            options.pass_name = deferred_rendering::DEFERREDLIGHTPASS_NAME;
+            options.pass_name = geometry_rendering::DEFERREDLIGHTPASS_NAME;
             options.shader_name = "deferred_shading_lighting"_sid;
-            options.g_position_buffer = {deferred_rendering::DEFERREDGEOMETRYPASS_NAME, 0};
-            options.g_normal_buffer = {deferred_rendering::DEFERREDGEOMETRYPASS_NAME, 1};
-            options.g_albedo_spec_buffer = {deferred_rendering::DEFERREDGEOMETRYPASS_NAME, 2};
+            options.g_position_buffer = {geometry_rendering::DEFERREDGEOMETRYPASS_NAME, 0};
+            options.g_normal_buffer = {geometry_rendering::DEFERREDGEOMETRYPASS_NAME, 1};
+            options.g_albedo_spec_buffer = {geometry_rendering::DEFERREDGEOMETRYPASS_NAME, 2};
 
             return options;
         }
@@ -234,9 +220,9 @@ namespace regina
 
             rex::DeferredLightVisualizationPassOptions options;
 
-            options.pass_name = deferred_rendering::DEFERREDLIGHTVISUALIZATIONPASS_NAME;
-            options.color_pass_name = deferred_rendering::DEFERREDLIGHTPASS_NAME;
-            options.depth_pass_name = deferred_rendering::DEFERREDGEOMETRYPASS_NAME;
+            options.pass_name = geometry_rendering::DEFERREDLIGHTVISUALIZATIONPASS_NAME;
+            options.color_pass_name = geometry_rendering::DEFERREDLIGHTPASS_NAME;
+            options.depth_pass_name = geometry_rendering::DEFERREDGEOMETRYPASS_NAME;
             options.shader_name = "deferred_shading_lighting_visualization"_sid;
 
             return options;
@@ -248,10 +234,10 @@ namespace regina
 
             rex::CompositePassOptions options;
 
-            options.pass_name = deferred_rendering::COMPOSITEPASS_NAME;
+            options.pass_name = geometry_rendering::COMPOSITEPASS_NAME;
             options.shader_name = "blit"_sid;
-            options.color_buffer = deferred_rendering::DEFERREDLIGHTVISUALIZATIONPASS_NAME;
-            options.gamma_correction = deferred_rendering::renderpass_settings::GAMMA_CORRECTION;
+            options.color_buffer = geometry_rendering::DEFERREDLIGHTVISUALIZATIONPASS_NAME;
+            options.gamma_correction = geometry_rendering::renderpass_settings::GAMMA_CORRECTION;
 
             return options;
         }
@@ -303,14 +289,14 @@ namespace regina
             OrbitCameraDescription description;
 
             // Camera
-            rex::vec3 camera_pos = deferred_rendering::camera_settings::CAMERA_POSITION;
-            rex::quaternion camera_rot = rex::quaternion(deferred_rendering::camera_settings::CAMERA_ROTATION);
+            rex::vec3 camera_pos = geometry_rendering::camera_settings::CAMERA_POSITION;
+            rex::quaternion camera_rot = rex::quaternion(geometry_rendering::camera_settings::CAMERA_ROTATION);
 
-            bool can_rotate_pitch = deferred_rendering::camera_settings::CAN_ROTATE_PITCH;
-            bool can_rotate_yaw = deferred_rendering::camera_settings::CAN_ROTATE_YAW;
-            bool can_zoom = deferred_rendering::camera_settings::CAN_ZOOM;
+            bool can_rotate_pitch = geometry_rendering::camera_settings::CAN_ROTATE_PITCH;
+            bool can_rotate_yaw = geometry_rendering::camera_settings::CAN_ROTATE_YAW;
+            bool can_zoom = geometry_rendering::camera_settings::CAN_ZOOM;
 
-            bool initial_enabled = deferred_rendering::camera_settings::IS_ENABLED;
+            bool initial_enabled = geometry_rendering::camera_settings::IS_ENABLED;
 
             description.camera_settings.camera_position = camera_pos;
             description.camera_settings.camera_rotation = camera_rot;
@@ -320,14 +306,14 @@ namespace regina
             description.camera_settings.enabled = initial_enabled;
 
             // Focus
-            description.focus_settings = create_focus_settings(deferred_rendering::camera_settings::CAMERA_FOCUS, deferred_rendering::camera_settings::MIN_FOCUS_DISTANCE, deferred_rendering::camera_settings::MAX_FOCUS_DISTANCE,
-                                                               deferred_rendering::camera_settings::FOCUS_DISTANCE);
+            description.focus_settings = create_focus_settings(geometry_rendering::camera_settings::CAMERA_FOCUS, geometry_rendering::camera_settings::MIN_FOCUS_DISTANCE, geometry_rendering::camera_settings::MAX_FOCUS_DISTANCE,
+                                                               geometry_rendering::camera_settings::FOCUS_DISTANCE);
 
             // Orbit
-            description.orbit_settings = create_orbit_settings(deferred_rendering::camera_settings::ROTATION_SPEED, deferred_rendering::camera_settings::MIN_PITCH_ANGLE, deferred_rendering::camera_settings::MAX_PITCH_ANGLE);
+            description.orbit_settings = create_orbit_settings(geometry_rendering::camera_settings::ROTATION_SPEED, geometry_rendering::camera_settings::MIN_PITCH_ANGLE, geometry_rendering::camera_settings::MAX_PITCH_ANGLE);
 
             // Mouse
-            description.mouse_settings = create_mouse_settings(deferred_rendering::camera_settings::MOVE_SENSITIVITY, deferred_rendering::camera_settings::SCROLL_SENSITIVITY);
+            description.mouse_settings = create_mouse_settings(geometry_rendering::camera_settings::MOVE_SENSITIVITY, geometry_rendering::camera_settings::SCROLL_SENSITIVITY);
 
             return description;
         }
@@ -372,11 +358,9 @@ namespace regina
             rex::mesh_factory::load();
         }
         //-------------------------------------------------------------------------
-        bool load_custom_geometry(const rex::StringID& sourceLocation, MeshType meshType, bool lattified, int32 resolution)
+        bool load_custom_geometry(const rex::StringID& sourceLocation, MeshType meshType, bool lattified)
         {
             R_PROFILE_FUNCTION();
-
-            static std::unordered_map<int32, rex::StringID> resolutions{{0, "90"}, {1, "300"}, {2, "600"}, {3, "900"}};
 
             rex::StringID source_location = sourceLocation.is_none() ? rex::create_sid("content\\meshes\\") : sourceLocation;
 
@@ -388,11 +372,6 @@ namespace regina
             if (lattified)
             {
                 mesh_stream << "_lattice";
-            }
-            if (resolution != -1)
-            {
-                mesh_stream << "_";
-                mesh_stream << resolutions[resolution];
             }
 
             std::stringstream mesh_path;
@@ -412,34 +391,22 @@ namespace regina
 
             if (!LAYER_DESCRIPTION.source_content_location.is_none())
             {
-                load_custom_geometry(LAYER_DESCRIPTION.source_content_location, (MeshType)LAYER_DESCRIPTION.mesh_type, LAYER_DESCRIPTION.use_lattice, LAYER_DESCRIPTION.resolution);
-            }
-            else
-            {
-                if (load_custom_geometry("content\\meshes\\lattice_samples", MeshType::CROSS_CUBE_RIBS, false, -1))           { loaded_mesh_types.push_back(MeshType::CROSS_CUBE_RIBS); }
-                if (load_custom_geometry("content\\meshes\\lattice_samples", MeshType::CROSS, false, -1))                     { loaded_mesh_types.push_back(MeshType::CROSS); }
-                if (load_custom_geometry("content\\meshes\\lattice_samples", MeshType::CUBE_RIBS, false, -1))                 { loaded_mesh_types.push_back(MeshType::CUBE_RIBS); }
-                if (load_custom_geometry("content\\meshes\\lattice_samples", MeshType::DOUBLE_TETRA_OCTA_RIBS, false, -1))    { loaded_mesh_types.push_back(MeshType::DOUBLE_TETRA_OCTA_RIBS); }
-                if (load_custom_geometry("content\\meshes\\lattice_samples", MeshType::DOUBLE_TETRA_RIBS, false, -1))         { loaded_mesh_types.push_back(MeshType::DOUBLE_TETRA_RIBS); }
-                if (load_custom_geometry("content\\meshes\\lattice_samples", MeshType::FKA, false, -1))                       { loaded_mesh_types.push_back(MeshType::FKA); }
-                if (load_custom_geometry("content\\meshes\\lattice_samples", MeshType::OCTAHEDRON_RIB, false, -1))            { loaded_mesh_types.push_back(MeshType::OCTAHEDRON_RIB); }
-                if (load_custom_geometry("content\\meshes\\lattice_samples", MeshType::OECHS, false, -1))                     { loaded_mesh_types.push_back(MeshType::OECHS); }
-                if (load_custom_geometry("content\\meshes\\lattice_samples", MeshType::TETRAHEDRON_RIBS, false, -1))          { loaded_mesh_types.push_back(MeshType::TETRAHEDRON_RIBS); }
+                load_custom_geometry(LAYER_DESCRIPTION.source_content_location, (MeshType)LAYER_DESCRIPTION.mesh_type, LAYER_DESCRIPTION.use_lattice);
             }
 
             return loaded_mesh_types;
         }
-    } // namespace deferred_rendering
+    } // namespace geometry_rendering
 
     //-------------------------------------------------------------------------
     GeometryRenderingLayer::GeometryRenderingLayer(const rex::CoreWindow* window, const GeometryRenderingLayerDescription& description)
         : Layer("regina_layer"_sid, -1, EnableImGUIRendering::NO)
-        , m_camera_controller(rex::win32::Input::instance(), R_MOUSE_BUTTON_LEFT, deferred_rendering::create_orbit_camera_description())
+        , m_camera_controller(rex::win32::Input::instance(), R_MOUSE_BUTTON_LEFT, geometry_rendering::create_orbit_camera_description())
         , m_window(window)
     {
         R_PROFILE_FUNCTION();
 
-        deferred_rendering::LAYER_DESCRIPTION = description;
+        geometry_rendering::LAYER_DESCRIPTION = description;
     }
     //-------------------------------------------------------------------------
     GeometryRenderingLayer::~GeometryRenderingLayer()
@@ -452,11 +419,8 @@ namespace regina
     {
         R_PROFILE_FUNCTION();
 
-        deferred_rendering::load_shaders();
-        deferred_rendering::load_primitive_geometry();
-
-        deferred_rendering::LOADED_MESH_TYPES = deferred_rendering::load_custom_geometry();
-        deferred_rendering::ACTIVE_MESH_TYPE_INDEX = 0;
+        geometry_rendering::load_shaders();
+        geometry_rendering::load_primitive_geometry();
 
         setup_scene();
         setup_camera();
@@ -485,7 +449,7 @@ namespace regina
     {
         R_PROFILE_FUNCTION();
 
-        if (deferred_rendering::LAYER_DESCRIPTION.animate)
+        if (geometry_rendering::LAYER_DESCRIPTION.animate)
         {
             animate_camera(info);
         }
@@ -522,9 +486,6 @@ namespace regina
             case R_KEY_F2: read_framebuffer(); return true;
             case R_KEY_F3: toggle_camera_animation(); return true;
 
-            case R_KEY_LEFT: previous_mesh(); return true;
-            case R_KEY_RIGHT: next_mesh(); return true;
-
             default: return false;
         }
     }
@@ -560,41 +521,7 @@ namespace regina
     {
         R_PROFILE_FUNCTION();
 
-        deferred_rendering::LAYER_DESCRIPTION.animate = !deferred_rendering::LAYER_DESCRIPTION.animate;
-    }
-
-    //-------------------------------------------------------------------------
-    void GeometryRenderingLayer::next_mesh()
-    {
-        R_PROFILE_FUNCTION();
-
-        int32 loaded_volume_type_count = (int32)deferred_rendering::LOADED_MESH_TYPES.size();
-
-        deferred_rendering::ACTIVE_MESH_TYPE_INDEX = (deferred_rendering::ACTIVE_MESH_TYPE_INDEX + 1) % loaded_volume_type_count;
-
-        auto& volume_name_map = deferred_rendering::MESH_NAME_MAP;
-        auto& volume_name = volume_name_map[deferred_rendering::LOADED_MESH_TYPES[deferred_rendering::ACTIVE_MESH_TYPE_INDEX]];
-
-        R_INFO("Active Volume: {0}", volume_name.to_string());
-    }
-
-    //-------------------------------------------------------------------------
-    void GeometryRenderingLayer::previous_mesh()
-    {
-        R_PROFILE_FUNCTION();
-
-        int32 loaded_volume_type_count = (int32)deferred_rendering::LOADED_MESH_TYPES.size();
-
-        deferred_rendering::ACTIVE_MESH_TYPE_INDEX = deferred_rendering::ACTIVE_MESH_TYPE_INDEX - 1;
-        if (deferred_rendering::ACTIVE_MESH_TYPE_INDEX < 0)
-        {
-            deferred_rendering::ACTIVE_MESH_TYPE_INDEX = loaded_volume_type_count - 1;
-        }
-
-        auto& volume_name_map = deferred_rendering::MESH_NAME_MAP;
-        auto& volume_name = volume_name_map[deferred_rendering::LOADED_MESH_TYPES[deferred_rendering::ACTIVE_MESH_TYPE_INDEX]];
-
-        R_INFO("Active Volume: {0}", volume_name.to_string());
+        geometry_rendering::LAYER_DESCRIPTION.animate = !geometry_rendering::LAYER_DESCRIPTION.animate;
     }
 
     //-------------------------------------------------------------------------
@@ -609,9 +536,9 @@ namespace regina
 
         // Create grey material
         //
-        m_bunny_material = rex::ResourceFactory::create_material(rex::shader_library::get("g_buffer"), "G Buffer Material"_sid);
-        m_bunny_material->set_texture2d("u_Texture_Diffuse", rex::Renderer::get_white_texture());
-        m_bunny_material->set_texture2d("u_Texture_Specular", rex::Renderer::get_black_texture());
+        m_material = rex::ResourceFactory::create_material(rex::shader_library::get("g_buffer"), "G Buffer Material"_sid);
+        m_material->set_texture2d("u_Texture_Diffuse", rex::Renderer::get_white_texture());
+        m_material->set_texture2d("u_Texture_Specular", rex::Renderer::get_black_texture());
 
         setup_lights();
         setup_geometry();
@@ -626,9 +553,9 @@ namespace regina
 
         rex::AspectRatio aspect_ratio = rex::AspectRatio(viewport_width, viewport_height);
 
-        float near_plane = deferred_rendering::camera_settings::NEAR_PLANE;
-        float far_plane = deferred_rendering::camera_settings::FAR_PLANE;
-        float fov = deferred_rendering::camera_settings::FIELD_OF_VIEW;
+        float near_plane = geometry_rendering::camera_settings::NEAR_PLANE;
+        float far_plane = geometry_rendering::camera_settings::FAR_PLANE;
+        float fov = geometry_rendering::camera_settings::FIELD_OF_VIEW;
 
         m_camera.set_perspective(rex::FieldOfView(rex::DegAngle(fov), aspect_ratio.get_ratio()), rex::ClippingPlanes(near_plane, far_plane));
         m_camera.activate();
@@ -648,10 +575,10 @@ namespace regina
 
         rex::SceneRenderPasses renderpasses;
 
-        auto deferred_geometry = create_deferred_geometry_pass(deferred_rendering::create_deferred_geometry_pass_options());
-        auto deferred_light = create_deferred_light_pass(deferred_rendering::create_deferred_light_pass_options());
-        auto deferred_light_visualization = create_deferred_light_visualization_pass(deferred_rendering::create_deferred_light_visualization_pass_options());
-        auto composite = create_composite_pass(deferred_rendering::create_composite_pass_options());
+        auto deferred_geometry = create_deferred_geometry_pass(geometry_rendering::create_deferred_geometry_pass_options());
+        auto deferred_light = create_deferred_light_pass(geometry_rendering::create_deferred_light_pass_options());
+        auto deferred_light_visualization = create_deferred_light_visualization_pass(geometry_rendering::create_deferred_light_visualization_pass_options());
+        auto composite = create_composite_pass(geometry_rendering::create_composite_pass_options());
 
         renderpasses.push_back(std::move(deferred_geometry));
         renderpasses.push_back(std::move(deferred_light));
@@ -666,7 +593,7 @@ namespace regina
     {
         R_PROFILE_FUNCTION();
 
-        int32 nr_lights = std::clamp(deferred_rendering::LAYER_DESCRIPTION.nr_lights, deferred_rendering::MIN_NR_LIGHTS, deferred_rendering::MAX_NR_LIGHTS);
+        int32 nr_lights = std::clamp(geometry_rendering::LAYER_DESCRIPTION.nr_lights, geometry_rendering::MIN_NR_LIGHTS, geometry_rendering::MAX_NR_LIGHTS);
 
         srand(13);  // seed random number generator
         for (int32 i = 0; i < nr_lights; ++i)
@@ -717,9 +644,9 @@ namespace regina
             rex::vec3(0.0, -0.0, 0.0)
         };
 
-        auto mesh_type = (deferred_rendering::MeshType)deferred_rendering::LAYER_DESCRIPTION.mesh_type;
-        auto mesh_name = deferred_rendering::MESH_NAME_MAP[mesh_type];
-        auto mesh_scale = deferred_rendering::MESH_SCALE_MAP[mesh_type];
+        auto mesh_type = (geometry_rendering::MeshType)geometry_rendering::LAYER_DESCRIPTION.mesh_type;
+        auto mesh_name = geometry_rendering::MESH_NAME_MAP[mesh_type];
+        auto mesh_scale = geometry_rendering::MESH_SCALE_MAP[mesh_type];
 
         rex::ref_ptr<rex::Model> model = rex::model_library::get(mesh_name);
         if (model == nullptr)
@@ -732,24 +659,17 @@ namespace regina
             rex::ecs::Entity entity = m_scene->create_entity(mesh_name);
 
             entity.add_component<rex::ecs::ModelComponent>(model);
-            entity.add_component<rex::ecs::MaterialComponent>(m_bunny_material);
+            entity.add_component<rex::ecs::MaterialComponent>(m_material);
 
             rex::ecs::TransformComponent& transform_comp = entity.get_component<rex::ecs::TransformComponent>();
 
             transform_comp.transform.set_position(object_positions[i]);
             transform_comp.transform.set_scale(mesh_scale);
 
-            m_bunny_entities.push_back(entity);
+            m_entities.push_back(entity);
         }
     }
 
-    //-------------------------------------------------------------------------
-    std::unique_ptr<rex::SceneRenderPass> GeometryRenderingLayer::create_pre_depth_pass(const rex::PreDepthPassOptions& options) const
-    {
-        R_PROFILE_FUNCTION();
-
-        return std::make_unique<rex::PreDepthPass>(options, rex::CreateFrameBuffer::YES);
-    }
     //-------------------------------------------------------------------------
     std::unique_ptr<rex::SceneRenderPass> GeometryRenderingLayer::create_deferred_geometry_pass(const rex::DeferredGeometryPassOptions& options) const
     {
