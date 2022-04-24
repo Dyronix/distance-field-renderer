@@ -91,9 +91,6 @@ namespace regina
 
         VolumeRenderingLayerDescription LAYER_DESCRIPTION;
 
-        VolumeTypes LOADED_VOLUME_TYPES = {};
-        int32 ACTIVE_VOLUME_TYPE_INDEX = 0;
-
         //-------------------------------------------------------------------------
         VolumeNameMap& get_volume_name_map()
         {
@@ -178,24 +175,13 @@ namespace regina
         //-------------------------------------------------------------------------
         VolumeType get_active_volume_type()
         {
-            VolumeType active_volume_type;
-            if (!LAYER_DESCRIPTION.source_content_location.is_none())
-            {
-                active_volume_type = (VolumeType)LAYER_DESCRIPTION.volume_type;
-            }
-            else
-            {
-                active_volume_type = LOADED_VOLUME_TYPES[ACTIVE_VOLUME_TYPE_INDEX];
-            }
-
-            return active_volume_type;
+            return (VolumeType)LAYER_DESCRIPTION.volume_type;
         }
 
         // Render pass settings
         int32 MIN_NR_LIGHTS = 1;
         int32 MAX_NR_LIGHTS = 32;
 
-        const rex::StringID PREDEPTHPASS_NAME = "PreDepthPass"_sid;
         const rex::StringID DISTANCEEVALUATIONSPASS_NAME = "DistanceEvaluationsPass"_sid;
         const rex::StringID HEATMAPDISTANCEEVALUATIONSPASS_NAME = "HeatMapDistanceEvaluationsPass"_sid;
         const rex::StringID DEFERREDLIGHTPASS_NAME = "DeferredLightPass"_sid;
@@ -501,11 +487,9 @@ namespace regina
             return true;
         }
         //-------------------------------------------------------------------------
-        bool load_volume(const rex::StringID& sourceLocation, VolumeType volumeType, bool lattified, int32 resolution)
+        bool load_volume(const rex::StringID& sourceLocation, VolumeType volumeType, bool lattified)
         {
             R_PROFILE_FUNCTION();
-
-            static std::unordered_map<int32, rex::StringID> resolutions{{0, "90"}, {1, "300"}, {2, "600"}, {3, "900"}};
 
             rex::StringID source_location = sourceLocation.is_none() ? rex::create_sid("content\\volumes\\") : sourceLocation;
 
@@ -517,11 +501,6 @@ namespace regina
             if (lattified)
             {
                 volume_stream << "_lattice";
-            }
-            if (resolution != -1)
-            {
-                volume_stream << "_";
-                volume_stream << resolutions[resolution];
             }
             
             std::stringstream volume_meta_path;
@@ -546,19 +525,7 @@ namespace regina
 
             if (!LAYER_DESCRIPTION.source_content_location.is_none())
             {
-                if (load_volume(LAYER_DESCRIPTION.source_content_location, (VolumeType)LAYER_DESCRIPTION.volume_type, LAYER_DESCRIPTION.use_lattice, LAYER_DESCRIPTION.resolution)) { loaded_volume_types.push_back((VolumeType)LAYER_DESCRIPTION.volume_type); }
-            }
-            else
-            {
-                if (load_volume("content\\volumes\\lattice_samples", VolumeType::CROSS_CUBE_RIBS, false, -1))           { loaded_volume_types.push_back(VolumeType::CROSS_CUBE_RIBS); }
-                if (load_volume("content\\volumes\\lattice_samples", VolumeType::CROSS, false, -1))                     { loaded_volume_types.push_back(VolumeType::CROSS); }
-                if (load_volume("content\\volumes\\lattice_samples", VolumeType::CUBE_RIBS, false, -1))                 { loaded_volume_types.push_back(VolumeType::CUBE_RIBS); }
-                if (load_volume("content\\volumes\\lattice_samples", VolumeType::DOUBLE_TETRA_OCTA_RIBS, false, -1))    { loaded_volume_types.push_back(VolumeType::DOUBLE_TETRA_OCTA_RIBS); }
-                if (load_volume("content\\volumes\\lattice_samples", VolumeType::DOUBLE_TETRA_RIBS, false, -1))         { loaded_volume_types.push_back(VolumeType::DOUBLE_TETRA_RIBS); }
-                if (load_volume("content\\volumes\\lattice_samples", VolumeType::FKA, false, -1))                       { loaded_volume_types.push_back(VolumeType::FKA); }
-                if (load_volume("content\\volumes\\lattice_samples", VolumeType::OCTAHEDRON_RIB, false, -1))            { loaded_volume_types.push_back(VolumeType::OCTAHEDRON_RIB); }
-                if (load_volume("content\\volumes\\lattice_samples", VolumeType::OECHS, false, -1))                     { loaded_volume_types.push_back(VolumeType::OECHS); }
-                if (load_volume("content\\volumes\\lattice_samples", VolumeType::TETRAHEDRON_RIBS, false, -1))          { loaded_volume_types.push_back(VolumeType::TETRAHEDRON_RIBS); }
+                if (load_volume(LAYER_DESCRIPTION.source_content_location, (VolumeType)LAYER_DESCRIPTION.volume_type, LAYER_DESCRIPTION.use_lattice)) { loaded_volume_types.push_back((VolumeType)LAYER_DESCRIPTION.volume_type); }
             }
 
             return loaded_volume_types;
@@ -586,9 +553,6 @@ namespace regina
     void VolumeRenderingLayer::on_attach()
     {
         R_PROFILE_FUNCTION();
-
-        distance_field_rendering::LOADED_VOLUME_TYPES = distance_field_rendering::load_volumes();
-        distance_field_rendering::ACTIVE_VOLUME_TYPE_INDEX = 0;
 
         distance_field_rendering::load_textures();
         distance_field_rendering::load_shaders();
@@ -666,11 +630,7 @@ namespace regina
 
         switch (keyPressEvent.get_key())
         {
-            case R_KEY_F2: read_framebuffer(); return true;
             case R_KEY_F3: toggle_camera_animation(); return true;
-
-            case R_KEY_LEFT: previous_volume(); return true;
-            case R_KEY_RIGHT: next_volume(); return true;
 
             case R_KEY_W: increment_sdf_scale(); return true;
             case R_KEY_A: increment_sdf_offset(); return true;
@@ -706,17 +666,6 @@ namespace regina
         m_camera_controller.set_focus_distance(current_focus_distance);
 
         m_camera_controller.orbit(rex::vec2(-0.01f, 0.3f));
-    }
-
-    //-------------------------------------------------------------------------
-    void VolumeRenderingLayer::read_framebuffer()
-    {
-        R_PROFILE_FUNCTION();
-
-        uint32 vp_width = m_sdf_renderer->get_viewport_width();
-        uint32 vp_height = m_sdf_renderer->get_viewport_height();
-
-        rex::Renderer::read_framebuffer_content(rex::RectI(0, 0, vp_width, vp_height), rex::Texture::Format::RGBA_32_FLOAT, rex::Texel::Format::RGBA);
     }
 
     //-------------------------------------------------------------------------
@@ -889,71 +838,6 @@ namespace regina
         R_PROFILE_FUNCTION();
 
         m_active_renderer = m_sdf_renderer.get();
-    }
-
-    //-------------------------------------------------------------------------
-    void VolumeRenderingLayer::next_volume()
-    {
-        R_PROFILE_FUNCTION();
-
-        if (m_active_renderer == nullptr)
-        {
-            return;
-        }
-
-        rex::SceneRenderPass* render_pass = m_active_renderer->get_scene_render_pass(distance_field_rendering::DISTANCEEVALUATIONSPASS_NAME);
-        if (render_pass == nullptr)
-        {
-            return;
-        }
-
-        rex::DistanceEvaluationPass* distance_eval = static_cast<rex::DistanceEvaluationPass*>(render_pass);
-        rex::sdf::SceneOptions sdf_scene_options = distance_eval->get_sdf_scene_options();
-
-        int32 loaded_volume_type_count = (int32)distance_field_rendering::LOADED_VOLUME_TYPES.size();
-
-        distance_field_rendering::ACTIVE_VOLUME_TYPE_INDEX = (distance_field_rendering::ACTIVE_VOLUME_TYPE_INDEX + 1) % loaded_volume_type_count;
-
-        auto& volume_name_map = distance_field_rendering::get_volume_name_map();
-        auto& volume_name = volume_name_map[distance_field_rendering::LOADED_VOLUME_TYPES[distance_field_rendering::ACTIVE_VOLUME_TYPE_INDEX]];
-
-        R_INFO("Active Volume: {0}", volume_name.to_string());
-    }
-
-    //-------------------------------------------------------------------------
-    void VolumeRenderingLayer::previous_volume()
-    {
-        R_PROFILE_FUNCTION();
-
-        if (m_active_renderer == nullptr)
-        {
-            return;
-        }
-
-        rex::SceneRenderPass* render_pass = m_active_renderer->get_scene_render_pass(distance_field_rendering::DISTANCEEVALUATIONSPASS_NAME);
-        if (render_pass == nullptr)
-        {
-            return;
-        }
-
-        // Increment volume index
-        int32 loaded_volume_type_count = (int32)distance_field_rendering::LOADED_VOLUME_TYPES.size();
-
-        distance_field_rendering::ACTIVE_VOLUME_TYPE_INDEX = distance_field_rendering::ACTIVE_VOLUME_TYPE_INDEX - 1;
-        if (distance_field_rendering::ACTIVE_VOLUME_TYPE_INDEX < 0)
-        {
-            distance_field_rendering::ACTIVE_VOLUME_TYPE_INDEX = loaded_volume_type_count - 1;
-        }
-
-        auto& volume_name_map = distance_field_rendering::get_volume_name_map();
-        auto& volume_name = volume_name_map[distance_field_rendering::LOADED_VOLUME_TYPES[distance_field_rendering::ACTIVE_VOLUME_TYPE_INDEX]];
-
-        R_INFO("Active Volume: {0}", volume_name.to_string());
-
-        rex::DistanceEvaluationPass* distance_eval = static_cast<rex::DistanceEvaluationPass*>(render_pass);
-        rex::sdf::SceneOptions sdf_scene_options = distance_eval->get_sdf_scene_options();
-
-        sdf_scene_options.scene_data = volume_library::get_volume_data(volume_name);
     }
 
     //-------------------------------------------------------------------------

@@ -42,9 +42,11 @@ namespace regina
             , volume_type(0)
             , max_iterations(200)
             , nr_lights(32)
-            , resolution(-1)
+            , max_marching_distance(1000.0f)
+            , min_marching_distance(0.01f)
             , use_lattice(false)
             , use_heatmap(false)
+            , animate(false)
         {
         }
 
@@ -53,7 +55,9 @@ namespace regina
         int32 volume_type;
         int32 max_iterations;
         int32 nr_lights;
-        int32 resolution;
+
+        float max_marching_distance;
+        float min_marching_distance;
 
         bool use_lattice;
         bool use_heatmap;
@@ -76,7 +80,6 @@ namespace regina
         bool on_key_pressed(const rex::events::KeyPressed& keyPressEvent);
 
         void animate_camera(const rex::FrameInfo& info);
-        void read_framebuffer();
         void toggle_camera_animation();
 
         void decrement_sdf_scale();
@@ -86,9 +89,6 @@ namespace regina
 
         void switch_to_heatmap();
         void switch_to_sdf();
-
-        void next_volume();
-        void previous_volume();
 
         void setup_scene();
         void setup_camera();
