@@ -36,7 +36,7 @@ namespace rex
 
 namespace regina
 {
-    struct DeferredRenderingLayerDescription
+    struct GeometryRenderingLayerDescription
     {
         rex::StringID source_content_location;
 
@@ -48,11 +48,11 @@ namespace regina
         bool animate;
     };
 
-    class DeferredRenderingLayer : public rex::Layer
+    class GeometryRenderingLayer : public rex::Layer
     {
     public:
-        DeferredRenderingLayer(const rex::CoreWindow* window, const DeferredRenderingLayerDescription& description);
-        ~DeferredRenderingLayer() override;
+        GeometryRenderingLayer(const rex::CoreWindow* window, const GeometryRenderingLayerDescription& description);
+        ~GeometryRenderingLayer() override;
 
         void on_attach() override;
         void on_detach() override;

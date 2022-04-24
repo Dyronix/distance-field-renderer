@@ -1,6 +1,6 @@
 #include "regina_pch.h"
 
-#include "deferred_rendering_layer.h"
+#include "geometry_rendering_layer.h"
 
 #include "ecs/components/camera_component.h"
 #include "ecs/components/directional_light_component.h"
@@ -90,7 +90,7 @@ namespace regina
 
         using MeshLattice = rex::YesNoEnum;
 
-        DeferredRenderingLayerDescription LAYER_DESCRIPTION;
+        GeometryRenderingLayerDescription LAYER_DESCRIPTION;
 
         MeshTypes LOADED_MESH_TYPES = {};
         int32 ACTIVE_MESH_TYPE_INDEX = 0;
@@ -432,7 +432,7 @@ namespace regina
     } // namespace deferred_rendering
 
     //-------------------------------------------------------------------------
-    DeferredRenderingLayer::DeferredRenderingLayer(const rex::CoreWindow* window, const DeferredRenderingLayerDescription& description)
+    GeometryRenderingLayer::GeometryRenderingLayer(const rex::CoreWindow* window, const GeometryRenderingLayerDescription& description)
         : Layer("regina_layer"_sid, -1, EnableImGUIRendering::NO)
         , m_camera_controller(rex::win32::Input::instance(), R_MOUSE_BUTTON_LEFT, deferred_rendering::create_orbit_camera_description())
         , m_window(window)
@@ -442,13 +442,13 @@ namespace regina
         deferred_rendering::LAYER_DESCRIPTION = description;
     }
     //-------------------------------------------------------------------------
-    DeferredRenderingLayer::~DeferredRenderingLayer()
+    GeometryRenderingLayer::~GeometryRenderingLayer()
     {
         R_PROFILE_FUNCTION();
     }
 
     //-------------------------------------------------------------------------
-    void DeferredRenderingLayer::on_attach()
+    void GeometryRenderingLayer::on_attach()
     {
         R_PROFILE_FUNCTION();
 
@@ -463,7 +463,7 @@ namespace regina
         setup_scene_renderer();
     }
     //-------------------------------------------------------------------------
-    void DeferredRenderingLayer::on_detach()
+    void GeometryRenderingLayer::on_detach()
     {
         R_PROFILE_FUNCTION();
 
@@ -481,7 +481,7 @@ namespace regina
     }
 
     //-------------------------------------------------------------------------
-    void DeferredRenderingLayer::on_update(const rex::FrameInfo& info)
+    void GeometryRenderingLayer::on_update(const rex::FrameInfo& info)
     {
         R_PROFILE_FUNCTION();
 
@@ -501,7 +501,7 @@ namespace regina
     }
 
     //-------------------------------------------------------------------------
-    void DeferredRenderingLayer::on_event(rex::events::Event& event)
+    void GeometryRenderingLayer::on_event(rex::events::Event& event)
     {
         R_PROFILE_FUNCTION();
 
@@ -513,7 +513,7 @@ namespace regina
     }
 
     //-------------------------------------------------------------------------
-    bool DeferredRenderingLayer::on_key_pressed(const rex::events::KeyPressed& keyPressEvent)
+    bool GeometryRenderingLayer::on_key_pressed(const rex::events::KeyPressed& keyPressEvent)
     {
         R_PROFILE_FUNCTION();
 
@@ -530,7 +530,7 @@ namespace regina
     }
 
     //-------------------------------------------------------------------------
-    void DeferredRenderingLayer::animate_camera(const rex::FrameInfo& info)
+    void GeometryRenderingLayer::animate_camera(const rex::FrameInfo& info)
     {
         R_PROFILE_FUNCTION();
 
@@ -545,7 +545,7 @@ namespace regina
     }
 
     //-------------------------------------------------------------------------
-    void DeferredRenderingLayer::read_framebuffer()
+    void GeometryRenderingLayer::read_framebuffer()
     {
         R_PROFILE_FUNCTION();
 
@@ -556,7 +556,7 @@ namespace regina
     }
 
     //-------------------------------------------------------------------------
-    void DeferredRenderingLayer::toggle_camera_animation()
+    void GeometryRenderingLayer::toggle_camera_animation()
     {
         R_PROFILE_FUNCTION();
 
@@ -564,7 +564,7 @@ namespace regina
     }
 
     //-------------------------------------------------------------------------
-    void DeferredRenderingLayer::next_mesh()
+    void GeometryRenderingLayer::next_mesh()
     {
         R_PROFILE_FUNCTION();
 
@@ -579,7 +579,7 @@ namespace regina
     }
 
     //-------------------------------------------------------------------------
-    void DeferredRenderingLayer::previous_mesh()
+    void GeometryRenderingLayer::previous_mesh()
     {
         R_PROFILE_FUNCTION();
 
@@ -598,7 +598,7 @@ namespace regina
     }
 
     //-------------------------------------------------------------------------
-    void DeferredRenderingLayer::setup_scene()
+    void GeometryRenderingLayer::setup_scene()
     {
         R_PROFILE_FUNCTION();
 
@@ -617,7 +617,7 @@ namespace regina
         setup_geometry();
     }
     //-------------------------------------------------------------------------
-    void DeferredRenderingLayer::setup_camera()
+    void GeometryRenderingLayer::setup_camera()
     {
         R_PROFILE_FUNCTION();
 
@@ -642,7 +642,7 @@ namespace regina
         m_camera_controller.set_camera_transform(&transform_component.transform);
     }
     //-------------------------------------------------------------------------
-    void DeferredRenderingLayer::setup_scene_renderer()
+    void GeometryRenderingLayer::setup_scene_renderer()
     {
         R_PROFILE_FUNCTION();
 
@@ -662,7 +662,7 @@ namespace regina
     }
 
     //-------------------------------------------------------------------------
-    void DeferredRenderingLayer::setup_lights()
+    void GeometryRenderingLayer::setup_lights()
     {
         R_PROFILE_FUNCTION();
 
@@ -691,7 +691,7 @@ namespace regina
     }
 
     //-------------------------------------------------------------------------
-    void DeferredRenderingLayer::setup_geometry()
+    void GeometryRenderingLayer::setup_geometry()
     {
         R_PROFILE_FUNCTION();
 
@@ -744,35 +744,35 @@ namespace regina
     }
 
     //-------------------------------------------------------------------------
-    std::unique_ptr<rex::SceneRenderPass> DeferredRenderingLayer::create_pre_depth_pass(const rex::PreDepthPassOptions& options) const
+    std::unique_ptr<rex::SceneRenderPass> GeometryRenderingLayer::create_pre_depth_pass(const rex::PreDepthPassOptions& options) const
     {
         R_PROFILE_FUNCTION();
 
         return std::make_unique<rex::PreDepthPass>(options, rex::CreateFrameBuffer::YES);
     }
     //-------------------------------------------------------------------------
-    std::unique_ptr<rex::SceneRenderPass> DeferredRenderingLayer::create_deferred_geometry_pass(const rex::DeferredGeometryPassOptions& options) const
+    std::unique_ptr<rex::SceneRenderPass> GeometryRenderingLayer::create_deferred_geometry_pass(const rex::DeferredGeometryPassOptions& options) const
     {
         R_PROFILE_FUNCTION();
 
         return std::make_unique<rex::DeferredGeometryPass>(options, rex::CreateFrameBuffer::YES);
     }
     //-------------------------------------------------------------------------
-    std::unique_ptr<rex::SceneRenderPass> DeferredRenderingLayer::create_deferred_light_pass(const rex::DeferredLightPassOptions& options) const
+    std::unique_ptr<rex::SceneRenderPass> GeometryRenderingLayer::create_deferred_light_pass(const rex::DeferredLightPassOptions& options) const
     {
         R_PROFILE_FUNCTION();
 
         return std::make_unique<rex::DeferredLightPass>(options, rex::CreateFrameBuffer::YES);
     }
     //-------------------------------------------------------------------------
-    std::unique_ptr<rex::SceneRenderPass> DeferredRenderingLayer::create_deferred_light_visualization_pass(const rex::DeferredLightVisualizationPassOptions& options) const
+    std::unique_ptr<rex::SceneRenderPass> GeometryRenderingLayer::create_deferred_light_visualization_pass(const rex::DeferredLightVisualizationPassOptions& options) const
     {
         R_PROFILE_FUNCTION();
 
         return std::make_unique<rex::DeferredLightVisualizationPass>(options, rex::CreateFrameBuffer::YES);
     }
     //-------------------------------------------------------------------------
-    std::unique_ptr<rex::SceneRenderPass> DeferredRenderingLayer::create_composite_pass(const rex::CompositePassOptions& options) const
+    std::unique_ptr<rex::SceneRenderPass> GeometryRenderingLayer::create_composite_pass(const rex::CompositePassOptions& options) const
     {
         R_PROFILE_FUNCTION();
 

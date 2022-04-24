@@ -35,9 +35,9 @@ namespace rex
 
 namespace regina
 {
-    struct DistanceFieldRenderingLayerDescription
+    struct VolumeRenderingLayerDescription
     {
-        DistanceFieldRenderingLayerDescription()
+        VolumeRenderingLayerDescription()
             : source_content_location(rex::ESID::SID_None)
             , volume_type(0)
             , max_iterations(200)
@@ -60,11 +60,11 @@ namespace regina
         bool animate;
     };
 
-    class DistanceFieldRenderingLayer : public rex::Layer
+    class VolumeRenderingLayer : public rex::Layer
     {
     public:
-        DistanceFieldRenderingLayer(const rex::CoreWindow* window, const DistanceFieldRenderingLayerDescription& description);
-        ~DistanceFieldRenderingLayer() override;
+        VolumeRenderingLayer(const rex::CoreWindow* window, const VolumeRenderingLayerDescription& description);
+        ~VolumeRenderingLayer() override;
 
         void on_attach() override;
         void on_detach() override;
