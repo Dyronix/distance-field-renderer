@@ -187,9 +187,7 @@ namespace regina
 
         //-------------------------------------------------------------------------
         rex::DeferredGeometryPassOptions create_deferred_geometry_pass_options()
-        {
-            R_PROFILE_FUNCTION();
-
+        {          
             rex::DeferredGeometryPassOptions options;
 
             options.pass_name = geometry_rendering::DEFERREDGEOMETRYPASS_NAME;
@@ -201,8 +199,6 @@ namespace regina
         //-------------------------------------------------------------------------
         rex::DeferredLightPassOptions create_deferred_light_pass_options()
         {
-            R_PROFILE_FUNCTION();
-
             rex::DeferredLightPassOptions options;
 
             options.pass_name = geometry_rendering::DEFERREDLIGHTPASS_NAME;
@@ -216,8 +212,6 @@ namespace regina
         //-------------------------------------------------------------------------
         rex::DeferredLightVisualizationPassOptions create_deferred_light_visualization_pass_options()
         {
-            R_PROFILE_FUNCTION();
-
             rex::DeferredLightVisualizationPassOptions options;
 
             options.pass_name = geometry_rendering::DEFERREDLIGHTVISUALIZATIONPASS_NAME;
@@ -230,8 +224,6 @@ namespace regina
         //-------------------------------------------------------------------------
         rex::CompositePassOptions create_composite_pass_options()
         {
-            R_PROFILE_FUNCTION();
-
             rex::CompositePassOptions options;
 
             options.pass_name = geometry_rendering::COMPOSITEPASS_NAME;
@@ -245,8 +237,6 @@ namespace regina
         //-------------------------------------------------------------------------
         regina::FocusSettings create_focus_settings(const rex::vec3& target, const float minFocusDistance, float maxFocusDistance, float focusDistance)
         {
-            R_PROFILE_FUNCTION();
-
             regina::FocusSettings settings;
 
             settings.set_target(target);
@@ -259,8 +249,6 @@ namespace regina
         //-------------------------------------------------------------------------
         OrbitSettings create_orbit_settings(const float rotationSpeed, const float minPitchAngle, const float maxPitchAngle)
         {
-            R_PROFILE_FUNCTION();
-
             OrbitSettings settings;
 
             settings.set_rotation_speed(rotationSpeed);
@@ -272,8 +260,6 @@ namespace regina
         //-------------------------------------------------------------------------
         MouseSettings create_mouse_settings(const float moveSensitivity, const float scrollSensitivity)
         {
-            R_PROFILE_FUNCTION();
-
             MouseSettings settings;
 
             settings.mouse_movement_sensitivity = moveSensitivity;
@@ -284,8 +270,6 @@ namespace regina
         //-------------------------------------------------------------------------
         OrbitCameraDescription create_orbit_camera_description()
         {
-            R_PROFILE_FUNCTION();
-
             OrbitCameraDescription description;
 
             // Camera
@@ -321,8 +305,6 @@ namespace regina
         //-------------------------------------------------------------------------
         void load_shader(const rex::StringID& name, const rex::StringID& queue, const rex::StringID& vertexCodePath, const rex::StringID& fragmentCodePath)
         {
-            R_PROFILE_FUNCTION();
-
             rex::ShaderProgramCreationInfo creation_info;
 
             creation_info.tag = name;
@@ -343,7 +325,7 @@ namespace regina
         //-------------------------------------------------------------------------
         void load_shaders()
         {
-            R_PROFILE_FUNCTION();
+            R_PROFILE_SCOPE("Load Shaders");
 
             load_shader("blit"_sid, "1000"_sid, "content\\shaders\\blit.vertex"_sid, "content\\shaders\\blit.fragment"_sid);
             load_shader("g_buffer"_sid, "1000"_sid, "content\\shaders\\g_buffer.vertex"_sid, "content\\shaders\\g_buffer.fragment"_sid);
@@ -353,14 +335,12 @@ namespace regina
         //-------------------------------------------------------------------------
         void load_primitive_geometry()
         {
-            R_PROFILE_FUNCTION();
-
             rex::mesh_factory::load();
         }
         //-------------------------------------------------------------------------
-        bool load_custom_geometry(const rex::StringID& sourceLocation, MeshType meshType, bool lattified)
+        bool load_custom_geometry(const rex::StringID& sourceLocation, MeshType meshType)
         {
-            R_PROFILE_FUNCTION();
+            R_PROFILE_SCOPE("Load Custom Geometry");
 
             rex::StringID source_location = sourceLocation.is_none() ? rex::create_sid("content\\meshes\\") : sourceLocation;
 
@@ -369,10 +349,6 @@ namespace regina
             mesh_stream << source_location.to_string();
             mesh_stream << "\\";
             mesh_stream << MESH_NAME_MAP[meshType];
-            if (lattified)
-            {
-                mesh_stream << "_lattice";
-            }
 
             std::stringstream mesh_path;
             mesh_path << mesh_stream.str();
@@ -385,13 +361,13 @@ namespace regina
         //-------------------------------------------------------------------------
         std::vector<MeshType> load_custom_geometry()
         {
-            R_PROFILE_FUNCTION(); 
+             
 
             std::vector<MeshType> loaded_mesh_types;
 
             if (!LAYER_DESCRIPTION.source_content_location.is_none())
             {
-                load_custom_geometry(LAYER_DESCRIPTION.source_content_location, (MeshType)LAYER_DESCRIPTION.mesh_type, LAYER_DESCRIPTION.use_lattice);
+                load_custom_geometry(LAYER_DESCRIPTION.source_content_location, (MeshType)LAYER_DESCRIPTION.mesh_type);
             }
 
             return loaded_mesh_types;
@@ -404,23 +380,20 @@ namespace regina
         , m_camera_controller(rex::win32::Input::instance(), R_MOUSE_BUTTON_LEFT, geometry_rendering::create_orbit_camera_description())
         , m_window(window)
     {
-        R_PROFILE_FUNCTION();
-
         geometry_rendering::LAYER_DESCRIPTION = description;
     }
     //-------------------------------------------------------------------------
     GeometryRenderingLayer::~GeometryRenderingLayer()
     {
-        R_PROFILE_FUNCTION();
+        
     }
 
     //-------------------------------------------------------------------------
     void GeometryRenderingLayer::on_attach()
     {
-        R_PROFILE_FUNCTION();
-
         geometry_rendering::load_shaders();
         geometry_rendering::load_primitive_geometry();
+        geometry_rendering::load_custom_geometry();
 
         setup_scene();
         setup_camera();
@@ -429,8 +402,6 @@ namespace regina
     //-------------------------------------------------------------------------
     void GeometryRenderingLayer::on_detach()
     {
-        R_PROFILE_FUNCTION();
-
         rex::model_library::clear();
         rex::mesh_factory::clear();
         rex::shader_library::clear();
@@ -447,8 +418,6 @@ namespace regina
     //-------------------------------------------------------------------------
     void GeometryRenderingLayer::on_update(const rex::FrameInfo& info)
     {
-        R_PROFILE_FUNCTION();
-
         if (geometry_rendering::LAYER_DESCRIPTION.animate)
         {
             animate_camera(info);
@@ -467,8 +436,6 @@ namespace regina
     //-------------------------------------------------------------------------
     void GeometryRenderingLayer::on_event(rex::events::Event& event)
     {
-        R_PROFILE_FUNCTION();
-
         m_camera_controller.on_event(event);
 
         rex::events::EventDispatcher dispatcher(event);
@@ -479,8 +446,6 @@ namespace regina
     //-------------------------------------------------------------------------
     bool GeometryRenderingLayer::on_key_pressed(const rex::events::KeyPressed& keyPressEvent)
     {
-        R_PROFILE_FUNCTION();
-
         switch (keyPressEvent.get_key())
         {
             case R_KEY_F2: read_framebuffer(); return true;
@@ -493,8 +458,6 @@ namespace regina
     //-------------------------------------------------------------------------
     void GeometryRenderingLayer::animate_camera(const rex::FrameInfo& info)
     {
-        R_PROFILE_FUNCTION();
-
         float focus_distance_speed = 0.5f;
         float current_focus_distance = m_camera_controller.get_focus_distance();
         
@@ -508,8 +471,6 @@ namespace regina
     //-------------------------------------------------------------------------
     void GeometryRenderingLayer::read_framebuffer()
     {
-        R_PROFILE_FUNCTION();
-
         uint32 vp_width = m_scene_renderer->get_viewport_width();
         uint32 vp_height = m_scene_renderer->get_viewport_height();
 
@@ -519,16 +480,12 @@ namespace regina
     //-------------------------------------------------------------------------
     void GeometryRenderingLayer::toggle_camera_animation()
     {
-        R_PROFILE_FUNCTION();
-
         geometry_rendering::LAYER_DESCRIPTION.animate = !geometry_rendering::LAYER_DESCRIPTION.animate;
     }
 
     //-------------------------------------------------------------------------
     void GeometryRenderingLayer::setup_scene()
     {
-        R_PROFILE_FUNCTION();
-
         int32 viewport_width = m_window->get_width();
         int32 viewport_height = m_window->get_height();
 
@@ -546,8 +503,6 @@ namespace regina
     //-------------------------------------------------------------------------
     void GeometryRenderingLayer::setup_camera()
     {
-        R_PROFILE_FUNCTION();
-
         float viewport_width = (float)m_window->get_width();
         float viewport_height = (float)m_window->get_height();
 
@@ -571,8 +526,6 @@ namespace regina
     //-------------------------------------------------------------------------
     void GeometryRenderingLayer::setup_scene_renderer()
     {
-        R_PROFILE_FUNCTION();
-
         rex::SceneRenderPasses renderpasses;
 
         auto deferred_geometry = create_deferred_geometry_pass(geometry_rendering::create_deferred_geometry_pass_options());
@@ -591,8 +544,6 @@ namespace regina
     //-------------------------------------------------------------------------
     void GeometryRenderingLayer::setup_lights()
     {
-        R_PROFILE_FUNCTION();
-
         int32 nr_lights = std::clamp(geometry_rendering::LAYER_DESCRIPTION.nr_lights, geometry_rendering::MIN_NR_LIGHTS, geometry_rendering::MAX_NR_LIGHTS);
 
         srand(13);  // seed random number generator
@@ -620,8 +571,6 @@ namespace regina
     //-------------------------------------------------------------------------
     void GeometryRenderingLayer::setup_geometry()
     {
-        R_PROFILE_FUNCTION();
-
         //const int32 MAX_OBJECTS = 9;
 
         //std::array<rex::vec3, MAX_OBJECTS> object_positions = 
@@ -673,29 +622,21 @@ namespace regina
     //-------------------------------------------------------------------------
     std::unique_ptr<rex::SceneRenderPass> GeometryRenderingLayer::create_deferred_geometry_pass(const rex::DeferredGeometryPassOptions& options) const
     {
-        R_PROFILE_FUNCTION();
-
         return std::make_unique<rex::DeferredGeometryPass>(options, rex::CreateFrameBuffer::YES);
     }
     //-------------------------------------------------------------------------
     std::unique_ptr<rex::SceneRenderPass> GeometryRenderingLayer::create_deferred_light_pass(const rex::DeferredLightPassOptions& options) const
     {
-        R_PROFILE_FUNCTION();
-
         return std::make_unique<rex::DeferredLightPass>(options, rex::CreateFrameBuffer::YES);
     }
     //-------------------------------------------------------------------------
     std::unique_ptr<rex::SceneRenderPass> GeometryRenderingLayer::create_deferred_light_visualization_pass(const rex::DeferredLightVisualizationPassOptions& options) const
     {
-        R_PROFILE_FUNCTION();
-
         return std::make_unique<rex::DeferredLightVisualizationPass>(options, rex::CreateFrameBuffer::YES);
     }
     //-------------------------------------------------------------------------
     std::unique_ptr<rex::SceneRenderPass> GeometryRenderingLayer::create_composite_pass(const rex::CompositePassOptions& options) const
     {
-        R_PROFILE_FUNCTION();
-
         return std::make_unique<rex::CompositePass>(options, rex::CreateFrameBuffer::NO);
     }
 } // namespace regina
