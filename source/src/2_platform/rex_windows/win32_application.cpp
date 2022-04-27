@@ -127,7 +127,7 @@ namespace rex
                 SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 #endif
                 std::stringstream startup_stream;
-                startup_stream << "scribit-profile-startup-";
+                startup_stream << "rex-profile-startup-";
                 startup_stream << get_application_description().profile_id.to_string();
                 startup_stream << ".json";
 
@@ -156,7 +156,7 @@ namespace rex
                 R_PROFILE_END_SESSION();
 
                 std::stringstream runtime_stream;
-                runtime_stream << "scribit-profile-runtime-";
+                runtime_stream << "rex-profile-runtime-";
                 runtime_stream << get_application_description().profile_id.to_string();
                 runtime_stream << ".json";
 
@@ -179,10 +179,10 @@ namespace rex
         //-------------------------------------------------------------------------
         bool Application::platform_shutdown()
         {
-            R_PROFILE_FUNCTION();
+            
 
             std::stringstream shutdown_stream;
-            shutdown_stream << "scribit-profile-shutdown-";
+            shutdown_stream << "rex-profile-shutdown-";
             shutdown_stream << get_application_description().profile_id.to_string();
             shutdown_stream << ".json";
 
