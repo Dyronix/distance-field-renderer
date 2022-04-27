@@ -46,7 +46,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void ApplicationLoop::tick()
         {
-            R_PROFILE_FUNCTION();
+            R_PROFILE_SCOPE("Application Update Loop");
 
             FrameInfo info = {World::get_delta_time(), World::get_frames_per_second()};
 

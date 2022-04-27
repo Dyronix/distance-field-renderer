@@ -308,7 +308,7 @@ namespace regina
         //-------------------------------------------------------------------------
         void load_shader(const rex::StringID& name, const rex::StringID& queue, const rex::StringID& vertexCodePath, const rex::StringID& fragmentCodePath)
         {
-            R_PROFILE_FUNCTION();
+            
 
             rex::ShaderProgramCreationInfo creation_info;
 
@@ -330,7 +330,7 @@ namespace regina
         //-------------------------------------------------------------------------
         void load_shaders()
         {
-            R_PROFILE_FUNCTION();
+            
 
             load_shader("blit"_sid, "1000"_sid, "content\\shaders\\blit.vertex"_sid, "content\\shaders\\blit.fragment"_sid);
             load_shader("heatmap"_sid, "1000"_sid, "content\\shaders\\heatmap.vertex"_sid, "content\\shaders\\heatmap.fragment"_sid);
@@ -338,7 +338,7 @@ namespace regina
         //-------------------------------------------------------------------------
         void load_texture(const rex::StringID& name, const rex::StringID& path, const SRGB& srgb, const rex::Texture::Usage& usage)
         {
-            R_PROFILE_FUNCTION();
+            
 
             auto texture = texture_importer::import(name, path, srgb, usage);
 
@@ -355,21 +355,21 @@ namespace regina
         //-------------------------------------------------------------------------
         void load_textures()
         {
-            R_PROFILE_FUNCTION();
+            
 
             load_texture("color_ramp", "content\\textures\\color_ramp.png", SRGB::NO, rex::Texture::Usage::UNSPECIFIED);
         }
         //-------------------------------------------------------------------------
         void load_primitive_geometry()
         {
-            R_PROFILE_FUNCTION();
+            
 
             rex::mesh_factory::load();
         }
         //-------------------------------------------------------------------------
         void load_volume(const rex::StringID& name, const rex::StringID& volumeMetaPath, const rex::StringID& volumeDataPath)
         {
-            R_PROFILE_FUNCTION();
+            
 
             Volume volume = volume_importer::import(name, volumeMetaPath, volumeDataPath);
 
@@ -385,7 +385,7 @@ namespace regina
         //-------------------------------------------------------------------------
         void load_volumes()
         {
-            R_PROFILE_FUNCTION();
+            
 
             load_volume(get_volume_name_map()[VolumeType::BUNNY], "content\\volumes\\bunny.sdf.meta"_sid, "content\\volumes\\bunny.sdf"_sid);
             // load_volume(get_volume_name_map()[VolumeType::CUBE], "content\\volumes\\cube.sdf.meta"_sid, "content\\volumes\\cube.sdf"_sid);
@@ -413,7 +413,7 @@ namespace regina
     //-------------------------------------------------------------------------
     void HeatMapRenderingLayer::on_attach()
     {
-        R_PROFILE_FUNCTION();
+        
 
         heatmap_rendering::load_volumes();
         heatmap_rendering::load_textures();
@@ -427,7 +427,7 @@ namespace regina
     //-------------------------------------------------------------------------
     void HeatMapRenderingLayer::on_detach()
     {
-        R_PROFILE_FUNCTION();
+        
 
         rex::mesh_factory::clear();
         rex::shader_library::clear();
@@ -447,7 +447,7 @@ namespace regina
     //-------------------------------------------------------------------------
     void HeatMapRenderingLayer::on_update(const rex::FrameInfo& info)
     {
-        R_PROFILE_FUNCTION();
+        
 
         m_camera_controller.on_update(info);
 
@@ -462,7 +462,7 @@ namespace regina
     //-------------------------------------------------------------------------
     void HeatMapRenderingLayer::on_event(rex::events::Event& event)
     {
-        R_PROFILE_FUNCTION();
+        
 
         m_camera_controller.on_event(event);
 
@@ -603,7 +603,7 @@ namespace regina
     //-------------------------------------------------------------------------
     void HeatMapRenderingLayer::setup_scene()
     {
-        R_PROFILE_FUNCTION();
+        
 
         int32 viewport_width = m_window->get_width();
         int32 viewport_height = m_window->get_height();
@@ -615,7 +615,7 @@ namespace regina
     //-------------------------------------------------------------------------
     void HeatMapRenderingLayer::setup_camera()
     {
-        R_PROFILE_FUNCTION();
+        
 
         float viewport_width = (float)m_window->get_width();
         float viewport_height = (float)m_window->get_height();
@@ -640,7 +640,7 @@ namespace regina
     //-------------------------------------------------------------------------
     void HeatMapRenderingLayer::setup_scene_renderer()
     {
-        R_PROFILE_FUNCTION();
+        
 
         rex::SceneRenderPasses renderpasses;
 
@@ -656,7 +656,7 @@ namespace regina
     //-------------------------------------------------------------------------
     void HeatMapRenderingLayer::setup_lights()
     {
-        R_PROFILE_FUNCTION();
+        
 
         srand(13); // seed random number generator
         for (int32 i = 0; i < 32; ++i)
@@ -683,14 +683,14 @@ namespace regina
     //-------------------------------------------------------------------------
     std::unique_ptr<rex::SceneRenderPass> HeatMapRenderingLayer::create_distance_evaluation_pass(const rex::DistanceEvaluationsPassOptions& options) const
     {
-        R_PROFILE_FUNCTION();
+        
 
         return std::make_unique<rex::HeatMapDistanceEvaluationPass>("color_ramp"_sid, options, rex::CreateFrameBuffer::YES);
     }
     //-------------------------------------------------------------------------
     std::unique_ptr<rex::SceneRenderPass> HeatMapRenderingLayer::create_composite_pass(const rex::CompositePassOptions& options) const
     {
-        R_PROFILE_FUNCTION();
+        
 
         return std::make_unique<rex::CompositePass>(options, rex::CreateFrameBuffer::NO);
     }

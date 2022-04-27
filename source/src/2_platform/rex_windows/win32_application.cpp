@@ -89,7 +89,7 @@ namespace rex
         //-------------------------------------------------------------------------
         Layer* Application::push_back_layer(std::unique_ptr<Layer> layer)
         {
-            R_PROFILE_FUNCTION();
+            
 
             Layer* raw_ptr = layer.get();
 
@@ -240,7 +240,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void Application::platform_update(const FrameInfo& info)
         {
-            R_PROFILE_FUNCTION();
+            
 
             process_events();
             process_render_queue(info);
@@ -249,7 +249,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void Application::platform_event(events::Event& event)
         {
-            R_PROFILE_FUNCTION();
+            
 
             std::for_each(m_layer_stack->rbegin(), m_layer_stack->rend(), [&event](const std::unique_ptr<Layer>& layer) mutable
                           {
@@ -272,7 +272,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void Application::process_events()
         {
-            R_PROFILE_FUNCTION();
+            
 
             if (!m_event_queue->empty())
             {
@@ -290,7 +290,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void Application::process_render_queue(const FrameInfo& info)
         {
-            R_PROFILE_FUNCTION();
+            
 
             bool is_visible = m_window->is_visible();
 
@@ -317,7 +317,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void Application::process_window(const FrameInfo& info)
         {
-            R_PROFILE_FUNCTION();
+            
 
             update_window_title(info.fps);
 
@@ -327,7 +327,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void Application::mark_for_destroy()
         {
-            R_PROFILE_FUNCTION();
+            
 
             m_is_marked_for_destruction = true;
 
@@ -339,7 +339,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void Application::create_display_manager()
         {
-            R_PROFILE_FUNCTION();
+            
 
             m_display_manager = std::make_unique<DisplayManager>();
             m_display_manager->set_active(g_main_display, g_main_display_mode);
@@ -350,7 +350,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void Application::create_layer_stack()
         {
-            R_PROFILE_FUNCTION();
+            
 
             m_layer_stack = std::make_unique<LayerStack>();
         }
@@ -358,7 +358,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void Application::create_event_queue()
         {
-            R_PROFILE_FUNCTION();
+            
 
             m_event_queue = std::make_unique<events::EventQueue>();
 
@@ -369,7 +369,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void Application::create_window()
         {
-            R_PROFILE_FUNCTION();
+            
 
             uint32 window_flags = 0;
             window_flags |= (int32)WindowFlags::Flags::RESIZABLE;
@@ -404,7 +404,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void Application::create_input()
         {
-            R_PROFILE_FUNCTION();
+            
 
             Input::create_instance(*m_window);
         }
@@ -412,7 +412,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void Application::create_application_loop()
         {
-            R_PROFILE_FUNCTION();
+            
 
             auto display = m_display_manager->get_active();
             auto display_mode = display->get_active_mode();
@@ -430,7 +430,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void Application::create_context()
         {
-            R_PROFILE_FUNCTION();
+            
 
             m_context = std::make_unique<opengl::Context>(m_window->get_sdl_window());
             m_context->make_current();
@@ -444,7 +444,7 @@ namespace rex
         //-------------------------------------------------------------------------
         bool Application::on_window_close(const events::WindowClose& evt)
         {
-            R_PROFILE_FUNCTION();
+            
 
             uint32 main_window_id = SDL_GetWindowID(m_window->get_sdl_window());
             if (main_window_id != evt.get_window_id())
@@ -459,7 +459,7 @@ namespace rex
         //-------------------------------------------------------------------------
         bool Application::on_window_resize(const events::WindowResize& evt)
         {
-            R_PROFILE_FUNCTION();
+            
 
             uint32 main_window_id = SDL_GetWindowID(m_window->get_sdl_window());
             if (main_window_id != evt.get_window_id())
@@ -484,7 +484,7 @@ namespace rex
         //-------------------------------------------------------------------------
         void Application::update_window_title(const FPS& fps)
         {
-            R_PROFILE_FUNCTION();
+            
 
             std::stringstream stream;
 
