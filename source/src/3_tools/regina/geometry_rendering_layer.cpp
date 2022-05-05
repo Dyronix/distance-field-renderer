@@ -360,8 +360,6 @@ namespace regina
         //-------------------------------------------------------------------------
         std::vector<MeshType> load_custom_geometry()
         {
-             
-
             std::vector<MeshType> loaded_mesh_types;
 
             if (!LAYER_DESCRIPTION.source_content_location.is_none())
