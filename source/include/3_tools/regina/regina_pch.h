@@ -5,6 +5,7 @@
 #include <string>
 #include <optional>
 #include <memory>
+#include <iomanip>
 #include <sstream>
 
 #include <gsl/narrow>
