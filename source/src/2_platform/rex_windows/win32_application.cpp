@@ -89,8 +89,6 @@ namespace rex
         //-------------------------------------------------------------------------
         Layer* Application::push_back_layer(std::unique_ptr<Layer> layer)
         {
-            
-
             Layer* raw_ptr = layer.get();
 
             m_layer_stack->push(std::move(layer));
@@ -127,7 +125,7 @@ namespace rex
                 SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 #endif
                 std::stringstream startup_stream;
-                startup_stream << "rex-profile-startup-";
+                startup_stream << "startup-";
                 startup_stream << get_application_description().profile_id.to_string();
                 startup_stream << ".json";
 
@@ -156,7 +154,7 @@ namespace rex
                 R_PROFILE_END_SESSION();
 
                 std::stringstream runtime_stream;
-                runtime_stream << "rex-profile-runtime-";
+                runtime_stream << "runtime-";
                 runtime_stream << get_application_description().profile_id.to_string();
                 runtime_stream << ".json";
 
@@ -182,7 +180,7 @@ namespace rex
             
 
             std::stringstream shutdown_stream;
-            shutdown_stream << "rex-profile-shutdown-";
+            shutdown_stream << "shutdown-";
             shutdown_stream << get_application_description().profile_id.to_string();
             shutdown_stream << ".json";
 
@@ -240,8 +238,6 @@ namespace rex
         //-------------------------------------------------------------------------
         void Application::platform_update(const FrameInfo& info)
         {
-            
-
             process_events();
             process_render_queue(info);
             process_window(info);
@@ -249,8 +245,6 @@ namespace rex
         //-------------------------------------------------------------------------
         void Application::platform_event(events::Event& event)
         {
-            
-
             std::for_each(m_layer_stack->rbegin(), m_layer_stack->rend(), [&event](const std::unique_ptr<Layer>& layer) mutable
                           {
                               layer->handle_event(event);
@@ -272,8 +266,6 @@ namespace rex
         //-------------------------------------------------------------------------
         void Application::process_events()
         {
-            
-
             if (!m_event_queue->empty())
             {
                 int32 pump_count = 0;
@@ -290,8 +282,6 @@ namespace rex
         //-------------------------------------------------------------------------
         void Application::process_render_queue(const FrameInfo& info)
         {
-            
-
             bool is_visible = m_window->is_visible();
 
             if (is_visible)
@@ -358,8 +348,6 @@ namespace rex
         //-------------------------------------------------------------------------
         void Application::create_event_queue()
         {
-            
-
             m_event_queue = std::make_unique<events::EventQueue>();
 
             events::EventBus::create_instance();
@@ -369,8 +357,6 @@ namespace rex
         //-------------------------------------------------------------------------
         void Application::create_window()
         {
-            
-
             uint32 window_flags = 0;
             window_flags |= (int32)WindowFlags::Flags::RESIZABLE;
             window_flags |= (int32)WindowFlags::Flags::ALLOW_HIGHDPI;
@@ -404,16 +390,12 @@ namespace rex
         //-------------------------------------------------------------------------
         void Application::create_input()
         {
-            
-
             Input::create_instance(*m_window);
         }
 
         //-------------------------------------------------------------------------
         void Application::create_application_loop()
         {
-            
-
             auto display = m_display_manager->get_active();
             auto display_mode = display->get_active_mode();
 
