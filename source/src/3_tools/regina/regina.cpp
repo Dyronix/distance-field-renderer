@@ -25,6 +25,7 @@ namespace
         const rex::StringID LATTIFIED               = "lattified"_sid;
         const rex::StringID SHAPE_TYPE              = "shape_type"_sid;
         const rex::StringID NR_LIGHTS               = "nr_lights"_sid;
+        const rex::StringID RESOLUTION              = "resolution"_sid;
         const rex::StringID CONTENT_LOCATION        = "content_location"_sid;
 
         const rex::StringID MAX_ITERATIONS          = "max_iterations"_sid;
@@ -33,12 +34,24 @@ namespace
         const rex::StringID HEATMAP                 = "heatmap"_sid;
 
         const rex::StringID GEOMETRY_TYPE           = "geometry_type"_sid;
+        const rex::StringID VOLUME_TYPE             = "volume_type"_sid;
+
+        const rex::StringID RUN_ID                  = "run_id"_sid;
+    }
+
+    template <typename T>
+    std::string to_string_with_precision(const T a_value, const int n = 6)
+    {
+        std::ostringstream out;
+        out.precision(n);
+        out << std::fixed << a_value;
+        return out.str();
     }
 
     bool s_geometry_layer;
 
-    regina::GeometryRenderingLayerDescription s_deferred_description;
-    regina::VolumeRenderingLayerDescription s_distance_description;
+    regina::GeometryRenderingLayerDescription s_geometry_description;
+    regina::VolumeRenderingLayerDescription s_volume_description;
 
     enum class ApplicationArgumentParserType
     {
@@ -65,6 +78,8 @@ namespace
             ,m_content_location(rex::ESID::SID_None)
             ,m_shape_type(0)
             ,m_nr_lights(32)
+            ,m_resolution(0)
+            ,m_run_id(-1)
         {
             m_window_width = load_window_width(applicationArguments);
             m_window_height = load_window_height(applicationArguments);
@@ -76,6 +91,8 @@ namespace
             m_content_location = load_content_location(applicationArguments);
             m_shape_type = load_shape_type(applicationArguments);
             m_nr_lights = load_number_of_lights(applicationArguments);
+            m_resolution = load_resolution(applicationArguments);
+            m_run_id = load_run_id(applicationArguments);
         }   
 
         //-----------------------------------------------------------------------
@@ -128,6 +145,16 @@ namespace
         int32 get_number_of_lights() const
         {
             return m_nr_lights;
+        }
+        //-----------------------------------------------------------------------
+        int32 get_resolution() const
+        {
+            return m_resolution;
+        }
+        //-----------------------------------------------------------------------
+        int32 get_run_id() const
+        {
+            return m_run_id;
         }
 
         //-----------------------------------------------------------------------
@@ -203,6 +230,20 @@ namespace
             
             return !sid_number_of_lights.is_none() ? std::stoi(sid_number_of_lights.to_string()) : 32;
         }
+        //-----------------------------------------------------------------------
+        int32 load_resolution(const rex::ApplicationArguments& applicationArguments) const
+        {
+            rex::StringID sid_resolution = applicationArguments.get_argument_value(tags::RESOLUTION);
+
+            return !sid_resolution.is_none() ? std::stoi(sid_resolution.to_string()) : 0;
+        }
+        //-----------------------------------------------------------------------
+        int32 load_run_id(const rex::ApplicationArguments& applicationArguments) const
+        {
+            rex::StringID sid_run = applicationArguments.get_argument_value(tags::RUN_ID);
+
+            return !sid_run.is_none() ? std::stoi(sid_run.to_string()) : -1;
+        }
 
         FullScreen m_fullscreen;
         AnimateScene m_animate_scene;
@@ -215,6 +256,8 @@ namespace
         int32 m_window_height;
         int32 m_shape_type;
         int32 m_nr_lights;
+        int32 m_resolution;
+        int32 m_run_id;
     };
 
     class VolumeApplicationArgumentParser : public ApplicationArgumentsParser
@@ -266,37 +309,62 @@ namespace
 
             stream << get_application_name().to_string() ;
             stream << "_";
-            stream << animate_scene() ? "dynamic_scene" : "static_scene"; 
-            stream << "_";
-            stream << "shape_type_" << get_shape_type();
-            stream << "_";
-            stream << lattified() ? "lattified_geometry" : "regular_geometry";
-            stream << "_";
-            stream << "nr_lights_" << get_number_of_lights();
-            stream << "_";
-            stream << "max_iterations_" << get_max_iterations();
-            stream << "_";
-            stream << "max_marching_distance_" << static_cast<int32>(get_max_marching_distance());
-            stream << "_";
-            stream << "min_marching_distance_" << static_cast<int32>(get_min_marching_distance());
-            stream << "_";
-            stream << generate_heatmap() ? "heatmap" : "no_heatmap";
-            stream << "_";
+
+            //if (animate_scene())
+            //    stream << "dynamic_scene";
+            //else
+            //    stream << "static_scene"; 
+
+            //stream << "_";
+            stream << "shape_" << get_shape_type();
+            stream << "-";
+
+            if (get_resolution() != 0)
+            {
+                stream << "lod_" << get_resolution();
+                stream << "-";
+            }
+
+            if (lattified())
+                stream << "lattified";
+            else
+                stream << "regular";
+
+            stream << "-";
+            stream << "lights_" << get_number_of_lights();
+            stream << "-";
+            stream << "maxit_" << get_max_iterations();
+            stream << "-";
+            stream << "maxdist_" << to_string_with_precision(get_max_marching_distance(), 3);
+            stream << "-";
+            stream << "mindist_" << to_string_with_precision(get_min_marching_distance(), 3);
+            stream << "-";
+
+            //if (generate_heatmap())
+            //    stream << "heatmap";
+            //else "noheatmap";
+            //stream << "-";
 
             if(fullscreen())
             {
                 stream << "fullscreen";
-                stream << "_";
+                stream << "-";
             }
             else
             {
                 stream << "xres_" << static_cast<int32>(get_window_width());
-                stream << "_";
+                stream << "-";
                 stream << "yres_" << static_cast<int32>(get_window_height());
-                stream << "_";
+                stream << "-";
             }
 
             stream << "volume";
+
+            if (get_run_id() != -1)
+            {
+                stream << "-";
+                stream << "run_" << get_run_id();
+            }
             
             return rex::create_sid(stream.str());
         }
@@ -363,29 +431,49 @@ namespace
 
             stream << get_application_name().to_string() ;
             stream << "_";
-            stream << animate_scene() ? "dynamic_scene" : "static_scene"; 
-            stream << "_";
-            stream << "shape_type_" << get_shape_type();
-            stream << "_";
-            stream << lattified() ? "lattified_geometry" : "regular_geometry";
-            stream << "_";
-            stream << "nr_lights_" << get_number_of_lights();
-            stream << "_";
+
+            //if (animate_scene())
+            //    stream << "dynamic_scene";
+            //else  stream << "static_scene"; 
+
+            //stream << "_";
+            stream << "shape_" << get_shape_type();
+            stream << "-";
+
+            if (get_resolution() != 0)
+            {
+                stream << "lod_" << get_resolution();
+                stream << "-";
+            }
+
+            if (lattified())
+                stream << "lattified";
+            else stream << "regular";
+
+            stream << "-";
+            stream << "lights_" << get_number_of_lights();
+            stream << "-";
 
             if(fullscreen())
             {
                 stream << "fullscreen";
-                stream << "_";
+                stream << "-";
             }
             else
             {
                 stream << "xres_" << static_cast<int32>(get_window_width());
-                stream << "_";
+                stream << "-";
                 stream << "yres_" << static_cast<int32>(get_window_height());
-                stream << "_";
+                stream << "-";
             }
 
             stream << "geometry";
+
+            if (get_run_id() != -1)
+            {
+                stream << "-";
+                stream << "run_" << get_run_id();
+            }
 
             return rex::create_sid(stream.str());
         }
@@ -401,16 +489,16 @@ namespace
 //-----------------------------------------------------------------------
 bool is_geometry_layer(const rex::ApplicationArguments& applicationArguments)
 {
-    rex::StringID sid_deferred = applicationArguments.get_argument_value(tags::GEOMETRY_TYPE);
-    int32 deferred = !sid_deferred.is_none() ? std::stoi(sid_deferred.to_string()) : 0;
-    return deferred == 1;
+    rex::StringID sid_geometry = applicationArguments.get_argument_value(tags::GEOMETRY_TYPE);
+    int32 geometry = !sid_geometry.is_none() ? std::stoi(sid_geometry.to_string()) : 0;
+    return geometry == 1;
 }
 //-----------------------------------------------------------------------
 bool is_volume_layer(const rex::ApplicationArguments& applicationArguments)
 {
-    rex::StringID sid_deferred = applicationArguments.get_argument_value(tags::GEOMETRY_TYPE);
-    int32 deferred = !sid_deferred.is_none() ? std::stoi(sid_deferred.to_string()) : 0;
-    return deferred == 0;
+    rex::StringID sid_volume = applicationArguments.get_argument_value(tags::VOLUME_TYPE);
+    int32 volume = !sid_volume.is_none() ? std::stoi(sid_volume.to_string()) : 0;
+    return volume == 1;
 }
 
 //-----------------------------------------------------------------------
@@ -453,6 +541,8 @@ regina::VolumeRenderingLayerDescription make_volume_rendering_layer_description(
 //-----------------------------------------------------------------------
 rex::CoreApplication* rex::create_application(const ApplicationArguments& arguments)
 {
+    R_ASSERT((is_geometry_layer(arguments) && is_volume_layer(arguments)) == false);
+
     rex::ApplicationDescription description;
     
     if(is_geometry_layer(arguments))
@@ -465,7 +555,7 @@ rex::CoreApplication* rex::create_application(const ApplicationArguments& argume
         description.window_height = parser.get_window_height();
         description.fullscreen = parser.fullscreen();
 
-        s_deferred_description = make_geometry_rendering_layer_description(parser);
+        s_geometry_description = make_geometry_rendering_layer_description(parser);
         s_geometry_layer = true;
     }
     else
@@ -478,7 +568,7 @@ rex::CoreApplication* rex::create_application(const ApplicationArguments& argume
         description.window_height = parser.get_window_height();
         description.fullscreen = parser.fullscreen();
 
-        s_distance_description = make_volume_rendering_layer_description(parser);
+        s_volume_description = make_volume_rendering_layer_description(parser);
         s_geometry_layer = false;
     }
 
@@ -490,9 +580,11 @@ namespace regina
     //-------------------------------------------------------------------------
     Application::Application(const rex::ApplicationDescription& description)
         : rex::win32::Application(description)
-        , m_deferred_layer(nullptr)
-        , m_distance_field_layer(nullptr)
+        , m_geometry_layer(nullptr)
+        , m_volume_layer(nullptr)
         , m_shotcut_layer(nullptr)
+        , m_application_time(0.0f)
+        , m_frame_counter(0)
     {
     }
 
@@ -504,32 +596,31 @@ namespace regina
     //-------------------------------------------------------------------------
     void Application::on_app_initialize()
     {
-        R_PROFILE_FUNCTION();
-
         const rex::CoreWindow* window = get_window();
 
         if (s_geometry_layer)
         {
-            m_distance_field_layer = push_back_layer(std::make_unique<VolumeRenderingLayer>(window, s_distance_description));
+            m_geometry_layer = push_back_layer(std::make_unique<GeometryRenderingLayer>(window, s_geometry_description));
         }
         else
         {
-            m_deferred_layer = push_back_layer(std::make_unique<GeometryRenderingLayer>(window, s_deferred_description));
+            m_volume_layer = push_back_layer(std::make_unique<VolumeRenderingLayer>(window, s_volume_description));
         }
 
         m_shotcut_layer = push_back_layer(std::make_unique<ShortcutLayer>());
     }
 
-    static int32 frame_counter = 0;
-
     //-------------------------------------------------------------------------
-    void Application::on_app_update(const rex::FrameInfo& /*info*/)
+    void Application::on_app_update(const rex::FrameInfo& info)
     {
-        ++frame_counter;
+        m_application_time += info.delta_time.to_seconds();
 
-        if (frame_counter > 500)
+        // Run for 8.3 seconds ( approx 500 frames at 60 FPS )
+        if (m_application_time > 8.3 || m_frame_counter >= 500)
         {
             quit();
         }
+
+        ++m_frame_counter;
     }
 }
