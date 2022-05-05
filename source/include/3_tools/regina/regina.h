@@ -21,8 +21,11 @@ namespace regina
         void on_app_update(const rex::FrameInfo& info) override;
 
     private:
-        rex::Layer* m_deferred_layer;
-        rex::Layer* m_distance_field_layer;
+        rex::Layer* m_geometry_layer;
+        rex::Layer* m_volume_layer;
         rex::Layer* m_shotcut_layer;
+
+        float m_application_time;
+        int32 m_frame_counter;
     };
 }

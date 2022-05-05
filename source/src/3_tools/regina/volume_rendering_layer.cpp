@@ -231,8 +231,6 @@ namespace regina
         //-------------------------------------------------------------------------
         rex::vec3 calculate_scene_size(const rex::AABB& voxelGridBounds)
         {
-            R_PROFILE_FUNCTION();
-
             rex::vec3 voxel_grid_size = voxelGridBounds.maximum - voxelGridBounds.minimum;
 
             float longest_edge = rex::max_coeff(voxel_grid_size);
@@ -247,8 +245,6 @@ namespace regina
         //-------------------------------------------------------------------------
         rex::DistanceEvaluationsPassOptions create_distance_evaluation_pass_options(const rex::StringID& passName, const rex::StringID& shaderName)
         {
-            R_PROFILE_FUNCTION();
-
             rex::DistanceEvaluationsPassOptions options;
 
             options.pass_name = passName;
@@ -283,8 +279,6 @@ namespace regina
         //-------------------------------------------------------------------------
         rex::DeferredLightPassOptions create_deferred_light_pass_options()
         {
-            R_PROFILE_FUNCTION();
-
             rex::DeferredLightPassOptions options;
 
             options.pass_name = distance_field_rendering::DEFERREDLIGHTPASS_NAME;
@@ -298,8 +292,6 @@ namespace regina
         //-------------------------------------------------------------------------
         rex::DeferredLightVisualizationPassOptions create_deferred_light_visualization_pass_options()
         {
-            R_PROFILE_FUNCTION();
-
             rex::DeferredLightVisualizationPassOptions options;
 
             options.pass_name = distance_field_rendering::DEFERREDLIGHTVISUALIZATIONPASS_NAME;
@@ -312,8 +304,6 @@ namespace regina
         //-------------------------------------------------------------------------
         rex::CompositePassOptions create_composite_pass_options(const rex::StringID& colorBuffer, rex::ApplyGammaCorrection applyGamma, rex::ApplyToneMapping applyTone)
         {
-            R_PROFILE_FUNCTION();
-
             rex::CompositePassOptions options;
 
             options.pass_name = distance_field_rendering::COMPOSITEPASS_NAME;
@@ -329,7 +319,7 @@ namespace regina
         //-------------------------------------------------------------------------
         regina::FocusSettings create_focus_settings(const rex::vec3& target, const float minFocusDistance, float maxFocusDistance, float focusDistance)
         {
-            R_PROFILE_FUNCTION();
+            
 
             regina::FocusSettings settings;
 
@@ -343,8 +333,6 @@ namespace regina
         //-------------------------------------------------------------------------
         OrbitSettings create_orbit_settings(const float rotationSpeed, const float minPitchAngle, const float maxPitchAngle)
         {
-            R_PROFILE_FUNCTION();
-
             OrbitSettings settings;
 
             settings.set_rotation_speed(rotationSpeed);
@@ -356,8 +344,6 @@ namespace regina
         //-------------------------------------------------------------------------
         MouseSettings create_mouse_settings(const float moveSensitivity, const float scrollSensitivity)
         {
-            R_PROFILE_FUNCTION();
-
             MouseSettings settings;
 
             settings.mouse_movement_sensitivity = moveSensitivity;
@@ -368,8 +354,6 @@ namespace regina
         //-------------------------------------------------------------------------
         OrbitCameraDescription create_orbit_camera_description()
         {
-            R_PROFILE_FUNCTION();
-
             OrbitCameraDescription description;
 
             // Camera
@@ -405,8 +389,6 @@ namespace regina
         //-------------------------------------------------------------------------
         void load_shader(const rex::StringID& name, const rex::StringID& queue, const rex::StringID& vertexCodePath, const rex::StringID& fragmentCodePath)
         {
-            R_PROFILE_FUNCTION();
-
             rex::ShaderProgramCreationInfo creation_info;
 
             creation_info.tag = name;
@@ -427,7 +409,7 @@ namespace regina
         //-------------------------------------------------------------------------
         void load_shaders()
         {
-            R_PROFILE_FUNCTION();
+            R_PROFILE_SCOPE("Load Shaders");
 
             load_shader("blit"_sid, "1000"_sid, "content\\shaders\\blit.vertex"_sid, "content\\shaders\\blit.fragment"_sid);
             load_shader("g_buffer_distance_field"_sid, "1000"_sid, "content\\shaders\\g_buffer_distance_field.vertex"_sid, "content\\shaders\\g_buffer_distance_field.fragment"_sid);
@@ -438,8 +420,6 @@ namespace regina
         //-------------------------------------------------------------------------
         void load_texture(const rex::StringID& name, const rex::StringID& path, const SRGB& srgb, const rex::Texture::Usage& usage)
         {
-            R_PROFILE_FUNCTION();
-
             auto texture = texture_importer::import(name, path, srgb, usage);
 
             if (texture == nullptr)
@@ -455,22 +435,16 @@ namespace regina
         //-------------------------------------------------------------------------
         void load_textures()
         {
-            R_PROFILE_FUNCTION();
-
             load_texture("color_ramp", "content\\textures\\color_ramp.png", SRGB::NO, rex::Texture::Usage::UNSPECIFIED);
         }
         //-------------------------------------------------------------------------
         void load_primitive_geometry()
         {
-            R_PROFILE_FUNCTION();
-
             rex::mesh_factory::load();
         }
         //-------------------------------------------------------------------------
         bool load_volume(const rex::StringID& name, const rex::StringID& volumeMetaPath, const rex::StringID& volumeDataPath)
         {
-            R_PROFILE_FUNCTION();
-
             Volume volume = volume_importer::import(name, volumeMetaPath, volumeDataPath);
 
             if(volume.get_volume_data().get_size() == 0)
@@ -487,10 +461,8 @@ namespace regina
             return true;
         }
         //-------------------------------------------------------------------------
-        bool load_volume(const rex::StringID& sourceLocation, VolumeType volumeType, bool lattified)
+        bool load_volume(const rex::StringID& sourceLocation, VolumeType volumeType)
         {
-            R_PROFILE_FUNCTION();
-
             rex::StringID source_location = sourceLocation.is_none() ? rex::create_sid("content\\volumes\\") : sourceLocation;
 
             std::stringstream volume_stream;
@@ -498,10 +470,6 @@ namespace regina
             volume_stream << source_location.to_string();
             volume_stream << "\\";
             volume_stream << get_volume_name_map()[volumeType];
-            if (lattified)
-            {
-                volume_stream << "_lattice";
-            }
             
             std::stringstream volume_meta_path;
             volume_meta_path << volume_stream.str();
@@ -519,13 +487,16 @@ namespace regina
         //-------------------------------------------------------------------------
         std::vector<VolumeType> load_volumes()
         {
-            R_PROFILE_FUNCTION();
+            R_PROFILE_SCOPE("Load Volumes")
 
             std::vector<VolumeType> loaded_volume_types;
 
             if (!LAYER_DESCRIPTION.source_content_location.is_none())
             {
-                if (load_volume(LAYER_DESCRIPTION.source_content_location, (VolumeType)LAYER_DESCRIPTION.volume_type, LAYER_DESCRIPTION.use_lattice)) { loaded_volume_types.push_back((VolumeType)LAYER_DESCRIPTION.volume_type); }
+                if (load_volume(LAYER_DESCRIPTION.source_content_location, (VolumeType)LAYER_DESCRIPTION.volume_type)) 
+                {
+                    loaded_volume_types.push_back((VolumeType)LAYER_DESCRIPTION.volume_type); 
+                }
             }
 
             return loaded_volume_types;
@@ -539,21 +510,17 @@ namespace regina
         , m_window(window)
         , m_active_renderer(nullptr)
     {
-        R_PROFILE_FUNCTION();
-
         distance_field_rendering::LAYER_DESCRIPTION = description;
     }
     //-------------------------------------------------------------------------
     VolumeRenderingLayer::~VolumeRenderingLayer()
     {
-        R_PROFILE_FUNCTION();
+        
     }
 
     //-------------------------------------------------------------------------
     void VolumeRenderingLayer::on_attach()
     {
-        R_PROFILE_FUNCTION();
-
         distance_field_rendering::load_textures();
         distance_field_rendering::load_shaders();
         distance_field_rendering::load_primitive_geometry();
@@ -566,8 +533,6 @@ namespace regina
     //-------------------------------------------------------------------------
     void VolumeRenderingLayer::on_detach()
     {
-        R_PROFILE_FUNCTION();
-
         rex::mesh_factory::clear(); 
         rex::shader_library::clear();
         rex::texture_library::clear();
@@ -592,8 +557,6 @@ namespace regina
     //-------------------------------------------------------------------------
     void VolumeRenderingLayer::on_update(const rex::FrameInfo& info)
     {
-        R_PROFILE_FUNCTION();
-
         if (distance_field_rendering::LAYER_DESCRIPTION.animate)
         {
             animate_camera(info);
@@ -615,8 +578,6 @@ namespace regina
     //-------------------------------------------------------------------------
     void VolumeRenderingLayer::on_event(rex::events::Event& event)
     {
-        R_PROFILE_FUNCTION();
-
         m_camera_controller.on_event(event);
 
         rex::events::EventDispatcher dispatcher(event);
@@ -627,8 +588,6 @@ namespace regina
     //-------------------------------------------------------------------------
     bool VolumeRenderingLayer::on_key_pressed(const rex::events::KeyPressed& keyPressEvent)
     {
-        R_PROFILE_FUNCTION();
-
         switch (keyPressEvent.get_key())
         {
             case R_KEY_F3: toggle_camera_animation(); return true;
@@ -657,8 +616,6 @@ namespace regina
     //-------------------------------------------------------------------------
     void VolumeRenderingLayer::animate_camera(const rex::FrameInfo& info)
     {
-        R_PROFILE_FUNCTION();
-
         float focus_distance_speed = 0.5f;
         float current_focus_distance = m_camera_controller.get_focus_distance();
 
@@ -672,16 +629,12 @@ namespace regina
     //-------------------------------------------------------------------------
     void VolumeRenderingLayer::toggle_camera_animation()
     {
-        R_PROFILE_FUNCTION();
-
         distance_field_rendering::LAYER_DESCRIPTION.animate = !distance_field_rendering::LAYER_DESCRIPTION.animate;
     }
 
     //-------------------------------------------------------------------------
     void VolumeRenderingLayer::decrement_sdf_scale()
     {
-        R_PROFILE_FUNCTION();
-
         if (m_active_renderer == nullptr)
         {
             return;
@@ -723,8 +676,6 @@ namespace regina
     //-------------------------------------------------------------------------
     void VolumeRenderingLayer::decrement_sdf_offset()
     {
-        R_PROFILE_FUNCTION();
-
         if (m_active_renderer == nullptr)
         {
             return;
@@ -754,8 +705,6 @@ namespace regina
     //-------------------------------------------------------------------------
     void VolumeRenderingLayer::increment_sdf_scale()
     {
-        R_PROFILE_FUNCTION();
-
         if (m_active_renderer == nullptr)
         {
             return;
@@ -797,8 +746,6 @@ namespace regina
     //-------------------------------------------------------------------------
     void VolumeRenderingLayer::increment_sdf_offset()
     {
-        R_PROFILE_FUNCTION();
-
         if (m_active_renderer == nullptr)
         {
             return;
@@ -828,24 +775,18 @@ namespace regina
     //-------------------------------------------------------------------------
     void VolumeRenderingLayer::switch_to_heatmap()
     {
-        R_PROFILE_FUNCTION();
-
         m_active_renderer = m_heatmap_renderer.get();
     }
 
     //-------------------------------------------------------------------------
     void VolumeRenderingLayer::switch_to_sdf()
     {
-        R_PROFILE_FUNCTION();
-
         m_active_renderer = m_sdf_renderer.get();
     }
 
     //-------------------------------------------------------------------------
     void VolumeRenderingLayer::setup_scene()
     {
-        R_PROFILE_FUNCTION();
-
         int32 viewport_width = m_window->get_width();
         int32 viewport_height = m_window->get_height();
 
@@ -856,8 +797,6 @@ namespace regina
     //-------------------------------------------------------------------------
     void VolumeRenderingLayer::setup_camera()
     {
-        R_PROFILE_FUNCTION();
-
         float viewport_width = (float)m_window->get_width();
         float viewport_height = (float)m_window->get_height();
 
@@ -881,8 +820,6 @@ namespace regina
     //-------------------------------------------------------------------------
     void VolumeRenderingLayer::setup_scene_renderer()
     {
-        R_PROFILE_FUNCTION();
-               
         setup_sdf_renderer();
         if (distance_field_rendering::LAYER_DESCRIPTION.use_heatmap)
         {
@@ -895,8 +832,6 @@ namespace regina
     //-------------------------------------------------------------------------
     void VolumeRenderingLayer::setup_sdf_renderer()
     {
-        R_PROFILE_FUNCTION();
-
         rex::SceneRenderPasses sdf_renderpasses;
 
         auto distance_eval = create_distance_evaluation_pass(distance_field_rendering::create_distance_evaluation_pass_options(distance_field_rendering::DISTANCEEVALUATIONSPASS_NAME, "g_buffer_distance_field"_sid));
@@ -915,8 +850,6 @@ namespace regina
     //-------------------------------------------------------------------------
     void VolumeRenderingLayer::setup_heatmap_renderer()
     {
-        R_PROFILE_FUNCTION();
-
         rex::SceneRenderPasses heatmap_renderpasses;
 
         auto heatmap = create_heatmap_distance_evaluation_pass(distance_field_rendering::create_distance_evaluation_pass_options(distance_field_rendering::HEATMAPDISTANCEEVALUATIONSPASS_NAME, "heatmap"_sid));
@@ -931,8 +864,6 @@ namespace regina
     //-------------------------------------------------------------------------
     void VolumeRenderingLayer::setup_lights()
     {
-        R_PROFILE_FUNCTION();
-
         int32 nr_lights = std::clamp(distance_field_rendering::LAYER_DESCRIPTION.nr_lights, distance_field_rendering::MIN_NR_LIGHTS, distance_field_rendering::MAX_NR_LIGHTS);
 
         srand(13); // seed random number generator
@@ -960,38 +891,28 @@ namespace regina
     //-------------------------------------------------------------------------
     std::unique_ptr<rex::SceneRenderPass> VolumeRenderingLayer::create_distance_evaluation_pass(const rex::DistanceEvaluationsPassOptions& options) const
     {
-        R_PROFILE_FUNCTION();
-
         return std::make_unique<rex::DistanceEvaluationPass>(options, rex::CreateFrameBuffer::YES);
     }
 
     //-------------------------------------------------------------------------
     std::unique_ptr<rex::SceneRenderPass> VolumeRenderingLayer::create_heatmap_distance_evaluation_pass(const rex::DistanceEvaluationsPassOptions& options) const
     {
-        R_PROFILE_FUNCTION();
-
         return std::make_unique<rex::HeatMapDistanceEvaluationPass>("color_ramp"_sid, options, rex::CreateFrameBuffer::YES);
     }
 
     //-------------------------------------------------------------------------
     std::unique_ptr<rex::SceneRenderPass> VolumeRenderingLayer::create_deferred_light_pass(const rex::DeferredLightPassOptions& options) const
     {
-        R_PROFILE_FUNCTION();
-
         return std::make_unique<rex::DeferredLightPass>(options, rex::CreateFrameBuffer::YES);
     }
     //-------------------------------------------------------------------------
     std::unique_ptr<rex::SceneRenderPass> VolumeRenderingLayer::create_deferred_light_visualization_pass(const rex::DeferredLightVisualizationPassOptions& options) const
     {
-        R_PROFILE_FUNCTION();
-
         return std::make_unique<rex::DeferredLightVisualizationPass>(options, rex::CreateFrameBuffer::YES);
     }
     //-------------------------------------------------------------------------
     std::unique_ptr<rex::SceneRenderPass> VolumeRenderingLayer::create_composite_pass(const rex::CompositePassOptions& options) const
     {
-        R_PROFILE_FUNCTION();
-
         return std::make_unique<rex::CompositePass>(options, rex::CreateFrameBuffer::NO);
     }
 } // namespace regina

@@ -77,7 +77,7 @@ namespace rex
             //-------------------------------------------------------------------------
             void Context::set_vertical_update(const SwapInterval& interval)
             {
-                R_PROFILE_FUNCTION();
+                
 
                 int32 swap_interval = gsl::narrow<int32>(interval);
                 swap_interval = 0;
@@ -93,7 +93,7 @@ namespace rex
             //-------------------------------------------------------------------------
             void Context::make_current()
             {
-                R_PROFILE_FUNCTION();
+                
 
                 if (SDL_GL_MakeCurrent(m_sdl_window, m_sdl_context) != 0)
                 {
@@ -104,7 +104,7 @@ namespace rex
             //-------------------------------------------------------------------------
             void Context::present()
             {
-                R_PROFILE_FUNCTION();
+                
 
                 SDL_GL_SwapWindow(m_sdl_window);
             }

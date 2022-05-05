@@ -87,18 +87,28 @@ namespace regina
         {
             auto it = g_volumes.find(volumeName);
 
-            return it != std::cend(g_volumes) 
-                ? it->second 
-                : get_empty_volume();
+            if(it != std::cend(g_volumes))
+            {
+                return it->second;
+            }
+                
+            R_WARN("Volume with name: {0}, was not found", volumeName.to_string());
+
+            return get_empty_volume();
         }
         //-------------------------------------------------------------------------
         rex::ref_ptr<rex::Texture>& get_volume_data(const rex::StringID& volumeName)
         {
             auto it = g_textures.find(volumeName);
 
-            return it != std::cend(g_textures) 
-                ? it->second 
-                : get_empty_volume_data();
+            if (it != std::cend(g_textures))
+            {
+                return it->second;
+            }
+
+            R_WARN("Volume Data with name: {0}, was not found", volumeName.to_string());
+                
+            return get_empty_volume_data();
         }
 
         //-------------------------------------------------------------------------
