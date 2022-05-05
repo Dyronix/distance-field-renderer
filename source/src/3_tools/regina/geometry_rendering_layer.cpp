@@ -12,7 +12,6 @@
 #include "ecs/entity.h"
 #include "ecs/scene.h"
 
-#include "renderpasses/blur_pass.h"
 #include "renderpasses/clear_pass.h"
 #include "renderpasses/composite_pass.h"
 #include "renderpasses/deferred_light_visualization_pass.h"
@@ -421,6 +420,7 @@ namespace regina
 
         geometry_rendering::load_shaders();
         geometry_rendering::load_primitive_geometry();
+        geometry_rendering::load_custom_geometry();
 
         setup_scene();
         setup_camera();

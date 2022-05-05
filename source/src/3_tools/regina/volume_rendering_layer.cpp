@@ -557,6 +557,7 @@ namespace regina
         distance_field_rendering::load_textures();
         distance_field_rendering::load_shaders();
         distance_field_rendering::load_primitive_geometry();
+        distance_field_rendering::load_volumes();
 
         setup_scene();
         setup_camera();

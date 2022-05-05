@@ -16,7 +16,6 @@ namespace rex
     class CoreWindow;
 
     struct FrameInfo;
-    struct PreDepthPassOptions;
     struct DeferredGeometryPassOptions;
     struct DeferredLightPassOptions;
     struct DeferredLightVisualizationPassOptions;
