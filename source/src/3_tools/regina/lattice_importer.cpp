@@ -14,7 +14,7 @@ namespace regina
         //-------------------------------------------------------------------------
         Lattice import(const rex::StringID& name, const rex::StringID& latticeMetaPath, const rex::StringID& latticeDataPath)
         {
-            R_INFO("[VOLUME] Loading Lattice: {0}", name.to_string());
+            R_INFO("[LATTICE] Loading Lattice: {0}", name.to_string());
 
             rex::FileMemory lattice_meta_input = rex::read_from_disk(latticeMetaPath.to_string(), rex::ReadBinary::YES, rex::NullTerminate::YES);
             rex::FileMemory lattice_data_input = rex::read_from_disk(latticeDataPath.to_string(), rex::ReadBinary::YES, rex::NullTerminate::YES);
