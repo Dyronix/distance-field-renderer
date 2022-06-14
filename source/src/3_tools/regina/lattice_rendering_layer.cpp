@@ -10,13 +10,12 @@
 #include "ecs/entity.h"
 #include "ecs/scene.h"
 
-#include "renderpasses/blur_pass.h"
 #include "renderpasses/clear_pass.h"
 #include "renderpasses/composite_pass.h"
 #include "renderpasses/deferred_light_pass.h"
 #include "renderpasses/deferred_light_visualization_pass.h"
 #include "renderpasses/lattice_distance_evaluation_pass.h"
-#include "renderpasses/pre_depth_pass.h"
+#include "renderpasses/heatmap_distance_evaluation_pass.h"
 
 #include "resources/frame_buffer_pool.h"
 #include "resources/material.h"
@@ -33,9 +32,9 @@
 #include "volume_importer.h"
 #include "volume_library.h"
 
-#include "texture_importer.h"
-
 #include "mesh_factory.h"
+
+#include "texture_importer.h"
 
 #include "scene_renderer.h"
 
@@ -74,14 +73,14 @@ namespace regina
             SPHERE,
             TORUS,
             DRAGON,
-            TIGER,
+            TIGER
         };
 
+        using VolumeTypes = std::vector<VolumeType>;
         using VolumeNameMap = std::unordered_map<VolumeType, rex::StringID>;
         using VolumeLattice = rex::YesNoEnum;
 
-        VolumeType VOLUME_TYPE = VolumeType::TIGER;
-        VolumeLattice VOLUME_LATTICE = VolumeLattice::YES;
+        LatticeRenderingLayerDescription LAYER_DESCRIPTION;
 
         //-------------------------------------------------------------------------
         VolumeNameMap& get_volume_name_map()
@@ -134,15 +133,26 @@ namespace regina
 
             return MAP;
         }
+        //-------------------------------------------------------------------------
+        VolumeType get_active_volume_type()
+        {
+            return (VolumeType)LAYER_DESCRIPTION.volume_type;
+        }
 
         // Render pass settings
+        int32 MIN_NR_LIGHTS = 1;
+        int32 MAX_NR_LIGHTS = 32;
+
         const rex::StringID DISTANCEEVALUATIONSPASS_NAME = "DistanceEvaluationsPass"_sid;
+        const rex::StringID HEATMAPDISTANCEEVALUATIONSPASS_NAME = "HeatMapDistanceEvaluationsPass"_sid;
+        const rex::StringID DEFERREDLIGHTPASS_NAME = "DeferredLightPass"_sid;
+        const rex::StringID DEFERREDLIGHTVISUALIZATIONPASS_NAME = "DeferredLightVisualizationPass"_sid;
         const rex::StringID COMPOSITEPASS_NAME = "CompositePass"_sid;
 
         namespace camera_settings
         {
             float NEAR_PLANE = 0.01f;
-            float FAR_PLANE = 10.0f;
+            float FAR_PLANE = 1000.0f;
 
             float FIELD_OF_VIEW = 95.142f;
 
@@ -155,16 +165,16 @@ namespace regina
             bool CAN_ZOOM = true;
             bool IS_ENABLED = true;
 
-            float MIN_FOCUS_DISTANCE = 1.0f;
+            float MIN_FOCUS_DISTANCE = 0.02f;
             float MAX_FOCUS_DISTANCE = 100.0f;
-            float FOCUS_DISTANCE = 2.5f;
+            float FOCUS_DISTANCE = 1.0;
 
             float ROTATION_SPEED = 1.0f;
             float MIN_PITCH_ANGLE = -50.0f;
             float MAX_PITCH_ANGLE = 50.0f;
 
             float MOVE_SENSITIVITY = 2.0f;
-            float SCROLL_SENSITIVITY = 5.0f;
+            float SCROLL_SENSITIVITY = 10.0f;
         } // namespace camera_settings
 
         namespace renderpass_settings
@@ -195,25 +205,25 @@ namespace regina
         }
 
         //-------------------------------------------------------------------------
-        rex::DistanceEvaluationsPassOptions create_distance_evaluation_pass_options()
+        rex::DistanceEvaluationsPassOptions create_distance_evaluation_pass_options(const rex::StringID& passName, const rex::StringID& shaderName)
         {
             rex::DistanceEvaluationsPassOptions options;
 
-            options.pass_name = lattice_rendering::DISTANCEEVALUATIONSPASS_NAME;
-            options.shader_name = "lattice"_sid;
+            options.pass_name = passName;
+            options.shader_name = shaderName;
 
-            options.sphere_tracer_options.max_iterations = renderpass_settings::MAX_SPHERE_TRACER_ITERATIONS;
-            options.sphere_tracer_options.max_march_distance = renderpass_settings::MAX_MARCH_DISTANCE;
-            options.sphere_tracer_options.min_surface_distance = renderpass_settings::MIN_SURFACE_DISTANCE;
+            options.sphere_tracer_options.max_iterations = LAYER_DESCRIPTION.max_iterations;
+            options.sphere_tracer_options.max_march_distance = LAYER_DESCRIPTION.max_marching_distance;
+            options.sphere_tracer_options.min_surface_distance = LAYER_DESCRIPTION.min_marching_distance; 
 
-            const Lattice& lattice = lattice_library::get_lattice(get_volume_name_map()[VOLUME_TYPE]);
+            const Lattice& lattice = lattice_library::get_lattice(get_volume_name_map()[get_active_volume_type()]);
             const LatticeMeta& lattice_meta = lattice.get_lattice_meta();
 
-            const float scene_scale = get_volume_scale_map()[VOLUME_TYPE];
-            const float scene_offset = get_volume_offset_map()[VOLUME_TYPE];
+            const float scene_scale = get_volume_scale_map()[get_active_volume_type()];
+            const float scene_offset = get_volume_offset_map()[get_active_volume_type()];
 
             options.sdf_scene_options.scene_scale = scene_scale;
-            options.sdf_scene_options.scene_offset = scene_offset - renderpass_settings::MIN_SURFACE_DISTANCE;
+            options.sdf_scene_options.scene_offset = scene_offset - LAYER_DESCRIPTION.min_marching_distance;
             options.sdf_scene_options.scene_size = calculate_scene_size(lattice) * 0.5f;
             options.sdf_scene_options.scene_center = rex::vec3(0.0f, 0.0f, 0.0f);
 
@@ -222,7 +232,7 @@ namespace regina
             options.sdf_scene_options.scene_voxel_grid_size = lattice_meta.voxel_grid_size;
             options.sdf_scene_options.scene_voxel_grid_cell_size = lattice_meta.voxel_grid_cell_size;
 
-            options.sdf_scene_options.scene_data = volume_library::get_volume_data(get_volume_name_map()[VOLUME_TYPE]);
+            options.sdf_scene_options.scene_data = volume_library::get_volume_data(get_volume_name_map()[get_active_volume_type()]);
 
             return options;
         }
@@ -230,7 +240,7 @@ namespace regina
         //-------------------------------------------------------------------------
         LatticeOptions create_lattice_options()
         {
-            const Lattice& lattice = lattice_library::get_lattice(get_volume_name_map()[VOLUME_TYPE]);
+            const Lattice& lattice = lattice_library::get_lattice(get_volume_name_map()[get_active_volume_type()]);
             const LatticeMeta& lattice_meta = lattice.get_lattice_meta();
 
             LatticeOptions options;
@@ -240,21 +250,45 @@ namespace regina
             options.lattice_grid_cell_size = lattice_meta.lattice_grid_cell_size;
             options.lattice_grid_min_bounds = lattice_meta.voxel_grid_bounds.minimum;
             options.lattice_grid_max_bounds = lattice_meta.voxel_grid_bounds.maximum;
-            options.lattice_data_name = get_volume_name_map()[VOLUME_TYPE];
+            options.lattice_data_name = get_volume_name_map()[get_active_volume_type()];
 
             return options;
         }
-
         //-------------------------------------------------------------------------
-        rex::CompositePassOptions create_composite_pass_options()
+        rex::DeferredLightPassOptions create_deferred_light_pass_options()
+        {
+            rex::DeferredLightPassOptions options;
+
+            options.pass_name = lattice_rendering::DEFERREDLIGHTPASS_NAME;
+            options.shader_name = "deferred_shading_lighting"_sid;
+            options.g_position_buffer = {lattice_rendering::DISTANCEEVALUATIONSPASS_NAME, 0};
+            options.g_normal_buffer = {lattice_rendering::DISTANCEEVALUATIONSPASS_NAME, 1};
+            options.g_albedo_spec_buffer = {lattice_rendering::DISTANCEEVALUATIONSPASS_NAME, 2};
+
+            return options;
+        }
+        //-------------------------------------------------------------------------
+        rex::DeferredLightVisualizationPassOptions create_deferred_light_visualization_pass_options()
+        {
+            rex::DeferredLightVisualizationPassOptions options;
+
+            options.pass_name = lattice_rendering::DEFERREDLIGHTVISUALIZATIONPASS_NAME;
+            options.color_pass_name = lattice_rendering::DEFERREDLIGHTPASS_NAME;
+            options.depth_pass_name = lattice_rendering::DISTANCEEVALUATIONSPASS_NAME;
+            options.shader_name = "deferred_shading_lighting_visualization"_sid;
+
+            return options;
+        }
+        //-------------------------------------------------------------------------
+        rex::CompositePassOptions create_composite_pass_options(const rex::StringID& colorBuffer, rex::ApplyGammaCorrection applyGamma, rex::ApplyToneMapping applyTone)
         {
             rex::CompositePassOptions options;
 
             options.pass_name = lattice_rendering::COMPOSITEPASS_NAME;
             options.shader_name = "blit"_sid;
-            options.color_buffer = lattice_rendering::DISTANCEEVALUATIONSPASS_NAME;
-            options.apply_gamma_correction = rex::ApplyGammaCorrection::NO;
-            options.apply_tone_mapping = rex::ApplyToneMapping::NO;
+            options.color_buffer = colorBuffer;
+            options.apply_gamma_correction = applyGamma;
+            options.apply_tone_mapping = applyTone;
 
             return options;
         }
@@ -330,8 +364,6 @@ namespace regina
         //-------------------------------------------------------------------------
         void load_shader(const rex::StringID& name, const rex::StringID& queue, const rex::StringID& vertexCodePath, const rex::StringID& fragmentCodePath)
         {
-            
-
             rex::ShaderProgramCreationInfo creation_info;
 
             creation_info.tag = name;
@@ -352,16 +384,17 @@ namespace regina
         //-------------------------------------------------------------------------
         void load_shaders()
         {
-            
+            R_PROFILE_SCOPE("Load Shaders");
 
             load_shader("blit"_sid, "1000"_sid, "content\\shaders\\blit.vertex"_sid, "content\\shaders\\blit.fragment"_sid);
             load_shader("lattice"_sid, "1000"_sid, "content\\shaders\\lattice.vertex"_sid, "content\\shaders\\lattice.fragment"_sid);
+            load_shader("deferred_shading_lighting"_sid, "1000"_sid, "content\\shaders\\deferred_shading_lighting.vertex"_sid, "content\\shaders\\deferred_shading_lighting.fragment"_sid);
+            load_shader("deferred_shading_lighting_visualization"_sid, "1000"_sid, "content\\shaders\\deferred_shading_lighting_visualization.vertex"_sid, "content\\shaders\\deferred_shading_lighting_visualization.fragment"_sid);
+            load_shader("heatmap"_sid, "1000"_sid, "content\\shaders\\heatmap.vertex"_sid, "content\\shaders\\heatmap.fragment"_sid);
         }
         //-------------------------------------------------------------------------
         void load_texture(const rex::StringID& name, const rex::StringID& path, const SRGB& srgb, const rex::Texture::Usage& usage)
         {
-            
-
             auto texture = texture_importer::import(name, path, srgb, usage);
 
             if (texture == nullptr)
@@ -375,72 +408,169 @@ namespace regina
             R_INFO("[TEXTURE] Import completed: {0}", name.to_string());
         }
         //-------------------------------------------------------------------------
-        void load_lattice(const rex::StringID& name, const rex::StringID& latticeMetaPath, const rex::StringID& latticeDataPath)
+        void load_textures()
         {
-            
-
+            load_texture("color_ramp", "content\\textures\\color_ramp.png", SRGB::NO, rex::Texture::Usage::UNSPECIFIED);
+        }
+        //-------------------------------------------------------------------------
+        bool load_lattice(const rex::StringID& name, const rex::StringID& latticeMetaPath, const rex::StringID& latticeDataPath)
+        {
             Lattice lattice = lattice_importer::import(name, latticeMetaPath, latticeDataPath);
 
             if (lattice.get_lattice_data().get_size() == 0)
             {
                 R_ERROR("[LATTICE] Lattice with name: {0}, was not imported correctly", lattice.get_name().to_string());
-                return;
+                R_ERROR("[LATTICE] Import failed: {0}", lattice.get_name().to_string());
+                return false;
             }
 
             lattice_library::add(std::move(lattice));
 
             R_INFO("[LATTICE] Import completed: {0}", name.to_string());
+            
+            return true;
         }
         //-------------------------------------------------------------------------
-        void load_lattices()
+        bool load_lattice(const rex::StringID& sourceLocation, VolumeType volumeType)
         {
-            
-            
+            rex::StringID source_location = sourceLocation.is_none() ? rex::create_sid("content\\lattices\\") : sourceLocation;
+
+            std::stringstream lattice_stream;
+
+            lattice_stream << source_location.to_string();
+            lattice_stream << "\\";
+            lattice_stream << get_volume_name_map()[volumeType];
+
+            std::stringstream lattice_meta_path;
+            lattice_meta_path << lattice_stream.str();
+            lattice_meta_path << ".lattice.meta";
+
+            std::stringstream lattice_path;
+            lattice_path << lattice_stream.str();
+            lattice_path << ".lattice";
+
+            R_INFO("[VOLUME] Volume Meta Path: {0}", lattice_meta_path.str());
+            R_INFO("[VOLUME] Volume Path: {0}", lattice_path.str());
+
+            return load_lattice(get_volume_name_map()[volumeType], rex::create_sid(lattice_meta_path.str()), rex::create_sid(lattice_path.str()));
+        }
+        //-------------------------------------------------------------------------
+        std::vector<VolumeType> load_lattices()
+        {          
             load_lattice(get_volume_name_map()[VolumeType::BUNNY], "content\\lattices\\bunny.lattice.meta"_sid, "content\\lattices\\bunny.lattice"_sid);
             load_lattice(get_volume_name_map()[VolumeType::TIGER], "content\\lattices\\tiger.lattice.meta"_sid, "content\\lattices\\tiger.lattice"_sid);
             load_lattice(get_volume_name_map()[VolumeType::TORUS], "content\\lattices\\torus.lattice.meta"_sid, "content\\lattices\\torus.lattice"_sid);
+            load_lattice(get_volume_name_map()[VolumeType::DRAGON], "content\\lattices\\dragon.lattice.meta"_sid, "content\\lattices\\dragon.lattice"_sid);
+            load_lattice(get_volume_name_map()[VolumeType::MONKEY], "content\\lattices\\monkey.lattice.meta"_sid, "content\\lattices\\monkey.lattice"_sid);
+
+            return {VolumeType::BUNNY, VolumeType::TIGER, VolumeType::TORUS, VolumeType::DRAGON, VolumeType::MONKEY};
         }
+        //-------------------------------------------------------------------------
+        std::vector<VolumeType> load_lattices(const LatticeRenderingLayerDescription& description)
+        {
+            R_PROFILE_SCOPE("Load Lattices")
+
+            std::vector<VolumeType> loaded_lattice_types;
+
+            if (!description.lattice_source_content_location.is_none())
+            {
+                if (load_lattice(description.lattice_source_content_location, (VolumeType)description.volume_type))
+                {
+                    loaded_lattice_types.push_back((VolumeType)description.volume_type);
+                }
+            }
+
+            return loaded_lattice_types;
+        }
+        
         //-------------------------------------------------------------------------
         void load_primitive_geometry()
         {
-            
-
             rex::mesh_factory::load();
         }
+        
         //-------------------------------------------------------------------------
-        void load_volume(const rex::StringID& name, const rex::StringID& volumeMetaPath, const rex::StringID& volumeDataPath)
-        {
-            
-
+        bool load_volume(const rex::StringID& name, const rex::StringID& volumeMetaPath, const rex::StringID& volumeDataPath)
+        {           
             Volume volume = volume_importer::import(name, volumeMetaPath, volumeDataPath);
 
             if (volume.get_volume_data().get_size() == 0)
             {
                 R_ERROR("[VOLUME] Volume with name: {0}, was not imported correctly", volume.get_name().to_string());
-                return;
+                R_ERROR("[VOLUME] Import failed: {0}", volume.get_name().to_string());
+                return false;
             }
 
             volume_library::add(std::move(volume));
 
             R_INFO("[VOLUME] Import completed: {0}", name.to_string());
+
+            return true;
         }
         //-------------------------------------------------------------------------
-        void load_volumes()
+        bool load_volume(const rex::StringID& sourceLocation, VolumeType volumeType)
         {
-            
+            rex::StringID source_location = sourceLocation.is_none() ? rex::create_sid("content\\volumes\\") : sourceLocation;
+
+            std::stringstream volume_stream;
+
+            volume_stream << source_location.to_string();
+            volume_stream << "\\";
+            volume_stream << get_volume_name_map()[volumeType];
+
+            std::stringstream volume_meta_path;
+            volume_meta_path << volume_stream.str();
+            volume_meta_path << ".sdf.meta";
+
+            std::stringstream volume_path;
+            volume_path << volume_stream.str();
+            volume_path << ".sdf";
+
+            R_INFO("[VOLUME] Volume Meta Path: {0}", volume_meta_path.str());
+            R_INFO("[VOLUME] Volume Path: {0}", volume_path.str());
+
+            return load_volume(get_volume_name_map()[volumeType], rex::create_sid(volume_meta_path.str()), rex::create_sid(volume_path.str()));
+        }
+        //-------------------------------------------------------------------------
+        std::vector<VolumeType> load_volumes()
+        {
+            R_PROFILE_SCOPE("Load Volumes")
 
             load_volume(get_volume_name_map()[VolumeType::BUNNY], "content\\volumes\\default\\bunny.sdf.meta"_sid, "content\\volumes\\default\\bunny.sdf"_sid);
             load_volume(get_volume_name_map()[VolumeType::TIGER], "content\\volumes\\default\\tiger.sdf.meta"_sid, "content\\volumes\\default\\tiger.sdf"_sid);
             load_volume(get_volume_name_map()[VolumeType::TORUS], "content\\volumes\\default\\torus.sdf.meta"_sid, "content\\volumes\\default\\torus.sdf"_sid);
+            load_volume(get_volume_name_map()[VolumeType::DRAGON], "content\\volumes\\default\\dragon.sdf.meta"_sid, "content\\volumes\\default\\dragon.sdf"_sid);
+            load_volume(get_volume_name_map()[VolumeType::MONKEY], "content\\volumes\\default\\monkey.sdf.meta"_sid, "content\\volumes\\default\\monkey.sdf"_sid);
+
+            return {VolumeType::BUNNY, VolumeType::TIGER, VolumeType::TORUS, VolumeType::DRAGON, VolumeType::MONKEY};
+        }
+        //-------------------------------------------------------------------------
+        std::vector<VolumeType> load_volumes(const LatticeRenderingLayerDescription& description)
+        {
+            R_PROFILE_SCOPE("Load Volumes")
+
+            std::vector<VolumeType> loaded_volume_types;
+
+            if (!description.volume_source_content_location.is_none())
+            {
+                if (load_volume(description.volume_source_content_location, (VolumeType)description.volume_type))
+                {
+                    loaded_volume_types.push_back((VolumeType)description.volume_type);
+                }
+            }
+
+            return loaded_volume_types;
         }
     } // namespace lattice_rendering
 
     //-------------------------------------------------------------------------
-    LatticeRenderingLayer::LatticeRenderingLayer(const rex::CoreWindow* window)
+    LatticeRenderingLayer::LatticeRenderingLayer(const rex::CoreWindow* window, const LatticeRenderingLayerDescription& description)
         : Layer("regina_layer"_sid, -1, EnableImGUIRendering::NO)
         , m_camera_controller(rex::win32::Input::instance(), R_MOUSE_BUTTON_LEFT, lattice_rendering::create_orbit_camera_description())
         , m_window(window)
+        , m_active_renderer(nullptr)
     {
+        lattice_rendering::LAYER_DESCRIPTION = description;
     }
     //-------------------------------------------------------------------------
     LatticeRenderingLayer::~LatticeRenderingLayer()
@@ -450,10 +580,9 @@ namespace regina
     //-------------------------------------------------------------------------
     void LatticeRenderingLayer::on_attach()
     {
-        
-
-        lattice_rendering::load_volumes();
-        lattice_rendering::load_lattices();
+        lattice_rendering::load_textures();
+        lattice_rendering::load_volumes(lattice_rendering::LAYER_DESCRIPTION);
+        lattice_rendering::load_lattices(lattice_rendering::LAYER_DESCRIPTION);
         lattice_rendering::load_shaders();
         lattice_rendering::load_primitive_geometry();
 
@@ -464,19 +593,25 @@ namespace regina
     //-------------------------------------------------------------------------
     void LatticeRenderingLayer::on_detach()
     {
-        
-
         rex::mesh_factory::clear();
         rex::shader_library::clear();
 
         lattice_library::clear();
         volume_library::clear();
 
+        rex::texture_library::clear();
+
         rex::FrameBufferPool::instance()->clear();
         rex::UniformBufferSet::instance()->clear();
 
-        m_scene_renderer->destroy();
-        m_scene_renderer.reset();
+        m_sdf_renderer->destroy();
+        m_sdf_renderer.reset();
+
+        if (m_heatmap_renderer)
+        {
+            m_heatmap_renderer->destroy();
+            m_heatmap_renderer.reset();
+        }
 
         m_scene.reset();
     }
@@ -484,23 +619,27 @@ namespace regina
     //-------------------------------------------------------------------------
     void LatticeRenderingLayer::on_update(const rex::FrameInfo& info)
     {
-        
+        if (lattice_rendering::LAYER_DESCRIPTION.animate)
+        {
+            animate_camera(info);
+        }        
 
         m_camera_controller.on_update(info);
 
         m_scene->update();
 
-        m_scene_renderer->set_viewport_width(m_window->get_width());
-        m_scene_renderer->set_viewport_height(m_window->get_height());
-        m_scene_renderer->begin_scene();
-        m_scene_renderer->end_scene();
+        if (m_active_renderer != nullptr)
+        {
+            m_active_renderer->set_viewport_width(m_window->get_width());
+            m_active_renderer->set_viewport_height(m_window->get_height());
+            m_active_renderer->begin_scene();
+            m_active_renderer->end_scene();
+        }
     }
 
     //-------------------------------------------------------------------------
     void LatticeRenderingLayer::on_event(rex::events::Event& event)
-    {
-        
-
+    {       
         m_camera_controller.on_event(event);
 
         rex::events::EventDispatcher dispatcher(event);
@@ -509,16 +648,207 @@ namespace regina
     }
 
     //-------------------------------------------------------------------------
-    bool LatticeRenderingLayer::on_key_pressed(const rex::events::KeyPressed& /*keyPressEvent*/)
+    bool LatticeRenderingLayer::on_key_pressed(const rex::events::KeyPressed& keyPressEvent)
     {
-        return false;
+        switch (keyPressEvent.get_key())
+        {
+            case R_KEY_F3: toggle_camera_animation(); return true;
+
+            case R_KEY_W: increment_sdf_scale(); return true;
+            case R_KEY_A: increment_sdf_offset(); return true;
+            case R_KEY_S: decrement_sdf_scale(); return true;
+            case R_KEY_D: decrement_sdf_offset(); return true;
+            case R_KEY_TAB:
+            {
+                if (lattice_rendering::LAYER_DESCRIPTION.use_heatmap)
+                {
+                    if (m_active_renderer == m_sdf_renderer.get())
+                        switch_to_heatmap();
+                    else
+                        switch_to_sdf();
+                    return true;
+                }
+
+                return false;
+            }
+            default: return false;
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    void LatticeRenderingLayer::animate_camera(const rex::FrameInfo& info)
+    {
+        float focus_distance_speed = 0.5f;
+        float current_focus_distance = m_camera_controller.get_focus_distance();
+
+        current_focus_distance += focus_distance_speed * info.delta_time.to_seconds();
+
+        m_camera_controller.set_focus_distance(current_focus_distance);
+
+        m_camera_controller.orbit(rex::vec2(-0.01f, 0.3f));
+    }
+
+    //-------------------------------------------------------------------------
+    void LatticeRenderingLayer::toggle_camera_animation()
+    {
+        lattice_rendering::LAYER_DESCRIPTION.animate = !lattice_rendering::LAYER_DESCRIPTION.animate;
+    }
+
+        //-------------------------------------------------------------------------
+    void LatticeRenderingLayer::decrement_sdf_scale()
+    {
+        if (m_active_renderer == nullptr)
+        {
+            return;
+        }
+
+        rex::SceneRenderPass* render_pass = m_active_renderer->get_scene_render_pass(lattice_rendering::DISTANCEEVALUATIONSPASS_NAME);
+        if (render_pass == nullptr)
+        {
+            return;
+        }
+
+        rex::DistanceEvaluationPass* distance_eval = static_cast<rex::DistanceEvaluationPass*>(render_pass);
+        rex::sdf::SceneOptions sdf_scene_options = distance_eval->get_sdf_scene_options();
+
+        float scene_scale = 0.0f;
+        rex::vec3 scene_size = rex::zero_vec3<float>();
+
+        {
+            scene_scale = sdf_scene_options.scene_scale;
+            scene_scale = std::clamp(scene_scale - 0.5f, 1.0f, 10.0f);
+        }
+
+        {
+            lattice_rendering::VolumeType active_volume_type = lattice_rendering::get_active_volume_type();
+
+            const Lattice& lattice = lattice_library::get_lattice(lattice_rendering::get_volume_name_map()[active_volume_type]);
+
+            scene_size = lattice_rendering::calculate_scene_size(lattice);
+            scene_size = scene_size * scene_scale;
+        }
+
+        sdf_scene_options.scene_scale = scene_scale;
+        sdf_scene_options.scene_size = scene_size;
+
+        R_INFO("Scale SDF, scaling down SDF: {0}", sdf_scene_options.scene_scale);
+
+        distance_eval->set_sdf_scene_options(sdf_scene_options);
+    }
+    //-------------------------------------------------------------------------
+    void LatticeRenderingLayer::decrement_sdf_offset()
+    {
+        if (m_active_renderer == nullptr)
+        {
+            return;
+        }
+
+        rex::SceneRenderPass* render_pass = m_active_renderer->get_scene_render_pass(lattice_rendering::DISTANCEEVALUATIONSPASS_NAME);
+        if (render_pass == nullptr)
+        {
+            return;
+        }
+
+        rex::DistanceEvaluationPass* distance_eval = static_cast<rex::DistanceEvaluationPass*>(render_pass);
+        rex::sdf::SceneOptions sdf_scene_options = distance_eval->get_sdf_scene_options();
+
+        float offset = 0.0f;
+
+        offset = sdf_scene_options.scene_offset;
+        offset = std::clamp(offset - 0.001f, -1.0f, 1.0f);
+
+        sdf_scene_options.scene_offset = offset;
+
+        R_INFO("Scale SDF, Decreasing offset SDF: {0}", sdf_scene_options.scene_offset);
+
+        distance_eval->set_sdf_scene_options(sdf_scene_options);
+    }
+
+    //-------------------------------------------------------------------------
+    void LatticeRenderingLayer::increment_sdf_scale()
+    {
+        if (m_active_renderer == nullptr)
+        {
+            return;
+        }
+
+        rex::SceneRenderPass* render_pass = m_active_renderer->get_scene_render_pass(lattice_rendering::DISTANCEEVALUATIONSPASS_NAME);
+        if (render_pass == nullptr)
+        {
+            return;
+        }
+
+        rex::DistanceEvaluationPass* distance_eval = static_cast<rex::DistanceEvaluationPass*>(render_pass);
+        rex::sdf::SceneOptions sdf_scene_options = distance_eval->get_sdf_scene_options();
+
+        float scene_scale = 0.0f;
+        rex::vec3 scene_size = rex::zero_vec3<float>();
+
+        {
+            scene_scale = sdf_scene_options.scene_scale;
+            scene_scale = std::clamp(scene_scale + 0.5f, 1.0f, 10.0f);
+        }
+
+        {
+            lattice_rendering::VolumeType active_volume_type = lattice_rendering::get_active_volume_type();
+
+            const Lattice& lattice = lattice_library::get_lattice(lattice_rendering::get_volume_name_map()[active_volume_type]);
+
+            scene_size = lattice_rendering::calculate_scene_size(lattice);
+            scene_size = scene_size * scene_scale;
+        }
+
+        sdf_scene_options.scene_scale = scene_scale;
+        sdf_scene_options.scene_size = scene_size;
+
+        R_INFO("Scale SDF, scaling up SDF: {0}", sdf_scene_options.scene_scale);
+
+        distance_eval->set_sdf_scene_options(sdf_scene_options);
+    }
+    //-------------------------------------------------------------------------
+    void LatticeRenderingLayer::increment_sdf_offset()
+    {
+        if (m_active_renderer == nullptr)
+        {
+            return;
+        }
+
+        rex::SceneRenderPass* render_pass = m_active_renderer->get_scene_render_pass(lattice_rendering::DISTANCEEVALUATIONSPASS_NAME);
+        if (render_pass == nullptr)
+        {
+            return;
+        }
+
+        rex::DistanceEvaluationPass* distance_eval = static_cast<rex::DistanceEvaluationPass*>(render_pass);
+        rex::sdf::SceneOptions sdf_scene_options = distance_eval->get_sdf_scene_options();
+
+        float offset = 0.0f;
+
+        offset = sdf_scene_options.scene_offset;
+        offset = std::clamp(offset + 0.001f, -1.0f, 1.0f);
+
+        sdf_scene_options.scene_offset = offset;
+
+        R_INFO("Offset SDF, Increasing offset SDF: {0}", sdf_scene_options.scene_offset);
+
+        distance_eval->set_sdf_scene_options(sdf_scene_options);
+    }
+
+    //-------------------------------------------------------------------------
+    void LatticeRenderingLayer::switch_to_heatmap()
+    {
+        m_active_renderer = m_heatmap_renderer.get();
+    }
+
+    //-------------------------------------------------------------------------
+    void LatticeRenderingLayer::switch_to_sdf()
+    {
+        m_active_renderer = m_sdf_renderer.get();
     }
 
     //-------------------------------------------------------------------------
     void LatticeRenderingLayer::setup_scene()
     {
-        
-
         int32 viewport_width = m_window->get_width();
         int32 viewport_height = m_window->get_height();
 
@@ -529,8 +859,6 @@ namespace regina
     //-------------------------------------------------------------------------
     void LatticeRenderingLayer::setup_camera()
     {
-        
-
         float viewport_width = (float)m_window->get_width();
         float viewport_height = (float)m_window->get_height();
 
@@ -554,24 +882,50 @@ namespace regina
     //-------------------------------------------------------------------------
     void LatticeRenderingLayer::setup_scene_renderer()
     {
-        
+        setup_sdf_renderer();
+        if (lattice_rendering::LAYER_DESCRIPTION.use_heatmap)
+        {
+            setup_heatmap_renderer();
+        }
 
-        rex::SceneRenderPasses renderpasses;
+        m_active_renderer = m_sdf_renderer.get();
+    }
 
-        auto distance_eval = create_distance_evaluation_pass(lattice_rendering::create_lattice_options(), lattice_rendering::create_distance_evaluation_pass_options());
-        auto composite = create_composite_pass(lattice_rendering::create_composite_pass_options());
+    //-------------------------------------------------------------------------
+    void LatticeRenderingLayer::setup_sdf_renderer()
+    {
+        rex::SceneRenderPasses sdf_renderpasses;
 
-        renderpasses.push_back(std::move(distance_eval));
-        renderpasses.push_back(std::move(composite));
+        auto distance_eval = create_distance_evaluation_pass(lattice_rendering::create_lattice_options(), lattice_rendering::create_distance_evaluation_pass_options(lattice_rendering::DISTANCEEVALUATIONSPASS_NAME, "lattice"_sid));
+        auto deferred_light = create_deferred_light_pass(lattice_rendering::create_deferred_light_pass_options());
+        auto deferred_light_visualization = create_deferred_light_visualization_pass(lattice_rendering::create_deferred_light_visualization_pass_options());
+        auto sdf_composite = create_composite_pass(lattice_rendering::create_composite_pass_options(lattice_rendering::DEFERREDLIGHTVISUALIZATIONPASS_NAME, rex::ApplyGammaCorrection::YES, rex::ApplyToneMapping::YES));
 
-        m_scene_renderer = rex::make_ref<rex::SceneRenderer>(m_scene, std::move(renderpasses));
+        sdf_renderpasses.push_back(std::move(distance_eval));
+        sdf_renderpasses.push_back(std::move(deferred_light));
+        sdf_renderpasses.push_back(std::move(deferred_light_visualization));
+        sdf_renderpasses.push_back(std::move(sdf_composite));
+
+        m_sdf_renderer = rex::make_ref<rex::SceneRenderer>(m_scene, std::move(sdf_renderpasses));
+    }
+
+    //-------------------------------------------------------------------------
+    void LatticeRenderingLayer::setup_heatmap_renderer()
+    {
+        rex::SceneRenderPasses heatmap_renderpasses;
+
+        auto heatmap = create_heatmap_distance_evaluation_pass(lattice_rendering::create_distance_evaluation_pass_options(lattice_rendering::HEATMAPDISTANCEEVALUATIONSPASS_NAME, "heatmap"_sid));
+        auto heatmap_composite = create_composite_pass(lattice_rendering::create_composite_pass_options(lattice_rendering::HEATMAPDISTANCEEVALUATIONSPASS_NAME, rex::ApplyGammaCorrection::NO, rex::ApplyToneMapping::NO));
+
+        heatmap_renderpasses.push_back(std::move(heatmap));
+        heatmap_renderpasses.push_back(std::move(heatmap_composite));
+
+        m_heatmap_renderer = rex::make_ref<rex::SceneRenderer>(m_scene, std::move(heatmap_renderpasses));
     }
 
     //-------------------------------------------------------------------------
     void LatticeRenderingLayer::setup_lights()
     {
-        
-
         srand(13); // seed random number generator
         for (int32 i = 0; i < 32; ++i)
         {
@@ -597,15 +951,26 @@ namespace regina
     //-------------------------------------------------------------------------
     std::unique_ptr<rex::SceneRenderPass> LatticeRenderingLayer::create_distance_evaluation_pass(const LatticeOptions& latticeOptions, const rex::DistanceEvaluationsPassOptions& options) const
     {
-        
-
         return std::make_unique<LatticeDistanceEvaluationPass>(latticeOptions, options, rex::CreateFrameBuffer::YES);
     }
     //-------------------------------------------------------------------------
-    std::unique_ptr<rex::SceneRenderPass> LatticeRenderingLayer::create_composite_pass(const rex::CompositePassOptions& options) const
+    std::unique_ptr<rex::SceneRenderPass> LatticeRenderingLayer::create_heatmap_distance_evaluation_pass(const rex::DistanceEvaluationsPassOptions& options) const
     {
-        
-
+        return std::make_unique<rex::HeatMapDistanceEvaluationPass>("color_ramp"_sid, options, rex::CreateFrameBuffer::YES);
+    }
+    //-------------------------------------------------------------------------
+    std::unique_ptr<rex::SceneRenderPass> LatticeRenderingLayer::create_deferred_light_pass(const rex::DeferredLightPassOptions& options) const
+    {
+        return std::make_unique<rex::DeferredLightPass>(options, rex::CreateFrameBuffer::YES);
+    }
+    //-------------------------------------------------------------------------
+    std::unique_ptr<rex::SceneRenderPass> LatticeRenderingLayer::create_deferred_light_visualization_pass(const rex::DeferredLightVisualizationPassOptions& options) const
+    {
+        return std::make_unique<rex::DeferredLightVisualizationPass>(options, rex::CreateFrameBuffer::YES);
+    }
+    //-------------------------------------------------------------------------
+    std::unique_ptr<rex::SceneRenderPass> LatticeRenderingLayer::create_composite_pass(const rex::CompositePassOptions& options) const
+    {       
         return std::make_unique<rex::CompositePass>(options, rex::CreateFrameBuffer::NO);
     }
 } // namespace regina

@@ -15,7 +15,6 @@ namespace rex
     class CoreWindow;
 
     struct FrameInfo;
-    struct PreDepthPassOptions;
     struct DistanceEvaluationsPassOptions;
     struct DeferredLightPassOptions;
     struct DeferredLightVisualizationPassOptions;
@@ -37,10 +36,41 @@ namespace regina
 {
     struct LatticeOptions;
 
+    struct LatticeRenderingLayerDescription
+    {
+        LatticeRenderingLayerDescription()
+            : volume_source_content_location(rex::ESID::SID_None)
+            , lattice_source_content_location(rex::ESID::SID_None)
+            , volume_type(0)
+            , max_iterations(200)
+            , nr_lights(32)
+            , max_marching_distance(1000.0f)
+            , min_marching_distance(0.01f)
+            , use_lattice(false)
+            , use_heatmap(false)
+            , animate(false)
+        {
+        }
+
+        rex::StringID volume_source_content_location;
+        rex::StringID lattice_source_content_location;
+
+        int32 volume_type;
+        int32 max_iterations;
+        int32 nr_lights;
+
+        float max_marching_distance;
+        float min_marching_distance;
+
+        bool use_lattice;
+        bool use_heatmap;
+        bool animate;
+    };
+
     class LatticeRenderingLayer : public rex::Layer
     {
     public:
-        LatticeRenderingLayer(const rex::CoreWindow* window);
+        LatticeRenderingLayer(const rex::CoreWindow* window, const LatticeRenderingLayerDescription& description);
         ~LatticeRenderingLayer() override;
 
         void on_attach() override;
@@ -52,25 +82,40 @@ namespace regina
     private:
         bool on_key_pressed(const rex::events::KeyPressed& keyPressEvent);
 
+        void animate_camera(const rex::FrameInfo& info);
+        void toggle_camera_animation();
+
         void decrement_sdf_scale();
         void decrement_sdf_offset();
         void increment_sdf_scale();
         void increment_sdf_offset();
 
+        void switch_to_heatmap();
+        void switch_to_sdf();
+
         void setup_scene();
         void setup_camera();
         void setup_scene_renderer();
+        void setup_sdf_renderer();
+        void setup_heatmap_renderer();
 
         void setup_lights();
 
         std::unique_ptr<rex::SceneRenderPass> create_distance_evaluation_pass(const LatticeOptions& latticeOptions, const rex::DistanceEvaluationsPassOptions& options) const;
+        std::unique_ptr<rex::SceneRenderPass> create_heatmap_distance_evaluation_pass(const rex::DistanceEvaluationsPassOptions& options) const;
+        std::unique_ptr<rex::SceneRenderPass> create_deferred_light_pass(const rex::DeferredLightPassOptions& options) const;
+        std::unique_ptr<rex::SceneRenderPass> create_deferred_light_visualization_pass(const rex::DeferredLightVisualizationPassOptions& options) const;
         std::unique_ptr<rex::SceneRenderPass> create_composite_pass(const rex::CompositePassOptions& options) const;
 
         rex::ecs::SceneCamera m_camera;
         MouseOrbitCameraController m_camera_controller;
 
         rex::ref_ptr<rex::ecs::Scene> m_scene;
-        rex::ref_ptr<rex::SceneRenderer> m_scene_renderer;
+
+        rex::ref_ptr<rex::SceneRenderer> m_heatmap_renderer;
+        rex::ref_ptr<rex::SceneRenderer> m_sdf_renderer;
+
+        rex::SceneRenderer* m_active_renderer;
 
         const rex::CoreWindow* m_window;
     };
