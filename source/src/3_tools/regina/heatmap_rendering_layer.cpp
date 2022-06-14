@@ -338,8 +338,6 @@ namespace regina
         //-------------------------------------------------------------------------
         void load_texture(const rex::StringID& name, const rex::StringID& path, const SRGB& srgb, const rex::Texture::Usage& usage)
         {
-            
-
             auto texture = texture_importer::import(name, path, srgb, usage);
 
             if (texture == nullptr)
@@ -355,8 +353,6 @@ namespace regina
         //-------------------------------------------------------------------------
         void load_textures()
         {
-            
-
             load_texture("color_ramp", "content\\textures\\color_ramp.png", SRGB::NO, rex::Texture::Usage::UNSPECIFIED);
         }
         //-------------------------------------------------------------------------

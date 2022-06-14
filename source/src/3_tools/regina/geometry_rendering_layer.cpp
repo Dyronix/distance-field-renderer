@@ -156,7 +156,7 @@ namespace regina
             float FIELD_OF_VIEW = 95.142f;
 
             rex::vec3 CAMERA_POSITION = {2.4f, 1.3f, 0.17f};
-            rex::vec3 CAMERA_FOCUS = {0.0f, 0.0f, 0.0f};
+            rex::vec3 CAMERA_FOCUS = {0.0f, 0.5f, 0.0f};
             rex::vec3 CAMERA_ROTATION = {3.0f, 1.5f, 0.0f};
 
             bool CAN_ROTATE_PITCH = true;
