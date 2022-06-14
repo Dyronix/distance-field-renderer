@@ -52,9 +52,12 @@ namespace regina
             sdf_framebuffer_desc.width = vp_width;
             sdf_framebuffer_desc.height = vp_height;
             sdf_framebuffer_desc.color_attachments.push_back(std::move(rex::create_color_attachment_description(vp_width, vp_height, rex::Texture::Format::RGBA_32_FLOAT)));
+            sdf_framebuffer_desc.color_attachments.push_back(std::move(rex::create_color_attachment_description(vp_width, vp_height, rex::Texture::Format::RGBA_32_FLOAT)));
+            sdf_framebuffer_desc.color_attachments.push_back(std::move(rex::create_color_attachment_description(vp_width, vp_height, rex::Texture::Format::RGBA_32_FLOAT)));
+            sdf_framebuffer_desc.depth_attachment = std::move(rex::create_depth_attachment_description(vp_width, vp_height, rex::Texture::Format::DEPTH_COMPONENT_24_INTEGER));
             sdf_framebuffer_desc.name = "Lattice SDF";
 
-            framebuffer = rex::ResourceFactory::create_frame_buffer(std::move(sdf_framebuffer_desc), rex::FrameBufferDepthAttachmentOption::NONE);
+            framebuffer = rex::ResourceFactory::create_frame_buffer(std::move(sdf_framebuffer_desc), rex::FrameBufferDepthAttachmentOption::DEPTH_ONLY);
         }
 
         rex::RenderPassDescription sdf_renderpass_desc;
@@ -62,7 +65,7 @@ namespace regina
         sdf_renderpass_desc.framebuffer = framebuffer;
         sdf_renderpass_desc.clear_color = {0.15f, 0.15f, 0.15f, 1.0f};
         sdf_renderpass_desc.clear_depth = 1.0f;
-        sdf_renderpass_desc.clear_flags = rex::COLOR_ONLY;
+        sdf_renderpass_desc.clear_flags = rex::CLEAR_COLOR_AND_DEPTH;
         sdf_renderpass_desc.name = "Lattice SDF";
 
         rex::PipelineDescription sdf_pipeline_desc;
@@ -70,7 +73,7 @@ namespace regina
         sdf_pipeline_desc.shader = rex::shader_library::get(get_options().shader_name);
         sdf_pipeline_desc.layout = {{rex::DataType::VEC3, "a_Position"}, {rex::DataType::VEC2, "a_TexCoord"}};
         sdf_pipeline_desc.renderpass = rex::Renderer::create_render_pass(sdf_renderpass_desc);
-        sdf_pipeline_desc.depth_test_state = {rex::DepthTestEnabled::NO};
+        sdf_pipeline_desc.depth_test_state = {rex::DepthTestEnabled::YES};
         sdf_pipeline_desc.facecull_state = {rex::FaceCullingEnabled::NO};
         sdf_pipeline_desc.name = "Lattice SDF";
 
