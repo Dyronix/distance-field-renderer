@@ -8,8 +8,8 @@ precision highp sampler3D;
 #define HIT_MAX_MARCH_DISTANCE  1
 #define HIT_SURFACE             2
 
-#define UNITCELL_EMPTY                              0
-#define UNITCELL_CROSS                              1
+#define UNITCELL_EMPTY                              1
+#define UNITCELL_CROSS                              0
 #define UNITCELL_DOUBLE_TETRAHEDRON_FRAME           2
 #define UNITCELL_DOUBLE_TETRAHEDRON_OCTA_FRAME      3
 
@@ -544,7 +544,7 @@ float map_distance_field(vec3 position)
         // -------------------------------------------------------------------------------------------------------------          
         //      Calculate distance value towards the lattice
 
-        vec3    tesselation             = op_tesselate(lattice_position, u_lattice_grid_size, u_lattice_grid_min_bounds, u_lattice_grid_cell_size);
+        vec3    tesselation             = op_tesselate(position, u_lattice_grid_size, u_lattice_grid_min_bounds, u_lattice_grid_cell_size);
         float   lattice_distance        = map_lattice(tesselation);
 
         // -------------------------------------------------------------------------------------------------------------          
