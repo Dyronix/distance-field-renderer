@@ -12,6 +12,8 @@
 
 #include "core_window.h"
 
+#define LATTICE_LAYER 1
+
 namespace
 {
     namespace tags
@@ -27,6 +29,9 @@ namespace
         const rex::StringID NR_LIGHTS               = "nr_lights"_sid;
         const rex::StringID RESOLUTION              = "resolution"_sid;
         const rex::StringID CONTENT_LOCATION        = "content_location"_sid;
+
+        const rex::StringID VOLUME_CONTENT_LOCATION  = "volume_content_location"_sid;
+        const rex::StringID LATTICE_CONTENT_LOCATION = "lattice_content_location"_sid;
 
         const rex::StringID MAX_ITERATIONS          = "max_iterations"_sid;
         const rex::StringID MAX_MARCHING_DISTANCE   = "max_marching_distance"_sid;
@@ -51,7 +56,11 @@ namespace
     bool s_geometry_layer;
 
     regina::GeometryRenderingLayerDescription s_geometry_description;
+#if LATTICE_LAYER
+    regina::LatticeRenderingLayerDescription s_lattice_description;
+#else
     regina::VolumeRenderingLayerDescription s_volume_description;
+#endif
 
     enum class ApplicationArgumentParserType
     {
@@ -75,7 +84,6 @@ namespace
             ,m_animate_scene(AnimateScene::NO)
             ,m_lattified(Lattified::NO)
             ,m_application_name(rex::ESID::SID_None)
-            ,m_content_location(rex::ESID::SID_None)
             ,m_shape_type(0)
             ,m_nr_lights(32)
             ,m_resolution(0)
@@ -88,7 +96,6 @@ namespace
             m_animate_scene = load_animate_scene(applicationArguments);
             m_lattified = load_lattified(applicationArguments);
             m_application_name = load_application_name(applicationArguments);
-            m_content_location = load_content_location(applicationArguments);
             m_shape_type = load_shape_type(applicationArguments);
             m_nr_lights = load_number_of_lights(applicationArguments);
             m_resolution = load_resolution(applicationArguments);
@@ -126,11 +133,6 @@ namespace
         rex::StringID get_application_name() const
         {
             return m_application_name;
-        }
-        //-----------------------------------------------------------------------
-        rex::StringID get_content_location() const
-        {
-            return m_content_location;
         }
 
         //-----------------------------------------------------------------------
@@ -208,13 +210,6 @@ namespace
 
             return !application_name.is_none() ? application_name : "regina"_sid;
         }        
-        //-----------------------------------------------------------------------
-        rex::StringID load_content_location(const rex::ApplicationArguments& applicationArguments) const
-        {
-            rex::StringID content_location = applicationArguments.get_argument_value(tags::CONTENT_LOCATION);
-
-            return !content_location.is_none() ? content_location : "content"_sid;
-        }
 
         //-----------------------------------------------------------------------
         int32 load_shape_type(const rex::ApplicationArguments& applicationArguments) const
@@ -250,7 +245,6 @@ namespace
         Lattified m_lattified;
 
         rex::StringID m_application_name;
-        rex::StringID m_content_location;
 
         int32 m_window_width;
         int32 m_window_height;
@@ -272,11 +266,14 @@ namespace
             ,m_max_marching_distance(1000.0f)
             ,m_min_marching_distance(0.01f)
             ,m_generate_heatmap(GenerateHeatmap::NO)
+            ,m_content_location(rex::ESID::SID_None)
         {
             m_max_iterations = load_max_iterations(applicationArguments);
             m_max_marching_distance = load_max_marching_distance(applicationArguments);
             m_min_marching_distance = load_min_marching_distance(applicationArguments);
             m_generate_heatmap = load_generate_heatmap(applicationArguments);
+
+            m_content_location = load_content_location(applicationArguments);
         }
 
         //-----------------------------------------------------------------------
@@ -303,12 +300,18 @@ namespace
         }
 
         //-----------------------------------------------------------------------
+        rex::StringID get_content_location() const
+        {
+            return m_content_location;
+        }
+
+        //-----------------------------------------------------------------------
         rex::StringID get_profile_id() const override 
         {
             std::stringstream stream;
 
             stream << get_application_name().to_string() ;
-            stream << "_";
+            stream << "-";
 
             //if (animate_scene())
             //    stream << "dynamic_scene";
@@ -406,12 +409,211 @@ namespace
             return generate_heatmap ? GenerateHeatmap::YES : GenerateHeatmap::NO;
         }
 
+        //-----------------------------------------------------------------------
+        rex::StringID load_content_location(const rex::ApplicationArguments& applicationArguments) const
+        {
+            rex::StringID content_location = applicationArguments.get_argument_value(tags::CONTENT_LOCATION);
+
+            return !content_location.is_none() ? content_location : "content"_sid;
+        }
+
         int32 m_max_iterations;
 
         float m_max_marching_distance;
         float m_min_marching_distance;
 
         GenerateHeatmap m_generate_heatmap;
+
+        rex::StringID m_content_location;
+    };
+
+    class LatticeApplicationArgumentParser : public ApplicationArgumentsParser
+    {
+    public:
+        using GenerateHeatmap = rex::YesNoEnum;
+
+        //-----------------------------------------------------------------------
+        LatticeApplicationArgumentParser(const rex::ApplicationArguments& applicationArguments)
+            : ApplicationArgumentsParser(applicationArguments)
+            , m_max_iterations(100)
+            , m_max_marching_distance(1000.0f)
+            , m_min_marching_distance(0.01f)
+            , m_generate_heatmap(GenerateHeatmap::NO)
+            , m_volume_content_location(rex::ESID::SID_None)
+            , m_lattice_content_location(rex::ESID::SID_None)
+        {
+            m_max_iterations = load_max_iterations(applicationArguments);
+            m_max_marching_distance = load_max_marching_distance(applicationArguments);
+            m_min_marching_distance = load_min_marching_distance(applicationArguments);
+            m_generate_heatmap = load_generate_heatmap(applicationArguments);
+
+            m_volume_content_location = load_volume_content_location(applicationArguments);
+            m_lattice_content_location = load_lattice_content_location(applicationArguments);
+        }
+
+        //-----------------------------------------------------------------------
+        int32 get_max_iterations() const
+        {
+            return m_max_iterations;
+        }
+
+        //-----------------------------------------------------------------------
+        float get_max_marching_distance() const
+        {
+            return m_max_marching_distance;
+        }
+        //-----------------------------------------------------------------------
+        float get_min_marching_distance() const
+        {
+            return m_min_marching_distance;
+        }
+
+        //-----------------------------------------------------------------------
+        bool generate_heatmap() const
+        {
+            return m_generate_heatmap;
+        }
+
+        //-----------------------------------------------------------------------
+        rex::StringID get_volume_content_location() const
+        {
+            return m_volume_content_location;
+        }
+
+        //-----------------------------------------------------------------------
+        rex::StringID get_lattice_content_location() const
+        {
+            return m_lattice_content_location;
+        }
+
+        //-----------------------------------------------------------------------
+        rex::StringID get_profile_id() const override
+        {
+            std::stringstream stream;
+
+            stream << get_application_name().to_string();
+            stream << "-";
+
+            // if (animate_scene())
+            //    stream << "dynamic_scene";
+            // else
+            //    stream << "static_scene";
+
+            // stream << "_";
+            stream << "shape_" << get_shape_type();
+            stream << "-";
+
+            if (get_resolution() != 0)
+            {
+                stream << "lod_" << get_resolution();
+                stream << "-";
+            }
+
+            if (lattified())
+                stream << "lattified";
+            else
+                stream << "regular";
+
+            stream << "-";
+            stream << "lights_" << get_number_of_lights();
+            stream << "-";
+            stream << "maxit_" << get_max_iterations();
+            stream << "-";
+            stream << "maxdist_" << to_string_with_precision(get_max_marching_distance(), 3);
+            stream << "-";
+            stream << "mindist_" << to_string_with_precision(get_min_marching_distance(), 3);
+            stream << "-";
+
+            // if (generate_heatmap())
+            //    stream << "heatmap";
+            // else "noheatmap";
+            // stream << "-";
+
+            if (fullscreen())
+            {
+                stream << "fullscreen";
+                stream << "-";
+            }
+            else
+            {
+                stream << "xres_" << static_cast<int32>(get_window_width());
+                stream << "-";
+                stream << "yres_" << static_cast<int32>(get_window_height());
+                stream << "-";
+            }
+
+            stream << "volume";
+
+            if (get_run_id() != -1)
+            {
+                stream << "-";
+                stream << "run_" << get_run_id();
+            }
+
+            return rex::create_sid(stream.str());
+        }
+
+        //-----------------------------------------------------------------------
+        ApplicationArgumentParserType get_parser_type() const override
+        {
+            return ApplicationArgumentParserType::VOLUME;
+        }
+
+    private:
+        //-----------------------------------------------------------------------
+        int32 load_max_iterations(const rex::ApplicationArguments& applicationArguments) const
+        {
+            rex::StringID sid_max_iterations = applicationArguments.get_argument_value(tags::MAX_ITERATIONS);
+
+            return !sid_max_iterations.is_none() ? std::stoi(sid_max_iterations.to_string()) : 100;
+        }
+        //-----------------------------------------------------------------------
+        float load_max_marching_distance(const rex::ApplicationArguments& applicationArguments) const
+        {
+            rex::StringID sid_max_marching_distance = applicationArguments.get_argument_value(tags::MAX_MARCHING_DISTANCE);
+
+            return !sid_max_marching_distance.is_none() ? std::stof(sid_max_marching_distance.to_string()) : 1000.0f;
+        }
+        //-----------------------------------------------------------------------
+        float load_min_marching_distance(const rex::ApplicationArguments& applicationArguments) const
+        {
+            rex::StringID sid_max_marching_distance = applicationArguments.get_argument_value(tags::MIN_MARCHING_DISTANCE);
+
+            return !sid_max_marching_distance.is_none() ? std::stof(sid_max_marching_distance.to_string()) : 0.01f;
+        }
+        //-----------------------------------------------------------------------
+        GenerateHeatmap load_generate_heatmap(const rex::ApplicationArguments& applicationArguments) const
+        {
+            rex::StringID sid_heatmap = applicationArguments.get_argument_value(tags::HEATMAP);
+            bool generate_heatmap = !sid_heatmap.is_none() ? std::stoi(sid_heatmap.to_string()) : false;
+
+            return generate_heatmap ? GenerateHeatmap::YES : GenerateHeatmap::NO;
+        }
+
+        //-----------------------------------------------------------------------
+        rex::StringID load_volume_content_location(const rex::ApplicationArguments& applicationArguments) const
+        {
+            rex::StringID content_location = applicationArguments.get_argument_value(tags::VOLUME_CONTENT_LOCATION);
+
+            return !content_location.is_none() ? content_location : "content"_sid;
+        }
+        //-----------------------------------------------------------------------
+        rex::StringID load_lattice_content_location(const rex::ApplicationArguments& applicationArguments) const
+        {
+            rex::StringID content_location = applicationArguments.get_argument_value(tags::LATTICE_CONTENT_LOCATION);
+
+            return !content_location.is_none() ? content_location : "content"_sid;
+        }
+
+        int32 m_max_iterations;
+
+        float m_max_marching_distance;
+        float m_min_marching_distance;
+
+        GenerateHeatmap m_generate_heatmap;
+
+        rex::StringID m_volume_content_location;
+        rex::StringID m_lattice_content_location;
     };
 
     class GeometryApplicationArgumentParser : public ApplicationArgumentsParser
@@ -420,8 +622,15 @@ namespace
         //-----------------------------------------------------------------------
         GeometryApplicationArgumentParser (const rex::ApplicationArguments& applicationArguments)
             :ApplicationArgumentsParser(applicationArguments)
+            ,m_content_location(rex::ESID::SID_None)
         {
+            m_content_location = load_content_location(applicationArguments);
+        }
 
+        //-----------------------------------------------------------------------
+        rex::StringID get_content_location() const
+        {
+            return m_content_location;
         }
 
         //-----------------------------------------------------------------------
@@ -430,7 +639,7 @@ namespace
             std::stringstream stream;
 
             stream << get_application_name().to_string() ;
-            stream << "_";
+            stream << "-";
 
             //if (animate_scene())
             //    stream << "dynamic_scene";
@@ -483,6 +692,17 @@ namespace
         {
             return ApplicationArgumentParserType::GEOMETRY;
         }
+
+    private:
+        //-----------------------------------------------------------------------
+        rex::StringID load_content_location(const rex::ApplicationArguments& applicationArguments) const
+        {
+            rex::StringID content_location = applicationArguments.get_argument_value(tags::CONTENT_LOCATION);
+
+            return !content_location.is_none() ? content_location : "content"_sid;
+        }
+
+        rex::StringID m_content_location;
     };
 } // namespace
 
@@ -537,6 +757,26 @@ regina::VolumeRenderingLayerDescription make_volume_rendering_layer_description(
 
     return description;
 }
+//-----------------------------------------------------------------------
+regina::LatticeRenderingLayerDescription make_lattice_rendering_layer_description(const ApplicationArgumentsParser& parser)
+{
+    R_ASSERT(parser.get_parser_type() == ApplicationArgumentParserType::VOLUME);
+
+    const LatticeApplicationArgumentParser& volume_parser = static_cast<const LatticeApplicationArgumentParser&>(parser);
+
+    regina::LatticeRenderingLayerDescription description;
+
+    description.max_iterations = volume_parser.get_max_iterations();
+    description.nr_lights = volume_parser.get_number_of_lights();
+    description.volume_type = volume_parser.get_shape_type();
+    description.use_heatmap = volume_parser.generate_heatmap();
+    description.use_lattice = volume_parser.lattified();
+    description.volume_source_content_location = volume_parser.get_volume_content_location();
+    description.lattice_source_content_location = volume_parser.get_lattice_content_location();
+    description.animate = volume_parser.animate_scene();
+
+    return description;
+}
 
 //-----------------------------------------------------------------------
 rex::CoreApplication* rex::create_application(const ApplicationArguments& arguments)
@@ -560,6 +800,15 @@ rex::CoreApplication* rex::create_application(const ApplicationArguments& argume
     }
     else
     {
+#if LATTICE_LAYER
+        LatticeApplicationArgumentParser parser = LatticeApplicationArgumentParser(arguments);
+
+        description.name = parser.get_application_name();
+        description.profile_id = parser.get_profile_id();
+        description.window_width = parser.get_window_width();
+        description.window_height = parser.get_window_height();
+        description.fullscreen = parser.fullscreen();
+#else
         VolumeApplicationArgumentParser parser = VolumeApplicationArgumentParser(arguments);
 
         description.name = parser.get_application_name();
@@ -567,8 +816,13 @@ rex::CoreApplication* rex::create_application(const ApplicationArguments& argume
         description.window_width = parser.get_window_width();
         description.window_height = parser.get_window_height();
         description.fullscreen = parser.fullscreen();
+#endif
 
+#if LATTICE_LAYER
+        s_lattice_description = make_lattice_rendering_layer_description(parser);
+#else
         s_volume_description = make_volume_rendering_layer_description(parser);
+#endif
         s_geometry_layer = false;
     }
 
@@ -604,23 +858,24 @@ namespace regina
         }
         else
         {
+#if LATTICE_LAYER
+            m_volume_layer = push_back_layer(std::make_unique<LatticeRenderingLayer>(window, s_lattice_description));
+#else
             m_volume_layer = push_back_layer(std::make_unique<VolumeRenderingLayer>(window, s_volume_description));
+#endif
         }
 
         m_shotcut_layer = push_back_layer(std::make_unique<ShortcutLayer>());
     }
 
     //-------------------------------------------------------------------------
-    void Application::on_app_update(const rex::FrameInfo& info)
+    void Application::on_app_update(const rex::FrameInfo& /*info*/)
     {
-        m_application_time += info.delta_time.to_seconds();
-
-        // Run for 8.3 seconds ( approx 500 frames at 60 FPS )
-        if (m_application_time > 8.3 || m_frame_counter >= 500)
-        {
-            quit();
-        }
-
+        //if (m_frame_counter >= 500)
+        //{
+        //    quit();
+        //}
+        
         ++m_frame_counter;
     }
 }
