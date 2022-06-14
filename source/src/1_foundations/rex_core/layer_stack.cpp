@@ -91,8 +91,6 @@ namespace rex
     //-------------------------------------------------------------------------
     void LayerStack::push(std::unique_ptr<Layer> layer)
     {
-        
-
         layer->attach();
         m_layers.push_back(std::move(layer));
 
@@ -105,8 +103,6 @@ namespace rex
     //-------------------------------------------------------------------------
     void LayerStack::remove_layer(const StringID& layer)
     {
-        
-
         auto it = std::find_if(std::cbegin(m_layers), std::cend(m_layers), [& layername = layer](const std::unique_ptr<Layer>& layer)
                                {
                                    return layername == layer->get_name();
