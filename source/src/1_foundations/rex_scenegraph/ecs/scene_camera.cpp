@@ -171,7 +171,7 @@ namespace rex
                 float near_plane = m_perspective_clip.near_plane;
                 float far_plane = m_perspective_clip.far_plane;
 
-                float fov = m_perspective_fov.get_vertical().get();
+                float fov = m_perspective_fov.get_vertical().to_rad();
 
                 set_projection_matrix(rex::perspective(fov, aspect, near_plane, far_plane));
             }
