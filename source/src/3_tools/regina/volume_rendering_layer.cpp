@@ -10,14 +10,12 @@
 #include "ecs/entity.h"
 #include "ecs/scene.h"
 
-#include "renderpasses/blur_pass.h"
 #include "renderpasses/clear_pass.h"
 #include "renderpasses/composite_pass.h"
 #include "renderpasses/distance_evaluation_pass.h"
 #include "renderpasses/heatmap_distance_evaluation_pass.h"
 #include "renderpasses/deferred_light_pass.h"
 #include "renderpasses/deferred_light_visualization_pass.h"
-#include "renderpasses/pre_depth_pass.h"
 
 #include "resources/frame_buffer_pool.h"
 #include "resources/material.h"
@@ -123,14 +121,41 @@ namespace regina
         {
             static std::unordered_map<VolumeType, float> MAP
             {
-                { VolumeType::BUNNY,      7.0f},
+                { VolumeType::BUNNY,      1.0f},
+                { VolumeType::CUBE,       1.0f},
+                { VolumeType::CYLINDER,   1.0f},
+                { VolumeType::MONKEY,     1.0f},
+                { VolumeType::SPHERE,     1.0f},
+                { VolumeType::TORUS,      1.0f},
+                { VolumeType::DRAGON,     1.0f},
+                { VolumeType::TIGER,      1.0f},
+
+                { VolumeType::CROSS_CUBE_RIBS,        1.0f},
+                { VolumeType::CROSS,                  1.0f},
+                { VolumeType::CUBE_RIBS,              1.0f},
+                { VolumeType::DOUBLE_TETRA_OCTA_RIBS, 1.0f},
+                { VolumeType::DOUBLE_TETRA_RIBS,      1.0f},
+                { VolumeType::FKA,                    1.0f},
+                { VolumeType::OCTAHEDRON_RIB,         1.0f},
+                { VolumeType::OECHS,                  1.0f},
+                { VolumeType::TETRAHEDRON_RIBS,       1.0f}
+            };
+
+            return MAP;
+        }
+        //-------------------------------------------------------------------------
+        std::unordered_map<VolumeType, float>& get_volume_scale_lattified_map()
+        {
+            static std::unordered_map<VolumeType, float> MAP
+            {
+                { VolumeType::BUNNY,      1.0f},
                 { VolumeType::CUBE,       1.0f},
                 { VolumeType::CYLINDER,   1.0f},
                 { VolumeType::MONKEY,     1.0f},
                 { VolumeType::SPHERE,     1.0f},
                 { VolumeType::TORUS,      1.0f},
                 { VolumeType::DRAGON,     0.02f},
-                { VolumeType::TIGER,      2.0f},
+                { VolumeType::TIGER,      1.0f},
 
                 { VolumeType::CROSS_CUBE_RIBS,        1.0f},
                 { VolumeType::CROSS,                  1.0f},
@@ -191,12 +216,12 @@ namespace regina
         namespace camera_settings
         {
             float NEAR_PLANE = 0.01f;
-            float FAR_PLANE = 10.0f;
+            float FAR_PLANE = 1000.0f;
 
             float FIELD_OF_VIEW = 95.142f;
 
             rex::vec3 CAMERA_POSITION = {2.4f, 1.3f, 0.17f};
-            rex::vec3 CAMERA_FOCUS = {0.0f, 0.0f, 0.0f};
+            rex::vec3 CAMERA_FOCUS = {0.0f, 0.5f, 0.0f};
             rex::vec3 CAMERA_ROTATION = {3.0f, 1.5f, 0.0f};
 
             bool CAN_ROTATE_PITCH = true;
@@ -223,9 +248,6 @@ namespace regina
             bool SHOW_GRID = true;
 
             float GAMMA_CORRECTION = 2.0f;
-            
-            float MAX_MARCH_DISTANCE = 100.0f;
-            float MIN_SURFACE_DISTANCE = 0.01f;
         } // namespace renderpass_settings
 
         //-------------------------------------------------------------------------
@@ -251,19 +273,19 @@ namespace regina
             options.shader_name = shaderName;
 
             options.sphere_tracer_options.max_iterations = LAYER_DESCRIPTION.max_iterations;
-            options.sphere_tracer_options.max_march_distance = renderpass_settings::MAX_MARCH_DISTANCE;
-            options.sphere_tracer_options.min_surface_distance = renderpass_settings::MIN_SURFACE_DISTANCE;
+            options.sphere_tracer_options.max_march_distance = LAYER_DESCRIPTION.max_marching_distance;
+            options.sphere_tracer_options.min_surface_distance = LAYER_DESCRIPTION.min_marching_distance;
 
             VolumeType active_volume_type = get_active_volume_type();
 
             const Volume& volume = volume_library::get_volume(get_volume_name_map()[active_volume_type]);
             const VolumeMeta& volume_meta = volume.get_volume_meta();
           
-            const float scene_scale = get_volume_scale_map()[active_volume_type];
+            const float scene_scale = LAYER_DESCRIPTION.use_lattice ? get_volume_scale_lattified_map()[active_volume_type] : get_volume_scale_map()[active_volume_type];
             const float scene_offset = get_volume_offset_map()[active_volume_type];
 
             options.sdf_scene_options.scene_scale = scene_scale;
-            options.sdf_scene_options.scene_offset = scene_offset - renderpass_settings::MIN_SURFACE_DISTANCE;
+            options.sdf_scene_options.scene_offset = scene_offset - LAYER_DESCRIPTION.min_marching_distance;
             options.sdf_scene_options.scene_size = calculate_scene_size(volume.get_voxel_grid_bounds()) * 0.5f;
             options.sdf_scene_options.scene_center = rex::vec3(0.0f, 0.0f, 0.0f);
 
@@ -319,8 +341,6 @@ namespace regina
         //-------------------------------------------------------------------------
         regina::FocusSettings create_focus_settings(const rex::vec3& target, const float minFocusDistance, float maxFocusDistance, float focusDistance)
         {
-            
-
             regina::FocusSettings settings;
 
             settings.set_target(target);
@@ -487,15 +507,26 @@ namespace regina
         //-------------------------------------------------------------------------
         std::vector<VolumeType> load_volumes()
         {
+            load_volume(get_volume_name_map()[VolumeType::BUNNY], "content\\volumes\\default\\bunny.sdf.meta"_sid, "content\\lattices\\bunny.sdf"_sid);
+            load_volume(get_volume_name_map()[VolumeType::TIGER], "content\\volumes\\default\\tiger.sdf.meta"_sid, "content\\lattices\\tiger.sdf"_sid);
+            load_volume(get_volume_name_map()[VolumeType::TORUS], "content\\volumes\\default\\torus.sdf.meta"_sid, "content\\lattices\\torus.sdf"_sid);
+            load_volume(get_volume_name_map()[VolumeType::DRAGON], "content\\volumes\\default\\dragon.sdf.meta"_sid, "content\\lattices\\dragon.sdf"_sid);
+            load_volume(get_volume_name_map()[VolumeType::MONKEY], "content\\volumes\\default\\monkey.sdf.meta"_sid, "content\\lattices\\monkey.sdf"_sid);
+        
+            return {VolumeType::BUNNY, VolumeType::TIGER, VolumeType::TORUS, VolumeType::DRAGON, VolumeType::MONKEY};
+        }
+        //-------------------------------------------------------------------------
+        std::vector<VolumeType> load_volumes(const VolumeRenderingLayerDescription& description)
+        {
             R_PROFILE_SCOPE("Load Volumes")
 
             std::vector<VolumeType> loaded_volume_types;
 
-            if (!LAYER_DESCRIPTION.source_content_location.is_none())
+            if (!description.source_content_location.is_none())
             {
-                if (load_volume(LAYER_DESCRIPTION.source_content_location, (VolumeType)LAYER_DESCRIPTION.volume_type)) 
+                if (load_volume(description.source_content_location, (VolumeType)description.volume_type)) 
                 {
-                    loaded_volume_types.push_back((VolumeType)LAYER_DESCRIPTION.volume_type); 
+                    loaded_volume_types.push_back((VolumeType)description.volume_type); 
                 }
             }
 
@@ -524,7 +555,7 @@ namespace regina
         distance_field_rendering::load_textures();
         distance_field_rendering::load_shaders();
         distance_field_rendering::load_primitive_geometry();
-        distance_field_rendering::load_volumes();
+        distance_field_rendering::load_volumes(distance_field_rendering::LAYER_DESCRIPTION);
 
         setup_scene();
         setup_camera();
@@ -775,13 +806,75 @@ namespace regina
     //-------------------------------------------------------------------------
     void VolumeRenderingLayer::switch_to_heatmap()
     {
+        rex::SceneRenderPass* render_pass = m_active_renderer->get_scene_render_pass(distance_field_rendering::DISTANCEEVALUATIONSPASS_NAME);
+        if (render_pass == nullptr)
+        {
+            return;
+        }
+
+        rex::DistanceEvaluationPass* distance_eval = static_cast<rex::DistanceEvaluationPass*>(render_pass);
+        rex::sdf::SceneOptions sdf_scene_options = distance_eval->get_sdf_scene_options();
+
+        float scene_scale = 0.0f;
+        rex::vec3 scene_size = rex::zero_vec3<float>();
+
+        {
+            scene_scale = sdf_scene_options.scene_scale;
+            scene_scale = std::clamp(scene_scale + 0.5f, 1.0f, 10.0f);
+        }
+
         m_active_renderer = m_heatmap_renderer.get();
+
+        if (m_active_renderer == nullptr)
+        {
+            return;
+        }
+
+        render_pass = m_active_renderer->get_scene_render_pass(distance_field_rendering::HEATMAPDISTANCEEVALUATIONSPASS_NAME);
+        if (render_pass == nullptr)
+        {
+            return;
+        }
+
+        distance_eval = static_cast<rex::DistanceEvaluationPass*>(render_pass);
+        distance_eval->set_sdf_scene_options(sdf_scene_options);
     }
 
     //-------------------------------------------------------------------------
     void VolumeRenderingLayer::switch_to_sdf()
     {
+        rex::SceneRenderPass* render_pass = m_active_renderer->get_scene_render_pass(distance_field_rendering::HEATMAPDISTANCEEVALUATIONSPASS_NAME);
+        if (render_pass == nullptr)
+        {
+            return;
+        }
+
+        rex::DistanceEvaluationPass* distance_eval = static_cast<rex::DistanceEvaluationPass*>(render_pass);
+        rex::sdf::SceneOptions sdf_scene_options = distance_eval->get_sdf_scene_options();
+
+        float scene_scale = 0.0f;
+        rex::vec3 scene_size = rex::zero_vec3<float>();
+
+        {
+            scene_scale = sdf_scene_options.scene_scale;
+            scene_scale = std::clamp(scene_scale + 0.5f, 1.0f, 10.0f);
+        }
+
         m_active_renderer = m_sdf_renderer.get();
+
+        if (m_active_renderer == nullptr)
+        {
+            return;
+        }
+
+        render_pass = m_active_renderer->get_scene_render_pass(distance_field_rendering::DISTANCEEVALUATIONSPASS_NAME);
+        if (render_pass == nullptr)
+        {
+            return;
+        }
+
+        distance_eval = static_cast<rex::DistanceEvaluationPass*>(render_pass);
+        distance_eval->set_sdf_scene_options(sdf_scene_options);
     }
 
     //-------------------------------------------------------------------------
@@ -893,13 +986,11 @@ namespace regina
     {
         return std::make_unique<rex::DistanceEvaluationPass>(options, rex::CreateFrameBuffer::YES);
     }
-
     //-------------------------------------------------------------------------
     std::unique_ptr<rex::SceneRenderPass> VolumeRenderingLayer::create_heatmap_distance_evaluation_pass(const rex::DistanceEvaluationsPassOptions& options) const
     {
         return std::make_unique<rex::HeatMapDistanceEvaluationPass>("color_ramp"_sid, options, rex::CreateFrameBuffer::YES);
     }
-
     //-------------------------------------------------------------------------
     std::unique_ptr<rex::SceneRenderPass> VolumeRenderingLayer::create_deferred_light_pass(const rex::DeferredLightPassOptions& options) const
     {
